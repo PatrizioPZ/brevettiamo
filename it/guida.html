@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guida Deposito UIBM — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .guide-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .guide-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .guide-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .guide-header .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .guide-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .guide-header p {
+            color: var(--text-secondary);
+        }
+        .guide-intro {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .guide-intro h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .guide-intro p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        .guide-intro .warning {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .guide-intro .warning strong {
+            color: var(--warning);
+        }
+        .steps-container {
+            margin-bottom: 2rem;
+        }
+        .step-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            transition: var(--transition);
+        }
+        .step-card:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .step-card.completed {
+            border-left: 4px solid var(--accent);
+        }
+        .step-card.active {
+            border-left: 4px solid var(--primary);
+        }
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: 2rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: var(--shadow);
+        }
+        .step-card.completed .step-number {
+            background: var(--accent);
+        }
+        .step-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            padding-top: 0.5rem;
+        }
+        .step-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        .step-details {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .step-details ul {
+            list-style: none;
+        }
+        .step-details li {
+            padding: 0.35rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .step-details li::before {
+            content: '→';
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .step-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .step-link:hover {
+            text-decoration: underline;
+        }
+        .step-check {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-light);
+        }
+        .step-check input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+        }
+        .step-check label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .costs-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .costs-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cost-table th,
+        .cost-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .cost-table th {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .cost-table td {
+            font-size: 0.95rem;
+        }
+        .cost-table .price {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .cost-table .note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .final-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .final-actions .btn {
+            padding: 1rem 2rem;
+        }
+        .bandi-banner {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .bandi-banner h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .bandi-banner p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        .bandi-banner .btn {
+            background: white;
+            color: var(--accent);
+        }
+        .bandi-banner .btn:hover {
+            background: var(--bg-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-page">
+        <div class="guide-container">
+            <div class="guide-header">
+                <div class="badge">Step 9 di 10</div>
+                <h1>Guida Deposito UIBM</h1>
+                <p>8 passaggi per depositare il tuo brevetto all'Ufficio Italiano Brevetti e Marchi.</p>
+            </div>
+
+            <div class="guide-intro">
+                <h2>📋 Prima di iniziare</h2>
+                <p>Hai completato tutti i passaggi su BrevettIAmo: NDA, chat, pagamento, generazione, verifica, disegni, firma. Ora devi depositare fisicamente il documento all'UIBM.</p>
+                <div class="warning">
+                    <strong>⚠️ Importante:</strong> Il deposito deve avvenire entro 12 mesi dalla prima divulgazione (o dalla data di priorità se hai già depositato all'estero). Non perdere tempo!
+                </div>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card completed" data-step="1">
+                    <div class="step-number">1</div>
+                    <h3>✅ Documento Pronto</h3>
+                    <p>Il documento PDF/A, le figure SVG e il ZIP sono stati generati e firmati.</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Verifica che il PDF/A sia completo</li>
+                            <li>Controlla che tutte le figure siano incluse</li>
+                            <li>Assicurati che la firma digitale sia valida</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-1" checked disabled>
+                        <label for="check-1">Completato su BrevettIAmo</label>
+                    </div>
+                </div>
+
+                <div class="step-card active" data-step="2">
+                    <div class="step-number">2</div>
+                    <h3>🌐 Registrazione UIBM Online</h3>
+                    <p>Crea un account sul portale UIBM per il deposito telematico.</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Vai su <a href="https://uibm.mise.gov.it" target="_blank" class="step-link">uibm.mise.gov.it ↗</a></li>
+                            <li>Clicca "Registrati" e scegli "Richiedente/Dichiarante"</li>
+                            <li>Inserisci CF, email, dati anagrafici</li>
+                            <li>Conferma via email</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-2">
+                        <label for="check-2">Ho creato l'account UIBM</label>
+                    </div>
+                </div>
+
+                <div class="step-card" data-step="3">
+                    <div class="step-number">3</div>
+                    <h3>💰 Pagamento Tasse UIBM</h3>
+                    <p>Paga le tasse di deposito tramite bollettino o PagoPA.</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Tassa di deposito: €50 (brevetto) / €40 (modello)</li>
+                            <li>Tassa di ricerca: €100 (opzionale ma consigliata)</li>
+                            <li>Per ogni rivendicazione oltre la 10ª: €10</li>
+                            <li>Pagamento via PagoPA sul portale UIBM</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-3">
+                        <label for="check-3">Ho pagato le tasse UIBM</label>
+                    </div>
+                </div>
+
+                <div class="step-card" data-step="4">
+                    <div class="step-number">4</div>
+                    <h3>📤 Upload Documenti</h3>
+                    <p>Carica il ZIP generato da BrevettIAmo sul portale UIBM.</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Accedi con SPID/CIE/CNS</li>
+                            <li>Seleziona "Nuova domanda di brevetto"</li>
+                            <li>Carica il PDF/A come documento principale</li>
+                            <li>Carica le figure come allegati</li>
+                            <li>Verifica il riepilogo prima dell'invio</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-4">
+                        <label for="check-4">Ho caricato i documenti</label>
+                    </div>
+                </div>
+
+                <div class="step-card" data-step="5">
+                    <div class="step-number">5</div>
+                    <h3>📋 Dichiarazioni e Consenso</h3>
+                    <p>Compila le dichiarazioni richieste e acconsenti al trattamento dati.</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Dichiarazione di inventoria (se sei l'inventore)</li>
+                            <li>Consenso GDPR per pubblicazione</li>
+                            <li>Eventuale priorità estera (convenzione di Parigi)</li>
+                            <li>Dichiarazione di titolarità (se diversa dall'inventore)</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-5">
+                        <label for="check-5">Ho compilato le dichiarazioni</label>
+                    </div>
+                </div>
+
+                <div class="step-card" data-step="6">
+                    <div class="step-number">6</div>
+                    <h3>✅ Conferma e Invio</h3>
+                    <p>Verifica tutto e invia la domanda. Riceverai il numero di deposito.</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Controlla il riepilogo completo</li>
+                            <li>Verifica l'importo delle tasse</li>
+                            <li>Clicca "Conferma e invia"</li>
+                            <li>Scarica la ricevuta con numero deposito</li>
+                            <li>Conserva la ricevuta!</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-6">
+                        <label for="check-6">Ho inviato la domanda</label>
+                    </div>
+                </div>
+
+                <div class="step-card" data-step="7">
+                    <div class="step-number">7</div>
+                    <h3>⏳ Attesa Esame Formale</h3>
+                    <p>L'UIBM verifica la conformità formale (2-4 mesi).</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Esame formale dei requisiti</li>
+                            <li>Se irregolarità: hai 2 mesi per correggere</li>
+                            <li>Pubblicazione richiesta dopo 18 mesi</li>
+                            <li>Monitora lo stato sul portale UIBM</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-7">
+                        <label for="check-7">In attesa di esame</label>
+                    </div>
+                </div>
+
+                <div class="step-card" data-step="8">
+                    <div class="step-number">8</div>
+                    <h3>🎉 Brevetto Concesso (o Rifiutato)</h3>
+                    <p>L'UIBM emette il provvedimento finale. Se concesso, paga la tassa di concessione.</p>
+                    <div class="step-details">
+                        <ul>
+                            <li>Tassa di concessione: €200 (primo anno)</li>
+                            <li>Tasse annuali successive: €50-600 in base all'anno</li>
+                            <li>Durata: 20 anni dal deposito (brevetto)</li>
+                            <li>15 anni (modello di utilità)</li>
+                            <li>Monitora scadenze su BrevettIAmo Dashboard!</li>
+                        </ul>
+                    </div>
+                    <div class="step-check">
+                        <input type="checkbox" id="check-8">
+                        <label for="check-8">Brevetto concesso!</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="costs-section">
+                <h2>💰 Riepilogo Costi UIBM</h2>
+                <table class="cost-table">
+                    <thead>
+                        <tr>
+                            <th>Voce</th>
+                            <th>Importo</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tassa deposito</td>
+                            <td class="price">€50</td>
+                            <td class="note">Obbligatoria</td>
+                        </tr>
+                        <tr>
+                            <td>Tassa ricerca</td>
+                            <td class="price">€100</td>
+                            <td class="note">Consigliata</td>
+                        </tr>
+                        <tr>
+                            <td>Rivendicazioni extra</td>
+                            <td class="price">€10/una</td>
+                            <td class="note">Oltre la 10ª</td>
+                        </tr>
+                        <tr>
+                            <td>Tassa concessione</td>
+                            <td class="price">€200</td>
+                            <td class="note">Primo anno</td>
+                        </tr>
+                        <tr>
+                            <td>Tasse annuali</td>
+                            <td class="price">€50-600</td>
+                            <td class="note">Crescenti per anno</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bandi-banner">
+                <h3>💡 Hai diritto a un rimborso?</h3>
+                <p>Verifica se la tua azienda rientra nei bandi Voucher 3I, Brevetti+ o Disegni+.</p>
+                <a href="bandi.html" class="btn btn-large">Verifica Bandi →</a>
+            </div>
+
+            <div class="final-actions">
+                <a href="dashboard.html" class="btn btn-primary btn-large">
+                    📊 Vai alla Dashboard
+                    <span class="btn-note">Monitora scadenze e stato</span>
+                </a>
+                <a href="../index.html" class="btn btn-outline">
+                    ← Torna alla Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script>
+        // Salva progresso checklist
+        document.querySelectorAll('.step-check input').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const stepId = e.target.id;
+                const checked = e.target.checked;
+                Storage.set(`guide_check_${stepId}`, checked);
+
+                if (checked) {
+                    e.target.closest('.step-card').classList.add('completed');
+                    e.target.closest('.step-card').classList.remove('active');
+                }
+            });
+        });
+
+        // Carica progresso
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.step-check input').forEach(checkbox => {
+                const saved = Storage.get(`guide_check_${checkbox.id}`);
+                if (saved) {
+                    checkbox.checked = true;
+                    checkbox.closest('.step-card').classList.add('completed');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

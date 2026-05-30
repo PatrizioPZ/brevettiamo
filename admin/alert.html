@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert — Admin BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-dashboard">
+    <nav class="admin-nav">
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="#00C853"/>
+                <path d="M8 16h16M16 8v16" stroke="#0f0f1a" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>BrevettIAmo <span style="color: #00C853; font-size: 0.75rem;">ADMIN</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="clienti.html">Clienti</a>
+            <a href="pratiche.html">Pratiche</a>
+            <a href="alert.html" class="active">Alert</a>
+            <a href="#" onclick="AdminAuth.logout()">Esci</a>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="admin-card">
+                <h2>⚠️ Sistema Allarmi</h2>
+                <div id="alert-system">
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--admin-border);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="color: var(--admin-danger); font-weight: 600;">🔴 Rischio Civile</span>
+                            <span style="font-size: 0.8rem; color: var(--admin-text-muted);">30/05/2026 14:30</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--admin-text-muted);">Pratica #BREV-042: documento generato con score verifica 65%. Sotto soglia 80%. Rischio contestazione da parte dell'UIBM.</p>
+                        <div style="margin-top: 0.75rem;">
+                            <button class="btn btn-ghost" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;" onclick="AlertBot.acknowledge(1)">Acknowledge</button>
+                            <button class="btn btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;" onclick="AlertBot.escalate(1)">Escalate</button>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--admin-border);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="color: var(--admin-warning); font-weight: 600;">🟡 Rischio Economico</span>
+                            <span style="font-size: 0.8rem; color: var(--admin-text-muted);">30/05/2026 13:15</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--admin-text-muted);">Studio Pro #003: omaggi esauriti, pratiche successive a prezzo costo (€100). Margine ridotto del 40%.</p>
+                        <div style="margin-top: 0.75rem;">
+                            <button class="btn btn-ghost" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;" onclick="AlertBot.acknowledge(2)">Acknowledge</button>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="color: var(--admin-danger); font-weight: 600;">🔴 Rischio Penale</span>
+                            <span style="font-size: 0.8rem; color: var(--admin-text-muted);">29/05/2026 09:00</span>
+                        </div>
+                        <p style="font-size: 0.9rem; color: var(--admin-text-muted);">Pratica #BREV-038: NDA non firmato correttamente. IP non protetto. Possibile violazione GDPR art. 32.</p>
+                        <div style="margin-top: 0.75rem;">
+                            <button class="btn btn-ghost" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;" onclick="AlertBot.acknowledge(3)">Acknowledge</button>
+                            <button class="btn btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;" onclick="AlertBot.escalate(3)">Escalate</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h2>🤝 Pacchetto "Solo Firma"</h2>
+                <div id="commercialista-panel">
+                    <div style="padding: 1rem; background: var(--admin-bg); border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="font-weight: 600; margin-bottom: 0.5rem;">Richieste in attesa: 3</p>
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Clienti che hanno richiesto assistenza per la domanda bando</p>
+                    </div>
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--admin-border);">
+                        <p style="font-weight: 600;">Studio Rossi & Associati</p>
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Voucher 3I • €199 • Richiesta: 30/05/2026</p>
+                    </div>
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--admin-border);">
+                        <p style="font-weight: 600;">Mario Bianchi</p>
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Brevetti+ • €199 • Richiesta: 29/05/2026</p>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <p style="font-weight: 600;">Startup GreenTech</p>
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Voucher 3I • €199 • Richiesta: 28/05/2026</p>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="CommercialistaBot.processAll()">
+                            Processa Tutte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/admin/auth.js"></script>
+    <script src="../js/admin/alertbot.js"></script>
+    <script src="../js/admin/commercialistabot.js"></script>
+</body>
+</html>

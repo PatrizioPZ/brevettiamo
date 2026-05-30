@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-dashboard">
+    <nav class="admin-nav">
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="#00C853"/>
+                <path d="M8 16h16M16 8v16" stroke="#0f0f1a" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>BrevettIAmo <span style="color: #00C853; font-size: 0.75rem;">ADMIN</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="clienti.html">Clienti</a>
+            <a href="pratiche.html">Pratiche</a>
+            <a href="alert.html">Alert</a>
+            <a href="#" onclick="AdminAuth.logout()">Esci</a>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div class="admin-kpi">
+            <div class="kpi-item">
+                <div class="value" id="kpi-utenti">142</div>
+                <div class="label">Utenti registrati</div>
+                <div class="change positive">+12% vs mese scorso</div>
+            </div>
+            <div class="kpi-item">
+                <div class="value" id="kpi-pratiche">89</div>
+                <div class="label">Pratiche attive</div>
+                <div class="change positive">+8% vs mese scorso</div>
+            </div>
+            <div class="kpi-item">
+                <div class="value" id="kpi-fatturato">€24.5K</div>
+                <div class="label">Fatturato mese</div>
+                <div class="change positive">+23% vs mese scorso</div>
+            </div>
+            <div class="kpi-item">
+                <div class="value" id="kpi-studios">5</div>
+                <div class="label">Studi legali</div>
+                <div class="change positive">+2 nuovi</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+            <div class="admin-card">
+                <h2>📈 Andamento Fatturato</h2>
+                <div class="chart-container">
+                    <span>[Grafico fatturato ultimi 6 mesi]</span>
+                </div>
+            </div>
+            <div class="admin-card">
+                <h2>🎯 Conversione</h2>
+                <div class="chart-container">
+                    <span>[Funnel conversione]</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h2>📋 Ultime Pratiche</h2>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Tipo</th>
+                        <th>Stato</th>
+                        <th>Importo</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-pratiche-table">
+                    <tr>
+                        <td>#BREV-001</td>
+                        <td>Mario Rossi</td>
+                        <td>Brevetto</td>
+                        <td><span class="status-pill success">Firmato</span></td>
+                        <td>€300</td>
+                        <td>30/05/2026</td>
+                    </tr>
+                    <tr>
+                        <td>#BREV-002</td>
+                        <td>Studio Legale Bianchi</td>
+                        <td>Bundle</td>
+                        <td><span class="status-pill info">Pagato</span></td>
+                        <td>€400</td>
+                        <td>29/05/2026</td>
+                    </tr>
+                    <tr>
+                        <td>#BREV-003</td>
+                        <td>Startup XYZ</td>
+                        <td>Marchio</td>
+                        <td><span class="status-pill warning">Bozza</span></td>
+                        <td>€69</td>
+                        <td>28/05/2026</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="admin-card">
+                <h2>⚠️ Alert Sistema</h2>
+                <div id="admin-alerts">
+                    <div style="padding: 1rem; border-bottom: 1px solid var(--admin-border);">
+                        <p style="color: var(--admin-danger); font-weight: 600;">🔴 Rischio civile</p>
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Pratica #BREV-042: documento generato con score verifica 65%</p>
+                    </div>
+                    <div style="padding: 1rem;">
+                        <p style="color: var(--admin-warning); font-weight: 600;">🟡 Rischio economico</p>
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Studio Pro #003: omaggi esauriti, pratiche a prezzo costo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="admin-card">
+                <h2>💼 Commercialista</h2>
+                <div id="commercialista-panel">
+                    <div style="padding: 1rem; background: var(--admin-bg); border-radius: 8px; margin-bottom: 1rem;">
+                        <p style="font-weight: 600; margin-bottom: 0.5rem;">Fatture da emettere: 12</p>
+                        <p style="font-size: 0.85rem; color: var(--admin-text-muted);">Totale: €4,560 • Lemon Switch auto</p>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="AdminCore.generateReport()">
+                        📊 Genera Report Mensile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/admin/auth.js"></script>
+    <script src="../js/admin/admincore.js"></script>
+</body>
+</html>

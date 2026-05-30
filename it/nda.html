@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDA — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .nda-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .nda-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .nda-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .nda-header .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .nda-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .nda-header p {
+            color: var(--text-secondary);
+        }
+        .nda-document {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+        }
+        .nda-document h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .nda-document .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .nda-document .section {
+            margin-bottom: 1.5rem;
+        }
+        .nda-document .section h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        .nda-document .section p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        .nda-document .highlight {
+            background: rgba(0,200,83,0.1);
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .nda-sign {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            text-align: center;
+        }
+        .nda-sign h3 {
+            margin-bottom: 1rem;
+        }
+        .nda-sign p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .sign-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .sign-option {
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        .sign-option:hover {
+            border-color: var(--primary);
+            background: var(--bg-secondary);
+        }
+        .sign-option.selected {
+            border-color: var(--primary);
+            background: rgba(0,51,102,0.05);
+        }
+        .sign-option .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .sign-option h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .sign-option p {
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+        .nda-form {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .nda-form.active {
+            display: block;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        .checkbox-group input {
+            margin-top: 0.25rem;
+        }
+        .checkbox-group label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .checkbox-group a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .nda-timestamp {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: left;
+        }
+        .nda-timestamp strong {
+            color: var(--text);
+        }
+        .success-animation {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .success-animation.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        .success-animation .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .success-animation h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .success-animation p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="nda-page">
+        <div class="nda-container">
+            <div class="nda-header">
+                <div class="badge">Step 1 di 10</div>
+                <h1>Accordo di Riservatezza (NDA)</h1>
+                <p>Prima di procedere, proteggiamo la tua idea con un NDA digitale.</p>
+            </div>
+
+            <div class="nda-document" id="nda-document">
+                <h2>ACCORDO DI NON DIVULGAZIONE</h2>
+                <div class="subtitle">Tra BrevettIAmo S.r.l. e l'Utente</div>
+
+                <div class="section">
+                    <h3>1. Oggetto</h3>
+                    <p>L'Utente intende condividere con <span class="highlight">BrevettIAmo S.r.l.</span> informazioni confidenziali relative a un'invenzione, modello, marchio o disegno industriale (di seguito "<span class="highlight">Informazioni Confidenziali</span>") al fine di valutarne la brevettabilità e procedere con la formalizzazione del documento.</p>
+                </div>
+
+                <div class="section">
+                    <h3>2. Definizione di Informazioni Confidenziali</h3>
+                    <p>Sono considerate Informazioni Confidenziali tutti i dati, documenti, disegni, descrizioni tecniche, know-how, idee, concept e qualsiasi altra informazione fornita dall'Utente a BrevettIAmo, sia in forma orale, scritta, digitale o visiva.</p>
+                </div>
+
+                <div class="section">
+                    <h3>3. Obblighi di Riservatezza</h3>
+                    <p>BrevettIAmo si impegna a:</p>
+                    <p>• Mantenere strettamente riservate le Informazioni Confidenziali</p>
+                    <p>• Non divulgare, comunicare o trasmettere a terzi le Informazioni</p>
+                    <p>• Utilizzare le Informazioni esclusivamente per le finalità del servizio</p>
+                    <p>• Proteggere le Informazioni con le medesime cautele adottate per i propri segreti industriali</p>
+                </div>
+
+                <div class="section">
+                    <h3>4. Esclusioni</h3>
+                    <p>Non sono considerate Informazioni Confidenziali:</p>
+                    <p>• Informazioni già di pubblico dominio al momento della divulgazione</p>
+                    <p>• Informazioni che diventano di pubblico dominio successivamente, senza violazione del presente accordo</p>
+                    <p>• Informazioni ricevute legittimamente da terzi senza vincolo di riservatezza</p>
+                    <p>• Informazioni sviluppate indipendentemente da BrevettIAmo</p>
+                </div>
+
+                <div class="section">
+                    <h3>5. Durata</h3>
+                    <p>Gli obblighi di riservatezza decorrono dalla data di firma del presente accordo e si protraggono per <span class="highlight">5 (cinque) anni</span>, salvo disposizioni di legge più favorevoli.</p>
+                </div>
+
+                <div class="section">
+                    <h3>6. Legge Applicabile e Foro</h3>
+                    <p>Il presente accordo è regolato dalla legge italiana. Per qualsiasi controversia sarà competente il Foro di <span class="highlight">Milano</span>.</p>
+                </div>
+
+                <div class="section">
+                    <h3>7. Trattamento Dati Personali (GDPR)</h3>
+                    <p>Ai sensi del Regolamento UE 2016/679 (GDPR), BrevettIAmo tratta i dati personali dell'Utente esclusivamente per le finalità del servizio. L'informativa completa è disponibile all'indirizzo <span class="highlight">brevettiamo.it/privacy</span>.</p>
+                </div>
+            </div>
+
+            <div class="nda-sign" id="nda-sign">
+                <h3>🔏 Firma Digitale</h3>
+                <p>Scegli il metodo di firma per confermare l'accettazione dell'NDA.</p>
+
+                <div class="sign-options">
+                    <div class="sign-option" data-method="otp-email">
+                        <div class="icon">📧</div>
+                        <h4>OTP via Email</h4>
+                        <p>Ricevi un codice sulla tua email</p>
+                    </div>
+                    <div class="sign-option" data-method="otp-sms">
+                        <div class="icon">📱</div>
+                        <h4>OTP via SMS</h4>
+                        <p>Ricevi un codice sul tuo cellulare</p>
+                    </div>
+                </div>
+
+                <div class="nda-form" id="nda-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nda-nome">Nome</label>
+                            <input type="text" id="nda-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nda-cognome">Cognome</label>
+                            <input type="text" id="nda-cognome" name="cognome" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nda-email">Email</label>
+                        <input type="email" id="nda-email" name="email" required>
+                    </div>
+                    <div class="form-group" id="phone-field" style="display: none;">
+                        <label for="nda-telefono">Telefono</label>
+                        <input type="tel" id="nda-telefono" name="telefono" placeholder="+39 3xx xxx xxxx">
+                    </div>
+                    <div class="form-group">
+                        <label for="nda-idea">Titolo dell'idea (opzionale)</label>
+                        <input type="text" id="nda-idea" name="idea" placeholder="Es. Sistema di irrigazione intelligente">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="nda-accept" required>
+                        <label for="nda-accept">Dichiaro di aver letto e compreso l'Accordo di Non Divulgazione e acconsento al trattamento dei miei dati personali ai sensi del GDPR.</label>
+                    </div>
+
+                    <button class="btn btn-primary btn-large" id="nda-submit" style="width: 100%;" disabled>
+                        Invia Codice di Verifica
+                    </button>
+                </div>
+
+                <div class="nda-timestamp" id="nda-timestamp" style="display: none;">
+                    <strong>📍 Informazioni di tracciamento:</strong><br>
+                    IP: <span id="nda-ip">...</span> | Data: <span id="nda-date">...</span> | Browser: <span id="nda-browser">...</span>
+                </div>
+            </div>
+
+            <div class="success-animation" id="nda-success">
+                <div class="icon">🎉</div>
+                <h3>NDA Firmato con Successo!</h3>
+                <p>La tua idea è ora protetta. Puoi procedere con la chat di valutazione.</p>
+                <a href="chat.html" class="btn btn-primary btn-large">Procedi allo Step 2 →</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/ndabot.js"></script>
+</body>
+</html>

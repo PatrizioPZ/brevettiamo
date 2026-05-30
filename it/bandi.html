@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bandi e Finanziamenti — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .bandi-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .bandi-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .bandi-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .bandi-header .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .bandi-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .bandi-header p {
+            color: var(--text-secondary);
+        }
+        .eligibility-check {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .eligibility-check h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .eligibility-check p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .eligibility-form {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .eligibility-form .form-group {
+            text-align: left;
+        }
+        .eligibility-form label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .eligibility-form select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: var(--font);
+            font-size: 1rem;
+        }
+        .eligibility-form select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .eligibility-result {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: left;
+        }
+        .eligibility-result.active {
+            display: block;
+        }
+        .eligibility-result.match {
+            background: rgba(0,200,83,0.1);
+            border: 1px solid var(--accent);
+        }
+        .eligibility-result.nomatch {
+            background: rgba(255,152,0,0.1);
+            border: 1px solid var(--warning);
+        }
+        .eligibility-result h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        .eligibility-result p {
+            margin-bottom: 0.5rem;
+        }
+        .bandi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .bando-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+        }
+        .bando-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .bando-card .status-badge {
+            position: absolute;
+            top: -10px;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-badge.aperto {
+            background: var(--accent);
+            color: white;
+        }
+        .status-badge.chiuso {
+            background: var(--text-muted);
+            color: white;
+        }
+        .status-badge.in-arrivo {
+            background: var(--warning);
+            color: white;
+        }
+        .bando-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .bando-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .bando-card .amount {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .bando-card .amount-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        .bando-card .details {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        .bando-card .details li {
+            padding: 0.35rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .bando-card .details li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .bando-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .bando-card .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .info-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .info-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        .info-item {
+            display: flex;
+            gap: 1rem;
+        }
+        .info-item .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .info-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .info-item p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        @media (max-width: 768px) {
+            .eligibility-form {
+                grid-template-columns: 1fr;
+            }
+            .bandi-grid {
+                grid-template-columns: 1fr;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bandi-page">
+        <div class="bandi-container">
+            <div class="bandi-header">
+                <div class="badge">Finanziamenti</div>
+                <h1>Bandi per Brevetti e Marchi</h1>
+                <p>Verifica se la tua azienda ha diritto a fondi per coprire i costi.</p>
+            </div>
+
+            <div class="eligibility-check">
+                <h2>🔍 Verifica la tua idoneità</h2>
+                <p>Rispondi a 3 domande per scoprire quali bandi puoi richiedere.</p>
+
+                <div class="eligibility-form">
+                    <div class="form-group">
+                        <label for="elig-size">Dimensione azienda</label>
+                        <select id="elig-size">
+                            <option value="">Seleziona...</option>
+                            <option value="micro">Micro (≤10 dipendenti, ≤€2M fatturato)</option>
+                            <option value="piccola">Piccola (≤50 dipendenti, ≤€10M)</option>
+                            <option value="media">Media (≤250 dipendenti, ≤€50M)</option>
+                            <option value="grande">Grande (>250 dipendenti)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="elig-type">Tipo richiesta</label>
+                        <select id="elig-type">
+                            <option value="">Seleziona...</option>
+                            <option value="brevetto">Brevetto / Modello</option>
+                            <option value="marchio">Marchio</option>
+                            <option value="disegno">Disegno industriale</option>
+                            <option value="bundle">Più tipologie</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="elig-regione">Regione</label>
+                        <select id="elig-regione">
+                            <option value="">Seleziona...</option>
+                            <option value="lombardia">Lombardia</option>
+                            <option value="lazio">Lazio</option>
+                            <option value="piemonte">Piemonte</option>
+                            <option value="veneto">Veneto</option>
+                            <option value="altro">Altro / Tutte</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="BandiBot.checkEligibility()">
+                    Verifica Idoneità
+                </button>
+
+                <div class="eligibility-result" id="eligibility-result"></div>
+            </div>
+
+            <div class="bandi-grid">
+                <div class="bando-card">
+                    <span class="status-badge aperto">Aperto</span>
+                    <div class="icon">🎫</div>
+                    <h3>Voucher 3I</h3>
+                    <div class="amount">€1.000-4.000</div>
+                    <div class="amount-note">fondo perduto 100%</div>
+                    <ul class="details">
+                        <li>Micro e piccole imprese</li>
+                        <li>Brevetti, marchi, disegni</li>
+                        <li>Consulenza + deposito</li>
+                        <li>Invitalia / Unioncamere</li>
+                    </ul>
+                    <a href="bando-detail.html?bando=voucher3i" class="btn btn-primary">Dettagli →</a>
+                </div>
+
+                <div class="bando-card">
+                    <span class="status-badge aperto">Aperto</span>
+                    <div class="icon">🏭</div>
+                    <h3>Brevetti+ 2026</h3>
+                    <div class="amount">€50.000-140.000</div>
+                    <div class="amount-note">fondo perduto fino al 50%</div>
+                    <ul class="details">
+                        <li>PMI innovative</li>
+                        <li>Portfolio brevetti</li>
+                        <li>Start-up / Spin-off</li>
+                        <li>MISE / CDP Venture</li>
+                    </ul>
+                    <a href="bando-detail.html?bando=brevettipiù" class="btn btn-primary">Dettagli →</a>
+                </div>
+
+                <div class="bando-card">
+                    <span class="status-badge in-arrivo">In arrivo</span>
+                    <div class="icon">🎨</div>
+                    <h3>Disegni+ / Marchi+</h3>
+                    <div class="amount">€10.000-50.000</div>
+                    <div class="amount-note">fondo perduto fino al 40%</div>
+                    <ul class="details">
+                        <li>PMI del settore design</li>
+                        <li>Registrazione disegni UE</li>
+                        <li>Marchi internazionali</li>
+                        <li>ICE / MISE</li>
+                    </ul>
+                    <button class="btn btn-outline" disabled>In arrivo 2026</button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>💡 Come funzionano i bandi</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="icon">1️⃣</div>
+                        <div>
+                            <h4>Verifica requisiti</h4>
+                            <p>Controlla dimensione, settore, localizzazione e tipo di richiesta.</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">2️⃣</div>
+                        <div>
+                            <h4>Prepara documentazione</h4>
+                            <p>BrevettIAmo genera la checklist personalizzata per ogni bando.</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">3️⃣</div>
+                        <div>
+                            <h4>Presenta domanda</h4>
+                            <p>Invia tramite il portale dedicato (Invitalia, MISE, ecc.).</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon">4️⃣</div>
+                        <div>
+                            <h4>Ricevi rimborso</h4>
+                            <p>Dopo l'approvazione, ricevi il fondo a copertura delle spese.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/bandibot.js"></script>
+</body>
+</html>

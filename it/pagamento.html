@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .payment-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .payment-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .payment-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .payment-header .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .payment-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .payment-header p {
+            color: var(--text-secondary);
+        }
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .order-summary {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            height: fit-content;
+        }
+        .order-summary h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .order-item-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .order-item-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        .order-item-price {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-top: 1rem;
+            border-top: 2px solid var(--primary);
+        }
+        .order-total-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .order-total-price {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .order-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+        }
+        .payment-form {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+        .payment-form h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        .payment-methods {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .payment-method {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: rgba(0,51,102,0.05);
+        }
+        .payment-method img {
+            height: 24px;
+            margin-bottom: 0.5rem;
+        }
+        .payment-method span {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .stripe-element {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-secondary);
+        }
+        .stripe-element p {
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+        .billing-form {
+            margin-bottom: 1.5rem;
+        }
+        .billing-form h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        .checkbox-group input {
+            margin-top: 0.25rem;
+        }
+        .checkbox-group label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .checkbox-group a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+        .pay-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .service-options {
+            margin-bottom: 1.5rem;
+        }
+        .service-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .service-option:hover {
+            border-color: var(--primary);
+        }
+        .service-option.selected {
+            border-color: var(--primary);
+            background: rgba(0,51,102,0.05);
+        }
+        .service-option input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+        }
+        .service-option-info {
+            flex: 1;
+        }
+        .service-option-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .service-option-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        .service-option-price {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        @media (max-width: 768px) {
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-page">
+        <div class="payment-container">
+            <div class="payment-header">
+                <div class="badge">Step 3 di 10</div>
+                <h1>Pagamento Sicuro</h1>
+                <p>Scegli il servizio e completa il pagamento. Fattura elettronica automatica.</p>
+            </div>
+
+            <div class="payment-grid">
+                <div class="order-summary">
+                    <h3>📋 Riepilogo Ordine</h3>
+
+                    <div class="service-options" id="service-options">
+                        <div class="service-option selected" data-service="documento" data-price="300">
+                            <input type="radio" name="service" value="documento" checked id="svc-documento">
+                            <div class="service-option-info">
+                                <h4>Documento Completo</h4>
+                                <p>Descrizione + rivendicazioni + abstract</p>
+                            </div>
+                            <div class="service-option-price">€300</div>
+                        </div>
+
+                        <div class="service-option" data-service="bundle" data-price="400">
+                            <input type="radio" name="service" value="bundle" id="svc-bundle">
+                            <div class="service-option-info">
+                                <h4>Bundle Completo ⭐</h4>
+                                <p>Tutto + disegni SVG + ricerca + bandi</p>
+                            </div>
+                            <div class="service-option-price">€400</div>
+                        </div>
+
+                        <div class="service-option" data-service="ricerca" data-price="49">
+                            <input type="radio" name="service" value="ricerca" id="svc-ricerca">
+                            <div class="service-option-info">
+                                <h4>Solo Ricerca</h4>
+                                <p>Anteriorità e fattibilità</p>
+                            </div>
+                            <div class="service-option-price">€49</div>
+                        </div>
+                    </div>
+
+                    <div class="order-total">
+                        <span class="order-total-label">Totale</span>
+                        <span class="order-total-price" id="total-price">€300</span>
+                    </div>
+
+                    <div class="order-note">
+                        💡 Le tasse UIBM (€50-600) non sono incluse e vanno pagate separatamente al momento del deposito.
+                    </div>
+                </div>
+
+                <div class="payment-form">
+                    <h3>💳 Dati di Pagamento</h3>
+
+                    <div class="payment-methods">
+                        <div class="payment-method selected" data-method="card">
+                            <span>💳 Carta</span>
+                        </div>
+                        <div class="payment-method" data-method="paypal">
+                            <span>🅿️ PayPal</span>
+                        </div>
+                        <div class="payment-method" data-method="bank">
+                            <span>🏦 Bonifico</span>
+                        </div>
+                    </div>
+
+                    <div class="billing-form">
+                        <h4>📝 Dati Fatturazione</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bill-nome">Nome</label>
+                                <input type="text" id="bill-nome" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bill-cognome">Cognome</label>
+                                <input type="text" id="bill-cognome" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bill-email">Email (per fattura)</label>
+                            <input type="email" id="bill-email" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bill-cf">Codice Fiscale / P.IVA</label>
+                                <input type="text" id="bill-cf" required placeholder="RSSMRA85T10A562S">
+                            </div>
+                            <div class="form-group">
+                                <label for="bill-pec">PEC (opzionale)</label>
+                                <input type="email" id="bill-pec" placeholder="nome@pec.it">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stripe-element" id="stripe-element">
+                        <p>🔒 Elemento Stripe caricato qui<br><small>(Inserisci numero carta, scadenza, CVC)</small></p>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms-accept" required>
+                        <label for="terms-accept">Accetto i <a href="#">Termini di Servizio</a> e la <a href="#">Privacy Policy</a>. Autorizzo il trattamento dei dati per la fatturazione elettronica ai sensi del DPR 633/72.</label>
+                    </div>
+
+                    <button class="btn btn-primary pay-btn" id="pay-btn" onclick="PagaBot.processPayment()">
+                        Paga €300 — Genera Documento
+                    </button>
+
+                    <div class="secure-note">
+                        <span>🔒</span>
+                        <span>Pagamento sicuro SSL. Dati criptati. Fattura elettronica automatica via Lemon Switch.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="../js/core.js"></script>
+    <script src="../js/pagabot.js"></script>
+</body>
+</html>

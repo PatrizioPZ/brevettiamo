@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pratiche — Admin BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-dashboard">
+    <nav class="admin-nav">
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="#00C853"/>
+                <path d="M8 16h16M16 8v16" stroke="#0f0f1a" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>BrevettIAmo <span style="color: #00C853; font-size: 0.75rem;">ADMIN</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="clienti.html">Clienti</a>
+            <a href="pratiche.html" class="active">Pratiche</a>
+            <a href="alert.html">Alert</a>
+            <a href="#" onclick="AdminAuth.logout()">Esci</a>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div class="admin-card">
+            <h2>📋 Gestione Pratiche</h2>
+            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <input type="text" placeholder="Cerca pratica..." style="flex: 1; padding: 0.75rem; background: var(--admin-bg); border: 1px solid var(--admin-border); border-radius: 8px; color: var(--admin-text);">
+                <select style="padding: 0.75rem; background: var(--admin-bg); border: 1px solid var(--admin-border); border-radius: 8px; color: var(--admin-text);">
+                    <option>Tutti gli stati</option>
+                    <option>Bozza</option>
+                    <option>Pagato</option>
+                    <option>Generato</option>
+                    <option>Firmato</option>
+                    <option>Depositato</option>
+                </select>
+            </div>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Titolo</th>
+                        <th>Tipo</th>
+                        <th>Stato</th>
+                        <th>Importo</th>
+                        <th>Data</th>
+                        <th>Verifica</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#BREV-001</td>
+                        <td>Mario Rossi</td>
+                        <td>Sistema irrigazione</td>
+                        <td>Brevetto</td>
+                        <td><span class="status-pill success">Firmato</span></td>
+                        <td>€300</td>
+                        <td>30/05/2026</td>
+                        <td><span class="status-pill success">85%</span></td>
+                        <td><button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Vedi</button></td>
+                    </tr>
+                    <tr>
+                        <td>#BREV-002</td>
+                        <td>Studio Bianchi</td>
+                        <td>App fitness</td>
+                        <td>Bundle</td>
+                        <td><span class="status-pill info">Pagato</span></td>
+                        <td>€400</td>
+                        <td>29/05/2026</td>
+                        <td><span class="status-pill warning">72%</span></td>
+                        <td><button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Vedi</button></td>
+                    </tr>
+                    <tr>
+                        <td>#BREV-003</td>
+                        <td>Startup XYZ</td>
+                        <td>Logo brand</td>
+                        <td>Marchio</td>
+                        <td><span class="status-pill warning">Bozza</span></td>
+                        <td>€69</td>
+                        <td>28/05/2026</td>
+                        <td><span class="status-pill danger">--</span></td>
+                        <td><button class="btn btn-ghost" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Vedi</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/admin/auth.js"></script>
+</body>
+</html>

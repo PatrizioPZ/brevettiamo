@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area Studio Legale — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .studio-login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2rem;
+        }
+        .studio-login-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 480px;
+            padding: 2.5rem;
+        }
+        .studio-login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .studio-login-header .logo {
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .studio-login-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .studio-login-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .studio-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .plans-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        .plan-mini {
+            text-align: center;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+        .plan-mini:hover {
+            border-color: var(--primary);
+        }
+        .plan-mini h4 {
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .plan-mini .price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .plan-mini .price span {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        .plan-mini .note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
+        }
+        .studio-login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .studio-login-footer a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="studio-login-page">
+        <div class="studio-login-card">
+            <div class="studio-login-header">
+                <a href="../index.html" class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <rect width="32" height="32" rx="8" fill="#003366"/>
+                        <path d="M8 16h16M16 8v16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Brevett<span class="accent">I</span>Amo</span>
+                </a>
+                <div class="studio-badge">Area Studio Legale</div>
+                <h1>Accedi come Studio</h1>
+                <p>Gestisci le pratiche dei tuoi clienti. Primo brevetto omaggio.</p>
+            </div>
+
+            <div class="plans-preview">
+                <div class="plan-mini">
+                    <h4>Basic</h4>
+                    <div class="price">€299<span>/mese</span></div>
+                    <div class="note">1 omaggio</div>
+                </div>
+                <div class="plan-mini">
+                    <h4>Pro</h4>
+                    <div class="price">€499<span>/mese</span></div>
+                    <div class="note">1 bundle</div>
+                </div>
+                <div class="plan-mini">
+                    <h4>Enterprise</h4>
+                    <div class="price">€999<span>/mese</span></div>
+                    <div class="note">3 bundle</div>
+                </div>
+            </div>
+
+            <form id="studio-login-form">
+                <div class="form-group">
+                    <label for="studio-email">Email Studio</label>
+                    <input type="email" id="studio-email" placeholder="studio@esempio.it" required>
+                </div>
+                <div class="form-group">
+                    <label for="studio-password">Password</label>
+                    <input type="password" id="studio-password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <label for="studio-code">Codice Studio (opzionale)</label>
+                    <input type="text" id="studio-code" placeholder="STU-XXXX">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                    Accedi allo Studio
+                </button>
+            </form>
+
+            <div class="studio-login-footer">
+                <p>Non hai un account studio? <a href="mailto:studio@brevettiamo.it">Richiedi abbonamento</a></p>
+                <p style="margin-top: 0.5rem;"><a href="../it/login.html">← Accedi come privato</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/studio/studioauth.js"></script>
+</body>
+</html>

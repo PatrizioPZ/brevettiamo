@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firma Digitale — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .sign-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .sign-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            padding: 2.5rem;
+        }
+        .sign-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .sign-header .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .sign-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .sign-header p {
+            color: var(--text-secondary);
+        }
+        .doc-summary {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .doc-summary h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .doc-summary .detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .doc-summary .detail:last-child {
+            border-bottom: none;
+        }
+        .doc-summary .detail .label {
+            color: var(--text-secondary);
+        }
+        .doc-summary .detail .value {
+            font-weight: 600;
+        }
+        .sign-methods {
+            margin-bottom: 2rem;
+        }
+        .sign-methods h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .sign-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .sign-method:hover {
+            border-color: var(--primary);
+            background: var(--bg-secondary);
+        }
+        .sign-method.selected {
+            border-color: var(--primary);
+            background: rgba(0,51,102,0.05);
+        }
+        .sign-method .method-icon {
+            font-size: 2rem;
+        }
+        .sign-method .method-info {
+            flex: 1;
+        }
+        .sign-method .method-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .sign-method .method-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        .otp-form {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .otp-form.active {
+            display: block;
+        }
+        .otp-display {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .otp-display .code {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 0.5rem;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+        }
+        .otp-display .timer {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+        .spid-button {
+            width: 100%;
+            padding: 1rem;
+            background: #0066CC;
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+        }
+        .spid-button:hover {
+            background: #0052a3;
+        }
+        .spid-button img {
+            height: 24px;
+        }
+        .timestamp-info {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+        }
+        .timestamp-info h4 {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .timestamp-info p {
+            margin-bottom: 0.25rem;
+            color: var(--text-secondary);
+        }
+        .success-sign {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .success-sign.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        .success-sign .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .success-sign h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .success-sign .timestamp {
+            font-family: 'Courier New', monospace;
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            display: inline-block;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .success-sign .hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            word-break: break-all;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sign-page">
+        <div class="sign-card">
+            <div class="sign-header">
+                <div class="badge">Step 8 di 10</div>
+                <h1>Firma Digitale</h1>
+                <p>Scegli il metodo di firma per validare il documento.</p>
+            </div>
+
+            <div class="doc-summary" id="doc-summary">
+                <h3>📄 Documento da Firmare</h3>
+                <div class="detail">
+                    <span class="label">Titolo</span>
+                    <span class="value" id="doc-title">Caricamento...</span>
+                </div>
+                <div class="detail">
+                    <span class="label">Tipo</span>
+                    <span class="value" id="doc-type">Brevetto</span>
+                </div>
+                <div class="detail">
+                    <span class="label">Pagine</span>
+                    <span class="value" id="doc-pages">--</span>
+                </div>
+                <div class="detail">
+                    <span class="label">Hash SHA-256</span>
+                    <span class="value" id="doc-hash" style="font-family: monospace; font-size: 0.8rem;">--</span>
+                </div>
+            </div>
+
+            <div class="sign-methods" id="sign-methods">
+                <h3>🔏 Metodo di Firma</h3>
+
+                <div class="sign-method" data-method="otp-email" onclick="FirmaBot.selectMethod('otp-email')">
+                    <div class="method-icon">📧</div>
+                    <div class="method-info">
+                        <h4>OTP via Email</h4>
+                        <p>Ricevi un codice di 6 cifre sulla tua email</p>
+                    </div>
+                </div>
+
+                <div class="sign-method" data-method="otp-sms" onclick="FirmaBot.selectMethod('otp-sms')">
+                    <div class="method-icon">📱</div>
+                    <div class="method-info">
+                        <h4>OTP via SMS</h4>
+                        <p>Ricevi un codice di 6 cifre via SMS</p>
+                    </div>
+                </div>
+
+                <div class="sign-method" data-method="spid" onclick="FirmaBot.selectMethod('spid')">
+                    <div class="method-icon">🆔</div>
+                    <div class="method-info">
+                        <h4>SPID / CIE / CNS</h4>
+                        <p>Firma con identità digitale italiana (massima sicurezza)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="otp-form" id="otp-form">
+                <div class="otp-display" id="otp-display">
+                    <div class="code" id="otp-code">------</div>
+                    <div class="timer" id="otp-timer">Scade tra: 05:00</div>
+                </div>
+                <div class="form-group">
+                    <label for="otp-input">Inserisci il codice OTP</label>
+                    <input type="text" id="otp-input" maxlength="6" placeholder="123456" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem;">
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="FirmaBot.verifyOTP()">Verifica e Firma</button>
+            </div>
+
+            <div class="spid-form" id="spid-form" style="display: none;">
+                <button class="spid-button" onclick="FirmaBot.redirectSPID()">
+                    <span>🆔</span>
+                    <span>Entra con SPID</span>
+                </button>
+                <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
+                    Verrai reindirizzato al provider SPID scelto per l'autenticazione.
+                </p>
+            </div>
+
+            <div class="timestamp-info" id="timestamp-info" style="display: none;">
+                <h4>🕐 Marca Temporale</h4>
+                <p>Al momento della firma verrà applicata una marca temporale legalmente valida (art. 41 D.Lgs. 82/2005).</p>
+                <p><strong>Data/ora:</strong> <span id="ts-date">--</span></p>
+                <p><strong>Server TSA:</strong> InfoCert / ArubaPEC</p>
+            </div>
+
+            <div class="success-sign" id="success-sign">
+                <div class="icon">✅</div>
+                <h3>Documento Firmato!</h3>
+                <p>Il documento è stato firmato digitalmente con successo.</p>
+                <div class="timestamp" id="success-timestamp">--/--/---- --:--:--</div>
+                <div class="hash" id="success-hash">SHA-256: a1b2c3d4e5f6...</div>
+                <a href="guida.html" class="btn btn-primary btn-large" style="margin-top: 1rem;">
+                    📋 Guida Deposito UIBM →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/firmabot.js"></script>
+</body>
+</html>

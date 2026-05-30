@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Studio — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .studio-dash {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .studio-dash-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .studio-dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .studio-dash-header h1 {
+            font-size: 1.75rem;
+        }
+        .studio-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .studio-info .badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .studio-info .plan {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .kpi-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .kpi-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .kpi-card .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .studio-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        .clients-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+        .clients-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .client-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+        .client-item:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        .client-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .client-info {
+            flex: 1;
+        }
+        .client-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .client-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        .client-info .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .client-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .client-actions .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+        .studio-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .sidebar-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+        .sidebar-card h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .usage-bar {
+            margin-bottom: 1rem;
+        }
+        .usage-bar .label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .usage-bar .bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .usage-bar .fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .billing-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.9rem;
+        }
+        .billing-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .white-label-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .white-label-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .white-label-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        .white-label-card .btn {
+            background: white;
+            color: var(--primary);
+        }
+        @media (max-width: 768px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .studio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="studio-dash">
+        <div class="studio-dash-container">
+            <div class="studio-dash-header">
+                <div>
+                    <h1>🏢 Dashboard Studio</h1>
+                    <p style="color: var(--text-secondary);">Gestione pratiche clienti</p>
+                </div>
+                <div class="studio-info">
+                    <span class="badge" id="studio-plan">Basic</span>
+                    <span class="plan" id="studio-name">Studio Legale Rossi & Associati</span>
+                    <button class="btn btn-ghost" onclick="StudioAuth.logout()">Esci</button>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="icon">👥</div>
+                    <div class="value" id="kpi-clienti">3</div>
+                    <div class="label">Clienti attivi</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon">📋</div>
+                    <div class="value" id="kpi-pratiche">5</div>
+                    <div class="label">Pratiche totali</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon">🎁</div>
+                    <div class="value" id="kpi-omaggi">1</div>
+                    <div class="label">Omaggi rimasti</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="icon">💰</div>
+                    <div class="value" id="kpi-fatturato">€1.200</div>
+                    <div class="label">Fatturato mese</div>
+                </div>
+            </div>
+
+            <div class="studio-grid">
+                <div class="clients-section">
+                    <h2>
+                        Clienti
+                        <a href="#" class="btn btn-outline" onclick="StudioCore.addClient()">+ Nuovo</a>
+                    </h2>
+
+                    <div id="clients-list">
+                        <div class="client-item">
+                            <div class="client-avatar">MR</div>
+                            <div class="client-info">
+                                <h3>Mario Rossi</h3>
+                                <p>Sistema di irrigazione • Brevetto</p>
+                                <span class="status-badge" style="background: rgba(0,200,83,0.1); color: var(--accent);">Firmato</span>
+                            </div>
+                            <div class="client-actions">
+                                <a href="../it/documento.html" class="btn btn-outline">📄</a>
+                                <a href="../it/dashboard.html" class="btn btn-primary">Dashboard →</a>
+                            </div>
+                        </div>
+                        <div class="client-item">
+                            <div class="client-avatar">LB</div>
+                            <div class="client-info">
+                                <h3>Luca Bianchi</h3>
+                                <p>App fitness • Marchio</p>
+                                <span class="status-badge" style="background: var(--bg-tertiary); color: var(--text-muted);">Bozza</span>
+                            </div>
+                            <div class="client-actions">
+                                <a href="../it/chat.html" class="btn btn-outline">💬</a>
+                                <a href="../it/pagamento.html" class="btn btn-primary">Paga →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="studio-sidebar">
+                    <div class="sidebar-card">
+                        <h3>📊 Utilizzo Piano</h3>
+                        <div class="usage-bar">
+                            <div class="label">
+                                <span>Omaggi usati</span>
+                                <span id="usage-omaggi">0/1</span>
+                            </div>
+                            <div class="bar">
+                                <div class="fill" id="fill-omaggi" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="usage-bar">
+                            <div class="label">
+                                <span>Pratiche a pagamento</span>
+                                <span id="usage-pratiche">2/∞</span>
+                            </div>
+                            <div class="bar">
+                                <div class="fill" id="fill-pratiche" style="width: 10%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3>💳 Fatturazione</h3>
+                        <div class="billing-item">
+                            <span>Abbonamento Basic</span>
+                            <span>€299</span>
+                        </div>
+                        <div class="billing-item">
+                            <span>Pratiche extra (2x €150)</span>
+                            <span>€300</span>
+                        </div>
+                        <div class="billing-item">
+                            <span>Totale mese</span>
+                            <span>€599</span>
+                        </div>
+                    </div>
+
+                    <div class="white-label-card">
+                        <h3>🏷️ White Label</h3>
+                        <p>Personalizza BrevettIAmo con il tuo brand per i clienti.</p>
+                        <button class="btn" onclick="StudioCore.requestWhiteLabel()">Attiva White Label</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/studio/studioauth.js"></script>
+    <script src="../js/studio/studiocore.js"></script>
+</body>
+</html>

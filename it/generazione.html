@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generazione Documento — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .gen-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .gen-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .gen-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .gen-header .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .gen-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .gen-header p {
+            color: var(--text-secondary);
+        }
+        .gen-status {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .gen-status .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .gen-status h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .gen-status p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .progress-gen {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .progress-gen .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .progress-gen .step-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .progress-gen .step.active .step-dot {
+            background: var(--primary);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        .progress-gen .step.completed .step-dot {
+            background: var(--accent);
+            color: white;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0,51,102,0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(0,51,102,0); }
+        }
+        .progress-gen .step-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .progress-gen .step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .progress-bar-gen {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .progress-bar-gen .fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        .document-preview {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .document-preview h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .doc-section {
+            margin-bottom: 1.5rem;
+        }
+        .doc-section h4 {
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+        .doc-section .content {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);
+            min-height: 60px;
+        }
+        .doc-section .content.placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .doc-section .content.generating {
+            animation: shimmer 2s infinite;
+            background: linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-tertiary) 50%, var(--bg-secondary) 75%);
+            background-size: 200% 100%;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .kimi-prompt {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+        .kimi-prompt .prompt-label {
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            font-family: var(--font);
+        }
+        .kimi-prompt .prompt-text {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .action-buttons .btn {
+            padding: 1rem 2rem;
+        }
+        .timer {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="gen-page">
+        <div class="gen-container">
+            <div class="gen-header">
+                <div class="badge">Step 4 di 10</div>
+                <h1>Generazione Documento AI</h1>
+                <p>Kimi sta elaborando la tua pratica. Tempo stimato: 24 ore.</p>
+            </div>
+
+            <div class="gen-status" id="gen-status">
+                <div class="status-icon" id="status-icon">🤖</div>
+                <h3 id="status-title">Generazione in corso...</h3>
+                <p id="status-desc">Kimi sta analizzando le risposte e preparando il documento brevettuale.</p>
+
+                <div class="progress-bar-gen">
+                    <div class="fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+
+                <div class="progress-gen">
+                    <div class="step active" id="step-1">
+                        <div class="step-dot">1</div>
+                        <span class="step-label">Analisi</span>
+                    </div>
+                    <div class="step" id="step-2">
+                        <div class="step-dot">2</div>
+                        <span class="step-label">Descrizione</span>
+                    </div>
+                    <div class="step" id="step-3">
+                        <div class="step-dot">3</div>
+                        <span class="step-label">Rivendicazioni</span>
+                    </div>
+                    <div class="step" id="step-4">
+                        <div class="step-dot">4</div>
+                        <span class="step-label">Abstract</span>
+                    </div>
+                    <div class="step" id="step-5">
+                        <div class="step-dot">5</div>
+                        <span class="step-label">Figure</span>
+                    </div>
+                </div>
+
+                <div class="timer">
+                    <span>⏱️</span>
+                    <span id="timer-text">Tempo trascorso: 0:00</span>
+                </div>
+            </div>
+
+            <div class="kimi-prompt" id="kimi-prompt">
+                <div class="prompt-label">🧠 Prompt inviato a Kimi</div>
+                <div class="prompt-text" id="prompt-text">Caricamento prompt...</div>
+            </div>
+
+            <div class="document-preview" id="document-preview">
+                <h3>📄 Anteprima Documento (in aggiornamento)</h3>
+
+                <div class="doc-section">
+                    <h4>Titolo</h4>
+                    <div class="content placeholder" id="doc-titolo">In attesa di generazione...</div>
+                </div>
+
+                <div class="doc-section">
+                    <h4>Descrizione Tecnica</h4>
+                    <div class="content placeholder generating" id="doc-descrizione">Kimi sta scrivendo la descrizione tecnica dettagliata...</div>
+                </div>
+
+                <div class="doc-section">
+                    <h4>Rivendicazioni</h4>
+                    <div class="content placeholder" id="doc-rivendicazioni">In attesa di generazione...</div>
+                </div>
+
+                <div class="doc-section">
+                    <h4>Abstract</h4>
+                    <div class="content placeholder" id="doc-abstract">In attesa di generazione...</div>
+                </div>
+            </div>
+
+            <div class="action-buttons" id="action-buttons" style="display: none;">
+                <a href="verifica.html" class="btn btn-primary">
+                    ✅ Verifica Documento
+                    <span class="btn-note">8 controlli automatici</span>
+                </a>
+                <a href="dashboard.html" class="btn btn-outline">
+                    📊 Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/generabot.js"></script>
+</body>
+</html>

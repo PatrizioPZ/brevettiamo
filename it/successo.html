@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Completato — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .success-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg) 100%);
+            padding: 2rem;
+        }
+        .success-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            padding: 3rem;
+            text-align: center;
+        }
+        .success-animation {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+        .success-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease;
+        }
+        .success-circle span {
+            font-size: 3rem;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .success-card h1 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+        .success-card .lead {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .order-details {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .order-details h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.95rem;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .invoice-info {
+            background: rgba(0,200,83,0.1);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .invoice-info h4 {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .invoice-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        .next-steps {
+            margin-bottom: 2rem;
+        }
+        .next-steps h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .step-list {
+            list-style: none;
+            text-align: left;
+        }
+        .step-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            font-size: 0.95rem;
+        }
+        .step-list li .icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .step-list li.completed .icon {
+            background: var(--accent);
+        }
+        .success-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .success-actions .btn {
+            justify-content: center;
+        }
+        .back-home {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .back-home a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-page">
+        <div class="success-card">
+            <div class="success-animation">
+                <div class="success-circle">
+                    <span>✓</span>
+                </div>
+            </div>
+
+            <h1>Pagamento Completato!</h1>
+            <p class="lead">Grazie per aver scelto BrevettIAmo. La tua pratica è stata avviata con successo.</p>
+
+            <div class="order-details">
+                <h3>📋 Riepilogo Transazione</h3>
+                <div class="detail-row">
+                    <span>Servizio</span>
+                    <span id="svc-name">Documento Completo</span>
+                </div>
+                <div class="detail-row">
+                    <span>Importo</span>
+                    <span id="svc-price">€300</span>
+                </div>
+                <div class="detail-row">
+                    <span>ID Transazione</span>
+                    <span id="txn-id">#BREV-2026-XXXX</span>
+                </div>
+                <div class="detail-row">
+                    <span>Data</span>
+                    <span id="txn-date">--/--/----</span>
+                </div>
+                <div class="detail-row">
+                    <span>Totale Pagato</span>
+                    <span id="total-paid">€300</span>
+                </div>
+            </div>
+
+            <div class="invoice-info">
+                <h4>🧾 Fattura Elettronica</h4>
+                <p>La fattura è stata generata automaticamente e inviata via Lemon Switch. Riceverai una notifica all'email fornita. Se sei una PA, la fattura è stata inviata allo SDI.</p>
+            </div>
+
+            <div class="next-steps">
+                <h3>⚡ Prossimi Passi</h3>
+                <ul class="step-list">
+                    <li class="completed">
+                        <span class="icon">✓</span>
+                        <span>NDA firmato e idea protetta</span>
+                    </li>
+                    <li class="completed">
+                        <span class="icon">✓</span>
+                        <span>Chat di valutazione completata</span>
+                    </li>
+                    <li class="completed">
+                        <span class="icon">✓</span>
+                        <span>Pagamento confermato</span>
+                    </li>
+                    <li>
+                        <span class="icon">4</span>
+                        <span>Generazione documento con AI (24h)</span>
+                    </li>
+                    <li>
+                        <span class="icon">5</span>
+                        <span>Verifica e firma digitale</span>
+                    </li>
+                    <li>
+                        <span class="icon">6</span>
+                        <span>Deposito UIBM</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="success-actions">
+                <a href="generazione.html" class="btn btn-primary btn-large">
+                    🚀 Inizia Generazione Documento
+                    <span class="btn-note">Kimi AI elaborerà la tua pratica</span>
+                </a>
+                <a href="dashboard.html" class="btn btn-outline">
+                    📊 Vai alla Dashboard
+                </a>
+            </div>
+
+            <div class="back-home">
+                <a href="../index.html">← Torna alla home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script>
+        // Carica dati pagamento
+        document.addEventListener('DOMContentLoaded', () => {
+            const service = Storage.get('payment_service') || 'documento';
+            const services = {
+                documento: { name: 'Documento Completo', price: 300 },
+                bundle: { name: 'Bundle Completo', price: 400 },
+                ricerca: { name: 'Solo Ricerca', price: 49 }
+            };
+
+            const svc = services[service] || services.documento;
+            document.getElementById('svc-name').textContent = svc.name;
+            document.getElementById('svc-price').textContent = `€${svc.price}`;
+            document.getElementById('total-paid').textContent = `€${svc.price}`;
+            document.getElementById('txn-date').textContent = Utils.formatDate(new Date(), 'DD/MM/YYYY HH:mm');
+            document.getElementById('txn-id').textContent = '#BREV-' + Date.now().toString(36).toUpperCase();
+        });
+    </script>
+</body>
+</html>

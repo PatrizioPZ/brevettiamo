@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Valutazione — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .chat-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .chat-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .chat-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .chat-header .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .chat-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .chat-header p {
+            color: var(--text-secondary);
+        }
+        .chat-messages {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            min-height: 400px;
+            margin-bottom: 1.5rem;
+        }
+        .message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+        .message.bot {
+            flex-direction: row;
+        }
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .message.bot .message-avatar {
+            background: var(--primary);
+        }
+        .message.user .message-avatar {
+            background: var(--accent);
+        }
+        .message-content {
+            max-width: 80%;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .message.bot .message-content {
+            background: var(--bg-secondary);
+            color: var(--text);
+            border-bottom-left-radius: 4px;
+        }
+        .message.user .message-content {
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 1rem 1.25rem;
+        }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        .chat-input-area {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+        .chat-input {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: var(--font);
+            transition: var(--transition);
+        }
+        .chat-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .chat-input button {
+            padding: 0.875rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-input button:hover {
+            background: var(--primary-light);
+        }
+        .chat-input button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .quick-reply {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+        .quick-reply:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .classification-result {
+            display: none;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        .classification-result.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        .class-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .class-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .class-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .class-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+        .class-price-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .progress-chat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .progress-chat .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+        .progress-chat .step-dot.active {
+            background: var(--primary);
+        }
+        .progress-chat .step-dot.completed {
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-page">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="badge">Step 2 di 10</div>
+                <h1>Chat di Valutazione</h1>
+                <p>5 domande per classificare la tua idea e preparare il documento.</p>
+            </div>
+
+            <div class="progress-chat">
+                <span>Progresso:</span>
+                <div class="step-dot completed"></div>
+                <div class="step-dot active"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+                <div class="step-dot"></div>
+                <span id="progress-text">Domanda 1 di 5</span>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be injected here -->
+            </div>
+
+            <div class="chat-input-area" id="input-area">
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Scrivi la tua risposta..." autocomplete="off">
+                    <button id="send-btn" onclick="ChatBot.sendMessage()">Invia</button>
+                </div>
+                <div class="quick-replies" id="quick-replies"></div>
+            </div>
+
+            <div class="classification-result" id="classification-result">
+                <div class="class-icon" id="class-icon">🔍</div>
+                <div class="class-title" id="class-title">Classificazione</div>
+                <div class="class-description" id="class-description"></div>
+                <div class="class-price" id="class-price"></div>
+                <div class="class-price-note" id="class-price-note"></div>
+                <a href="pagamento.html" class="btn btn-primary btn-large" id="class-cta">
+                    Procedi al Pagamento →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/chatbot.js"></script>
+</body>
+</html>

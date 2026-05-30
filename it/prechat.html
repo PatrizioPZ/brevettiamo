@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Verifica Brevettabilità — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .prechat-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .prechat-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            padding: 2.5rem;
+        }
+        .prechat-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .prechat-header .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .prechat-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .prechat-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        .progress-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+        .progress-step.active {
+            background: var(--primary);
+        }
+        .progress-step.completed {
+            background: var(--accent);
+        }
+        .question-container {
+            display: none;
+        }
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .answer-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            font-family: var(--font);
+            font-size: 1rem;
+        }
+        .answer-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-secondary);
+        }
+        .answer-btn.selected {
+            border-color: var(--primary);
+            background: rgba(0,51,102,0.05);
+        }
+        .answer-btn .icon {
+            font-size: 1.5rem;
+        }
+        .answer-btn .text {
+            flex: 1;
+        }
+        .answer-btn .sub {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+        .result-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .result-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .result-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .result-actions .btn {
+            justify-content: center;
+        }
+        .result-details {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+        .result-details h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .result-details ul {
+            list-style: none;
+        }
+        .result-details li {
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .result-details li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .disclaimer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="prechat-page">
+        <div class="prechat-card">
+            <a href="../index.html" class="back-link">← Torna alla home</a>
+
+            <div class="prechat-header">
+                <div class="badge">Gratis — Nessuna registrazione</div>
+                <h1>La tua idea è brevettabile?</h1>
+                <p>3 domande rapide. 2 minuti. Risultato immediato.</p>
+            </div>
+
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress-step active"></div>
+                <div class="progress-step"></div>
+                <div class="progress-step"></div>
+            </div>
+
+            <!-- Domanda 1 -->
+            <div class="question-container active" data-step="1">
+                <div class="question-label">Domanda 1 di 3</div>
+                <div class="question-text">La tua idea è <strong>nuova</strong>? Non esiste già qualcosa di identico o molto simile sul mercato o in letteratura tecnica?</div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-value="si" data-score="10">
+                        <span class="icon">✅</span>
+                        <span class="text">
+                            Sì, credo sia nuova
+                            <span class="sub">Non ho trovato nulla di simile</span>
+                        </span>
+                    </button>
+                    <button class="answer-btn" data-value="forse" data-score="5">
+                        <span class="icon">🤔</span>
+                        <span class="text">
+                            Non ne sono sicuro
+                            <span class="sub">Ho visto qualcosa di simile, ma diverso</span>
+                        </span>
+                    </button>
+                    <button class="answer-btn" data-value="no" data-score="0">
+                        <span class="icon">❌</span>
+                        <span class="text">
+                            No, esiste già
+                            <span class="sub">Ho trovato prodotti simili in vendita</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Domanda 2 -->
+            <div class="question-container" data-step="2">
+                <div class="question-label">Domanda 2 di 3</div>
+                <div class="question-text">La tua idea ha un'<strong>applicazione industriale</strong>? Può essere prodotta, usata o commercializzata in un settore tecnico?</div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-value="si" data-score="10">
+                        <span class="icon">🏭</span>
+                        <span class="text">
+                            Sì, è industriale
+                            <span class="sub">Può essere prodotta o utilizzata in un settore</span>
+                        </span>
+                    </button>
+                    <button class="answer-btn" data-value="forse" data-score="5">
+                        <span class="icon">🤔</span>
+                        <span class="text">
+                            Forse, ma è un'idea astratta
+                            <span class="sub">È un concetto, non so come realizzarlo</span>
+                        </span>
+                    </button>
+                    <button class="answer-btn" data-value="no" data-score="0">
+                        <span class="icon">🎨</span>
+                        <span class="text">
+                            No, è puramente artistica/estetica
+                            <span class="sub">È un design, un logo, un nome</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Domanda 3 -->
+            <div class="question-container" data-step="3">
+                <div class="question-label">Domanda 3 di 3</div>
+                <div class="question-text">Hai già <strong>divulgato pubblicamente</strong> la tua idea (sito web, social, fiere, pubblicazioni) prima di oggi?</div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-value="no" data-score="10">
+                        <span class="icon">🔒</span>
+                        <span class="text">
+                            No, è rimasta segreta
+                            <span class="sub">Non l'ho mai mostrata o descritta pubblicamente</span>
+                        </span>
+                    </button>
+                    <button class="answer-btn" data-value="forse" data-score="3">
+                        <span class="icon">🤔</span>
+                        <span class="text">
+                            Forse, in modo limitato
+                            <span class="sub">Ho parlato con qualcuno, ma senza dettagli</span>
+                        </span>
+                    </button>
+                    <button class="answer-btn" data-value="si" data-score="0">
+                        <span class="icon">📢</span>
+                        <span class="text">
+                            Sì, l'ho resa pubblica
+                            <span class="sub">Ho pubblicato online o presentato in pubblico</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Risultato -->
+            <div class="result-container" id="result">
+                <div class="result-icon" id="result-icon">🎯</div>
+                <div class="result-title" id="result-title">Risultato</div>
+                <div class="result-description" id="result-description"></div>
+
+                <div class="result-details" id="result-details"></div>
+
+                <div class="result-actions">
+                    <a href="login.html" class="btn btn-primary btn-large">
+                        🚀 Procedi con BrevettIAmo
+                        <span class="btn-note">Accedi e inizia il processo completo</span>
+                    </a>
+                    <a href="../index.html#prezzi" class="btn btn-outline">
+                        📋 Vedi i prezzi
+                    </a>
+                </div>
+            </div>
+
+            <div class="nav-buttons" id="nav-buttons">
+                <button class="btn btn-ghost" id="prev-btn" style="visibility: hidden;">← Indietro</button>
+                <button class="btn btn-primary" id="next-btn" disabled>Avanti →</button>
+            </div>
+
+            <div class="disclaimer">
+                ⚠️ Questa pre-verifica è indicativa e non sostituisce una consulenza brevettuale professionale. 
+                Il risultato si basa sulle risposte fornite e non costituisce parere legale.
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/preverificabot.js"></script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento Finale — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .doc-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .doc-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .doc-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .doc-header .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .doc-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .doc-header p {
+            color: var(--text-secondary);
+        }
+        .doc-preview {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .doc-preview h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .pdf-viewer {
+            width: 100%;
+            height: 500px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .pdf-viewer .pdf-content {
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            overflow-y: auto;
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+        .pdf-viewer .pdf-content h1 {
+            font-size: 16pt;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: 'Times New Roman', serif;
+        }
+        .pdf-viewer .pdf-content h2 {
+            font-size: 14pt;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-family: 'Times New Roman', serif;
+        }
+        .pdf-viewer .pdf-content p {
+            text-align: justify;
+            margin-bottom: 0.75rem;
+            text-indent: 1.5rem;
+        }
+        .pdf-viewer .pdf-content .abstract {
+            font-style: italic;
+            border-left: 3px solid var(--primary);
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            text-indent: 0;
+        }
+        .pdf-viewer .pdf-content .claims {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .pdf-viewer .pdf-content .claims ol {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        .pdf-viewer .pdf-content .claims li {
+            margin-bottom: 0.5rem;
+        }
+        .pdf-viewer .placeholder {
+            color: var(--text-muted);
+            font-family: var(--font);
+            font-size: 1rem;
+        }
+        .doc-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .meta-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1rem;
+            text-align: center;
+        }
+        .meta-item .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        .meta-item .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .doc-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .doc-actions .btn {
+            padding: 1rem 2rem;
+        }
+        .assembly-status {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .assembly-status .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .assembly-status h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .assembly-status p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .assembly-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        .assembly-progress .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .assembly-progress .step-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+        .assembly-progress .step.active .step-dot {
+            background: var(--primary);
+            color: white;
+        }
+        .assembly-progress .step.completed .step-dot {
+            background: var(--accent);
+            color: white;
+        }
+        .zip-contents {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .zip-contents h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        .zip-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .zip-item:last-child {
+            border-bottom: none;
+        }
+        .zip-icon {
+            font-size: 1.5rem;
+        }
+        .zip-info {
+            flex: 1;
+        }
+        .zip-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        .zip-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+        .zip-size {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="doc-page">
+        <div class="doc-container">
+            <div class="doc-header">
+                <div class="badge">Step 7 di 10</div>
+                <h1>Documento Finale</h1>
+                <p>Assembla il PDF/A, aggiungi figure, genera il ZIP pronto per UIBM.</p>
+            </div>
+
+            <div class="assembly-status" id="assembly-status">
+                <div class="status-icon" id="assembly-icon">📦</div>
+                <h3 id="assembly-title">Assemblaggio in corso...</h3>
+                <p id="assembly-desc">Stiamo assemblando il documento PDF/A con figure e metadati.</p>
+
+                <div class="assembly-progress">
+                    <div class="step active" id="asm-step-1">
+                        <div class="step-dot">1</div>
+                    </div>
+                    <div class="step" id="asm-step-2">
+                        <div class="step-dot">2</div>
+                    </div>
+                    <div class="step" id="asm-step-3">
+                        <div class="step-dot">3</div>
+                    </div>
+                    <div class="step" id="asm-step-4">
+                        <div class="step-dot">4</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-preview" id="doc-preview" style="display: none;">
+                <h3>📄 Anteprima PDF/A</h3>
+
+                <div class="doc-meta">
+                    <div class="meta-item">
+                        <div class="label">Pagine</div>
+                        <div class="value" id="meta-pages">12</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="label">Formato</div>
+                        <div class="value">PDF/A-1a</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="label">Dimensione</div>
+                        <div class="value" id="meta-size">1.2 MB</div>
+                    </div>
+                </div>
+
+                <div class="pdf-viewer" id="pdf-viewer">
+                    <div class="pdf-content" id="pdf-content">
+                        <h1 id="pdf-title">Titolo del Brevetto</h1>
+                        <div class="abstract" id="pdf-abstract">
+                            Abstract in caricamento...
+                        </div>
+                        <h2>Descrizione Tecnica</h2>
+                        <p id="pdf-descrizione">Descrizione in caricamento...</p>
+                        <h2>Rivendicazioni</h2>
+                        <div class="claims" id="pdf-rivendicazioni">
+                            Rivendicazioni in caricamento...
+                        </div>
+                        <h2>Figure</h2>
+                        <p id="pdf-figure">Riferimenti alle figure in caricamento...</p>
+                    </div>
+                </div>
+
+                <div class="doc-actions">
+                    <button class="btn btn-primary" onclick="DocumentoBot.downloadPDF()">
+                        ⬇️ Scarica PDF/A
+                    </button>
+                    <button class="btn btn-outline" onclick="DocumentoBot.downloadZIP()">
+                        📦 Scarica ZIP Completo
+                    </button>
+                    <a href="firma.html" class="btn btn-accent" style="background: var(--accent); color: white;">
+                        ✍️ Procedi alla Firma →
+                    </a>
+                </div>
+            </div>
+
+            <div class="zip-contents" id="zip-contents" style="display: none;">
+                <h3>📦 Contenuto ZIP</h3>
+                <div class="zip-item">
+                    <div class="zip-icon">📄</div>
+                    <div class="zip-info">
+                        <h4>documento_brevetto.pdf</h4>
+                        <p>PDF/A-1a conforme UIBM</p>
+                    </div>
+                    <div class="zip-size">850 KB</div>
+                </div>
+                <div class="zip-item">
+                    <div class="zip-icon">🖼️</div>
+                    <div class="zip-info">
+                        <h4>figure/</h4>
+                        <p>SVG figure tecniche + didascalie</p>
+                    </div>
+                    <div class="zip-size">120 KB</div>
+                </div>
+                <div class="zip-item">
+                    <div class="zip-icon">📝</div>
+                    <div class="zip-info">
+                        <h4>dati_pratica.json</h4>
+                        <p>Metadati pratica per UIBM</p>
+                    </div>
+                    <div class="zip-size">5 KB</div>
+                </div>
+                <div class="zip-item">
+                    <div class="zip-icon">📋</div>
+                    <div class="zip-info">
+                        <h4>checklist_deposito.txt</h4>
+                        <p>Checklist 8 step UIBM</p>
+                    </div>
+                    <div class="zip-size">2 KB</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/documentobot.js"></script>
+</body>
+</html>

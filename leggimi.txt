@@ -1,0 +1,220 @@
+================================================================================
+BREVETTIAMO — Piattaforma Brevetti AI
+Versione 1.0.0 | 2026
+================================================================================
+
+📁 STRUTTURA FILE
+-----------------
+brevettiamo/
+├── index.html              # Landing page pubblica
+├── css/
+│   ├── main.css            # Design system (mobile-first, A4-friendly)
+│   └── admin.css           # Dark theme admin
+├── js/
+│   ├── core.js             # Supabase client, utilities, logging
+│   ├── auth.js             # Auth utente (magic link, OTP, Google)
+│   ├── preverificabot.js   # Pre-verifica brevettabilità gratis
+│   ├── ndabot.js           # NDA digitale + GDPR
+│   ├── chatbot.js          # 5 domande + classifica
+│   ├── pagabot.js          # Stripe + Lemon Switch
+│   ├── generabot.js        # Generazione documento Kimi
+│   ├── verificabot.js      # 8 controlli automatici
+│   ├── disegnabot.js       # SVG figure + upload
+│   ├── documentobot.js     # Assembla PDF/A + ZIP
+│   ├── firmabot.js         # Firma OTP/SPID + marca tempo
+│   ├── successbot.js       # Dashboard, scadenze, alert
+│   ├── bandibot.js         # Match bandi ottimale
+│   ├── bandocheckbot.js    # Checklist documenti bando
+│   ├── admin/
+│   │   ├── auth.js         # Auth admin (2FA)
+│   │   ├── admincore.js    # KPI, report
+│   │   ├── alertbot.js     # Allarmi rischi
+│   │   └── commercialistabot.js  # Pacchetto "solo firma"
+│   └── studio/
+│       ├── studioauth.js   # Auth studi legali
+│       └── studiocore.js   # Dashboard multi-cliente
+├── it/
+│   ├── prechat.html        # Pre-verifica gratis
+│   ├── login.html          # Login utente
+│   ├── nda.html            # NDA gate
+│   ├── chat.html           # 5 domande
+│   ├── pagamento.html      # Checkout Stripe
+│   ├── successo.html       # Conferma pagamento
+│   ├── cancel.html         # Annullamento
+│   ├── generazione.html    # Generazione AI
+│   ├── verifica.html       # 8 controlli
+│   ├── disegni.html        # Disegni SVG
+│   ├── documento.html      # Documento finale
+│   ├── firma.html          # Firma digitale
+│   ├── guida.html          # 8 step UIBM
+│   ├── dashboard.html      # Area cliente
+│   ├── bandi.html          # Elenco bandi
+│   └── bando-detail.html   # Dettaglio bando
+├── studio/
+│   ├── login.html          # Login studi legali
+│   └── dashboard.html      # Dashboard studio
+├── admin/
+│   ├── index.html          # Login admin
+│   ├── dashboard.html      # Panel admin
+│   ├── clienti.html        # Gestione clienti
+│   ├── pratiche.html       # Gestione pratiche
+│   └── alert.html          # Centrale allarmi
+└── assets/
+    └── logo.svg            # Logo BrevettIAmo
+
+================================================================================
+🔧 SETUP (Prima di tutto)
+================================================================================
+
+1. ACCOUNT GITHUB
+   - Crea account su https://github.com
+   - Crea repository pubblico: brevettiamo
+   - Upload tutti i file via drag & drop
+   - Attiva GitHub Pages: Settings > Pages > Source: main branch
+
+2. ACCOUNT SUPABASE (Database)
+   - Vai su https://supabase.com
+   - Crea nuovo progetto
+   - Esegui SQL Editor con le query qui sotto
+   - Copia URL progetto e anon key
+   - Incolla in js/core.js: CONFIG.SUPABASE_URL e CONFIG.SUPABASE_ANON_KEY
+
+3. ACCOUNT STRIPE (Pagamenti)
+   - Vai su https://stripe.com
+   - Crea account business
+   - Attiva modalità TEST inizialmente
+   - Copia Publishable key
+   - Incolla in js/core.js: CONFIG.STRIPE_PUBLIC_KEY
+   - Per produzione: crea endpoint backend (Supabase Edge Function)
+
+4. ACCOUNT LEMON SWITCH (Fatturazione)
+   - Vai su https://lemonswitch.com (o equivalente)
+   - Collega account Stripe
+   - Configura profilo fiscale (SDI, PEC, regime)
+   - Copia API key
+   - Incolla in js/core.js: CONFIG.LEMON_SWITCH_KEY
+
+5. PARTITA IVA
+   - Apri Partita IVA per "attività di servizi informatici"
+   - Regime forfettario se fatturato < €85.000/anno
+   - Dopo primo pagamento reale: attiva Lemon Switch LIVE
+
+6. DOMINIO (Opzionale, quando pronto)
+   - Acquista brevettiamo.it (€10-15/anno)
+   - Configura DNS su GitHub Pages
+   - Attiva HTTPS automatico
+
+================================================================================
+🗄️ SCHEMA DATABASE SUPABASE
+================================================================================
+
+-- Tabella: utenti
+CREATE TABLE utenti (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT UNIQUE NOT NULL,
+    nome TEXT,
+    cognome TEXT,
+    telefono TEXT,
+    nda_firmato BOOLEAN DEFAULT FALSE,
+    nda_data TIMESTAMP,
+    nda_ip TEXT,
+    paese TEXT DEFAULT 'IT',
+    auth_id UUID REFERENCES auth.users(id),
+    creato TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabella: pratiche
+CREATE TABLE pratiche (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    utente_id UUID REFERENCES utenti(id),
+    tipo TEXT CHECK (tipo IN ('brevetto', 'modello', 'marchio', 'disegno')),
+    titolo TEXT,
+    stato TEXT DEFAULT 'bozza',
+    risposte JSONB,
+    risultato_ricerca TEXT,
+    documento_url TEXT,
+    data_deposito TIMESTAMP,
+    numero_pratica TEXT,
+    scadenza_12mesi TIMESTAMP,
+    creato TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabella: pagamenti
+CREATE TABLE pagamenti (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pratica_id UUID REFERENCES pratiche(id),
+    tipo TEXT,
+    importo DECIMAL(10,2),
+    stripe_session_id TEXT,
+    lemon_switch_id TEXT,
+    stato TEXT DEFAULT 'pending',
+    creato TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabella: figure
+CREATE TABLE figure (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pratica_id UUID REFERENCES pratiche(id),
+    numero INTEGER,
+    tipo TEXT,
+    contenuto TEXT,
+    didascalia TEXT,
+    creato TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabella: scadenze
+CREATE TABLE scadenze (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pratica_id UUID REFERENCES pratiche(id),
+    tipo TEXT,
+    data TIMESTAMP,
+    alert_inviato BOOLEAN DEFAULT FALSE,
+    creato TIMESTAMP DEFAULT NOW()
+);
+
+================================================================================
+💰 PREZZI
+================================================================================
+
+PRIVATI:
+- Pre-verifica: GRATIS
+- Ricerca anteriorità: €49
+- Documento completo: €300
+- Bundle completo: €400 (documento + disegni + ricerca + bandi)
+
+STUDI LEGALI:
+- Basic: €299/mese (1 omaggio, poi €150/pratica)
+- Pro: €499/mese (1 bundle omaggio, poi €100/pratica)
+- Enterprise: €999/mese (3 bundle, API access, white-label)
+
+UPGRADE UMANO:
+- Chat operatore: +€100
+- Video call 30min: +€200
+- Assistenza completa: custom
+
+ASSISTENZA BANDO:
+- Pacchetto "Solo Firma": €199
+
+================================================================================
+🚀 DEPLOY
+================================================================================
+
+1. Upload file su GitHub
+2. Attiva GitHub Pages
+3. Configura custom domain (opzionale)
+4. Testa in modalità TEST Stripe
+5. Verifica Supabase funzionante
+6. Lancia!
+
+================================================================================
+📞 SUPPORTO
+================================================================================
+
+Email: support@brevettiamo.it
+Admin: admin@brevettiamo.it
+Studio: studio@brevettiamo.it
+
+================================================================================
+© 2026 BrevettIAmo. Tutti i diritti riservati.
+Made with 🤖 in Italy
+================================================================================

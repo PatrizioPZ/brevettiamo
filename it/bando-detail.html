@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettaglio Bando — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .detail-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .detail-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .detail-header {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .detail-header .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .detail-header .back-link:hover {
+            color: var(--primary);
+        }
+        .detail-header .status-badge {
+            display: inline-block;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .status-badge.aperto {
+            background: var(--accent);
+            color: white;
+        }
+        .detail-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .detail-header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        .detail-main {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .detail-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+        .detail-card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.95rem;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-row .label {
+            color: var(--text-secondary);
+        }
+        .info-row .value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .info-row .value.highlight {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        .checklist {
+            list-style: none;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        .checklist-item input {
+            margin-top: 0.25rem;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+        }
+        .checklist-item label {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+        .checklist-item .badge-required {
+            display: inline-block;
+            background: var(--danger);
+            color: white;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+        .checklist-progress {
+            margin-bottom: 1.5rem;
+        }
+        .checklist-progress .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .checklist-progress .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        .checklist-progress .progress-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            text-align: right;
+        }
+        .detail-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .sidebar-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+        .sidebar-card h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .sidebar-card .amount-big {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-card .amount-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .sidebar-card .countdown {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 1rem;
+            text-align: center;
+        }
+        .sidebar-card .countdown .number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .sidebar-card .countdown .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .requisiti-list {
+            list-style: none;
+        }
+        .requisiti-list li {
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .requisiti-list li::before {
+            content: '✓';
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .cta-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+        }
+        .cta-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .cta-card p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .cta-card .btn {
+            background: white;
+            color: var(--primary);
+        }
+        @media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-page">
+        <div class="detail-container">
+            <div class="detail-header">
+                <a href="bandi.html" class="back-link">← Torna ai bandi</a>
+                <div class="status-badge aperto" id="bando-status">Aperto</div>
+                <h1 id="bando-name">Voucher 3I</h1>
+                <p class="subtitle" id="bando-subtitle">Voucher per l'Innovazione, l'Industrializzazione e l'Internazionalizzazione</p>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-main">
+                    <div class="detail-card">
+                        <h2>📋 Informazioni Bando</h2>
+                        <div class="info-row">
+                            <span class="label">Importo</span>
+                            <span class="value highlight" id="info-importo">€1.000 - €4.000</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Copertura</span>
+                            <span class="value" id="info-copertura">100% fondo perduto</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Ente gestore</span>
+                            <span class="value" id="info-ente">Invitalia / Unioncamere</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Destinatari</span>
+                            <span class="value" id="info-target">Micro e piccole imprese</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Tipologie coperte</span>
+                            <span class="value" id="info-tipi">Brevetti, marchi, disegni, modelli</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Scadenza</span>
+                            <span class="value" id="info-scadenza">31/12/2026 (o esaurimento fondi)</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <h2>✅ Requisiti</h2>
+                        <ul class="requisiti-list" id="requisiti-list">
+                            <li>Micro o piccola impresa (art. 2 D.Lgs. 18/2021)</li>
+                            <li>Iscrizione al Registro Imprese della CCIAA</li>
+            <li>DURC regolare o equivalente</li>
+                            <li>Non beneficiario di altri voucher 3I nello stesso anno</li>
+                            <li>Attività operativa da almeno 12 mesi</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h2>📎 Checklist Documenti</h2>
+                        <div class="checklist-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="checklist-progress" style="width: 0%"></div>
+                            </div>
+                            <div class="progress-text" id="checklist-text">0/8 documenti completati</div>
+                        </div>
+                        <ul class="checklist" id="checklist-container">
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-1" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-1">Visura camerale aggiornata <span class="badge-required">Obbligatorio</span></label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-2" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-2">DURC / Dichiarazione sostitutiva <span class="badge-required">Obbligatorio</span></label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-3" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-3">Documento d'identità del legale rappresentante <span class="badge-required">Obbligatorio</span></label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-4" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-4">Codice fiscale / Partita IVA</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-5" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-5">Preventivo consulenza brevettuale (se applicabile)</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-6" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-6">Descrizione progetto / idea brevettuale</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-7" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-7">Dichiarazione di non aver ricevuto altri voucher 3I</label>
+                            </li>
+                            <li class="checklist-item">
+                                <input type="checkbox" id="doc-8" onchange="BandoCheckBot.updateProgress()">
+                                <label for="doc-8">IBAN per accredito</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="detail-sidebar">
+                    <div class="sidebar-card">
+                        <h3>💰 Importo</h3>
+                        <div class="amount-big" id="sidebar-importo">€1.000-4.000</div>
+                        <div class="amount-note">100% fondo perduto</div>
+                        <a href="#" class="btn btn-primary" onclick="BandoCheckBot.goToPortal()">Vai al Portale →</a>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3>⏰ Scadenza</h3>
+                        <div class="countdown">
+                            <div class="number" id="countdown-days">--</div>
+                            <div class="label">giorni rimasti</div>
+                        </div>
+                    </div>
+
+                    <div class="cta-card">
+                        <h3>🤝 Ti aiutiamo noi?</h3>
+                        <p>BrevettIAmo può assisterti nella preparazione della domanda con il pacchetto "Solo Firma".</p>
+                        <a href="#" class="btn" onclick="BandoCheckBot.requestAssistance()">Richiedi Assistenza</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/bandibot.js"></script>
+    <script src="../js/bandocheckbot.js"></script>
+</body>
+</html>

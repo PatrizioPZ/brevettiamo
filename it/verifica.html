@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifica Documento — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .verify-page {
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            padding: 6rem 0 3rem;
+        }
+        .verify-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .verify-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .verify-header .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .verify-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .verify-header p {
+            color: var(--text-secondary);
+        }
+        .score-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: conic-gradient(var(--accent) 0% var(--score-percent), var(--border) var(--score-percent) 100%);
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+        }
+        .score-value {
+            position: relative;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            z-index: 1;
+        }
+        .score-label {
+            position: relative;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            z-index: 1;
+        }
+        .score-status {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .score-status.approved { color: var(--accent); }
+        .score-status.warning { color: var(--warning); }
+        .score-status.rejected { color: var(--danger); }
+        .score-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .checks-list {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .checks-list h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+        .check-item:last-child {
+            border-bottom: none;
+        }
+        .check-item:hover {
+            background: var(--bg-secondary);
+            margin: 0 -1rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+        }
+        .check-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .check-icon.pass {
+            background: rgba(0,200,83,0.1);
+            color: var(--accent);
+        }
+        .check-icon.fail {
+            background: rgba(244,67,54,0.1);
+            color: var(--danger);
+        }
+        .check-icon.warn {
+            background: rgba(255,152,0,0.1);
+            color: var(--warning);
+        }
+        .check-content {
+            flex: 1;
+        }
+        .check-content h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .check-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        .check-score {
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .check-score.pass { color: var(--accent); }
+        .check-score.fail { color: var(--danger); }
+        .check-score.warn { color: var(--warning); }
+        .priority-fixes {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .priority-fixes h4 {
+            font-size: 1rem;
+            color: var(--warning);
+            margin-bottom: 1rem;
+        }
+        .priority-fixes ul {
+            list-style: none;
+        }
+        .priority-fixes li {
+            padding: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .priority-fixes li::before {
+            content: '🔧';
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .action-buttons .btn {
+            padding: 1rem 2rem;
+        }
+        .anteriorita-section {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .anteriorita-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .anteriorita-result {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+        .anteriorita-result.green {
+            background: rgba(0,200,83,0.1);
+        }
+        .anteriorita-result.yellow {
+            background: rgba(255,152,0,0.1);
+        }
+        .anteriorita-result.red {
+            background: rgba(244,67,54,0.1);
+        }
+        .anteriorita-result .icon {
+            font-size: 2rem;
+        }
+        .anteriorita-result .text h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .anteriorita-result .text p {
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-page">
+        <div class="verify-container">
+            <div class="verify-header">
+                <div class="badge">Step 5 di 10</div>
+                <h1>Verifica Documento</h1>
+                <p>8 controlli automatici per garantire qualità e conformità UIBM.</p>
+            </div>
+
+            <div class="score-card" id="score-card">
+                <div class="score-circle" id="score-circle" style="--score-percent: 0%">
+                    <div class="score-value" id="score-value">0%</div>
+                    <div class="score-label">Qualità</div>
+                </div>
+                <div class="score-status" id="score-status">In verifica...</div>
+                <div class="score-desc" id="score-desc">Stiamo analizzando il documento...</div>
+            </div>
+
+            <div class="anteriorita-section" id="anteriorita-section">
+                <h3>🔍 Ricerca Anteriorità</h3>
+                <div class="anteriorita-result" id="anteriorita-result">
+                    <div class="icon">⏳</div>
+                    <div class="text">
+                        <h4>Ricerca in corso...</h4>
+                        <p>Stiamo consultando i database UIBM, EPO, WIPO.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checks-list" id="checks-list">
+                <h3>📋 Checklist Verifica</h3>
+                <div id="checks-container">
+                    <!-- Checks injected by JS -->
+                </div>
+            </div>
+
+            <div class="priority-fixes" id="priority-fixes" style="display: none;">
+                <h4>🔧 Correzioni Prioritarie</h4>
+                <ul id="fixes-list"></ul>
+            </div>
+
+            <div class="action-buttons" id="action-buttons" style="display: none;">
+                <a href="disegni.html" class="btn btn-primary" id="btn-proceed">
+                    ✅ Procedi ai Disegni
+                    <span class="btn-note">Documento verificato</span>
+                </a>
+                <a href="generazione.html" class="btn btn-outline">
+                    🔄 Rigenera Documento
+                </a>
+                <a href="dashboard.html" class="btn btn-ghost">
+                    📊 Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/verificabot.js"></script>
+</body>
+</html>
