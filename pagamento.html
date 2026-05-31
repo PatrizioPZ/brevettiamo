@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrevettIAmo — Pagamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+        .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.3rem; font-weight: 700; }
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; text-decoration: none; display: inline-block; font-size: 1rem; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-outline { background: transparent; border: 2px solid white; color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .payment-card { background: white; padding: 35px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        .payment-card h2 { font-size: 1.4rem; color: #1e3a5f; margin-bottom: 8px; }
+        .payment-card .subtitle { color: #64748b; margin-bottom: 25px; font-size: 0.95rem; }
+        
+        .pratica-info { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .pratica-info h3 { font-size: 1rem; color: #1e3a5f; margin-bottom: 15px; }
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
+        .info-row:last-child { border-bottom: none; }
+        .info-row .label { color: #64748b; }
+        .info-row .value { font-weight: 600; color: #1e293b; }
+        
+        .price-breakdown { margin-bottom: 25px; }
+        .price-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
+        .price-item.total { border-top: 2px solid #1e3a5f; border-bottom: none; font-size: 1.2rem; font-weight: 700; color: #1e3a5f; padding-top: 15px; }
+        
+        .payment-methods { margin-bottom: 25px; }
+        .payment-method { display: flex; align-items: center; gap: 15px; padding: 20px; border: 2px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+        .payment-method:hover { border-color: #3b82f6; }
+        .payment-method.selected { border-color: #10b981; background: #f0fdf4; }
+        .payment-method input { display: none; }
+        .payment-method .method-icon { font-size: 2rem; }
+        .payment-method .method-info { flex: 1; }
+        .payment-method .method-name { font-weight: 700; color: #1e293b; font-size: 1.05rem; }
+        .payment-method .method-desc { font-size: 0.9rem; color: #64748b; margin-top: 4px; }
+        .payment-method .method-badge { background: #10b981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .payment-method .method-badge-soon { background: #f59e0b; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        
+        .info-banner { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 15px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+        .info-banner svg { width: 24px; height: 24px; color: #3b82f6; flex-shrink: 0; }
+        .info-banner p { color: #1e40af; font-size: 0.9rem; }
+        
+        .secure-badge { display: flex; align-items: center; justify-content: center; gap: 10px; color: #64748b; font-size: 0.85rem; margin-top: 20px; }
+        .secure-badge svg { width: 20px; height: 20px; color: #10b981; }
+        
+        .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 1000; }
+        .loading-overlay.active { display: flex; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #e2e8f0; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .payment-card { padding: 20px; }
+            .payment-method { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">💳 Pagamento</div>
+            <a href="dashboard.html" class="btn btn-outline">← Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="payment-card">
+            <h2>Checkout</h2>
+            <p class="subtitle">Completa il pagamento per avviare la tua pratica brevettuale</p>
+            
+            <div class="pratica-info" id="praticaInfo">
+                <h3>📋 Dettaglio Pratica</h3>
+                <div class="info-row">
+                    <span class="label">Titolo</span>
+                    <span class="value" id="infoTitolo">Caricamento...</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Tipo</span>
+                    <span class="value" id="infoTipo">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Settore</span>
+                    <span class="value" id="infoSettore">-</span>
+                </div>
+            </div>
+            
+            <div class="price-breakdown">
+                <div class="price-item">
+                    <span>Deposito Brevetto Nazionale</span>
+                    <span>€300,00</span>
+                </div>
+                <div id="extraServices"></div>
+                <div class="price-item total">
+                    <span>Totale</span>
+                    <span id="totalPrice">€300,00</span>
+                </div>
+            </div>
+            
+            <div class="info-banner">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+                </svg>
+                <p>Il pagamento con carta sarà disponibile a breve. Per ora utilizza il bonifico bancario.</p>
+            </div>
+            
+            <div class="payment-methods">
+                <h3 style="margin-bottom:15px;font-size:1rem;color:#1e3a5f;">Metodo di pagamento</h3>
+                
+                <label class="payment-method selected" onclick="selectMethod(this)">
+                    <input type="radio" name="payment_method" value="bonifico" checked>
+                    <span class="method-icon">🏦</span>
+                    <div class="method-info">
+                        <div class="method-name">Bonifico Bancario</div>
+                        <div class="method-desc">Pagamento sicuro via bonifico — Riceverai i dati bancari per completare il pagamento</div>
+                    </div>
+                    <span class="method-badge">CONSIGLIATO</span>
+                </label>
+                
+                <label class="payment-method" onclick="selectMethod(this)" style="opacity:0.6;">
+                    <input type="radio" name="payment_method" value="lemonsqueezy" disabled>
+                    <span class="method-icon">🍋</span>
+                    <div class="method-info">
+                        <div class="method-name">Carta di Credito / Debito</div>
+                        <div class="method-desc">Visa, Mastercard — Disponibile a breve</div>
+                    </div>
+                    <span class="method-badge-soon">PRESTO</span>
+                </label>
+            </div>
+            
+            <button class="btn btn-success" id="payButton" onclick="processPayment()" style="width:100%;padding:15px;font-size:1.1rem;">
+                Procedi con Bonifico
+            </button>
+            
+            <div class="secure-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Dati protetti — Transazione sicura
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Elaborazione...</p>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDE5OTksImV4cCI6MjA2NDA3Nzk5OX0.p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let currentUser = null, praticaData = null, praticaId = null;
+
+        async function init() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) { window.location.href = 'index.html'; return; }
+            currentUser = session.user;
+            const urlParams = new URLSearchParams(window.location.search);
+            praticaId = urlParams.get('pratica');
+            if (!praticaId) { alert('Nessuna pratica selezionata'); return; }
+            await loadPratica();
+        }
+
+        async function loadPratica() {
+            const { data, error } = await supabase.from('pratiche').select('*').eq('id', praticaId).eq('user_id', currentUser.id).single();
+            if (error || !data) { alert('Pratica non trovata'); return; }
+            praticaData = data;
+            document.getElementById('infoTitolo').textContent = data.titolo || 'Senza titolo';
+            const tipoMap = {'brevetto_invenzione':'Brevetto Invenzione','modello_utilita':'Modello di Utilità','design':'Design / Marchio'};
+            document.getElementById('infoTipo').textContent = tipoMap[data.tipo_brevetto] || data.tipo_brevetto;
+            const settoreMap = {'meccanica':'Meccanica','elettronica':'Elettronica','informatica':'Informatica','chimica':'Chimica','biotecnologie':'Biotecnologie','energia':'Energia','agroalimentare':'Agroalimentare','medico':'Dispositivi Medici','altro':'Altro'};
+            document.getElementById('infoSettore').textContent = settoreMap[data.settore] || data.settore || '-';
+            updatePriceDisplay(data);
+        }
+
+        function updatePriceDisplay(data) {
+            let basePrice = 300, extraHtml = '';
+            try {
+                const servizi = JSON.parse(data.servizi || '[]');
+                if (servizi.includes('disegni_tecnici')) { extraHtml += '<div class="price-item"><span>Disegni tecnici professionali</span><span>€150,00</span></div>'; basePrice += 150; }
+                if (servizi.includes('pratica_urgente')) { extraHtml += '<div class="price-item"><span>Pratica urgente (48h)</span><span>€100,00</span></div>'; basePrice += 100; }
+                if (servizi.includes('ricerca_priorita')) { extraHtml += '<div class="price-item"><span>Ricerca priorità</span><span>€80,00</span></div>'; basePrice += 80; }
+                if (servizi.includes('deposito_internazionale')) { extraHtml += '<div class="price-item"><span>Deposito internazionale</span><span>€500,00</span></div>'; basePrice += 500; }
+            } catch(e) {}
+            document.getElementById('extraServices').innerHTML = extraHtml;
+            document.getElementById('totalPrice').textContent = '€' + basePrice.toFixed(2).replace('.', ',');
+            document.getElementById('payButton').textContent = 'Procedi con Bonifico — €' + basePrice.toFixed(2).replace('.', ',');
+        }
+
+        function selectMethod(element) {
+            if (element.querySelector('input').disabled) return;
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            element.querySelector('input').checked = true;
+        }
+
+        async function processPayment() {
+            const method = document.querySelector('input[name="payment_method"]:checked').value;
+            document.getElementById('loadingOverlay').classList.add('active');
+            if (method === 'bonifico') {
+                await updatePraticaStatus('in_attesa_bonifico');
+                await createPaymentRecord('bonifico');
+                window.location.href = 'conferma.html?pratica=' + praticaId + '&status=bonifico';
+            }
+        }
+
+        async function updatePraticaStatus(status) {
+            await supabase.from('pratiche').update({ stato: status, metodo_pagamento: 'bonifico' }).eq('id', praticaId).eq('user_id', currentUser.id);
+        }
+
+        async function createPaymentRecord(method) {
+            let total = 300;
+            try {
+                const servizi = JSON.parse(praticaData.servizi || '[]');
+                if (servizi.includes('disegni_tecnici')) total += 150;
+                if (servizi.includes('pratica_urgente')) total += 100;
+                if (servizi.includes('ricerca_priorita')) total += 80;
+                if (servizi.includes('deposito_internazionale')) total += 500;
+            } catch(e) {}
+            await supabase.from('pagamenti').insert([{
+                pratica_id: praticaId, user_id: currentUser.id, metodo: method,
+                stato_pagamento: 'in_attesa', importo: total, valuta: 'EUR'
+            }]);
+        }
+
+        init();
+    </script>
+</body>
+</html>
