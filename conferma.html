@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrevettIAmo — Conferma Pagamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+        .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.3rem; font-weight: 700; }
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; text-decoration: none; display: inline-block; font-size: 1rem; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-outline { background: transparent; border: 2px solid white; color: white; }
+        
+        .success-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); text-align: center; margin-bottom: 25px; }
+        .success-icon { width: 100px; height: 100px; margin: 0 auto 25px; }
+        .success-icon.success { color: #10b981; }
+        .success-icon.pending { color: #f59e0b; }
+        .success-card h1 { font-size: 1.8rem; color: #1e3a5f; margin-bottom: 15px; }
+        .success-card p { color: #64748b; margin-bottom: 20px; font-size: 1.05rem; line-height: 1.6; }
+        
+        .info-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        .info-card h2 { font-size: 1.2rem; color: #1e3a5f; margin-bottom: 20px; }
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
+        .info-row:last-child { border-bottom: none; }
+        .info-row .label { color: #64748b; }
+        .info-row .value { font-weight: 600; color: #1e293b; }
+        
+        .bank-details { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); color: white; border-radius: 16px; padding: 30px; margin-bottom: 25px; }
+        .bank-details h3 { font-size: 1.2rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .bank-details .detail { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .bank-details .detail:last-child { border-bottom: none; }
+        .bank-details .detail .label { opacity: 0.8; font-size: 0.9rem; }
+        .bank-details .detail .value { font-family: 'Courier New', monospace; font-size: 1rem; font-weight: 600; }
+        .copy-btn { background: rgba(255,255,255,0.2); border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; color: white; font-size: 0.8rem; font-weight: 600; margin-left: 10px; transition: all 0.2s; }
+        .copy-btn:hover { background: rgba(255,255,255,0.3); }
+        .copy-btn.copied { background: #10b981; }
+        
+        .next-steps { background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 12px; padding: 25px; margin-bottom: 25px; }
+        .next-steps h3 { color: #1e40af; margin-bottom: 15px; font-size: 1.1rem; }
+        .next-steps ol { margin-left: 20px; color: #1e3a5f; }
+        .next-steps li { margin-bottom: 12px; line-height: 1.5; }
+        
+        .actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        
+        .email-template { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .email-template h4 { color: #1e3a5f; margin-bottom: 10px; font-size: 0.95rem; }
+        .email-template pre { background: white; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #374151; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .success-card { padding: 25px; }
+            .bank-details { padding: 20px; }
+            .bank-details .detail { flex-direction: column; align-items: flex-start; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">✅ Conferma</div>
+            <a href="dashboard.html" class="btn btn-outline">← Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="success-card" id="successCard">
+            <div class="success-icon" id="successIcon"></div>
+            <h1 id="successTitle">Pratica Salvata!</h1>
+            <p id="successMessage">I tuoi dati sono stati salvati. Completa il bonifico per avviare l'elaborazione.</p>
+        </div>
+
+        <div class="info-card">
+            <h2>📋 Dettaglio Pratica</h2>
+            <div class="info-row">
+                <span class="label">Numero Pratica</span>
+                <span class="value" id="praticaNumero">-</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Titolo</span>
+                <span class="value" id="praticaTitolo">-</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Stato</span>
+                <span class="value" id="praticaStato">-</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Importo</span>
+                <span class="value" id="praticaImporto">-</span>
+            </div>
+        </div>
+
+        <div class="bank-details" id="bankDetails">
+            <h3>🏦 Dati per il Bonifico</h3>
+            <p style="opacity:0.8;margin-bottom:20px;font-size:0.9rem;">Effettua il bonifico entro 5 giorni lavorativi. La pratica verrà avviata dopo la conferma del pagamento.</p>
+            
+            <div class="detail">
+                <span class="label">Intestatario</span>
+                <span class="value">PATRIZIO ZANIRATO <button class="copy-btn" onclick="copyText('PATRIZIO ZANIRATO', this)">Copia</button></span>
+            </div>
+            <div class="detail">
+                <span class="label">Banca</span>
+                <span class="value">Banco Popolare</span>
+            </div>
+            <div class="detail">
+                <span class="label">IBAN</span>
+                <span class="value" id="ibanDisplay">IT... <button class="copy-btn" onclick="copyIBAN(this)">Copia IBAN</button></span>
+            </div>
+            <div class="detail">
+                <span class="label">Causale</span>
+                <span class="value" id="causaleDisplay">- <button class="copy-btn" onclick="copyCausale(this)">Copia</button></span>
+            </div>
+            <div class="detail">
+                <span class="label">Importo</span>
+                <span class="value" id="importoDisplay">-</span>
+            </div>
+        </div>
+
+        <div class="email-template">
+            <h4>📧 Dopo il bonifico, invia una email a:</h4>
+            <p style="color:#64748b;font-size:0.9rem;margin-bottom:10px;"><strong>pagamenti@brevettiamo.it</strong></p>
+            <pre id="emailTemplate">Oggetto: Bonifico Pratica #[ID]
+
+Gentile BrevettIAmo,
+
+ho effettuato il bonifico per la seguente pratica:
+
+Pratica: [TITOLO]
+Importo: [IMPORTO]
+Data bonifico: [DATA]
+
+Allego la ricevuta del bonifico.
+
+Cordiali saluti</pre>
+        </div>
+
+        <div class="next-steps" id="nextSteps">
+            <h3>🚀 Prossimi Passi</h3>
+            <ol id="stepsList">
+                <li>Effettua il bonifico usando i dati sopra indicati</li>
+                <li>Invia la ricevuta a <strong>pagamenti@brevettiamo.it</strong></li>
+                <li>Attendi la conferma del pagamento (1-2 giorni lavorativi)</li>
+                <li>Lo studio brevettuale inizierà l'analisi della tua pratica</li>
+            </ol>
+        </div>
+
+        <div class="actions">
+            <a href="dashboard.html" class="btn btn-primary">Vai alla Dashboard</a>
+            <a href="nuova-pratica.html" class="btn btn-success">Nuova Pratica</a>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDE5OTksImV4cCI6MjA2NDA3Nzk5OX0.p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        const IBAN_COMPLETO = 'IT____________________'; // COMPLETA CON IL TUO IBAN
+        
+        const ICONS = {
+            success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>`,
+            pending: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+            bank: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11m16-11v11"/></svg>`
+        };
+
+        async function init() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) { window.location.href = 'index.html'; return; }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const praticaId = urlParams.get('pratica');
+            
+            if (!praticaId) { window.location.href = 'dashboard.html'; return; }
+            await loadPratica(praticaId, status);
+        }
+
+        async function loadPratica(id, status) {
+            const { data, error } = await supabase.from('pratiche').select('*').eq('id', id).single();
+            if (error || !data) { window.location.href = 'dashboard.html'; return; }
+            
+            document.getElementById('praticaNumero').textContent = '#' + id.toString().slice(0, 8);
+            document.getElementById('praticaTitolo').textContent = data.titolo || 'Senza titolo';
+            document.getElementById('praticaStato').textContent = data.stato || 'In elaborazione';
+            
+            let total = 300;
+            try {
+                const servizi = JSON.parse(data.servizi || '[]');
+                if (servizi.includes('disegni_tecnici')) total += 150;
+                if (servizi.includes('pratica_urgente')) total += 100;
+                if (servizi.includes('ricerca_priorita')) total += 80;
+                if (servizi.includes('deposito_internazionale')) total += 500;
+            } catch(e) {}
+            document.getElementById('praticaImporto').textContent = '€' + total.toFixed(2).replace('.', ',');
+            document.getElementById('importoDisplay').textContent = '€' + total.toFixed(2).replace('.', ',');
+            
+            const causale = `Pratica ${id.slice(0, 8)} - ${(data.titolo || 'Brevetto').substring(0, 30)}`;
+            document.getElementById('causaleDisplay').innerHTML = causale + ' <button class="copy-btn" onclick="copyCausale(this)">Copia</button>';
+            
+            document.getElementById('emailTemplate').textContent = `Oggetto: Bonifico Pratica #${id.slice(0, 8)}\n\nGentile BrevettIAmo,\n\nho effettuato il bonifico per la seguente pratica:\n\nPratica: ${data.titolo || 'Senza titolo'}\nImporto: €${total.toFixed(2).replace('.', ',')}\nData bonifico: [INSERISCI DATA]\n\nAllego la ricevuta del bonifico.\n\nCordiali saluti`;
+            
+            if (status === 'bonifico') {
+                document.getElementById('successIcon').innerHTML = ICONS.bank;
+                document.getElementById('successIcon').className = 'success-icon pending';
+                document.getElementById('successTitle').textContent = 'Bonifico in Attesa';
+                document.getElementById('successMessage').textContent = 'La tua pratica è stata salvata. Completa il bonifico per avviare l\'elaborazione.';
+                document.getElementById('bankDetails').style.display = 'block';
+            } else {
+                document.getElementById('successIcon').innerHTML = ICONS.success;
+                document.getElementById('successIcon').className = 'success-icon success';
+                document.getElementById('successTitle').textContent = 'Pagamento Completato!';
+                document.getElementById('successMessage').textContent = 'Grazie! La tua pratica è stata avviata con successo.';
+            }
+        }
+
+        function copyText(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.textContent = 'Copiato!';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.textContent = 'Copia'; btn.classList.remove('copied'); }, 2000);
+            });
+        }
+
+        function copyIBAN(btn) {
+            const iban = IBAN_COMPLETO;
+            if (iban.includes('_')) {
+                alert('IBAN non ancora configurato. Contatta BrevettIAmo per i dati bancari.');
+                return;
+            }
+            copyText(iban, btn);
+        }
+
+        function copyCausale(btn) {
+            const praticaId = new URLSearchParams(window.location.search).get('pratica');
+            const causale = `Pratica ${praticaId?.slice(0, 8)} - BrevettIAmo`;
+            copyText(causale, btn);
+        }
+
+        init();
+    </script>
+</body>
+</html>
