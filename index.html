@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrevettIAmo — Proteggi la tua idea</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        /* Header */
         header { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); color: white; padding: 60px 0; text-align: center; }
         header h1 { font-size: 3rem; margin-bottom: 10px; font-weight: 700; }
         header p { font-size: 1.3rem; opacity: 0.9; max-width: 600px; margin: 0 auto 30px; }
@@ -20,7 +19,6 @@
         .btn-secondary { background: transparent; color: white; border: 2px solid white; margin-left: 10px; }
         .btn-secondary:hover { background: white; color: #0f172a; }
 
-        /* Auth Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-overlay.active { display: flex; }
         .modal { background: white; border-radius: 16px; padding: 40px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
@@ -30,11 +28,10 @@
         .form-group input { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; transition: border-color 0.3s; }
         .form-group input:focus { outline: none; border-color: #1e3a5f; }
         .form-toggle { text-align: center; margin-top: 20px; color: #64748b; font-size: 0.9rem; }
-        .form-toggle a { color: #1e3a5f; font-weight: 600; cursor: pointer; }
+        .form-toggle a { color: #1e3a5f; font-weight: 600; cursor: pointer; text-decoration: underline; }
         .error-msg { color: #dc2626; font-size: 0.85rem; margin-top: 8px; display: none; }
         .success-msg { color: #16a34a; font-size: 0.85rem; margin-top: 8px; display: none; }
 
-        /* Features */
         .features { padding: 80px 0; background: white; }
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
         .feature-card { padding: 30px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; transition: transform 0.3s; }
@@ -42,7 +39,6 @@
         .feature-icon { font-size: 2.5rem; margin-bottom: 15px; }
         .feature-card h3 { color: #1e3a5f; margin-bottom: 10px; }
 
-        /* Pricing */
         .pricing { padding: 80px 0; background: #f1f5f9; }
         .pricing h2 { text-align: center; font-size: 2.2rem; color: #1e3a5f; margin-bottom: 40px; }
         .price-card { background: white; border-radius: 16px; padding: 40px; max-width: 400px; margin: 0 auto; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
@@ -51,18 +47,15 @@
         .price-features li { padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
         .price-features li::before { content: "✓ "; color: #16a34a; font-weight: bold; }
 
-        /* Footer */
         footer { background: #0f172a; color: #94a3b8; padding: 40px 0; text-align: center; }
         footer p { margin-bottom: 10px; }
         .powered-by { font-size: 0.85rem; opacity: 0.7; }
 
-        /* Loading */
         .loading { display: none; text-align: center; padding: 20px; }
         .loading.active { display: block; }
         .spinner { border: 3px solid #e2e8f0; border-top: 3px solid #1e3a5f; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* User menu */
         .user-menu { display: none; position: absolute; top: 20px; right: 20px; background: white; padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .user-menu.active { display: block; }
         .user-menu button { background: none; border: none; color: #1e3a5f; cursor: pointer; font-weight: 600; }
@@ -175,15 +168,36 @@
         // Supabase init
         const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let supabase = null;
         let authMode = 'signup';
 
-        // Check session on load
+        // Initialize Supabase when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                if (window.supabase && window.supabase.createClient) {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                    console.log('Supabase initialized');
+                    checkSession();
+                } else {
+                    console.error('Supabase library not loaded');
+                    showError('Errore caricamento libreria. Ricarica la pagina.');
+                }
+            } catch (e) {
+                console.error('Supabase init error:', e);
+                showError('Errore connessione. Riprova più tardi.');
+            }
+        });
+
         async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                showLoggedIn(session.user.email);
+            if (!supabase) return;
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    showLoggedIn(session.user.email);
+                }
+            } catch (e) {
+                console.error('Session check error:', e);
             }
         }
 
@@ -216,6 +230,11 @@
 
         async function handleAuth(e) {
             e.preventDefault();
+            if (!supabase) {
+                showError('Servizio non disponibile. Ricarica la pagina.');
+                return;
+            }
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const loading = document.getElementById('loading');
@@ -231,10 +250,10 @@
             try {
                 if (authMode === 'signup') {
                     const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
+                        email: email,
+                        password: password,
                         options: {
-                            emailRedirectTo: window.location.origin
+                            emailRedirectTo: window.location.href
                         }
                     });
 
@@ -243,15 +262,14 @@
                     successMsg.textContent = '✅ Registrazione effettuata! Controlla la tua email per confermare.';
                     successMsg.style.display = 'block';
 
-                    // Auto-login after signup (if email confirm disabled)
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
                     }, 2000);
 
                 } else {
                     const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
+                        email: email,
+                        password: password
                     });
 
                     if (error) throw error;
@@ -259,16 +277,23 @@
                     window.location.href = 'dashboard.html';
                 }
             } catch (error) {
-                errorMsg.textContent = '❌ ' + error.message;
-                errorMsg.style.display = 'block';
+                showError(error.message);
             } finally {
                 loading.classList.remove('active');
                 submitBtn.disabled = false;
             }
         }
 
+        function showError(msg) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = '❌ ' + msg;
+            errorMsg.style.display = 'block';
+        }
+
         async function logout() {
-            await supabase.auth.signOut();
+            if (supabase) {
+                await supabase.auth.signOut();
+            }
             window.location.reload();
         }
 
@@ -276,9 +301,6 @@
         document.getElementById('authModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
-
-        // Init
-        checkSession();
     </script>
 </body>
 </html>
