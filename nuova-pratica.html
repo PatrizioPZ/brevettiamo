@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrevettIAmo - Nuova Pratica</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px}
+h1{color:#1a5fb4}
+label{display:block;margin-top:15px;font-weight:bold}
+input,select,textarea{width:100%;padding:8px;margin-top:5px;border:1px solid #ccc;border-radius:4px}
+button{margin-top:20px;padding:10px 20px;background:#1a5fb4;color:white;border:none;border-radius:4px;cursor:pointer}
+.error{color:red;font-size:12px}
+</style>
+</head>
+<body>
+<h1>Nuova Pratica</h1>
+<form id="form">
+<label>Titolo *</label>
+<input type="text" id="titolo" required>
+
+<label>Tipo Brevetto *</label>
+<select id="tipo" required>
+<option value="">Seleziona...</option>
+<option value="invenzione">Invenzione Industriale</option>
+<option value="modello">Modello di Utilità</option>
+<option value="marchio">Marchio</option>
+</select>
+
+<label>Inventore *</label>
+<input type="text" id="inventore" required>
+
+<label>Titolare *</label>
+<input type="text" id="titolare" required>
+
+<button type="button" onclick="salva()">Crea Pratica</button>
+</form>
+
+<script>
+const SUPABASE_URL = 'https://jtekrwlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtakp4tfcDwug_Q9duausk';
+let supabase;
+
+document.addEventListener('DOMContentLoaded', async function() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        alert('Sessione scaduta');
+        window.location.href = 'login.html';
+    }
+});
+
+async function salva() {
+    const titolo = document.getElementById('titolo').value;
+    const tipo = document.getElementById('tipo').value;
+    const inventore = document.getElementById('inventore').value;
+    const titolare = document.getElementById('titolare').value;
+    
+    if (!titolo || !tipo || !inventore || !titolare) {
+        alert('Compila tutti i campi obbligatori');
+        return;
+    }
+    
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const { data, error } = await supabase.from('pratiche').insert([{
+            titolo: titolo,
+            tipo_brevetto: tipo,
+            inventore: inventore,
+            titolare: titolare,
+            user_id: session.user.id,
+            stato: 'bozza',
+            data_creazione: new Date().toISOString()
+        }]).select();
+        
+        if (error) throw error;
+        
+        alert('Pratica creata con successo! ID: ' + data[0].id);
+        window.location.href = 'dashboard.html';
+    } catch (err) {
+        alert('Errore: ' + err.message);
+    }
+}
+</script>
+</body>
+</html>
