@@ -3,154 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrevettIAmo — Dashboard</title>
+    <title>BrevettIAmo - Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8fafc; color: #1e293b; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
-        header .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.5rem; font-weight: 700; }
-        .user-info { display: flex; align-items: center; gap: 15px; }
-        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; text-decoration: none; display: inline-block; }
-        .btn-primary { background: #3b82f6; color: white; }
-        .btn-success { background: #10b981; color: white; }
-        .btn-outline { background: transparent; border: 2px solid white; color: white; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .stat-card h3 { font-size: 2rem; color: #1e3a5f; margin-bottom: 5px; }
-        .pratiche-table { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #333; }
+        
+        /* Header */
+        .header { background: #1a237e; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 1.5rem; }
+        .header .user-info { display: flex; align-items: center; gap: 1rem; }
+        .header button { background: #ff6f00; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
+        
+        /* Container */
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        
+        /* Toolbar */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+        .toolbar-left { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+        .search-box { padding: 0.6rem 1rem; border: 1px solid #ddd; border-radius: 4px; width: 250px; }
+        .filter-select { padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; }
+        .btn-new { background: #4caf50; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
+        .btn-new:hover { background: #45a049; }
+        
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: white; padding: 1.2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .stat-card .number { font-size: 2rem; font-weight: bold; color: #1a237e; }
+        .stat-card .label { color: #666; font-size: 0.9rem; }
+        
+        /* Table */
+        .table-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f1f5f9; font-weight: 600; color: #475569; font-size: 0.85rem; text-transform: uppercase; }
-        .status { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-        .status-bozza { background: #fef3c7; color: #92400e; }
-        .status-completata { background: #d1fae5; color: #065f46; }
-        .status-in-attesa-bonifico { background: #fef3c7; color: #92400e; }
-        .status-pagata { background: #d1fae5; color: #065f46; }
-        .status-in-lavorazione { background: #fce7f3; color: #9d174d; }
-        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
-        .badge-admin { background: #8b5cf6; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.75rem; margin-left: 10px; }
-        .hidden { display: none; }
-        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        th { background: #1a237e; color: white; padding: 1rem; text-align: left; font-weight: 600; }
+        td { padding: 1rem; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f8f9fa; }
+        
+        /* Stato badges */
+        .badge { padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500; }
+        .badge-bozza { background: #fff3e0; color: #e65100; }
+        .badge-lavorazione { background: #e3f2fd; color: #1565c0; }
+        .badge-depositata { background: #e8f5e9; color: #2e7d32; }
+        .badge-collegata { background: #f3e5f5; color: #6a1b9a; }
+        
+        /* Azioni */
+        .actions { display: flex; gap: 0.5rem; }
+        .actions button { padding: 0.4rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .btn-view { background: #1a237e; color: white; }
+        .btn-edit { background: #ff6f00; color: white; }
+        .btn-delete { background: #d32f2f; color: white; }
+        
+        /* Empty state */
+        .empty { text-align: center; padding: 3rem; color: #666; }
+        .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+        
+        /* Loading */
+        .loading { text-align: center; padding: 3rem; color: #666; }
+        
+        /* Mobile */
         @media (max-width: 768px) {
-            header .container { flex-direction: column; gap: 15px; text-align: center; }
-            .actions { justify-content: center; }
-            table { font-size: 0.85rem; }
-            th, td { padding: 10px; }
+            .header { padding: 1rem; }
+            .header h1 { font-size: 1.2rem; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .search-box { width: 100%; }
+            table { font-size: 0.9rem; }
+            th, td { padding: 0.6rem; }
+            .actions { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">📋 BrevettIAmo Dashboard</div>
-            <div class="user-info">
-                <span id="userEmail">Caricamento...</span>
-                <span id="adminBadge" class="badge-admin hidden">ADMIN</span>
-                <button class="btn btn-outline" onclick="logout()">Logout</button>
-            </div>
+    <!-- Header -->
+    <div class="header">
+        <h1>📋 BrevettIAmo - Dashboard</h1>
+        <div class="user-info">
+            <span id="userEmail">utente@email.it</span>
+            <button onclick="logout()">Logout</button>
         </div>
-    </header>
+    </div>
 
+    <!-- Container -->
     <div class="container">
-        <div class="stats-grid">
+        <!-- Stats -->
+        <div class="stats">
             <div class="stat-card">
-                <h3 id="statTotali">0</h3>
-                <p>Pratiche Totali</p>
+                <div class="number" id="statTotal">0</div>
+                <div class="label">Totale Pratiche</div>
             </div>
             <div class="stat-card">
-                <h3 id="statBozze">0</h3>
-                <p>In Bozza</p>
+                <div class="number" id="statBozza">0</div>
+                <div class="label">In Bozza</div>
             </div>
             <div class="stat-card">
-                <h3 id="statCompletate">0</h3>
-                <p>Completate</p>
+                <div class="number" id="statLavorazione">0</div>
+                <div class="label">In Lavorazione</div>
             </div>
             <div class="stat-card">
-                <h3 id="statInLavorazione">0</h3>
-                <p>In Lavorazione</p>
+                <div class="number" id="statDepositate">0</div>
+                <div class="label">Depositate</div>
             </div>
         </div>
 
-        <div class="actions">
-            <a href="nuova-pratica.html" class="btn btn-success">➕ Nuova Pratica</a>
-            <a href="admin.html" id="adminLink" class="btn btn-primary hidden">🔒 Admin Panel</a>
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <input type="text" class="search-box" id="searchInput" placeholder="🔍 Cerca per titolo..." onkeyup="filterPratiche()">
+                <select class="filter-select" id="filterTipo" onchange="filterPratiche()">
+                    <option value="">Tutti i tipi</option>
+                    <option value="brevetto">Brevetto</option>
+                    <option value="marchio">Marchio</option>
+                    <option value="disegno">Disegno/Modello</option>
+                </select>
+                <select class="filter-select" id="filterStato" onchange="filterPratiche()">
+                    <option value="">Tutti gli stati</option>
+                    <option value="bozza">Bozza</option>
+                    <option value="in lavorazione">In Lavorazione</option>
+                    <option value="depositata">Depositate</option>
+                    <option value="collegata">Collegata</option>
+                </select>
+            </div>
+            <a href="wizard.html" class="btn-new">+ Nuova Pratica</a>
         </div>
 
-        <div class="pratiche-table">
-            <table>
+        <!-- Table -->
+        <div class="table-container">
+            <div id="loadingState" class="loading">Caricamento pratiche...</div>
+            <div id="emptyState" class="empty" style="display:none;">
+                <div class="empty-icon">📭</div>
+                <h3>Nessuna pratica trovata</h3>
+                <p>Crea la tua prima pratica con il pulsante verde!</p>
+            </div>
+            <table id="praticheTable" style="display:none;">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Titolo</th>
                         <th>Tipo</th>
                         <th>Stato</th>
-                        <th>Data</th>
+                        <th>Data Creazione</th>
                         <th>Azioni</th>
                     </tr>
                 </thead>
-                <tbody id="praticheList">
-                    <tr><td colspan="6" class="empty-state"><div class="loading"></div><p>Caricamento...</p></td></tr>
+                <tbody id="praticheBody">
+                    <!-- Popolato via JS -->
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDE5OTksImV4cCI6MjA2NDA3Nzk5OX0.p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+        // ==================== CONFIG ====================
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co'; // ← MODIFICA
+        const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk'; // ← MODIFICA
+
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        let currentUser = null, isAdmin = false;
 
-        async function init() {
+        let allPratiche = []; // Per filtri
+
+        // ==================== AUTH CHECK ====================
+        async function checkAuth() {
             const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { window.location.href = 'index.html'; return; }
-            currentUser = session.user;
-            document.getElementById('userEmail').textContent = currentUser.email;
-            await checkAdmin();
-            await loadPratiche();
-        }
-
-        async function checkAdmin() {
-            const { data } = await supabase.from('utenti').select('ruolo').eq('id', currentUser.id).single();
-            if (data && data.ruolo === 'admin') {
-                isAdmin = true;
-                document.getElementById('adminBadge').classList.remove('hidden');
-                document.getElementById('adminLink').classList.remove('hidden');
-            }
-        }
-
-        async function loadPratiche() {
-            let query = supabase.from('pratiche').select('*');
-            if (!isAdmin) query = query.eq('user_id', currentUser.id);
-            const { data, error } = await query.order('created_at', { ascending: false });
-            if (error) { document.getElementById('praticheList').innerHTML = '<tr><td colspan="6" class="empty-state"><p>Errore caricamento</p></td></tr>'; return; }
-            updateStats(data || []);
-            if (!data || data.length === 0) {
-                document.getElementById('praticheList').innerHTML = '<tr><td colspan="6" class="empty-state"><p>Nessuna pratica</p><p><a href="nuova-pratica.html" class="btn btn-primary">Crea prima pratica</a></p></td></tr>';
+            if (!session) {
+                window.location.href = 'index.html';
                 return;
             }
-            const rows = data.map(p => {
-                const statusClass = 'status-' + p.stato.replace(/\s+/g, '-');
-                const date = new Date(p.created_at).toLocaleDateString('it-IT');
-                return `<tr><td>#${p.id.toString().slice(0, 8)}</td><td><strong>${p.titolo || 'Senza titolo'}</strong></td><td>${p.tipo_brevetto || 'N/D'}</td><td><span class="status ${statusClass}">${p.stato}</span></td><td>${date}</td><td><a href="nuova-pratica.html?id=${p.id}" class="btn btn-primary" style="padding:5px 12px;font-size:0.85rem;">Modifica</a>${p.stato === 'bozza' ? `<a href="pagamento.html?pratica=${p.id}" class="btn btn-success" style="padding:5px 12px;font-size:0.85rem;margin-left:5px;">Paga</a>` : ''}</td></tr>`;
-            }).join('');
-            document.getElementById('praticheList').innerHTML = rows;
+            document.getElementById('userEmail').textContent = session.user.email;
+            loadPratiche(session.user.id);
         }
 
+        // ==================== LOGOUT ====================
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        }
+
+        // ==================== CARICA PRATICHE ====================
+        async function loadPratiche(userId) {
+            const { data, error } = await supabase
+                .from('pratiche')
+                .select('*')
+                .eq('utente_id', userId)
+                .order('creato', { ascending: false });
+
+            document.getElementById('loadingState').style.display = 'none';
+
+            if (error) {
+                alert('Errore caricamento: ' + error.message);
+                return;
+            }
+
+            allPratiche = data || [];
+            updateStats(allPratiche);
+            renderTable(allPratiche);
+        }
+
+        // ==================== STATS ====================
         function updateStats(pratiche) {
-            document.getElementById('statTotali').textContent = pratiche.length;
-            document.getElementById('statBozze').textContent = pratiche.filter(p => p.stato === 'bozza').length;
-            document.getElementById('statCompletate').textContent = pratiche.filter(p => p.stato === 'completata' || p.stato === 'pagata').length;
-            document.getElementById('statInLavorazione').textContent = pratiche.filter(p => p.stato === 'in lavorazione').length;
+            document.getElementById('statTotal').textContent = pratiche.length;
+            document.getElementById('statBozza').textContent = pratiche.filter(p => p.stato === 'bozza').length;
+            document.getElementById('statLavorazione').textContent = pratiche.filter(p => p.stato === 'in lavorazione').length;
+            document.getElementById('statDepositate').textContent = pratiche.filter(p => p.stato === 'depositata').length;
         }
 
-        async function logout() { await supabase.auth.signOut(); window.location.href = 'index.html'; }
+        // ==================== RENDER TABLE ====================
+        function renderTable(pratiche) {
+            const tbody = document.getElementById('praticheBody');
+            const table = document.getElementById('praticheTable');
+            const empty = document.getElementById('emptyState');
 
-        init();
+            if (pratiche.length === 0) {
+                table.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            table.style.display = 'table';
+            empty.style.display = 'none';
+
+            tbody.innerHTML = pratiche.map(p => `
+                <tr>
+                    <td><strong>#${p.id.toString().slice(-6)}</strong></td>
+                    <td>${p.titolo || 'Senza titolo'}</td>
+                    <td>${formatTipo(p.tipo)}</td>
+                    <td><span class="badge badge-${p.stato}">${formatStato(p.stato)}</span></td>
+                    <td>${formatDate(p.creato)}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-view" onclick="viewPratica(${p.id})">👁️ Visualizza</button>
+                            <button class="btn-edit" onclick="editPratica(${p.id})">✏️ Modifica</button>
+                            <button class="btn-delete" onclick="deletePratica(${p.id})">🗑️ Elimina</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==================== FILTRI ====================
+        function filterPratiche() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const tipoFilter = document.getElementById('filterTipo').value;
+            const statoFilter = document.getElementById('filterStato').value;
+
+            const filtered = allPratiche.filter(p => {
+                const matchSearch = (p.titolo || '').toLowerCase().includes(search);
+                const matchTipo = !tipoFilter || p.tipo === tipoFilter;
+                const matchStato = !statoFilter || p.stato === statoFilter;
+                return matchSearch && matchTipo && matchStato;
+            });
+
+            renderTable(filtered);
+        }
+
+        // ==================== AZIONI ====================
+        function viewPratica(id) {
+            // PACCHETTO 5: Dettaglio pratica
+            alert('Visualizza pratica #' + id + '\n\n(PACCHETTO 5: pagina dettaglio in arrivo!)');
+            // window.location.href = 'dettaglio.html?id=' + id;
+        }
+
+        function editPratica(id) {
+            // Torna al wizard con ID pratica
+            window.location.href = 'wizard.html?edit=' + id;
+        }
+
+        async function deletePratica(id) {
+            if (!confirm('Sei sicuro di voler eliminare questa pratica?')) return;
+
+            const { error } = await supabase
+                .from('pratiche')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert('Errore eliminazione: ' + error.message);
+                return;
+            }
+
+            // Ricarica
+            const { data: { session } } = await supabase.auth.getSession();
+            loadPratiche(session.user.id);
+        }
+
+        // ==================== UTILITIES ====================
+        function formatTipo(tipo) {
+            const map = { 'brevetto': 'Brevetto', 'marchio': 'Marchio', 'disegno': 'Disegno/Modello' };
+            return map[tipo] || tipo;
+        }
+
+        function formatStato(stato) {
+            const map = { 
+                'bozza': 'Bozza', 
+                'in lavorazione': 'In Lavorazione', 
+                'depositata': 'Depositate', 
+                'collegata': 'Collegata' 
+            };
+            return map[stato] || stato;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const d = new Date(dateString);
+            return d.toLocaleDateString('it-IT');
+        }
+
+        // ==================== INIT ====================
+        checkAuth();
     </script>
 </body>
 </html>
