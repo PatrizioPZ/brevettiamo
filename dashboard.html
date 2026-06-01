@@ -8,49 +8,40 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #333; }
-
         .header { background: #1a237e; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { font-size: 1.5rem; }
         .header .user-info { display: flex; align-items: center; gap: 1rem; }
         .header button { background: #ff6f00; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
-
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-
         .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
         .toolbar-left { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
         .search-box { padding: 0.6rem 1rem; border: 1px solid #ddd; border-radius: 4px; width: 250px; }
         .filter-select { padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; }
         .btn-new { background: #4caf50; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
         .btn-new:hover { background: #45a049; }
-
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .stat-card { background: white; padding: 1.2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
         .stat-card .number { font-size: 2rem; font-weight: bold; color: #1a237e; }
         .stat-card .label { color: #666; font-size: 0.9rem; }
-
         .table-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
         th { background: #1a237e; color: white; padding: 1rem; text-align: left; font-weight: 600; }
         td { padding: 1rem; border-bottom: 1px solid #eee; }
         tr:hover { background: #f8f9fa; }
-
         .badge { padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500; }
         .badge-bozza { background: #fff3e0; color: #e65100; }
         .badge-lavorazione { background: #e3f2fd; color: #1565c0; }
         .badge-depositata { background: #e8f5e9; color: #2e7d32; }
         .badge-collegata { background: #f3e5f5; color: #6a1b9a; }
-
         .actions { display: flex; gap: 0.5rem; }
         .actions button { padding: 0.4rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
         .btn-view { background: #1a237e; color: white; }
         .btn-edit { background: #ff6f00; color: white; }
         .btn-delete { background: #d32f2f; color: white; }
-
         .empty { text-align: center; padding: 3rem; color: #666; }
         .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
         .loading { text-align: center; padding: 3rem; color: #666; }
         .error { text-align: center; padding: 2rem; color: #d32f2f; background: #ffebee; border-radius: 8px; margin: 1rem 0; }
-
         @media (max-width: 768px) {
             .header { padding: 1rem; flex-wrap: wrap; gap: 0.5rem; }
             .header h1 { font-size: 1.2rem; }
@@ -71,7 +62,6 @@
             <button onclick="logout()">Logout</button>
         </div>
     </div>
-
     <div class="container">
         <div class="stats">
             <div class="stat-card">
@@ -91,7 +81,6 @@
                 <div class="label">Depositate</div>
             </div>
         </div>
-
         <div class="toolbar">
             <div class="toolbar-left">
                 <input type="text" class="search-box" id="searchInput" placeholder="🔍 Cerca per titolo..." onkeyup="filterPratiche()">
@@ -111,7 +100,6 @@
             </div>
             <a href="nuova-pratica.html" class="btn-new">+ Nuova Pratica</a>
         </div>
-
         <div class="table-container">
             <div id="loadingState" class="loading">Caricamento pratiche...</div>
             <div id="errorState" class="error" style="display:none;"></div>
@@ -135,15 +123,11 @@
             </table>
         </div>
     </div>
-
     <script>
-        // ==================== CONFIG ====================
         const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let allPratiche = [];
-
-        // ==================== AUTH CHECK ====================
         async function checkAuth() {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
@@ -157,14 +141,10 @@
                 showError('Errore autenticazione: ' + err.message);
             }
         }
-
-        // ==================== LOGOUT ====================
         async function logout() {
             await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
-
-        // ==================== CARICA PRATICHE ====================
         async function loadPratiche(userId) {
             try {
                 const { data, error } = await supabase
@@ -172,14 +152,11 @@
                     .select('*')
                     .eq('utente_id', userId)
                     .order('creato', { ascending: false });
-
                 document.getElementById('loadingState').style.display = 'none';
-
                 if (error) {
                     showError('Errore database: ' + error.message);
                     return;
                 }
-
                 allPratiche = data || [];
                 updateStats(allPratiche);
                 renderTable(allPratiche);
@@ -187,30 +164,23 @@
                 showError('Errore caricamento: ' + err.message);
             }
         }
-
-        // ==================== STATS ====================
         function updateStats(pratiche) {
             document.getElementById('statTotal').textContent = pratiche.length;
             document.getElementById('statBozza').textContent = pratiche.filter(p => p.stato === 'bozza').length;
             document.getElementById('statLavorazione').textContent = pratiche.filter(p => p.stato === 'in lavorazione').length;
             document.getElementById('statDepositate').textContent = pratiche.filter(p => p.stato === 'depositata').length;
         }
-
-        // ==================== RENDER TABLE ====================
         function renderTable(pratiche) {
             const tbody = document.getElementById('praticheBody');
             const table = document.getElementById('praticheTable');
             const empty = document.getElementById('emptyState');
-
             if (pratiche.length === 0) {
                 table.style.display = 'none';
                 empty.style.display = 'block';
                 return;
             }
-
             table.style.display = 'table';
             empty.style.display = 'none';
-
             tbody.innerHTML = pratiche.map(p => `
                 <tr>
                     <td><strong>#${p.id.toString().slice(-6)}</strong></td>
@@ -228,35 +198,26 @@
                 </tr>
             `).join('');
         }
-
-        // ==================== FILTRI ====================
         function filterPratiche() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const tipoFilter = document.getElementById('filterTipo').value;
             const statoFilter = document.getElementById('filterStato').value;
-
             const filtered = allPratiche.filter(p => {
                 const matchSearch = (p.titolo || '').toLowerCase().includes(search);
                 const matchTipo = !tipoFilter || p.tipo === tipoFilter;
                 const matchStato = !statoFilter || p.stato === statoFilter;
                 return matchSearch && matchTipo && matchStato;
             });
-
             renderTable(filtered);
         }
-
-        // ==================== AZIONI ====================
         function viewPratica(id) {
             alert('Visualizza pratica #' + id + '\n\n(PACCHETTO 5: pagina dettaglio in arrivo!)');
         }
-
         function editPratica(id) {
             window.location.href = 'nuova-pratica.html?edit=' + id;
         }
-
         async function deletePratica(id) {
             if (!confirm('Sei sicuro di voler eliminare questa pratica?')) return;
-
             try {
                 const { error } = await supabase.from('pratiche').delete().eq('id', id);
                 if (error) {
@@ -269,42 +230,29 @@
                 alert('Errore: ' + err.message);
             }
         }
-
-        // ==================== UTILITIES ====================
         function formatTipo(tipo) {
             const map = { 'brevetto': 'Brevetto', 'marchio': 'Marchio', 'disegno': 'Disegno/Modello' };
             return map[tipo] || tipo;
         }
-
         function formatStato(stato) {
-            const map = { 
-                'bozza': 'Bozza', 
-                'in lavorazione': 'In Lavorazione', 
-                'depositata': 'Depositate', 
-                'collegata': 'Collegata' 
-            };
+            const map = { 'bozza': 'Bozza', 'in lavorazione': 'In Lavorazione', 'depositata': 'Depositate', 'collegata': 'Collegata' };
             return map[stato] || stato;
         }
-
         function formatDate(dateString) {
             if (!dateString) return '-';
             const d = new Date(dateString);
             return d.toLocaleDateString('it-IT');
         }
-
         function escapeHtml(text) {
             if (!text) return '';
             return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
-
         function showError(msg) {
             document.getElementById('loadingState').style.display = 'none';
             const el = document.getElementById('errorState');
             el.textContent = msg;
             el.style.display = 'block';
         }
-
-        // ==================== INIT ====================
         checkAuth();
     </script>
 </body>
