@@ -1049,476 +1049,319 @@
         <div class="spinner-lg"></div>
         <p>Salvataggio in corso...</p>
     </div>
+<script>
+const SUPABASE_URL = 'https://jtekrwlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtakp4tfcDwug_Q9duausk';
+let supabase;
+let currentUser = null;
+let uploadedFiles = [];
 
-    <script>
-        const SUPABASE_URL = 'https://jtekrwlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtakp4tfcDwug_Q9duausk';
+document.addEventListener('DOMContentLoaded', async function() {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (!session) {
+        showToast('error', 'Sessione scaduta. Reindirizzamento al login...');
+        setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+        return;
+    }
+    currentUser = session.user;
+    const userName = currentUser.user_metadata?.nome_completo || currentUser.email?.split('@')[0] || 'Utente';
+    document.getElementById('user-name').textContent = userName;
+    document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
+    document.getElementById('data_deposito').valueAsDate = new Date();
+    setupRealtimeValidation();
+});
 
-        let supabase;
-        let currentUser = null;
-        let uploadedFiles = [];
-
-        document.addEventListener('DOMContentLoaded', async function() {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-            const { data: { session }, error } = await supabase.auth.getSession();
-
-            if (!session) {
-                showToast('error', 'Sessione scaduta. Reindirizzamento al login...');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
-                return;
-            }
-
-            currentUser = session.user;
-
-            const userName = currentUser.user_metadata?.nome_completo || 
-                            currentUser.email?.split('@')[0] || 
-                            'Utente';
-            document.getElementById('user-name').textContent = userName;
-            document.getElementById('user-avatar').textContent = userName.charAt(0).toUpperCase();
-
-            document.getElementById('data_deposito').valueAsDate = new Date();
-
-            setupRealtimeValidation();
-        });
-
-        function setupRealtimeValidation() {
-            const fields = ['titolo', 'tipo_brevetto', 'inventore', 'titolare', 'email_consulente'];
-
-            fields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field) {
-                    field.addEventListener('blur', () => validaCampo(fieldId));
-                    field.addEventListener('input', () => {
-                        field.classList.remove('error');
-                        const errorEl = document.getElementById('error-' + fieldId);
-                        if (errorEl) errorEl.classList.remove('visible');
-                    });
-                }
-            });
-        }
-
-        function validaCampo(fieldId) {
-            const field = document.getElementById(fieldId);
-            const errorEl = document.getElementById('error-' + fieldId);
-            let isValid = true;
-
-            switch(fieldId) {
-                case 'titolo':
-                    isValid = field.value.trim().length >= 3;
-                    break;
-                case 'tipo_brevetto':
-                    isValid = field.value !== '';
-                    break;
-                case 'inventore':
-                    isValid = field.value.trim().length >= 2;
-                    break;
-                case 'titolare':
-                    isValid = field.value.trim().length >= 2;
-                    break;
-                case 'email_consulente':
-                    if (field.value.trim() !== '') {
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        isValid = emailRegex.test(field.value);
-                    } else {
-                        isValid = true;
-                    }
-                    break;
-            }
-
-            if (!isValid && field.value.trim() !== '') {
-                field.classList.add('error');
-                if (errorEl) errorEl.classList.add('visible');
-            } else {
+function setupRealtimeValidation() {
+    const fields = ['titolo', 'tipo_brevetto', 'inventore', 'titolare', 'email_consulente'];
+    fields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('blur', () => validaCampo(fieldId));
+            field.addEventListener('input', () => {
                 field.classList.remove('error');
-                if (errorEl) errorEl.classList.remove('visible');
-            }
-
-            return isValid;
-        }
-
-        function validaForm() {
-            let isValid = true;
-            const requiredFields = ['titolo', 'tipo_brevetto', 'inventore', 'titolare'];
-
-            requiredFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
                 const errorEl = document.getElementById('error-' + fieldId);
-
-                if (!field.value.trim()) {
-                    field.classList.add('error');
-                    if (errorEl) errorEl.classList.add('visible');
-                    isValid = false;
-                } else {
-                    const campoValido = validaCampo(fieldId);
-                    if (!campoValido) isValid = false;
-                }
+                if (errorEl) errorEl.classList.remove('visible');
             });
+        }
+    });
+}
 
-            const paesiSelezionati = document.querySelectorAll('input[name="paesi"]:checked');
-            const errorPaesi = document.getElementById('error-paesi');
-            if (paesiSelezionati.length === 0) {
-                errorPaesi.classList.add('visible');
-                isValid = false;
-            } else {
-                errorPaesi.classList.remove('visible');
-            }
-
-            const emailConsulente = document.getElementById('email_consulente');
-            if (emailConsulente.value.trim() !== '') {
+function validaCampo(fieldId) {
+    const field = document.getElementById(fieldId);
+    const errorEl = document.getElementById('error-' + fieldId);
+    let isValid = true;
+    switch(fieldId) {
+        case 'titolo': isValid = field.value.trim().length >= 3; break;
+        case 'tipo_brevetto': isValid = field.value !== ''; break;
+        case 'inventore': isValid = field.value.trim().length >= 2; break;
+        case 'titolare': isValid = field.value.trim().length >= 2; break;
+        case 'email_consulente':
+            if (field.value.trim() !== '') {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(emailConsulente.value)) {
-                    emailConsulente.classList.add('error');
-                    document.getElementById('error-email_consulente').classList.add('visible');
-                    isValid = false;
-                }
-            }
+                isValid = emailRegex.test(field.value);
+            } else { isValid = true; }
+            break;
+    }
+    if (!isValid && field.value.trim() !== '') {
+        field.classList.add('error');
+        if (errorEl) errorEl.classList.add('visible');
+    } else {
+        field.classList.remove('error');
+        if (errorEl) errorEl.classList.remove('visible');
+    }
+    return isValid;
+}
 
-            return isValid;
+function validaForm() {
+    let isValid = true;
+    const requiredFields = ['titolo', 'tipo_brevetto', 'inventore', 'titolare'];
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        const errorEl = document.getElementById('error-' + fieldId);
+        if (!field.value.trim()) {
+            field.classList.add('error');
+            if (errorEl) errorEl.classList.add('visible');
+            isValid = false;
+        } else {
+            const campoValido = validaCampo(fieldId);
+            if (!campoValido) isValid = false;
         }
-
-        function raccogliDatiForm() {
-            const paesiSelezionati = Array.from(document.querySelectorAll('input[name="paesi"]:checked'))
-                .map(cb => cb.value);
-
-            return {
-                titolo: document.getElementById('titolo').value.trim(),
-                tipo_brevetto: document.getElementById('tipo_brevetto').value,
-                stato: document.getElementById('stato').value,
-                numero_deposito: document.getElementById('numero_deposito').value.trim() || null,
-                data_deposito: document.getElementById('data_deposito').value || null,
-                descrizione: document.getElementById('descrizione').value.trim() || null,
-                paesi: paesiSelezionati,
-                paesi_aggiuntivi: document.getElementById('paesi_aggiuntivi').value.trim() || null,
-                inventore: document.getElementById('inventore').value.trim(),
-                titolare: document.getElementById('titolare').value.trim(),
-                consulente: document.getElementById('consulente').value.trim() || null,
-                email_consulente: document.getElementById('email_consulente').value.trim() || null,
-                priorita: document.getElementById('priorita').value.trim() || null,
-                data_priorita: document.getElementById('data_priorita').value || null,
-                note_documenti: document.getElementById('note_documenti').value.trim() || null,
-                scadenza_risposta: document.getElementById('scadenza_risposta').value || null,
-                scadenza_anni: document.getElementById('scadenza_anni').value || null,
-                note_scadenze: document.getElementById('note_scadenze').value.trim() || null,
-                user_id: currentUser.id,
-                data_creazione: new Date().toISOString()
-            };
+    });
+    const paesiSelezionati = document.querySelectorAll('input[name="paesi"]:checked');
+    const errorPaesi = document.getElementById('error-paesi');
+    if (paesiSelezionati.length === 0) {
+        errorPaesi.classList.add('visible');
+        isValid = false;
+    } else {
+        errorPaesi.classList.remove('visible');
+    }
+    const emailConsulente = document.getElementById('email_consulente');
+    if (emailConsulente.value.trim() !== '') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailConsulente.value)) {
+            emailConsulente.classList.add('error');
+            document.getElementById('error-email_consulente').classList.add('visible');
+            isValid = false;
         }
+    }
+    return isValid;
+}
 
-        async function salvaPratica() {
-            if (!validaForm()) {
-                showToast('error', '⚠️ Correggi gli errori evidenziati prima di procedere.');
-                const firstError = document.querySelector('.error');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                return;
-            }
+function raccogliDatiForm() {
+    const paesiSelezionati = Array.from(document.querySelectorAll('input[name="paesi"]:checked')).map(cb => cb.value);
+    return {
+        titolo: document.getElementById('titolo').value.trim(),
+        tipo_brevetto: document.getElementById('tipo_brevetto').value,
+        stato: document.getElementById('stato').value,
+        numero_deposito: document.getElementById('numero_deposito').value.trim() || null,
+        data_deposito: document.getElementById('data_deposito').value || null,
+        descrizione: document.getElementById('descrizione').value.trim() || null,
+        paesi: paesiSelezionati,
+        paesi_aggiuntivi: document.getElementById('paesi_aggiuntivi').value.trim() || null,
+        inventore: document.getElementById('inventore').value.trim(),
+        titolare: document.getElementById('titolare').value.trim(),
+        consulente: document.getElementById('consulente').value.trim() || null,
+        email_consulente: document.getElementById('email_consulente').value.trim() || null,
+        priorita: document.getElementById('priorita').value.trim() || null,
+        data_priorita: document.getElementById('data_priorita').value || null,
+        note_documenti: document.getElementById('note_documenti').value.trim() || null,
+        scadenza_risposta: document.getElementById('scadenza_risposta').value || null,
+        scadenza_anni: document.getElementById('scadenza_anni').value || null,
+        note_scadenze: document.getElementById('note_scadenze').value.trim() || null,
+        user_id: currentUser.id,
+        data_creazione: new Date().toISOString()
+    };
+}
 
-            const btn = document.getElementById('btn-salva');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div> Salvataggio...';
+async function salvaPratica() {
+    if (!validaForm()) {
+        showToast('error', 'Correggi gli errori evidenziati prima di procedere.');
+        const firstError = document.querySelector('.error');
+        if (firstError) { firstError.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        return;
+    }
+    const btn = document.getElementById('btn-salva');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Salvataggio...';
+    showLoading(true);
+    try {
+        const dati = raccogliDatiForm();
+        const { data: pratica, error } = await supabase.from('pratiche').insert([dati]).select().single();
+        if (error) { throw new Error('Errore database: ' + error.message); }
+        if (uploadedFiles.length > 0) { await caricaDocumenti(pratica.id); }
+        await creaScadenze(pratica.id, dati);
+        showToast('success', 'Pratica creata con successo! ID: ' + pratica.id);
+        setTimeout(() => { window.location.href = 'dashboard.html?nuova=' + pratica.id; }, 2000);
+    } catch (err) {
+        console.error('Errore salvataggio:', err);
+        showToast('error', 'Errore: ' + err.message);
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    } finally {
+        showLoading(false);
+    }
+}
 
-            showLoading(true);
+async function salvaBozza() {
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Salvataggio...';
+    try {
+        const dati = raccogliDatiForm();
+        dati.stato = 'bozza';
+        const { data: pratica, error } = await supabase.from('pratiche').insert([dati]).select().single();
+        if (error) throw new Error(error.message);
+        showToast('success', 'Bozza salvata! ID: ' + pratica.id);
+        document.getElementById('pratica-form').reset();
+        uploadedFiles = [];
+        aggiornaFileList();
+    } catch (err) {
+        showToast('error', 'Errore: ' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
 
-            try {
-                const dati = raccogliDatiForm();
-
-                const { data: pratica, error } = await supabase
-                    .from('pratiche')
-                    .insert([dati])
-                    .select()
-                    .single();
-
-                if (error) {
-                    throw new Error('Errore database: ' + error.message);
-                }
-
-                if (uploadedFiles.length > 0) {
-                    await caricaDocumenti(pratica.id);
-                }
-
-                await creaScadenze(pratica.id, dati);
-
-                showToast('success', '✅ Pratica creata con successo! ID: ' + pratica.id);
-
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html?nuova=' + pratica.id;
-                }, 2000);
-
-            } catch (err) {
-                console.error('Errore salvataggio:', err);
-                showToast('error', '❌ Errore: ' + err.message);
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        async function salvaBozza() {
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '💾 Salvataggio...';
-
-            try {
-                const dati = raccogliDatiForm();
-                dati.stato = 'bozza';
-
-                const { data: pratica, error } = await supabase
-                    .from('pratiche')
-                    .insert([dati])
-                    .select()
-                    .single();
-
-                if (error) throw new Error(error.message);
-
-                showToast('success', '💾 Bozza salvata! ID: ' + pratica.id);
-
-                document.getElementById('pratica-form').reset();
-                uploadedFiles = [];
-                aggiornaFileList();
-
-            } catch (err) {
-                showToast('error', '❌ Errore: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        }
-
-        async function creaScadenze(praticaId, dati) {
-            const scadenze = [];
-
-            if (dati.scadenza_risposta) {
-                scadenze.push({
-                    pratica_id: praticaId,
-                    tipo_scadenza: 'risposta_ufficio",
-                    data_scadenza: dati.scadenza_risposta,
-                    descrizione: 'Scadenza per la risposta all'Ufficio Brevetti",
-                    stato: 'da_completare',
-                    user_id: currentUser.id
-                });
-            }
-
-            if (dati.scadenza_anni) {
-                scadenze.push({
-                    pratica_id: praticaId,
-                    tipo_scadenza: 'tassa_annuita',
-                    data_scadenza: dati.scadenza_anni,
-                    descrizione: 'Pagamento tassa di annuità',
-                    stato: 'da_completare',
-                    user_id: currentUser.id
-                });
-            }
-
-            if (scadenze.length > 0) {
-                const { error } = await supabase
-                    .from('scadenze')
-                    .insert(scadenze);
-
-                if (error) {
-                    console.warn('Errore creazione scadenze:', error);
-                }
-            }
-        }
-
-        function handleFileSelect(event) {
-            const files = Array.from(event.target.files);
-            const maxSize = 20 * 1024 * 1024;
-            const allowedTypes = ['application/pdf', 'application/msword', 
-                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                 'image/jpeg', 'image/png'];
-
-            files.forEach(file => {
-                if (file.size > maxSize) {
-                    showToast('warning', `⚠️ "${file.name}" supera i 20MB e verrà ignorato.`);
-                    return;
-                }
-
-                if (!allowedTypes.includes(file.type)) {
-                    showToast('warning', `⚠️ "${file.name}" ha un formato non supportato.`);
-                    return;
-                }
-
-                uploadedFiles.push(file);
-            });
-
-            aggiornaFileList();
-            event.target.value = '';
-        }
-
-        function aggiornaFileList() {
-            const container = document.getElementById('file-list');
-
-            if (uploadedFiles.length === 0) {
-                container.innerHTML = '';
-                return;
-            }
-
-            container.innerHTML = uploadedFiles.map((file, index) => `
-                <div class="file-item">
-                    <span>📄</span>
-                    <span class="file-name">${escapeHtml(file.name)}</span>
-                    <span class="file-size">${formatBytes(file.size)}</span>
-                    <span class="file-remove" onclick="rimuoviFile(${index})" title="Rimuovi">✕</span>
-                </div>
-            `).join('');
-        }
-
-        function rimuoviFile(index) {
-            uploadedFiles.splice(index, 1);
-            aggiornaFileList();
-        }
-
-        async function caricaDocumenti(praticaId) {
-            for (const file of uploadedFiles) {
-                const filePath = `${currentUser.id}/${praticaId}/${Date.now()}_${file.name}`;
-
-                const { error: uploadError } = await supabase
-                    .storage
-                    .from('documenti')
-                    .upload(filePath, file);
-
-                if (uploadError) {
-                    console.warn('Errore upload file:', uploadError);
-                    continue;
-                }
-
-                const { error: dbError } = await supabase
-                    .from('documenti')
-                    .insert([{
-                        pratica_id: praticaId,
-                        nome_file: file.name,
-                        percorso: filePath,
-                        tipo_file: file.type,
-                        dimensione: file.size,
-                        user_id: currentUser.id
-                    }]);
-
-                if (dbError) {
-                    console.warn('Errore salvataggio riferimento:', dbError);
-                }
-            }
-        }
-
-        function toggleCheckbox(element) {
-            const checkbox = element.querySelector('input[type="checkbox"]');
-            checkbox.checked = !checkbox.checked;
-
-            if (checkbox.checked) {
-                element.style.borderColor = 'var(--primary)';
-                element.style.background = 'var(--primary-light)';
-            } else {
-                element.style.borderColor = 'var(--gray-200)';
-                element.style.background = 'white';
-            }
-        }
-
-        function annullaPratica() {
-            if (confirm('Sei sicuro di voler annullare? I dati inseriti andranno persi.')) {
-                window.location.href = 'dashboard.html';
-            }
-        }
-
-        async function logout() {
-            if (!confirm('Vuoi uscire dall'account?')) return;
-
-            await supabase.auth.signOut();
-            window.location.href = 'login.html';
-        }
-
-        function showToast(type, message, duration = 5000) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-
-            const icons = {
-                success: '✅',
-                error: '❌',
-                warning: '⚠️'
-            };
-
-            toast.innerHTML = `
-                <span>${icons[type] || 'ℹ️'}</span>
-                <span>${escapeHtml(message)}</span>
-                <span class="toast-close" onclick="this.parentElement.remove()">✕</span>
-            `;
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                if (toast.parentElement) {
-                    toast.style.animation = 'slideIn 0.3s ease reverse';
-                    setTimeout(() => toast.remove(), 300);
-                }
-            }, duration);
-        }
-
-        function showLoading(show) {
-            const overlay = document.getElementById('loading-overlay');
-            if (show) {
-                overlay.classList.add('active');
-            } else {
-                overlay.classList.remove('active');
-            }
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 B';
-            const k = 1024;
-            const sizes = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-        }
-
-        const uploadZone = document.querySelector('.file-upload-zone');
-
-        if (uploadZone) {
-            uploadZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadZone.style.borderColor = 'var(--primary)';
-                uploadZone.style.background = 'var(--primary-light)';
-            });
-
-            uploadZone.addEventListener('dragleave', () => {
-                uploadZone.style.borderColor = 'var(--gray-300)';
-                uploadZone.style.background = 'var(--gray-50)';
-            });
-
-            uploadZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadZone.style.borderColor = 'var(--gray-300)';
-                uploadZone.style.background = 'var(--gray-50)';
-
-                const files = Array.from(e.dataTransfer.files);
-                const event = { target: { files: files } };
-                handleFileSelect(event);
-            });
-        }
-
-        let formModified = false;
-
-        document.getElementById('pratica-form').addEventListener('input', () => {
-            formModified = true;
+async function creaScadenze(praticaId, dati) {
+    const scadenze = [];
+    if (dati.scadenza_risposta) {
+        scadenze.push({
+            pratica_id: praticaId,
+            tipo_scadenza: 'risposta_ufficio',
+            data_scadenza: dati.scadenza_risposta,
+            descrizione: 'Scadenza per la risposta all Ufficio Brevetti',
+            stato: 'da_completare',
+            user_id: currentUser.id
         });
-
-        window.addEventListener('beforeunload', (e) => {
-            if (formModified) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
+    }
+    if (dati.scadenza_anni) {
+        scadenze.push({
+            pratica_id: praticaId,
+            tipo_scadenza: 'tassa_annuita',
+            data_scadenza: dati.scadenza_anni,
+            descrizione: 'Pagamento tassa di annuita',
+            stato: 'da_completare',
+            user_id: currentUser.id
         });
-    </script>
+    }
+    if (scadenze.length > 0) {
+        const { error } = await supabase.from('scadenze').insert(scadenze);
+        if (error) { console.warn('Errore creazione scadenze:', error); }
+    }
+}
+
+function handleFileSelect(event) {
+    const files = Array.from(event.target.files);
+    const maxSize = 20 * 1024 * 1024;
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+    files.forEach(file => {
+        if (file.size > maxSize) { showToast('warning', '"' + file.name + '" supera i 20MB e verra ignorato.'); return; }
+        if (!allowedTypes.includes(file.type)) { showToast('warning', '"' + file.name + '" ha un formato non supportato.'); return; }
+        uploadedFiles.push(file);
+    });
+    aggiornaFileList();
+    event.target.value = '';
+}
+
+function aggiornaFileList() {
+    const container = document.getElementById('file-list');
+    if (uploadedFiles.length === 0) { container.innerHTML = ''; return; }
+    container.innerHTML = uploadedFiles.map((file, index) => '<div class="file-item"><span>📄</span><span class="file-name">' + escapeHtml(file.name) + '</span><span class="file-size">' + formatBytes(file.size) + '</span><span class="file-remove" onclick="rimuoviFile(' + index + ')" title="Rimuovi">✕</span></div>').join('');
+}
+
+function rimuoviFile(index) {
+    uploadedFiles.splice(index, 1);
+    aggiornaFileList();
+}
+
+async function caricaDocumenti(praticaId) {
+    for (const file of uploadedFiles) {
+        const filePath = currentUser.id + '/' + praticaId + '/' + Date.now() + '_' + file.name;
+        const { error: uploadError } = await supabase.storage.from('documenti').upload(filePath, file);
+        if (uploadError) { console.warn('Errore upload file:', uploadError); continue; }
+        const { error: dbError } = await supabase.from('documenti').insert([{
+            pratica_id: praticaId,
+            nome_file: file.name,
+            percorso: filePath,
+            tipo_file: file.type,
+            dimensione: file.size,
+            user_id: currentUser.id
+        }]);
+        if (dbError) { console.warn('Errore salvataggio riferimento:', dbError); }
+    }
+}
+
+function toggleCheckbox(element) {
+    const checkbox = element.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    if (checkbox.checked) {
+        element.style.borderColor = 'var(--primary)';
+        element.style.background = 'var(--primary-light)';
+    } else {
+        element.style.borderColor = 'var(--gray-200)';
+        element.style.background = 'white';
+    }
+}
+
+function annullaPratica() {
+    if (confirm('Sei sicuro di voler annullare? I dati inseriti andranno persi.')) { window.location.href = 'dashboard.html'; }
+}
+
+async function logout() {
+    if (!confirm('Vuoi uscire dall account?')) return;
+    await supabase.auth.signOut();
+    window.location.href = 'login.html';
+}
+
+function showToast(type, message, duration = 5000) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    const icons = { success: '✅', error: '❌', warning: '⚠️' };
+    toast.innerHTML = '<span>' + (icons[type] || 'ℹ️') + '</span><span>' + escapeHtml(message) + '</span><span class="toast-close" onclick="this.parentElement.remove()">✕</span>';
+    container.appendChild(toast);
+    setTimeout(() => { if (toast.parentElement) { toast.style.animation = 'slideIn 0.3s ease reverse'; setTimeout(() => toast.remove(), 300); } }, duration);
+}
+
+function showLoading(show) {
+    const overlay = document.getElementById('loading-overlay');
+    if (show) { overlay.classList.add('active'); } else { overlay.classList.remove('active'); }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+const uploadZone = document.querySelector('.file-upload-zone');
+if (uploadZone) {
+    uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--primary)'; uploadZone.style.background = 'var(--primary-light)'; });
+    uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--gray-300)'; uploadZone.style.background = 'var(--gray-50)'; });
+    uploadZone.addEventListener('drop', (e) => { e.preventDefault(); uploadZone.style.borderColor = 'var(--gray-300)'; uploadZone.style.background = 'var(--gray-50)'; const files = Array.from(e.dataTransfer.files); const event = { target: { files: files } }; handleFileSelect(event); });
+}
+
+let formModified = false;
+document.getElementById('pratica-form').addEventListener('input', () => { formModified = true; });
+window.addEventListener('beforeunload', (e) => { if (formModified) { e.preventDefault(); e.returnValue = ''; } });
+</script>
+
+        
+
+           
+         
+      
 </body>
 </html>
