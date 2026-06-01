@@ -8,83 +8,71 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #333; }
-        
-        /* Header */
+
         .header { background: #1a237e; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { font-size: 1.5rem; }
         .header .user-info { display: flex; align-items: center; gap: 1rem; }
         .header button { background: #ff6f00; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
-        
-        /* Container */
+
         .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-        
-        /* Toolbar */
+
         .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
         .toolbar-left { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
         .search-box { padding: 0.6rem 1rem; border: 1px solid #ddd; border-radius: 4px; width: 250px; }
         .filter-select { padding: 0.6rem; border: 1px solid #ddd; border-radius: 4px; }
         .btn-new { background: #4caf50; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
         .btn-new:hover { background: #45a049; }
-        
-        /* Stats */
+
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
         .stat-card { background: white; padding: 1.2rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
         .stat-card .number { font-size: 2rem; font-weight: bold; color: #1a237e; }
         .stat-card .label { color: #666; font-size: 0.9rem; }
-        
-        /* Table */
+
         .table-container { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
         th { background: #1a237e; color: white; padding: 1rem; text-align: left; font-weight: 600; }
         td { padding: 1rem; border-bottom: 1px solid #eee; }
         tr:hover { background: #f8f9fa; }
-        
-        /* Stato badges */
+
         .badge { padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500; }
         .badge-bozza { background: #fff3e0; color: #e65100; }
         .badge-lavorazione { background: #e3f2fd; color: #1565c0; }
         .badge-depositata { background: #e8f5e9; color: #2e7d32; }
         .badge-collegata { background: #f3e5f5; color: #6a1b9a; }
-        
-        /* Azioni */
+
         .actions { display: flex; gap: 0.5rem; }
         .actions button { padding: 0.4rem 0.8rem; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
         .btn-view { background: #1a237e; color: white; }
         .btn-edit { background: #ff6f00; color: white; }
         .btn-delete { background: #d32f2f; color: white; }
-        
-        /* Empty state */
+
         .empty { text-align: center; padding: 3rem; color: #666; }
         .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
-        
-        /* Loading */
         .loading { text-align: center; padding: 3rem; color: #666; }
-        
-        /* Mobile */
+        .error { text-align: center; padding: 2rem; color: #d32f2f; background: #ffebee; border-radius: 8px; margin: 1rem 0; }
+
         @media (max-width: 768px) {
-            .header { padding: 1rem; }
+            .header { padding: 1rem; flex-wrap: wrap; gap: 0.5rem; }
             .header h1 { font-size: 1.2rem; }
             .toolbar { flex-direction: column; align-items: stretch; }
             .search-box { width: 100%; }
             table { font-size: 0.9rem; }
             th, td { padding: 0.6rem; }
             .actions { flex-direction: column; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="header">
         <h1>📋 BrevettIAmo - Dashboard</h1>
         <div class="user-info">
-            <span id="userEmail">utente@email.it</span>
+            <span id="userEmail">...</span>
             <button onclick="logout()">Logout</button>
         </div>
     </div>
 
-    <!-- Container -->
     <div class="container">
-        <!-- Stats -->
         <div class="stats">
             <div class="stat-card">
                 <div class="number" id="statTotal">0</div>
@@ -104,7 +92,6 @@
             </div>
         </div>
 
-        <!-- Toolbar -->
         <div class="toolbar">
             <div class="toolbar-left">
                 <input type="text" class="search-box" id="searchInput" placeholder="🔍 Cerca per titolo..." onkeyup="filterPratiche()">
@@ -122,12 +109,12 @@
                     <option value="collegata">Collegata</option>
                 </select>
             </div>
-            <a href="wizard.html" class="btn-new">+ Nuova Pratica</a>
+            <a href="nuova-pratica.html" class="btn-new">+ Nuova Pratica</a>
         </div>
 
-        <!-- Table -->
         <div class="table-container">
             <div id="loadingState" class="loading">Caricamento pratiche...</div>
+            <div id="errorState" class="error" style="display:none;"></div>
             <div id="emptyState" class="empty" style="display:none;">
                 <div class="empty-icon">📭</div>
                 <h3>Nessuna pratica trovata</h3>
@@ -144,31 +131,31 @@
                         <th>Azioni</th>
                     </tr>
                 </thead>
-                <tbody id="praticheBody">
-                    <!-- Popolato via JS -->
-                </tbody>
+                <tbody id="praticheBody"></tbody>
             </table>
         </div>
     </div>
 
     <script>
         // ==================== CONFIG ====================
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co'; // ← MODIFICA
-        const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk'; // ← MODIFICA
-
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        let allPratiche = []; // Per filtri
+        let allPratiche = [];
 
         // ==================== AUTH CHECK ====================
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'index.html';
-                return;
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                document.getElementById('userEmail').textContent = session.user.email;
+                loadPratiche(session.user.id);
+            } catch (err) {
+                showError('Errore autenticazione: ' + err.message);
             }
-            document.getElementById('userEmail').textContent = session.user.email;
-            loadPratiche(session.user.id);
         }
 
         // ==================== LOGOUT ====================
@@ -179,22 +166,26 @@
 
         // ==================== CARICA PRATICHE ====================
         async function loadPratiche(userId) {
-            const { data, error } = await supabase
-                .from('pratiche')
-                .select('*')
-                .eq('utente_id', userId)
-                .order('creato', { ascending: false });
+            try {
+                const { data, error } = await supabase
+                    .from('pratiche')
+                    .select('*')
+                    .eq('utente_id', userId)
+                    .order('creato', { ascending: false });
 
-            document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('loadingState').style.display = 'none';
 
-            if (error) {
-                alert('Errore caricamento: ' + error.message);
-                return;
+                if (error) {
+                    showError('Errore database: ' + error.message);
+                    return;
+                }
+
+                allPratiche = data || [];
+                updateStats(allPratiche);
+                renderTable(allPratiche);
+            } catch (err) {
+                showError('Errore caricamento: ' + err.message);
             }
-
-            allPratiche = data || [];
-            updateStats(allPratiche);
-            renderTable(allPratiche);
         }
 
         // ==================== STATS ====================
@@ -223,7 +214,7 @@
             tbody.innerHTML = pratiche.map(p => `
                 <tr>
                     <td><strong>#${p.id.toString().slice(-6)}</strong></td>
-                    <td>${p.titolo || 'Senza titolo'}</td>
+                    <td>${escapeHtml(p.titolo || 'Senza titolo')}</td>
                     <td>${formatTipo(p.tipo)}</td>
                     <td><span class="badge badge-${p.stato}">${formatStato(p.stato)}</span></td>
                     <td>${formatDate(p.creato)}</td>
@@ -256,32 +247,27 @@
 
         // ==================== AZIONI ====================
         function viewPratica(id) {
-            // PACCHETTO 5: Dettaglio pratica
             alert('Visualizza pratica #' + id + '\n\n(PACCHETTO 5: pagina dettaglio in arrivo!)');
-            // window.location.href = 'dettaglio.html?id=' + id;
         }
 
         function editPratica(id) {
-            // Torna al wizard con ID pratica
-            window.location.href = 'wizard.html?edit=' + id;
+            window.location.href = 'nuova-pratica.html?edit=' + id;
         }
 
         async function deletePratica(id) {
             if (!confirm('Sei sicuro di voler eliminare questa pratica?')) return;
 
-            const { error } = await supabase
-                .from('pratiche')
-                .delete()
-                .eq('id', id);
-
-            if (error) {
-                alert('Errore eliminazione: ' + error.message);
-                return;
+            try {
+                const { error } = await supabase.from('pratiche').delete().eq('id', id);
+                if (error) {
+                    alert('Errore eliminazione: ' + error.message);
+                    return;
+                }
+                const { data: { session } } = await supabase.auth.getSession();
+                loadPratiche(session.user.id);
+            } catch (err) {
+                alert('Errore: ' + err.message);
             }
-
-            // Ricarica
-            const { data: { session } } = await supabase.auth.getSession();
-            loadPratiche(session.user.id);
         }
 
         // ==================== UTILITIES ====================
@@ -304,6 +290,18 @@
             if (!dateString) return '-';
             const d = new Date(dateString);
             return d.toLocaleDateString('it-IT');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function showError(msg) {
+            document.getElementById('loadingState').style.display = 'none';
+            const el = document.getElementById('errorState');
+            el.textContent = msg;
+            el.style.display = 'block';
         }
 
         // ==================== INIT ====================
