@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrevettIAmo - Dettaglio Pratica</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Arial,sans-serif; background:#f0f2f5; }
+.navbar { background:#1e3c72; color:white; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
+.navbar h1 { font-size:1.3em; }
+.navbar a { color:white; text-decoration:none; margin-left:20px; }
+.container { max-width:900px; margin:0 auto; padding:20px; }
+.alert { padding:15px; border-radius:5px; margin-bottom:15px; display:none; }
+.alert.show { display:block; }
+.alert-error { background:#f8d7da; color:#721c24; }
+.alert-success { background:#d4edda; color:#155724; }
+.card { background:white; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:15px; overflow:hidden; }
+.card-header { background:#1e3c72; color:white; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.card-header h2 { font-size:1.2em; }
+.status-badge { padding:5px 15px; border-radius:20px; font-size:0.9em; font-weight:bold; }
+.status-nuova { background:#d1ecf1; color:#0c5460; }
+.status-bozza { background:#fff3cd; color:#856404; }
+.status-lavorazione { background:#cce5ff; color:#004085; }
+.status-depositata { background:#d4edda; color:#155724; }
+.status-concessa { background:#d1ecf1; color:#0c5460; }
+.status-rifiutata { background:#f8d7da; color:#721c24; }
+.card-body { padding:20px; }
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+@media (max-width:600px) { .info-grid { grid-template-columns:1fr; } }
+.info-item { display:flex; flex-direction:column; gap:5px; }
+.info-label { font-size:0.8em; font-weight:bold; color:#666; text-transform:uppercase; }
+.info-value { font-size:1em; color:#333; }
+.info-value.empty { color:#999; font-style:italic; }
+.section-title { font-size:1em; font-weight:bold; color:#1e3c72; margin-bottom:10px; padding-bottom:5px; border-bottom:2px solid #eee; }
+.full-width { grid-column:1 / -1; }
+.description-box { background:#f8f9fa; border-radius:5px; padding:12px; line-height:1.5; color:#555; white-space:pre-wrap; }
+.documents-list { display:flex; flex-wrap:wrap; gap:8px; }
+.doc-tag { background:#eee; padding:5px 12px; border-radius:15px; font-size:0.85em; }
+.doc-tag.available { background:#d4edda; color:#155724; }
+.doc-tag.missing { background:#f8d7da; color:#721c24; opacity:0.6; }
+.actions-bar { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+.btn { padding:10px 20px; border:none; border-radius:5px; font-size:1em; font-weight:bold; cursor:pointer; text-decoration:none; display:inline-block; }
+.btn-primary { background:#1e3c72; color:white; }
+.btn-success { background:#28a745; color:white; }
+.status-selector { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+.status-btn { padding:6px 12px; border:2px solid #ddd; border-radius:15px; background:white; cursor:pointer; }
+.status-btn.active { border-color:#1e3c72; background:#1e3c72; color:white; }
+.loading-overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.9); z-index:1000; align-items:center; justify-content:center; flex-direction:column; }
+.loading-overlay.show { display:flex; }
+.spinner { width:40px; height:40px; border:3px solid #eee; border-top-color:#1e3c72; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:10px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.empty { text-align:center; padding:50px; color:#666; }
+.id-box { background:#f8f9fa; padding:5px 10px; border-radius:5px; font-family:monospace; font-size:0.8em; color:#666; }
+</style>
+</head>
+<body>
+<div class="loading-overlay" id="loadingOverlay">
+<div class="spinner"></div>
+<p style="color:#1e3c72; font-weight:bold;">Caricamento pratica...</p>
+</div>
+
+<nav class="navbar">
+<h1>BrevettIAmo - Dettaglio Pratica</h1>
+<a href="dashboard.html">Torna alla Dashboard</a>
+</nav>
+
+<div class="container">
+<div class="alert alert-error" id="errorAlert"></div>
+<div class="alert alert-success" id="successAlert"></div>
+
+<div id="contentArea">
+<div class="empty">
+<h3>Caricamento pratica...</h3>
+</div>
+</div>
+</div>
+
+<script>
+var SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+var supabaseClient = null;
+var praticaCorrente = null;
+
+function initSupabase() {
+try {
+if (window.supabase && window.supabase.createClient) {
+supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log('Supabase ok');
+caricaPratica();
+return true;
+} else {
+showError('Errore connessione server');
+return false;
+}
+} catch (err) {
+showError('Errore: ' + err.message);
+return false;
+}
+}
+
+setTimeout(initSupabase, 500);
+
+async function caricaPratica() {
+var urlParams = new URLSearchParams(window.location.search);
+var praticaId = urlParams.get('id');
+
+if (!praticaId) {
+showError('ID pratica mancante');
+document.getElementById('contentArea').innerHTML = '<div class="empty"><h3>ID mancante</h3><p><a href="dashboard.html">Torna alla Dashboard</a></p></div>';
+return;
+}
+
+document.getElementById('loadingOverlay').classList.add('show');
+
+try {
+console.log('Carico pratica: ' + praticaId);
+var result = await supabaseClient.from('pratiche').select('*').eq('id', praticaId).single();
+if (result.error) throw result.error;
+if (!result.data) throw new Error('Pratica non trovata');
+
+praticaCorrente = result.data;
+console.log('Pratica caricata: ' + result.data.titolo);
+renderPratica(result.data);
+} catch (err) {
+console.error('Errore:', err);
+showError('Errore caricamento: ' + err.message);
+document.getElementById('contentArea').innerHTML = '<div class="empty"><h3>Errore</h3><p>' + escapeHtml(err.message) + '</p><p><a href="dashboard.html">Torna alla Dashboard</a></p></div>';
+} finally {
+document.getElementById('loadingOverlay').classList.remove('show');
+}
+}
+
+function renderPratica(p) {
+var tipoLabels = {
+'invenzione': 'Invenzione Industriale',
+'modello_utilita': 'Modello di Utilita',
+'design': 'Design / Modello Estetico',
+'marchi': 'Marchio',
+'software': 'Brevetto Software / Algoritmo',
+'altro': 'Altro'
+};
+
+var settoreLabels = {
+'meccanica': 'Meccanica / Automotive',
+'elettronica': 'Elettronica / Elettrotecnica',
+'informatica': 'Informatica / Software / AI',
+'chimica': 'Chimica / Farmaceutica',
+'biotecnologie': 'Biotecnologie / Medicale',
+'energia': 'Energia / Ambiente',
+'edilizia': 'Edilizia / Architettura',
+'agroalimentare': 'Agroalimentare',
+'altro': 'Altro'
+};
+
+var faseLabels = {
+'idea': 'Idea / Concept',
+'prototipo': 'Prototipo in sviluppo',
+'test': 'Test / Validazione',
+'produzione': 'Pronto per produzione',
+'commerciale': 'Gia commercializzato'
+};
+
+var protezioneLabels = {
+'nazionale': 'Solo Italia',
+'europeo': 'Europa (EP)',
+'pct': 'Internazionale (PCT)',
+'usa': 'USA',
+'multi': 'Multi-paese'
+};
+
+var statusClasses = {
+'nuova': 'status-nuova',
+'bozza': 'status-bozza',
+'lavorazione': 'status-lavorazione',
+'depositata': 'status-depositata',
+'concessa': 'status-concessa',
+'rifiutata': 'status-rifiutata'
+};
+
+var statusLabels = {
+'nuova': 'Nuova',
+'bozza': 'In Bozza',
+'lavorazione': 'In Lavorazione',
+'depositata': 'Depositate',
+'concessa': 'Concessa',
+'rifiutata': 'Rifiutata'
+};
+
+var docs = [];
+docs.push({name: 'Descrizione tecnica', ok: p.doc_descrizione});
+docs.push({name: 'Disegni / Schemi', ok: p.doc_disegni});
+docs.push({name: 'Foto / Video prototipo', ok: p.doc_prototipo});
+docs.push({name: 'Ricerca anteriorita', ok: p.doc_ricerca});
+docs.push({name: 'Bozza claims', ok: p.doc_claims});
+docs.push({name: 'Deposito prior', ok: p.doc_deposito});
+
+var docsHtml = '';
+for (var i = 0; i < docs.length; i++) {
+var d = docs[i];
+var cls = d.ok ? 'available' : 'missing';
+var icon = d.ok ? 'OK' : 'NO';
+docsHtml += '<span class="doc-tag ' + cls + '">' + icon + ' ' + d.name + '</span>';
+}
+
+var linkHtml = '';
+if (p.link_documenti) {
+linkHtml = '<div style="margin-top:10px;"><span class="info-label">Link Documenti</span><br><a href="' + escapeHtml(p.link_documenti) + '" target="_blank" style="color:#1e3c72;word-break:break-all;">' + escapeHtml(p.link_documenti) + '</a></div>';
+}
+
+var noteDocHtml = '';
+if (p.note_documenti) {
+noteDocHtml = '<div style="margin-top:10px;"><span class="info-label">Note sui Documenti</span><div class="description-box">' + escapeHtml(p.note_documenti) + '</div></div>';
+}
+
+var noteHtml = '';
+if (p.note) {
+noteHtml = '<div class="card"><div class="card-body"><div class="section-title">Note Aggiuntive</div><div class="description-box">' + escapeHtml(p.note) + '</div></div></div>';
+}
+
+var statusBtnsHtml = '';
+var statusBtns = [
+{key: 'nuova', label: 'Nuova'},
+{key: 'bozza', label: 'In Bozza'},
+{key: 'lavorazione', label: 'In Lavorazione'},
+{key: 'depositata', label: 'Depositate'},
+{key: 'concessa', label: 'Concessa'},
+{key: 'rifiutata', label: 'Rifiutata'}
+];
+for (var i = 0; i < statusBtns.length; i++) {
+var sb = statusBtns[i];
+var activeClass = p.status === sb.key ? 'active' : '';
+statusBtnsHtml += '<button class="status-btn ' + activeClass + '" onclick="cambiaStato(' + "'" + sb.key + "'" + ')">' + sb.label + '</button>';
+}
+
+var html = '';
+
+html += '<div class="card">';
+html += '<div class="card-header">';
+html += '<div>';
+html += '<h2>' + escapeHtml(p.titolo || 'Senza titolo') + '</h2>';
+html += '<div class="id-box" style="margin-top:5px;">ID: ' + p.id + '</div>';
+html += '</div>';
+html += '<span class="status-badge ' + (statusClasses[p.status] || 'status-nuova') + '">' + (statusLabels[p.status] || p.status || 'Nuova') + '</span>';
+html += '</div>';
+html += '</div>';
+
+html += '<div class="card">';
+html += '<div class="card-body">';
+html += '<div class="section-title">Dati Principali</div>';
+html += '<div class="info-grid">';
+html += '<div class="info-item"><span class="info-label">Tipo Brevetto</span><span class="info-value">' + (tipoLabels[p.tipo_brevetto] || p.tipo_brevetto || '-') + '</span></div>';
+html += '<div class="info-item"><span class="info-label">Settore Tecnico</span><span class="info-value">' + (settoreLabels[p.settore] || p.settore || '-') + '</span></div>';
+html += '<div class="info-item"><span class="info-label">Inventore</span><span class="info-value">' + escapeHtml(p.inventore || '-') + '</span></div>';
+html += '<div class="info-item"><span class="info-label">Titolare</span><span class="info-value">' + escapeHtml(p.titolare || '-') + '</span></div>';
+html += '<div class="info-item"><span class="info-label">Priorita</span><span class="info-value ' + (p.priorita ? '' : 'empty') + '">' + escapeHtml(p.priorita || 'Nessuna') + '</span></div>';
+html += '<div class="info-item"><span class="info-label">Data Creazione</span><span class="info-value">' + formatData(p.created_at) + '</span></div>';
+html += '</div>';
+html += '</div>';
+html += '</div>';
+
+html += '<div class="card">';
+html += '<div class="card-body">';
+html += '<div class="section-title">Dettagli Tecnici</div>';
+html += '<div class="info-grid">';
+html += '<div class="info-item full-width"><span class="info-label">Descrizione Tecnica</span><div class="description-box">' + escapeHtml(p.descrizione_tecnica || 'Nessuna descrizione') + '</div></div>';
+html += '<div class="info-item full-width"><span class="info-label">Stato dell Arte</span><div class="description-box">' + escapeHtml(p.stato_arte || 'Nessuna informazione') + '</div></div>';
+html += '<div class="info-item"><span class="info-label">Campi di Applicazione</span><span class="info-value ' + (p.campi_applicazione ? '' : 'empty') + '">' + escapeHtml(p.campi_applicazione || 'Non specificati') + '</span></div>';
+html += '<div class="info-item"><span class="info-label">Fase di Sviluppo</span><span class="info-value">' + (faseLabels[p.fase_sviluppo] || p.fase_sviluppo || 'Non specificata') + '</span></div>';
+html += '<div class="info-item"><span class="info-label">Livello Protezione</span><span class="info-value">' + (protezioneLabels[p.livello_protezione] || p.livello_protezione || 'Non specificato') + '</span></div>';
+html += '</div>';
+html += '</div>';
+html += '</div>';
+
+html += '<div class="card">';
+html += '<div class="card-body">';
+html += '<div class="section-title">Documenti e Allegati</div>';
+html += '<div class="documents-list">' + docsHtml + '</div>';
+html += linkHtml;
+html += noteDocHtml;
+html += '</div>';
+html += '</div>';
+
+html += noteHtml;
+
+html += '<div class="card">';
+html += '<div class="card-body">';
+html += '<div class="section-title">Gestione Stato</div>';
+html += '<p style="color:#666; margin-bottom:10px;">Clicca per cambiare lo stato:</p>';
+html += '<div class="status-selector">' + statusBtnsHtml + '</div>';
+html += '</div>';
+html += '</div>';
+
+html += '<div class="actions-bar">';
+html += '<a href="dashboard.html" class="btn btn-primary">Torna alla Dashboard</a>';
+html += '<a href="nuova-pratica.html" class="btn btn-success">Nuova Pratica</a>';
+html += '</div>';
+
+document.getElementById('contentArea').innerHTML = html;
+}
+
+async function cambiaStato(nuovoStato) {
+if (!praticaCorrente) return;
+if (praticaCorrente.status === nuovoStato) return;
+if (!confirm('Confermi cambio stato in ' + getStatusLabel(nuovoStato) + '?')) return;
+
+document.getElementById('loadingOverlay').classList.add('show');
+
+try {
+var result = await supabaseClient.from('pratiche').update({status: nuovoStato}).eq('id', praticaCorrente.id).select();
+if (result.error) throw result.error;
+praticaCorrente.status = nuovoStato;
+renderPratica(praticaCorrente);
+showSuccess('Stato aggiornato!');
+} catch (err) {
+console.error('Errore:', err);
+showError('Errore aggiornamento: ' + err.message);
+} finally {
+document.getElementById('loadingOverlay').classList.remove('show');
+}
+}
+
+function getStatusLabel(stato) {
+var labels = {
+'nuova': 'Nuova',
+'bozza': 'In Bozza',
+'lavorazione': 'In Lavorazione',
+'depositata': 'Depositate',
+'concessa': 'Concessa',
+'rifiutata': 'Rifiutata'
+};
+return labels[stato] || stato;
+}
+
+function escapeHtml(text) {
+if (!text) return '';
+var div = document.createElement('div');
+div.textContent = text;
+return div.innerHTML;
+}
+
+function formatData(isoDate) {
+if (!isoDate) return '-';
+var d = new Date(isoDate);
+return d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+}
+
+function showError(msg) {
+var alert = document.getElementById('errorAlert');
+alert.textContent = msg;
+alert.classList.add('show');
+setTimeout(function() { alert.classList.remove('show'); }, 8000);
+}
+
+function showSuccess(msg) {
+var alert = document.getElementById('successAlert');
+alert.textContent = msg;
+alert.classList.add('show');
+setTimeout(function() { alert.classList.remove('show'); }, 5000);
+}
+</script>
+</body>
+</html>
