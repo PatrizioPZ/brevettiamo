@@ -205,8 +205,11 @@
 
     <script>
         // ============================================================
-        // USO supabase GIÀ DICHIARATO IN config.js — NON RIDICHIARARE
+        // CREO IL CLIENT SUPABASE DIRETTAMENTE QUI — AUTONOMO
         // ============================================================
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================================
         // VARIABILI GLOBALI
@@ -230,30 +233,22 @@
         });
 
         // ============================================================
-        // CARICA PRATICHE
+        // CARICA PRATICHE — CORRETTO PER IL TUO SCHEMA
         // ============================================================
         async function caricaPratiche() {
             try {
                 const { data, error } = await supabase
                     .from('pratiche')
-                    .select(`
-                        id,
-                        titolo,
-                        tipo_brevetto,
-                        stato,
-                        servizi,
-                        creato,
-                        utenti:utente_id (nome, cognome, email)
-                    `)
+                    .select('*')
                     .order('creato', { ascending: false });
-
+                
                 if (error) throw error;
-
+                
                 pratiche = data || [];
                 praticheFiltrate = [...pratiche];
                 aggiornaStats();
                 renderTabella();
-
+                
             } catch (err) {
                 console.error('Errore caricamento:', err);
                 mostraAlert('Errore caricamento dati: ' + err.message, 'error');
@@ -276,7 +271,7 @@
             const bozza = pratiche.filter(p => p.stato === 'bozza').length;
             const completate = pratiche.filter(p => p.stato === 'completata' || p.stato === 'attiva').length;
             const totale = pratiche.length;
-
+            
             document.getElementById('stat-fatturato').textContent = '€' + fatturato.toLocaleString('it-IT');
             document.getElementById('stat-attesa').textContent = attesa;
             document.getElementById('stat-bozza').textContent = bozza;
@@ -285,11 +280,11 @@
         }
 
         // ============================================================
-        // RENDER TABELLA
+        // RENDER TABELLA — CORRETTO PER IL TUO SCHEMA
         // ============================================================
         function renderTabella() {
             const container = document.getElementById('table-content');
-
+            
             if (praticheFiltrate.length === 0) {
                 container.innerHTML = `
                     <div class="empty">
@@ -300,30 +295,34 @@
                 document.getElementById('pagination').style.display = 'none';
                 return;
             }
-
+            
             const inizio = (paginaCorrente - 1) * righePerPagina;
             const fine = inizio + righePerPagina;
             const pagina = praticheFiltrate.slice(inizio, fine);
             const totalePagine = Math.ceil(praticheFiltrate.length / righePerPagina);
-
+            
             let html = '';
             pagina.forEach(p => {
-                const utente = p.utenti || {};
-                const nomeUtente = utente.nome && utente.cognome
-                    ? utente.nome + ' ' + utente.cognome
-                    : (utente.email || 'N/D');
-                const data = new Date(p.creato).toLocaleDateString('it-IT');
+                // Gestione utente_id NULL
+                const nomeUtente = p.utente_id ? 'Utente ' + p.utente_id.substring(0, 8) : 'N/D';
+                const data = p.creato ? new Date(p.creato).toLocaleDateString('it-IT') : 'N/D';
                 const statoClass = getStatoClass(p.stato);
                 const statoLabel = getStatoLabel(p.stato);
-                const servizi = p.servizi ? p.servizi.join(', ') : '-';
-
+                // tipo_brevetto o tipo
+                const tipo = p.tipo_brevetto || p.tipo || 'N/D';
+                // servizi array
+                let servizi = '-';
+                if (p.servizi && Array.isArray(p.servizi) && p.servizi.length > 0) {
+                    servizi = p.servizi.join(', ');
+                }
+                
                 html += `
                     <div class="table-row">
                         <div class="col-id">${p.id.substring(0, 8)}</div>
                         <div class="col-data">${data}</div>
                         <div class="col-utente">${nomeUtente}</div>
                         <div class="col-titolo">${p.titolo || 'Senza titolo'}</div>
-                        <div class="col-tipo">${p.tipo_brevetto || 'N/D'}</div>
+                        <div class="col-tipo">${tipo}</div>
                         <div><span class="badge ${statoClass}">${statoLabel}</span></div>
                         <div class="col-servizi">${servizi}</div>
                         <div class="actions">
@@ -333,10 +332,10 @@
                     </div>
                 `;
             });
-
+            
             container.innerHTML = html;
-
-            document.getElementById('pagination-info').textContent =
+            
+            document.getElementById('pagination-info').textContent = 
                 `Pagina ${paginaCorrente} di ${totalePagine}`;
             document.getElementById('btn-prev').disabled = paginaCorrente === 1;
             document.getElementById('btn-next').disabled = paginaCorrente === totalePagine;
@@ -356,7 +355,7 @@
             };
             return map[stato] || 'badge-default';
         }
-
+        
         function getStatoLabel(stato) {
             const map = {
                 'bozza': 'In Bozza',
@@ -376,29 +375,27 @@
             const stato = document.getElementById('filter-stato').value;
             const dataDa = document.getElementById('filter-data-da').value;
             const dataA = document.getElementById('filter-data-a').value;
-
+            
             praticheFiltrate = pratiche.filter(p => {
-                const utente = p.utenti || {};
-                const nomeUtente = (utente.nome + ' ' + utente.cognome + ' ' + utente.email).toLowerCase();
-
-                const matchSearch = !search ||
+                const matchSearch = !search || 
                     (p.titolo && p.titolo.toLowerCase().includes(search)) ||
-                    nomeUtente.includes(search) ||
+                    (p.tipo_brevetto && p.tipo_brevetto.toLowerCase().includes(search)) ||
+                    (p.tipo && p.tipo.toLowerCase().includes(search)) ||
                     p.id.toLowerCase().includes(search);
-
+                
                 const matchStato = !stato || p.stato === stato;
-
-                const pData = new Date(p.creato);
-                const matchDataDa = !dataDa || pData >= new Date(dataDa);
-                const matchDataA = !dataA || pData <= new Date(dataA + 'T23:59:59');
-
+                
+                const pData = p.creato ? new Date(p.creato) : null;
+                const matchDataDa = !dataDa || (pData && pData >= new Date(dataDa));
+                const matchDataA = !dataA || (pData && pData <= new Date(dataA + 'T23:59:59'));
+                
                 return matchSearch && matchStato && matchDataDa && matchDataA;
             });
-
+            
             paginaCorrente = 1;
             renderTabella();
         }
-
+        
         function resetFiltri() {
             document.getElementById('filter-search').value = '';
             document.getElementById('filter-stato').value = '';
@@ -436,34 +433,34 @@
             document.getElementById('nuovo-stato').value = statoAttuale;
             document.getElementById('modal-stato').classList.add('active');
         }
-
+        
         function chiudiModal() {
             document.getElementById('modal-stato').classList.remove('active');
             praticaSelezionata = null;
         }
-
+        
         async function confermaCambioStato() {
             if (!praticaSelezionata) return;
-
+            
             const nuovoStato = document.getElementById('nuovo-stato').value;
-
+            
             try {
                 const { error } = await supabase
                     .from('pratiche')
-                    .update({ stato: nuovoStato, aggiornato: new Date().toISOString() })
+                    .update({ stato: nuovoStato })
                     .eq('id', praticaSelezionata);
-
+                
                 if (error) throw error;
-
+                
                 mostraAlert('Stato aggiornato con successo!', 'success');
                 chiudiModal();
                 await caricaPratiche();
-
+                
             } catch (err) {
                 mostraAlert('Errore: ' + err.message, 'error');
             }
         }
-
+        
         document.getElementById('modal-stato').addEventListener('click', function(e) {
             if (e.target === this) chiudiModal();
         });
