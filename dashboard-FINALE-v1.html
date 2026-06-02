@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrevettIAmo - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .navbar h1 { font-size: 1.4em; display: flex; align-items: center; gap: 10px; }
+        .navbar .nav-links { display: flex; gap: 20px; align-items: center; }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        .navbar a:hover { background: rgba(255,255,255,0.15); }
+        .navbar a.active { background: rgba(255,255,255,0.25); }
+        .btn-logout {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn-logout:hover { background: #c0392b; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #2a5298;
+            margin-bottom: 8px;
+        }
+        .stat-label { color: #6c757d; font-size: 0.95em; font-weight: 500; }
+        .filters-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
+        }
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1em;
+        }
+        .filter-select {
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+            min-width: 160px;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        .btn-new {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            white-space: nowrap;
+        }
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .table-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 16px 24px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #f8f9fa; }
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e9ecef;
+            color: #2c3e50;
+            font-size: 0.95em;
+        }
+        tr:hover { background: #f8f9fa; }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .status-nuova { background: #d1ecf1; color: #0c5460; }
+        .status-bozza { background: #fff3cd; color: #856404; }
+        .status-lavorazione { background: #cce5ff; color: #004085; }
+        .status-depositata { background: #d4edda; color: #155724; }
+        .status-concessa { background: #d1ecf1; color: #0c5460; }
+        .status-rifiutata { background: #f8d7da; color: #721c24; }
+        .actions { display: flex; gap: 8px; }
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .btn-view { background: #e9ecef; color: #495057; }
+        .btn-view:hover { background: #dee2e6; }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state-icon { font-size: 4em; margin-bottom: 16px; }
+        .empty-state h3 { margin-bottom: 8px; color: #495057; }
+        .loading-row { text-align: center; padding: 40px; color: #6c757d; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid #e9ecef;
+            border-top-color: #2a5298;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .alert.show { display: block; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .truncate { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        @media (max-width: 768px) {
+            .filters-bar { flex-direction: column; align-items: stretch; }
+            .search-box { min-width: 100%; }
+            .table-container { overflow-x: auto; }
+            table { min-width: 800px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>📋 BrevettIAmo - Dashboard</h1>
+        <div class="nav-links">
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="nuova-pratica.html">Nuova Pratica</a>
+            <a href="index.html">Home</a>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="alert alert-error" id="errorAlert"></div>
+        <div class="alert alert-success" id="successAlert"></div>
+
+        <!-- Statistiche -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="statTotale">0</div>
+                <div class="stat-label">Totale Pratiche</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statBozza">0</div>
+                <div class="stat-label">In Bozza</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statLavorazione">0</div>
+                <div class="stat-label">In Lavorazione</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statDepositate">0</div>
+                <div class="stat-label">Depositate</div>
+            </div>
+        </div>
+
+        <!-- Filtri -->
+        <div class="filters-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cerca per titolo..." oninput="filtraPratiche()">
+            </div>
+            <select class="filter-select" id="filterTipo" onchange="filtraPratiche()">
+                <option value="">Tutti i tipi</option>
+                <option value="invenzione">Invenzione Industriale</option>
+                <option value="modello_utilita">Modello di Utilità</option>
+                <option value="design">Design</option>
+                <option value="marchi">Marchio</option>
+                <option value="software">Software</option>
+                <option value="altro">Altro</option>
+            </select>
+            <select class="filter-select" id="filterStato" onchange="filtraPratiche()">
+                <option value="">Tutti gli stati</option>
+                <option value="nuova">Nuova</option>
+                <option value="bozza">In Bozza</option>
+                <option value="lavorazione">In Lavorazione</option>
+                <option value="depositata">Depositate</option>
+                <option value="concessa">Concessa</option>
+                <option value="rifiutata">Rifiutata</option>
+            </select>
+            <a href="nuova-pratica.html" class="btn-new">+ Nuova Pratica</a>
+        </div>
+
+        <!-- Tabella -->
+        <div class="table-container">
+            <div class="table-header">
+                <span>📋 Elenco Pratiche</span>
+                <span id="praticheCount">Caricamento...</span>
+            </div>
+            <div id="tableContent">
+                <div class="loading-row">
+                    <div class="spinner"></div>
+                    <p>Caricamento pratiche...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SUPABASE - INIZIALIZZAZIONE UNICA E SICURA
+        // ============================================
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+
+        let supabaseClient = null;
+        let tuttePratiche = [];
+
+        function initSupabase() {
+            try {
+                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('✅ Supabase inizializzato');
+                    caricaPratiche();
+                    return true;
+                } else {
+                    console.error('❌ Libreria Supabase non caricata');
+                    showError('Errore di connessione al server. Ricarica la pagina.');
+                    return false;
+                }
+            } catch (err) {
+                console.error('❌ Errore init Supabase:', err);
+                showError('Errore di connessione: ' + err.message);
+                return false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initSupabase, 500);
+        });
+
+        // ============================================
+        // CARICAMENTO PRATICHE
+        // ============================================
+        async function caricaPratiche() {
+            if (!supabaseClient) {
+                if (!initSupabase()) return;
+            }
+
+            try {
+                console.log('📥 Caricamento pratiche...');
+                const { data, error } = await supabaseClient
+                    .from('pratiche')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('❌ Errore query:', error);
+                    throw error;
+                }
+
+                tuttePratiche = data || [];
+                console.log('✅ Pratiche caricate:', tuttePratiche.length);
+
+                aggiornaStatistiche();
+                renderTabella(tuttePratiche);
+
+            } catch (err) {
+                console.error('❌ Errore caricamento:', err);
+                showError('Errore caricamento pratiche: ' + err.message);
+                document.getElementById('tableContent').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Errore di caricamento</h3>
+                        <p>${err.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // STATISTICHE
+        // ============================================
+        function aggiornaStatistiche() {
+            const totale = tuttePratiche.length;
+            const bozza = tuttePratiche.filter(p => p.status === 'bozza').length;
+            const lavorazione = tuttePratiche.filter(p => p.status === 'lavorazione').length;
+            const depositate = tuttePratiche.filter(p => p.status === 'depositata' || p.status === 'concessa').length;
+
+            document.getElementById('statTotale').textContent = totale;
+            document.getElementById('statBozza').textContent = bozza;
+            document.getElementById('statLavorazione').textContent = lavorazione;
+            document.getElementById('statDepositate').textContent = depositate;
+        }
+
+        // ============================================
+        // RENDER TABELLA
+        // ============================================
+        function renderTabella(pratiche) {
+            const container = document.getElementById('tableContent');
+            document.getElementById('praticheCount').textContent = pratiche.length + ' pratiche';
+
+            if (pratiche.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>Nessuna pratica trovata</h3>
+                        <p>Crea la tua prima pratica cliccando su "+ Nuova Pratica"</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const tipoLabels = {
+                'invenzione': 'Invenzione',
+                'modello_utilita': 'Modello Utilità',
+                'design': 'Design',
+                'marchi': 'Marchio',
+                'software': 'Software',
+                'altro': 'Altro'
+            };
+
+            const statusLabels = {
+                'nuova': 'Nuova',
+                'bozza': 'In Bozza',
+                'lavorazione': 'In Lavorazione',
+                'depositata': 'Depositate',
+                'concessa': 'Concessa',
+                'rifiutata': 'Rifiutata'
+            };
+
+            const statusClasses = {
+                'nuova': 'status-nuova',
+                'bozza': 'status-bozza',
+                'lavorazione': 'status-lavorazione',
+                'depositata': 'status-depositata',
+                'concessa': 'status-concessa',
+                'rifiutata': 'status-rifiutata'
+            };
+
+            const html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Titolo</th>
+                            <th>Tipo</th>
+                            <th>Settore</th>
+                            <th>Inventore</th>
+                            <th>Stato</th>
+                            <th>Data</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${pratiche.map(p => `
+                            <tr>
+                                <td><code style="font-size:0.85em;color:#6c757d;">${p.id ? p.id.substring(0,8) + '...' : '-'}</code></td>
+                                <td class="truncate" title="${escapeHtml(p.titolo || '-')}">${escapeHtml(p.titolo || '-')}</td>
+                                <td>${tipoLabels[p.tipo_brevetto] || p.tipo_brevetto || '-'}</td>
+                                <td>${p.settore || '-'}</td>
+                                <td>${escapeHtml(p.inventore || '-')}</td>
+                                <td><span class="status-badge ${statusClasses[p.status] || 'status-nuova'}">${statusLabels[p.status] || p.status || 'Nuova'}</span></td>
+                                <td>${formatData(p.created_at)}</td>
+                                <td>
+                                    <div class="actions">
+                                        <button class="btn-action btn-view" onclick="vediDettaglio('${p.id}')">👁️ Vedi</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // ============================================
+        // FILTRI
+        // ============================================
+        function filtraPratiche() {
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const tipo = document.getElementById('filterTipo').value;
+            const stato = document.getElementById('filterStato').value;
+
+            let filtrate = tuttePratiche;
+
+            if (search) {
+                filtrate = filtrate.filter(p => 
+                    (p.titolo && p.titolo.toLowerCase().includes(search)) ||
+                    (p.inventore && p.inventore.toLowerCase().includes(search))
+                );
+            }
+
+            if (tipo) {
+                filtrate = filtrate.filter(p => p.tipo_brevetto === tipo);
+            }
+
+            if (stato) {
+                filtrate = filtrate.filter(p => p.status === stato);
+            }
+
+            renderTabella(filtrate);
+        }
+
+        // ============================================
+        // UTILITÀ
+        // ============================================
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatData(isoDate) {
+            if (!isoDate) return '-';
+            const d = new Date(isoDate);
+            return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function vediDettaglio(id) {
+            alert('Dettaglio pratica: ' + id + '\n\n(In sviluppo - PACCHETTO 5)');
+        }
+
+        function logout() {
+            if (confirm('Sei sicuro di voler uscire?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        function showError(msg) {
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 8000);
+        }
+
+        function showSuccess(msg) {
+            const alert = document.getElementById('successAlert');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 5000);
+        }
+    </script>
+</body>
+</html>
