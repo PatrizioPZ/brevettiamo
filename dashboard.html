@@ -46,7 +46,7 @@ tr:hover { background:#f8f9fa; }
 </style>
 </head>
 <body>
-<nav class="navbar">
+<<nav class="navbar">
 <h1>BrevettIAmo - Dashboard</h1>
 <div>
 <a href="dashboard.html">Dashboard</a>
@@ -200,7 +200,6 @@ for (var i = 0; i < pratiche.length; i++) {
 var p = pratiche[i];
 var idShort = p.id ? p.id.substring(0,8) + '...' : '-';
 var titolo = escapeHtml(p.titolo || '-');
-var 
 var tipo = tipoLabels[p.tipo_brevetto] || p.tipo_brevetto || '-';
 var settore = p.settore || '-';
 var inventore = escapeHtml(p.inventore || '-');
