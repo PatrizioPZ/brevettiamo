@@ -248,7 +248,6 @@
         <div class="alert alert-error" id="errorAlert"></div>
         <div class="alert alert-success" id="successAlert"></div>
 
-        <!-- Statistiche -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number" id="statTotale">0</div>
@@ -268,7 +267,6 @@
             </div>
         </div>
 
-        <!-- Filtri -->
         <div class="filters-bar">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Cerca per titolo..." oninput="filtraPratiche()">
@@ -294,7 +292,6 @@
             <a href="nuova-pratica.html" class="btn-new">+ Nuova Pratica</a>
         </div>
 
-        <!-- Tabella -->
         <div class="table-container">
             <div class="table-header">
                 <span>📋 Elenco Pratiche</span>
@@ -310,9 +307,6 @@
     </div>
 
     <script>
-        // ============================================
-        // SUPABASE - INIZIALIZZAZIONE UNICA E SICURA
-        // ============================================
         const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
 
@@ -323,16 +317,16 @@
             try {
                 if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
                     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    console.log('✅ Supabase inizializzato');
+                    console.log('Supabase inizializzato');
                     caricaPratiche();
                     return true;
                 } else {
-                    console.error('❌ Libreria Supabase non caricata');
+                    console.error('Libreria Supabase non caricata');
                     showError('Errore di connessione al server. Ricarica la pagina.');
                     return false;
                 }
             } catch (err) {
-                console.error('❌ Errore init Supabase:', err);
+                console.error('Errore init Supabase:', err);
                 showError('Errore di connessione: ' + err.message);
                 return false;
             }
@@ -342,53 +336,41 @@
             setTimeout(initSupabase, 500);
         });
 
-        // ============================================
-        // CARICAMENTO PRATICHE
-        // ============================================
         async function caricaPratiche() {
             if (!supabaseClient) {
                 if (!initSupabase()) return;
             }
 
             try {
-                console.log('📥 Caricamento pratiche...');
+                console.log('Caricamento pratiche...');
                 const { data, error } = await supabaseClient
                     .from('pratiche')
                     .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) {
-                    console.error('❌ Errore query:', error);
+                    console.error('Errore query:', error);
                     throw error;
                 }
 
                 tuttePratiche = data || [];
-                console.log('✅ Pratiche caricate:', tuttePratiche.length);
+                console.log('Pratiche caricate:', tuttePratiche.length);
 
                 aggiornaStatistiche();
                 renderTabella(tuttePratiche);
 
             } catch (err) {
-                console.error('❌ Errore caricamento:', err);
+                console.error('Errore caricamento:', err);
                 showError('Errore caricamento pratiche: ' + err.message);
-                document.getElementById('tableContent').innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">⚠️</div>
-                        <h3>Errore di caricamento</h3>
-                        <p>${err.message}</p>
-                    </div>
-                `;
+                document.getElementById('tableContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><h3>Errore di caricamento</h3><p>' + escapeHtml(err.message) + '</p></div>';
             }
         }
 
-        // ============================================
-        // STATISTICHE
-        // ============================================
         function aggiornaStatistiche() {
             const totale = tuttePratiche.length;
-            const bozza = tuttePratiche.filter(p => p.status === 'bozza').length;
-            const lavorazione = tuttePratiche.filter(p => p.status === 'lavorazione').length;
-            const depositate = tuttePratiche.filter(p => p.status === 'depositata' || p.status === 'concessa').length;
+            const bozza = tuttePratiche.filter(function(p) { return p.status === 'bozza'; }).length;
+            const lavorazione = tuttePratiche.filter(function(p) { return p.status === 'lavorazione'; }).length;
+            const depositate = tuttePratiche.filter(function(p) { return p.status === 'depositata' || p.status === 'concessa'; }).length;
 
             document.getElementById('statTotale').textContent = totale;
             document.getElementById('statBozza').textContent = bozza;
@@ -396,27 +378,18 @@
             document.getElementById('statDepositate').textContent = depositate;
         }
 
-        // ============================================
-        // RENDER TABELLA
-        // ============================================
         function renderTabella(pratiche) {
             const container = document.getElementById('tableContent');
             document.getElementById('praticheCount').textContent = pratiche.length + ' pratiche';
 
             if (pratiche.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <h3>Nessuna pratica trovata</h3>
-                        <p>Crea la tua prima pratica cliccando su "+ Nuova Pratica"</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><h3>Nessuna pratica trovata</h3><p>Crea la tua prima pratica cliccando su "+ Nuova Pratica"</p></div>';
                 return;
             }
 
             const tipoLabels = {
                 'invenzione': 'Invenzione',
-                'modello_utilita': 'Modello Utilità',
+                'modello_utilita': 'Modello Utilita',
                 'design': 'Design',
                 'marchi': 'Marchio',
                 'software': 'Software',
@@ -441,47 +414,35 @@
                 'rifiutata': 'status-rifiutata'
             };
 
-            const html = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Titolo</th>
-                            <th>Tipo</th>
-                            <th>Settore</th>
-                            <th>Inventore</th>
-                            <th>Stato</th>
-                            <th>Data</th>
-                            <th>Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${pratiche.map(p => `
-                            <tr>
-                                <td><code style="font-size:0.85em;color:#6c757d;">${p.id ? p.id.substring(0,8) + '...' : '-'}</code></td>
-                                <td class="truncate" title="${escapeHtml(p.titolo || '-')}">${escapeHtml(p.titolo || '-')}</td>
-                                <td>${tipoLabels[p.tipo_brevetto] || p.tipo_brevetto || '-'}</td>
-                                <td>${p.settore || '-'}</td>
-                                <td>${escapeHtml(p.inventore || '-')}</td>
-                                <td><span class="status-badge ${statusClasses[p.status] || 'status-nuova'}">${statusLabels[p.status] || p.status || 'Nuova'}</span></td>
-                                <td>${formatData(p.created_at)}</td>
-                                <td>
-                                    <div class="actions">
-                                        <button class="btn-action btn-view" onclick="vediDettaglio('${p.id}')">👁️ Vedi</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
+            let tbodyHtml = '';
+            for (let i = 0; i < pratiche.length; i++) {
+                const p = pratiche[i];
+                const idShort = p.id ? p.id.substring(0,8) + '...' : '-';
+                const titolo = escapeHtml(p.titolo || '-');
+                const tipo = tipoLabels[p.tipo_brevetto] || p.tipo_brevetto || '-';
+                const settore = p.settore || '-';
+                const inventore = escapeHtml(p.inventore || '-');
+                const statusClass = statusClasses[p.status] || 'status-nuova';
+                const statusLabel = statusLabels[p.status] || p.status || 'Nuova';
+                const data = formatData(p.created_at);
+
+                tbodyHtml += '<tr>' +
+                    '<td><code style="font-size:0.85em;color:#6c757d;">' + idShort + '</code></td>' +
+                    '<td class="truncate" title="' + titolo + '">' + titolo + '</td>' +
+                    '<td>' + tipo + '</td>' +
+                    '<td>' + settore + '</td>' +
+                    '<td>' + inventore + '</td>' +
+                    '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+                    '<td>' + data + '</td>' +
+                    '<td><div class="actions"><button class="btn-action btn-view" onclick="vediDettaglio('' + p.id + '')">👁️ Vedi</button></div></td>' +
+                '</tr>';
+            }
+
+            const html = '<table><thead><tr><th>ID</th><th>Titolo</th><th>Tipo</th><th>Settore</th><th>Inventore</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody>' + tbodyHtml + '</tbody></table>';
 
             container.innerHTML = html;
         }
 
-        // ============================================
-        // FILTRI
-        // ============================================
         function filtraPratiche() {
             const search = document.getElementById('searchInput').value.toLowerCase().trim();
             const tipo = document.getElementById('filterTipo').value;
@@ -490,26 +451,33 @@
             let filtrate = tuttePratiche;
 
             if (search) {
-                filtrate = filtrate.filter(p => 
-                    (p.titolo && p.titolo.toLowerCase().includes(search)) ||
-                    (p.inventore && p.inventore.toLowerCase().includes(search))
-                );
+                filtrate = filtrate.filter(function(p) {
+                    return (p.titolo && p.titolo.toLowerCase().includes(search)) ||
+                           (p.inventore && p.inventore.toLowerCase().includes(search));
+                });
             }
 
             if (tipo) {
-                filtrate = filtrate.filter(p => p.tipo_brevetto === tipo);
+                filtrate = filtrate.filter(function(p) { return p.tipo_brevetto === tipo; });
             }
 
             if (stato) {
-                filtrate = filtrate.filter(p => p.status === stato);
+                filtrate = filtrate.filter(function(p) { return p.status === stato; });
             }
 
             renderTabella(filtrate);
         }
 
-        // ============================================
-        // UTILITÀ
-        // ============================================
+        function vediDettaglio(id) {
+            window.location.href = 'dettaglio.html?id=' + id;
+        }
+
+        function logout() {
+            if (confirm('Sei sicuro di voler uscire?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -523,29 +491,18 @@
             return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
-        function vediDettaglio(id) {
-    window.location.href = 'dettaglio.html?id=' + id;
-}
-        }
-
-        function logout() {
-            if (confirm('Sei sicuro di voler uscire?')) {
-                dettaglio.html?id= = 'index.html';
-            }
-        }
-
         function showError(msg) {
             const alert = document.getElementById('errorAlert');
             alert.textContent = msg;
             alert.classList.add('show');
-            setTimeout(() => alert.classList.remove('show'), 8000);
+            setTimeout(function() { alert.classList.remove('show'); }, 8000);
         }
 
         function showSuccess(msg) {
             const alert = document.getElementById('successAlert');
             alert.textContent = msg;
             alert.classList.add('show');
-            setTimeout(() => alert.classList.remove('show'), 5000);
+            setTimeout(function() { alert.classList.remove('show'); }, 5000);
         }
     </script>
 </body>
