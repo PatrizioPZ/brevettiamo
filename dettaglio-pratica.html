@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrevettIAmo - Dettaglio Pratica</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .navbar h1 { font-size: 1.4em; display: flex; align-items: center; gap: 10px; }
+        .navbar .nav-links { display: flex; gap: 20px; align-items: center; }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+        .navbar a:hover { background: rgba(255,255,255,0.15); }
+        .btn-back {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.3); }
+        .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .alert.show { display: block; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .card-header h2 { font-size: 1.3em; display: flex; align-items: center; gap: 10px; }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .status-nuova { background: #d1ecf1; color: #0c5460; }
+        .status-bozza { background: #fff3cd; color: #856404; }
+        .status-lavorazione { background: #cce5ff; color: #004085; }
+        .status-depositata { background: #d4edda; color: #155724; }
+        .status-concessa { background: #d1ecf1; color: #0c5460; }
+        .status-rifiutata { background: #f8d7da; color: #721c24; }
+        .card-body { padding: 24px; }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+        .info-item { display: flex; flex-direction: column; gap: 6px; }
+        .info-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-value {
+            font-size: 1.05em;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .info-value.empty { color: #adb5bd; font-style: italic; }
+        .section-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2a5298;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .full-width { grid-column: 1 / -1; }
+        .description-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            line-height: 1.6;
+            color: #495057;
+            white-space: pre-wrap;
+        }
+        .documents-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .doc-tag {
+            background: #e9ecef;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .doc-tag.available { background: #d4edda; color: #155724; }
+        .doc-tag.missing { background: #f8d7da; color: #721c24; opacity: 0.6; }
+        .actions-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42,82,152,0.3);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #212529;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        .status-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        .status-btn {
+            padding: 8px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .status-btn:hover { border-color: #2a5298; }
+        .status-btn.active {
+            border-color: #2a5298;
+            background: #2a5298;
+            color: white;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .loading-overlay.show { display: flex; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid #e9ecef;
+            border-top-color: #2a5298;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state-icon { font-size: 4em; margin-bottom: 16px; }
+        .id-box {
+            background: #f8f9fa;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p style="color: #2a5298; font-weight: 600;">Caricamento pratica...</p>
+    </div>
+
+    <nav class="navbar">
+        <h1>📋 BrevettIAmo - Dettaglio Pratica</h1>
+        <div class="nav-links">
+            <a href="dashboard.html" class="btn-back">← Torna alla Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="alert alert-error" id="errorAlert"></div>
+        <div class="alert alert-success" id="successAlert"></div>
+
+        <div id="contentArea">
+            <div class="empty-state">
+                <div class="empty-state-icon">⏳</div>
+                <h3>Caricamento pratica...</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SUPABASE - INIZIALIZZAZIONE UNICA E SICURA
+        // ============================================
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+
+        let supabaseClient = null;
+        let praticaCorrente = null;
+
+        function initSupabase() {
+            try {
+                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('✅ Supabase inizializzato');
+                    return true;
+                } else {
+                    console.error('❌ Libreria Supabase non caricata');
+                    showError('Errore di connessione al server. Ricarica la pagina.');
+                    return false;
+                }
+            } catch (err) {
+                console.error('❌ Errore init Supabase:', err);
+                showError('Errore di connessione: ' + err.message);
+                return false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (initSupabase()) {
+                    caricaPratica();
+                }
+            }, 500);
+        });
+
+        // ============================================
+        // CARICAMENTO PRATICA
+        // ============================================
+        async function caricaPratica() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const praticaId = urlParams.get('id');
+
+            if (!praticaId) {
+                showError('ID pratica mancante. Torna alla dashboard.');
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>ID pratica mancante</h3>
+                        <p><a href="dashboard.html" style="color:#2a5298;">← Torna alla Dashboard</a></p>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('loadingOverlay').classList.add('show');
+
+            try {
+                console.log('📥 Caricamento pratica:', praticaId);
+                const { data, error } = await supabaseClient
+                    .from('pratiche')
+                    .select('*')
+                    .eq('id', praticaId)
+                    .single();
+
+                if (error) {
+                    console.error('❌ Errore query:', error);
+                    throw error;
+                }
+
+                if (!data) {
+                    throw new Error('Pratica non trovata');
+                }
+
+                praticaCorrente = data;
+                console.log('✅ Pratica caricata:', data.titolo);
+                renderPratica(data);
+
+            } catch (err) {
+                console.error('❌ Errore caricamento:', err);
+                showError('Errore caricamento pratica: ' + err.message);
+                document.getElementById('contentArea').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">❌</div>
+                        <h3>Errore di caricamento</h3>
+                        <p>${err.message}</p>
+                        <p style="margin-top:16px;"><a href="dashboard.html" style="color:#2a5298;">← Torna alla Dashboard</a></p>
+                    </div>
+                `;
+            } finally {
+                document.getElementById('loadingOverlay').classList.remove('show');
+            }
+        }
+
+        // ============================================
+        // RENDER PRATICA
+        // ============================================
+        function renderPratica(p) {
+            const tipoLabels = {
+                'invenzione': 'Invenzione Industriale',
+                'modello_utilita': 'Modello di Utilità',
+                'design': 'Design / Modello Estetico',
+                'marchi': 'Marchio',
+                'software': 'Brevetto Software / Algoritmo',
+                'altro': 'Altro'
+            };
+
+            const settoreLabels = {
+                'meccanica': 'Meccanica / Automotive',
+                'elettronica': 'Elettronica / Elettrotecnica',
+                'informatica': 'Informatica / Software / AI',
+                'chimica': 'Chimica / Farmaceutica',
+                'biotecnologie': 'Biotecnologie / Medicale',
+                'energia': 'Energia / Ambiente',
+                'edilizia': 'Edilizia / Architettura',
+                'agroalimentare': 'Agroalimentare',
+                'altro': 'Altro'
+            };
+
+            const faseLabels = {
+                'idea': 'Idea / Concept',
+                'prototipo': 'Prototipo in sviluppo',
+                'test': 'Test / Validazione',
+                'produzione': 'Pronto per produzione',
+                'commerciale': 'Già commercializzato'
+            };
+
+            const protezioneLabels = {
+                'nazionale': 'Solo Italia',
+                'europeo': 'Europa (EP)',
+                'pct': 'Internazionale (PCT)',
+                'usa': 'USA',
+                'multi': 'Multi-paese'
+            };
+
+            const statusClasses = {
+                'nuova': 'status-nuova',
+                'bozza': 'status-bozza',
+                'lavorazione': 'status-lavorazione',
+                'depositata': 'status-depositata',
+                'concessa': 'status-concessa',
+                'rifiutata': 'status-rifiutata'
+            };
+
+            const statusLabels = {
+                'nuova': 'Nuova',
+                'bozza': 'In Bozza',
+                'lavorazione': 'In Lavorazione',
+                'depositata': 'Depositate',
+                'concessa': 'Concessa',
+                'rifiutata': 'Rifiutata'
+            };
+
+            const docs = [];
+            if (p.doc_descrizione) docs.push({ name: 'Descrizione tecnica', ok: true });
+            else docs.push({ name: 'Descrizione tecnica', ok: false });
+            if (p.doc_disegni) docs.push({ name: 'Disegni / Schemi', ok: true });
+            else docs.push({ name: 'Disegni / Schemi', ok: false });
+            if (p.doc_prototipo) docs.push({ name: 'Foto / Video prototipo', ok: true });
+            else docs.push({ name: 'Foto / Video prototipo', ok: false });
+            if (p.doc_ricerca) docs.push({ name: 'Ricerca anteriorità', ok: true });
+            else docs.push({ name: 'Ricerca anteriorità', ok: false });
+            if (p.doc_claims) docs.push({ name: 'Bozza claims', ok: true });
+            else docs.push({ name: 'Bozza claims', ok: false });
+            if (p.doc_deposito) docs.push({ name: 'Deposito prior', ok: true });
+            else docs.push({ name: 'Deposito prior', ok: false });
+
+            const html = `
+                <!-- HEADER -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>📄 ${escapeHtml(p.titolo || 'Senza titolo')}</h2>
+                            <div class="id-box" style="margin-top:8px;">ID: ${p.id}</div>
+                        </div>
+                        <span class="status-badge ${statusClasses[p.status] || 'status-nuova'}">${statusLabels[p.status] || p.status || 'Nuova'}</span>
+                    </div>
+                </div>
+
+                <!-- DATI PRINCIPALI -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="section-title">📋 Dati Principali</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Tipo Brevetto</span>
+                                <span class="info-value">${tipoLabels[p.tipo_brevetto] || p.tipo_brevetto || '-'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Settore Tecnico</span>
+                                <span class="info-value">${settoreLabels[p.settore] || p.settore || '-'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Inventore</span>
+                                <span class="info-value">${escapeHtml(p.inventore || '-')}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Titolare</span>
+                                <span class="info-value">${escapeHtml(p.titolare || '-')}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Priorità / Brevetti Correlati</span>
+                                <span class="info-value ${p.priorita ? '' : 'empty'}">${escapeHtml(p.priorita || 'Nessuna')}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Data Creazione</span>
+                                <span class="info-value">${formatData(p.created_at)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DETTAGLI TECNICI -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="section-title">🔧 Dettagli Tecnici</div>
+                        <div class="info-grid">
+                            <div class="info-item full-width">
+                                <span class="info-label">Descrizione Tecnica</span>
+                                <div class="description-box">${escapeHtml(p.descrizione_tecnica || 'Nessuna descrizione inserita')}</div>
+                            </div>
+                            <div class="info-item full-width">
+                                <span class="info-label">Stato dell'Arte</span>
+                                <div class="description-box">${escapeHtml(p.stato_arte || 'Nessuna informazione sullo stato dell'arte')}</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Campi di Applicazione</span>
+                                <span class="info-value ${p.campi_applicazione ? '' : 'empty'}">${escapeHtml(p.campi_applicazione || 'Non specificati')}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Fase di Sviluppo</span>
+                                <span class="info-value">${faseLabels[p.fase_sviluppo] || p.fase_sviluppo || 'Non specificata'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Livello Protezione</span>
+                                <span class="info-value">${protezioneLabels[p.livello_protezione] || p.livello_protezione || 'Non specificato'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOCUMENTI -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="section-title">📎 Documenti e Allegati</div>
+                        <div class="documents-list">
+                            ${docs.map(d => `
+                                <span class="doc-tag ${d.ok ? 'available' : 'missing'}">
+                                    ${d.ok ? '✅' : '❌'} ${d.name}
+                                </span>
+                            `).join('')}
+                        </div>
+                        ${p.link_documenti ? `
+                            <div style="margin-top:16px;">
+                                <span class="info-label">Link Documenti</span>
+                                <a href="${escapeHtml(p.link_documenti)}" target="_blank" style="color:#2a5298; word-break:break-all;">${escapeHtml(p.link_documenti)}</a>
+                            </div>
+                        ` : ''}
+                        ${p.note_documenti ? `
+                            <div style="margin-top:16px;">
+                                <span class="info-label">Note sui Documenti</span>
+                                <div class="description-box">${escapeHtml(p.note_documenti)}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <!-- NOTE -->
+                ${p.note ? `
+                <div class="card">
+                    <div class="card-body">
+                        <div class="section-title">📝 Note Aggiuntive</div>
+                        <div class="description-box">${escapeHtml(p.note)}</div>
+                    </div>
+                </div>
+                ` : ''}
+
+                <!-- GESTIONE STATO -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="section-title">⚙️ Gestione Stato</div>
+                        <p style="color:#6c757d; margin-bottom:12px;">Clicca per cambiare lo stato della pratica:</p>
+                        <div class="status-selector">
+                            <button class="status-btn ${p.status === 'nuova' ? 'active' : ''}" onclick="cambiaStato('nuova')">Nuova</button>
+                            <button class="status-btn ${p.status === 'bozza' ? 'active' : ''}" onclick="cambiaStato('bozza')">In Bozza</button>
+                            <button class="status-btn ${p.status === 'lavorazione' ? 'active' : ''}" onclick="cambiaStato('lavorazione')">In Lavorazione</button>
+                            <button class="status-btn ${p.status === 'depositata' ? 'active' : ''}" onclick="cambiaStato('depositata')">Depositate</button>
+                            <button class="status-btn ${p.status === 'concessa' ? 'active' : ''}" onclick="cambiaStato('concessa')">Concessa</button>
+                            <button class="status-btn ${p.status === 'rifiutata' ? 'active' : ''}" onclick="cambiaStato('rifiutata')">Rifiutata</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AZIONI -->
+                <div class="actions-bar">
+                    <a href="dashboard.html" class="btn btn-primary">← Torna alla Dashboard</a>
+                    <a href="nuova-pratica.html" class="btn btn-success">+ Nuova Pratica</a>
+                </div>
+            `;
+
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        // ============================================
+        // CAMBIO STATO
+        // ============================================
+        async function cambiaStato(nuovoStato) {
+            if (!praticaCorrente) return;
+            if (praticaCorrente.status === nuovoStato) return;
+
+            if (!confirm('Confermi di voler cambiare lo stato in "' + getStatusLabel(nuovoStato) + '"?')) return;
+
+            document.getElementById('loadingOverlay').classList.add('show');
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('pratiche')
+                    .update({ status: nuovoStato })
+                    .eq('id', praticaCorrente.id)
+                    .select();
+
+                if (error) throw error;
+
+                praticaCorrente.status = nuovoStato;
+                renderPratica(praticaCorrente);
+                showSuccess('Stato aggiornato con successo!');
+
+            } catch (err) {
+                console.error('❌ Errore aggiornamento stato:', err);
+                showError('Errore aggiornamento stato: ' + err.message);
+            } finally {
+                document.getElementById('loadingOverlay').classList.remove('show');
+            }
+        }
+
+        function getStatusLabel(stato) {
+            const labels = {
+                'nuova': 'Nuova',
+                'bozza': 'In Bozza',
+                'lavorazione': 'In Lavorazione',
+                'depositata': 'Depositate',
+                'concessa': 'Concessa',
+                'rifiutata': 'Rifiutata'
+            };
+            return labels[stato] || stato;
+        }
+
+        // ============================================
+        // UTILITÀ
+        // ============================================
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatData(isoDate) {
+            if (!isoDate) return '-';
+            const d = new Date(isoDate);
+            return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function showError(msg) {
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 8000);
+        }
+
+        function showSuccess(msg) {
+            const alert = document.getElementById('successAlert');
+            alert.textContent = msg;
+            alert.classList.add('show');
+            setTimeout(() => alert.classList.remove('show'), 5000);
+        }
+    </script>
+</body>
+</html>
