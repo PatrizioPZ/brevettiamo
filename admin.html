@@ -1,372 +1,351 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrevettIAmo — Admin Panel</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; color: #1e293b; min-height: 100vh; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); color: white; padding: 15px 0; margin-bottom: 25px; }
-        header .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.3rem; font-weight: 700; }
-        .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; text-decoration: none; display: inline-block; font-size: 0.9rem; }
-        .btn-primary { background: #3b82f6; color: white; }
-        .btn-success { background: #10b981; color: white; }
-        .btn-warning { background: #f59e0b; color: white; }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn-outline { background: transparent; border: 2px solid white; color: white; }
-        .btn-sm { padding: 5px 12px; font-size: 0.8rem; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .stat-card h3 { font-size: 1.8rem; color: #1e3a5f; margin-bottom: 5px; }
-        .stat-card p { color: #64748b; font-size: 0.85rem; }
-        .stat-card.revenue { border-left: 4px solid #10b981; }
-        .stat-card.pending { border-left: 4px solid #f59e0b; }
-        .stat-card.draft { border-left: 4px solid #64748b; }
-        .stat-card.completed { border-left: 4px solid #3b82f6; }
-        
-        .filters { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
-        .filters input, .filters select { padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem; }
-        .filters label { font-size: 0.85rem; color: #64748b; font-weight: 500; }
-        
-        .table-container { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f8fafc; font-weight: 600; color: #475569; font-size: 0.8rem; text-transform: uppercase; white-space: nowrap; }
-        td { font-size: 0.85rem; }
-        tr:hover { background: #f8fafc; }
-        .status { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
-        .status-bozza { background: #f3f4f6; color: #4b5563; }
-        .status-completata { background: #d1fae5; color: #065f46; }
-        .status-pagamento-in-corso { background: #dbeafe; color: #1e40af; }
-        .status-in-attesa-bonifico { background: #fef3c7; color: #92400e; }
-        .status-pagata { background: #d1fae5; color: #065f46; }
-        .status-in-lavorazione { background: #fce7f3; color: #9d174d; }
-        
-        .actions-cell { white-space: nowrap; }
-        .actions-cell .btn { margin-right: 5px; }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-overlay.active { display: flex; }
-        .modal { background: white; border-radius: 12px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
-        .modal-header { padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h2 { font-size: 1.2rem; color: #1e3a5f; }
-        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; }
-        .modal-body { padding: 20px; }
-        .modal-footer { padding: 15px 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px; }
-        
-        .detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
-        .detail-row .label { width: 150px; color: #64748b; font-weight: 500; font-size: 0.85rem; flex-shrink: 0; }
-        .detail-row .value { flex: 1; color: #1e293b; font-size: 0.9rem; }
-        .detail-row .value pre { white-space: pre-wrap; word-wrap: break-word; font-family: inherit; font-size: 0.85rem; line-height: 1.5; background: #f8fafc; padding: 10px; border-radius: 6px; }
-        
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; padding: 15px; }
-        
-        .loading { text-align: center; padding: 40px; color: #94a3b8; }
-        .loading .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #e2e8f0; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
-        
-        @media (max-width: 768px) {
-            .container { padding: 10px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .filters { flex-direction: column; align-items: stretch; }
-            table { font-size: 0.8rem; }
-            th, td { padding: 8px; }
-            .actions-cell .btn { margin-bottom: 3px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrevettIAmo - Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Arial,sans-serif; background:#f0f2f5; }
+.navbar { background:#1e3c72; color:white; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
+.navbar h1 { font-size:1.3em; }
+.navbar a { color:white; text-decoration:none; margin-left:20px; }
+.container { max-width:1400px; margin:0 auto; padding:20px; }
+.alert { padding:15px; border-radius:5px; margin-bottom:15px; display:none; }
+.alert.show { display:block; }
+.alert-error { background:#f8d7da; color:#721c24; }
+.alert-success { background:#d4edda; color:#155724; }
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:15px; margin-bottom:20px; }
+.stat-card { background:white; padding:20px; border-radius:10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+.stat-number { font-size:2em; color:#1e3c72; font-weight:bold; }
+.stat-label { color:#666; font-size:0.9em; }
+.filters { background:white; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; }
+.filters input, .filters select { padding:10px; border:1px solid #ddd; border-radius:5px; }
+.filters input { flex:1; min-width:200px; }
+.table-container { background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+.table-header { background:#1e3c72; color:white; padding:15px 20px; font-weight:bold; }
+table { width:100%; border-collapse:collapse; }
+th { background:#f8f9fa; padding:12px; text-align:left; font-weight:bold; color:#555; font-size:0.85em; text-transform:uppercase; }
+td { padding:12px; border-bottom:1px solid #eee; font-size:0.9em; }
+tr:hover { background:#f8f9fa; }
+.status { padding:4px 12px; border-radius:15px; font-size:0.8em; font-weight:bold; display:inline-block; }
+.status-nuova { background:#d1ecf1; color:#0c5460; }
+.status-bozza { background:#fff3cd; color:#856404; }
+.status-lavorazione { background:#cce5ff; color:#004085; }
+.status-depositata { background:#d4edda; color:#155724; }
+.status-concessa { background:#d1ecf1; color:#0c5460; }
+.status-rifiutata { background:#f8d7da; color:#721c24; }
+.btn-action { background:#e9ecef; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.85em; margin-right:5px; }
+.btn-action:hover { background:#dee2e6; }
+.btn-status { padding:5px 10px; border:1px solid #ddd; border-radius:5px; cursor:pointer; font-size:0.8em; background:white; }
+.btn-status:hover { border-color:#1e3c72; }
+.empty { text-align:center; padding:50px; color:#666; }
+.loading { text-align:center; padding:50px; }
+.spinner { width:40px; height:40px; border:3px solid #eee; border-top-color:#1e3c72; border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 15px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.admin-badge { background:#dc3545; color:white; padding:3px 10px; border-radius:10px; font-size:0.75em; margin-left:10px; }
+@media (max-width:768px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:480px) { .stats-grid { grid-template-columns:1fr; } }
+</style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo">🔒 Admin Panel</div>
-            <div>
-                <span id="adminEmail" style="margin-right:15px;opacity:0.8;"></span>
-                <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
-                <button class="btn btn-outline" onclick="logout()" style="margin-left:10px;">Logout</button>
-            </div>
-        </div>
-    </header>
+<<nav class="navbar">
+<h1>BrevettIAmo - Admin Panel <span class="admin-badge">ADMIN</span></h1>
+<div>
+<a href="dashboard.html">Dashboard</a>
+<a href="nuova-pratica.html">Nuova Pratica</a>
+<a href="index.html">Home</a>
+</div>
+</nav>
 
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card revenue">
-                <h3 id="statRevenue">€0</h3>
-                <p>Fatturato Stimato</p>
-            </div>
-            <div class="stat-card pending">
-                <h3 id="statPending">0</h3>
-                <p>In Attesa Pagamento</p>
-            </div>
-            <div class="stat-card draft">
-                <h3 id="statDraft">0</h3>
-                <p>In Bozza</p>
-            </div>
-            <div class="stat-card completed">
-                <h3 id="statCompleted">0</h3>
-                <p>Completate / Attive</p>
-            </div>
-            <div class="stat-card">
-                <h3 id="statTotal">0</h3>
-                <p>Totale Pratiche</p>
-            </div>
-        </div>
+<div class="container">
+<div class="alert alert-error" id="errorAlert"></div>
+<div class="alert alert-success" id="successAlert"></div>
 
-        <div class="filters">
-            <div>
-                <label>Cerca</label>
-                <input type="text" id="searchFilter" placeholder="Titolo, email, ID..." onkeyup="applyFilters()">
-            </div>
-            <div>
-                <label>Stato</label>
-                <select id="statusFilter" onchange="applyFilters()">
-                    <option value="">Tutti</option>
-                    <option value="bozza">Bozza</option>
-                    <option value="completata">Completata</option>
-                    <option value="pagamento_in_corso">Pagamento in Corso</option>
-                    <option value="in_attesa_bonifico">In Attesa Bonifico</option>
-                    <option value="pagata">Pagata</option>
-                    <option value="in_lavorazione">In Lavorazione</option>
-                </select>
-            </div>
-            <div>
-                <label>Data da</label>
-                <input type="date" id="dateFrom" onchange="applyFilters()">
-            </div>
-            <div>
-                <label>Data a</label>
-                <input type="date" id="dateTo" onchange="applyFilters()">
-            </div>
-            <button class="btn btn-primary" onclick="applyFilters()">Filtra</button>
-            <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
-        </div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-number" id="statTotale">0</div><div class="stat-label">Totale Pratiche</div></div>
+<div class="stat-card"><div class="stat-number" id="statNuove">0</div><div class="stat-label">Nuove</div></div>
+<div class="stat-card"><div class="stat-number" id="statInLavorazione">0</div><div class="stat-label">In Lavorazione</div></div>
+<div class="stat-card"><div class="stat-number" id="statConcluse">0</div><div class="stat-label">Concluse</div></div>
+</div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Data</th>
-                        <th>Utente</th>
-                        <th>Titolo</th>
-                        <th>Tipo</th>
-                        <th>Stato</th>
-                        <th>Servizi</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody id="praticheTable">
-                    <tr><td colspan="8" class="loading"><div class="spinner"></div><p>Caricamento...</p></td></tr>
-                </tbody>
-            </table>
-        </div>
+<div class="filters">
+<input type="text" id="searchInput" placeholder="Cerca per titolo, inventore..." onkeyup="filtraPratiche()">
+<select id="filterTipo" onchange="filtraPratiche()">
+<option value="">Tutti i tipi</option>
+<option value="invenzione">Invenzione</option>
+<option value="modello_utilita">Modello Utilita</option>
+<option value="design">Design</option>
+<option value="marchi">Marchio</option>
+<option value="software">Software</option>
+<option value="altro">Altro</option>
+</select>
+<select id="filterStato" onchange="filtraPratiche()">
+<option value="">Tutti gli stati</option>
+<option value="nuova">Nuova</option>
+<option value="bozza">In Bozza</option>
+<option value="lavorazione">In Lavorazione</option>
+<option value="depositata">Depositate</option>
+<option value="concessa">Concessa</option>
+<option value="rifiutata">Rifiutata</option>
+</select>
+<select id="filterSettore" onchange="filtraPratiche()">
+<option value="">Tutti i settori</option>
+<option value="meccanica">Meccanica</option>
+<option value="elettronica">Elettronica</option>
+<option value="informatica">Informatica</option>
+<option value="chimica">Chimica</option>
+<option value="biotecnologie">Biotecnologie</option>
+<option value="energia">Energia</option>
+<option value="edilizia">Edilizia</option>
+<option value="agroalimentare">Agroalimentare</option>
+<option value="altro">Altro</option>
+</select>
+</div>
 
-        <div class="pagination" id="pagination">
-            <button class="btn btn-secondary" onclick="changePage(-1)">← Precedente</button>
-            <span id="pageInfo">Pagina 1 di 1</span>
-            <button class="btn btn-secondary" onclick="changePage(1)">Successiva →</button>
-        </div>
-    </div>
+<div class="table-container">
+<div class="table-header">Gestione Pratiche (<span id="praticheCount">caricamento...</span>)</div>
+<div id="tableContent">
+<div class="loading">
+<div class="spinner"></div>
+<p>Caricamento pratiche...</p>
+</div>
+</div>
+</div>
+</div>
 
-    <div class="modal-overlay" id="detailModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>📋 Dettaglio Pratica</h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body" id="modalBody"></div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal()">Chiudi</button>
-                <button class="btn btn-primary" onclick="updateStatus()">Aggiorna Stato</button>
-            </div>
-        </div>
-    </div>
+<script>
+var SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+var SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+var supabaseClient = null;
+var tuttePratiche = [];
 
-    <script>
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDE5OTksImV4cCI6MjA2NDA3Nzk5OX0.p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        let currentUser = null, allPratiche = [], filteredPratiche = [], currentPage = 1, perPage = 20, selectedPratica = null;
+function initSupabase() {
+try {
+if (window.supabase && window.supabase.createClient) {
+supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log('Supabase ok');
+caricaPratiche();
+return true;
+} else {
+showError('Errore connessione server');
+return false;
+}
+} catch (err) {
+showError('Errore: ' + err.message);
+return false;
+}
+}
 
-        async function init() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { window.location.href = 'index.html'; return; }
-            currentUser = session.user;
-            document.getElementById('adminEmail').textContent = currentUser.email;
-            
-            const { data: userData } = await supabase.from('utenti').select('ruolo').eq('id', currentUser.id).single();
-            if (!userData || userData.ruolo !== 'admin') {
-                alert('Accesso riservato agli amministratori');
-                window.location.href = 'dashboard.html';
-                return;
-            }
-            await loadPratiche();
-        }
+setTimeout(initSupabase, 500);
 
-        async function loadPratiche() {
-            const { data, error } = await supabase.from('pratiche').select('*, utenti(email)').order('created_at', { ascending: false });
-            if (error) { document.getElementById('praticheTable').innerHTML = '<tr><td colspan="8" class="empty-state">Errore nel caricamento</td></tr>'; return; }
-            allPratiche = data || [];
-            filteredPratiche = [...allPratiche];
-            updateStats();
-            renderTable();
-        }
+async function caricaPratiche() {
+if (!supabaseClient) return;
+try {
+console.log('Carico pratiche...');
+var result = await supabaseClient.from('pratiche').select('*').order('created_at', {ascending:false});
+if (result.error) throw result.error;
+tuttePratiche = result.data || [];
+console.log('Pratiche caricate: ' + tuttePratiche.length);
+aggiornaStatistiche();
+renderTabella(tuttePratiche);
+} catch (err) {
+console.error('Errore:', err);
+showError('Errore caricamento: ' + err.message);
+document.getElementById('tableContent').innerHTML = '<div class="empty"><h3>Errore caricamento</h3><p>' + escapeHtml(err.message) + '</p></div>';
+}
+}
 
-        function updateStats() {
-            const revenue = allPratiche.reduce((sum, p) => {
-                let price = 300;
-                try {
-                    const servizi = JSON.parse(p.servizi || '[]');
-                    if (servizi.includes('disegni_tecnici')) price += 150;
-                    if (servizi.includes('pratica_urgente')) price += 100;
-                    if (servizi.includes('ricerca_priorita')) price += 80;
-                    if (servizi.includes('deposito_internazionale')) price += 500;
-                } catch(e) {}
-                return sum + (['pagata', 'completata', 'in_lavorazione'].includes(p.stato) ? price : 0);
-            }, 0);
-            document.getElementById('statRevenue').textContent = '€' + revenue.toLocaleString('it-IT');
-            document.getElementById('statPending').textContent = allPratiche.filter(p => p.stato === 'pagamento_in_corso' || p.stato === 'in_attesa_bonifico').length;
-            document.getElementById('statDraft').textContent = allPratiche.filter(p => p.stato === 'bozza').length;
-            document.getElementById('statCompleted').textContent = allPratiche.filter(p => ['completata', 'in_lavorazione', 'pagata'].includes(p.stato)).length;
-            document.getElementById('statTotal').textContent = allPratiche.length;
-        }
+function aggiornaStatistiche() {
+var totale = tuttePratiche.length;
+var nuove = 0;
+var inLavorazione = 0;
+var concluse = 0;
+for (var i = 0; i < tuttePratiche.length; i++) {
+var p = tuttePratiche[i];
+if (p.status === 'nuova' || p.status === 'bozza') nuove++;
+if (p.status === 'lavorazione' || p.status === 'depositata') inLavorazione++;
+if (p.status === 'concessa' || p.status === 'rifiutata') concluse++;
+}
+document.getElementById('statTotale').textContent = totale;
+document.getElementById('statNuove').textContent = nuove;
+document.getElementById('statInLavorazione').textContent = inLavorazione;
+document.getElementById('statConcluse').textContent = concluse;
+}
 
-        function renderTable() {
-            const start = (currentPage - 1) * perPage, end = start + perPage, pageData = filteredPratiche.slice(start, end);
-            if (pageData.length === 0) {
-                document.getElementById('praticheTable').innerHTML = '<tr><td colspan="8" class="empty-state">Nessuna pratica trovata</td></tr>';
-                document.getElementById('pagination').style.display = 'none';
-                return;
-            }
-            const rows = pageData.map(p => {
-                const statusClass = 'status-' + p.stato.replace(/\s+/g, '-');
-                const date = new Date(p.created_at).toLocaleDateString('it-IT');
-                const email = p.utenti?.email || 'N/D';
-                let serviziCount = 0;
-                try { serviziCount = JSON.parse(p.servizi || '[]').length; } catch(e) {}
-                return `<tr><td>#${p.id.toString().slice(0, 8)}</td><td>${date}</td><td>${email}</td><td><strong>${p.titolo || 'Senza titolo'}</strong></td><td>${p.tipo_brevetto || 'N/D'}</td><td><span class="status ${statusClass}">${p.stato}</span></td><td>${serviziCount} extra</td><td class="actions-cell"><button class="btn btn-primary btn-sm" onclick="viewDetail('${p.id}')">Vedi</button><button class="btn btn-warning btn-sm" onclick="editStatus('${p.id}')">Stato</button></td></tr>`;
-            }).join('');
-            document.getElementById('praticheTable').innerHTML = rows;
-            const totalPages = Math.ceil(filteredPratiche.length / perPage);
-            document.getElementById('pageInfo').textContent = `Pagina ${currentPage} di ${totalPages}`;
-            document.getElementById('pagination').style.display = totalPages > 1 ? 'flex' : 'none';
-        }
+function renderTabella(pratiche) {
+var container = document.getElementById('tableContent');
+document.getElementById('praticheCount').textContent = pratiche.length;
 
-        function applyFilters() {
-            const search = document.getElementById('searchFilter').value.toLowerCase();
-            const status = document.getElementById('statusFilter').value;
-            const dateFrom = document.getElementById('dateFrom').value;
-            const dateTo = document.getElementById('dateTo').value;
-            filteredPratiche = allPratiche.filter(p => {
-                const matchSearch = !search || (p.titolo || '').toLowerCase().includes(search) || (p.utenti?.email || '').toLowerCase().includes(search) || p.id.toString().includes(search);
-                const matchStatus = !status || p.stato === status;
-                const matchDateFrom = !dateFrom || new Date(p.created_at) >= new Date(dateFrom);
-                const matchDateTo = !dateTo || new Date(p.created_at) <= new Date(dateTo + 'T23:59:59');
-                return matchSearch && matchStatus && matchDateFrom && matchDateTo;
-            });
-            currentPage = 1;
-            renderTable();
-        }
+if (pratiche.length === 0) {
+container.innerHTML = '<div class="empty"><h3>Nessuna pratica trovata</h3></div>';
+return;
+}
 
-        function resetFilters() {
-            document.getElementById('searchFilter').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('dateFrom').value = '';
-            document.getElementById('dateTo').value = '';
-            filteredPratiche = [...allPratiche];
-            currentPage = 1;
-            renderTable();
-        }
+var tipoLabels = {
+'invenzione': 'Invenzione',
+'modello_utilita': 'Modello Utilita',
+'design': 'Design',
+'marchi': 'Marchio',
+'software': 'Software',
+'altro': 'Altro'
+};
 
-        function changePage(delta) {
-            const totalPages = Math.ceil(filteredPratiche.length / perPage);
-            const newPage = currentPage + delta;
-            if (newPage >= 1 && newPage <= totalPages) { currentPage = newPage; renderTable(); }
-        }
+var statusLabels = {
+'nuova': 'Nuova',
+'bozza': 'In Bozza',
+'lavorazione': 'In Lavorazione',
+'depositata': 'Depositate',
+'concessa': 'Concessa',
+'rifiutata': 'Rifiutata'
+};
 
-        async function viewDetail(id) {
-            const pratica = allPratiche.find(p => p.id === id);
-            if (!pratica) return;
-            selectedPratica = pratica;
-            const tipoMap = {'brevetto_invenzione': 'Brevetto Invenzione Industriale', 'modello_utilita': 'Modello di Utilità', 'design': 'Design / Marchio'};
-            const settoreMap = {'meccanica': 'Meccanica e Ingegneria', 'elettronica': 'Elettronica e Telecomunicazioni', 'informatica': 'Informatica e Software', 'chimica': 'Chimica e Materiali', 'biotecnologie': 'Biotecnologie e Farmaceutica', 'energia': 'Energia e Ambiente', 'agroalimentare': 'Agroalimentare', 'medico': 'Dispositivi Medici', 'altro': 'Altro'};
-            let serviziHtml = 'Nessuno';
-            try {
-                const servizi = JSON.parse(pratica.servizi || '[]');
-                const serviziMap = {'ricerca_priorita': 'Ricerca priorità', 'disegni_tecnici': 'Disegni tecnici', 'pratica_urgente': 'Pratica urgente', 'deposito_internazionale': 'Deposito internazionale'};
-                if (servizi.length) serviziHtml = servizi.map(s => serviziMap[s] || s).join(', ');
-            } catch(e) {}
-            document.getElementById('modalBody').innerHTML = `
-                <div class="detail-row"><span class="label">ID Pratica</span><span class="value">${pratica.id}</span></div>
-                <div class="detail-row"><span class="label">Utente</span><span class="value">${pratica.utenti?.email || 'N/D'}</span></div>
-                <div class="detail-row"><span class="label">Data creazione</span><span class="value">${new Date(pratica.created_at).toLocaleString('it-IT')}</span></div>
-                <div class="detail-row"><span class="label">Stato attuale</span><span class="value"><span class="status status-${pratica.stato.replace(/\s+/g, '-')}">${pratica.stato}</span></span></div>
-                <div class="detail-row"><span class="label">Titolo</span><span class="value">${pratica.titolo || 'N/D'}</span></div>
-                <div class="detail-row"><span class="label">Tipo tutela</span><span class="value">${tipoMap[pratica.tipo_brevetto] || pratica.tipo_brevetto || 'N/D'}</span></div>
-                <div class="detail-row"><span class="label">Settore</span><span class="value">${settoreMap[pratica.settore] || pratica.settore || 'N/D'}</span></div>
-                <div class="detail-row"><span class="label">Data ideazione</span><span class="value">${pratica.data_ideazione || 'Non specificata'}</span></div>
-                <div class="detail-row"><span class="label">Servizi extra</span><span class="value">${serviziHtml}</span></div>
-                <div class="detail-row"><span class="label">Priorità</span><span class="value">${pratica.priorita_numero || 'Nessuna'}</span></div>
-                <div class="detail-row"><span class="label">Problema</span><span class="value"><pre>${pratica.problema || 'N/D'}</pre></span></div>
-                <div class="detail-row"><span class="label">Soluzione</span><span class="value"><pre>${pratica.soluzione || 'N/D'}</pre></span></div>
-                <div class="detail-row"><span class="label">Vantaggi</span><span class="value"><pre>${pratica.vantaggi || 'N/D'}</pre></span></div>
-                <div class="detail-row"><span class="label">Ambito</span><span class="value"><pre>${pratica.ambito || 'N/D'}</pre></span></div>
-                <div class="detail-row"><span class="label">Note</span><span class="value"><pre>${pratica.note || 'Nessuna nota'}</pre></span></div>
-            `;
-            document.getElementById('detailModal').classList.add('active');
-        }
+var statusClasses = {
+'nuova': 'status-nuova',
+'bozza': 'status-bozza',
+'lavorazione': 'status-lavorazione',
+'depositata': 'status-depositata',
+'concessa': 'status-concessa',
+'rifiutata': 'status-rifiutata'
+};
 
-        function editStatus(id) {
-            const pratica = allPratiche.find(p => p.id === id);
-            if (!pratica) return;
-            selectedPratica = pratica;
-            document.getElementById('modalBody').innerHTML = `
-                <div class="detail-row"><span class="label">Pratica</span><span class="value">${pratica.titolo || 'Senza titolo'}</span></div>
-                <div class="detail-row"><span class="label">Stato attuale</span><span class="value">${pratica.stato}</span></div>
-                <div class="detail-row"><span class="label">Nuovo stato</span><span class="value">
-                    <select id="newStatus" style="padding:8px;border-radius:6px;border:1px solid #e2e8f0;">
-                        <option value="bozza" ${pratica.stato === 'bozza' ? 'selected' : ''}>Bozza</option>
-                        <option value="completata" ${pratica.stato === 'completata' ? 'selected' : ''}>Completata</option>
-                        <option value="pagamento_in_corso" ${pratica.stato === 'pagamento_in_corso' ? 'selected' : ''}>Pagamento in Corso</option>
-                        <option value="in_attesa_bonifico" ${pratica.stato === 'in_attesa_bonifico' ? 'selected' : ''}>In Attesa Bonifico</option>
-                        <option value="pagata" ${pratica.stato === 'pagata' ? 'selected' : ''}>Pagata</option>
-                        <option value="in_lavorazione" ${pratica.stato === 'in_lavorazione' ? 'selected' : ''}>In Lavorazione</option>
-                        <option value="depositata" ${pratica.stato === 'depositata' ? 'selected' : ''}>Depositata UIBM</option>
-                        <option value="rifiutata" ${pratica.stato === 'rifiutata' ? 'selected' : ''}>Rifiutata</option>
-                    </select>
-                </span></div>
-                <div class="detail-row"><span class="label">Note interne</span><span class="value"><textarea id="adminNote" placeholder="Note per uso interno..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #e2e8f0;min-height:80px;">${pratica.note_admin || ''}</textarea></span></div>
-            `;
-            document.getElementById('detailModal').classList.add('active');
-        }
+var settoreLabels = {
+'meccanica': 'Meccanica',
+'elettronica': 'Elettronica',
+'informatica': 'Informatica',
+'chimica': 'Chimica',
+'biotecnologie': 'Biotecnologie',
+'energia': 'Energia',
+'edilizia': 'Edilizia',
+'agroalimentare': 'Agroalimentare',
+'altro': 'Altro'
+};
 
-        async function updateStatus() {
-            if (!selectedPratica) return;
-            const newStatus = document.getElementById('newStatus')?.value;
-            const adminNote = document.getElementById('adminNote')?.value;
-            if (!newStatus) return;
-            const update = { stato: newStatus };
-            if (adminNote !== undefined) update.note_admin = adminNote;
-            const { error } = await supabase.from('pratiche').update(update).eq('id', selectedPratica.id);
-            if (error) { alert('Errore aggiornamento: ' + error.message); return; }
-            closeModal();
-            await loadPratiche();
-        }
+var html = '<table><thead><tr><th>ID</th><th>Titolo</th><th>Tipo</th><th>Settore</th><th>Inventore</th><th>Titolare</th><th>Stato</th><th>Data</th><th>Azioni</th></tr></thead><tbody>';
 
-        function closeModal() { document.getElementById('detailModal').classList.remove('active'); selectedPratica = null; }
+for (var i = 0; i < pratiche.length; i++) {
+var p = pratiche[i];
+var idShort = p.id ? p.id.substring(0,8) + '...' : '-';
+var titolo = escapeHtml(p.titolo || '-');
+var tipo = tipoLabels[p.tipo_brevetto] || p.tipo_brevetto || '-';
+var settore = settoreLabels[p.settore] || p.settore || '-';
+var inventore = escapeHtml(p.inventore || '-');
+var titolare = escapeHtml(p.titolare || '-');
+var statusClass = statusClasses[p.status] || 'status-nuova';
+var statusLabel = statusLabels[p.status] || p.status || 'Nuova';
+var data = formatData(p.created_at);
 
-        async function logout() { await supabase.auth.signOut(); window.location.href = 'index.html'; }
+html += '<tr>';
+html += '<td><code style="font-size:0.8em;color:#666;">' + idShort + '</code></td>';
+html += '<td><strong>' + titolo + '</strong></td>';
+html += '<td>' + tipo + '</td>';
+html += '<td>' + settore + '</td>';
+html += '<td>' + inventore + '</td>';
+html += '<td>' + titolare + '</td>';
+html += '<td><span class="status ' + statusClass + '">' + statusLabel + '</span></td>';
+html += '<td>' + data + '</td>';
+html += '<td>';
+html += '<button class="btn-action" onclick="vediDettaglio(' + "'" + p.id + "'" + ')">Vedi</button>';
+html += '<button class="btn-action" onclick="cambiaStato(' + "'" + p.id + "'" + ',' + "'" + 'bozza' + "'" + ')">Bozza</button>';
+html += '<button class="btn-action" onclick="cambiaStato(' + "'" + p.id + "'" + ',' + "'" + 'lavorazione' + "'" + ')">Lavora</button>';
+html += '<button class="btn-action" onclick="cambiaStato(' + "'" + p.id + "'" + ',' + "'" + 'depositata' + "'" + ')">Deposita</button>';
+html += '<button class="btn-action" onclick="cambiaStato(' + "'" + p.id + "'" + ',' + "'" + 'concessa' + "'" + ')">Concedi</button>';
+html += '<button class="btn-action" onclick="cambiaStato(' + "'" + p.id + "'" + ',' + "'" + 'rifiutata' + "'" + ')">Rifiuta</button>';
+html += '</td>';
+html += '</tr>';
+}
 
-        document.getElementById('detailModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+html += '</tbody></table>';
+container.innerHTML = html;
+}
 
-        init();
-    </script>
+async function cambiaStato(id, nuovoStato) {
+if (!supabaseClient) return;
+if (!confirm('Confermi cambio stato in ' + getStatusLabel(nuovoStato) + '?')) return;
+
+try {
+var result = await supabaseClient.from('pratiche').update({status: nuovoStato}).eq('id', id).select();
+if (result.error) throw result.error;
+showSuccess('Stato aggiornato!');
+caricaPratiche();
+} catch (err) {
+console.error('Errore:', err);
+showError('Errore aggiornamento: ' + err.message);
+}
+}
+
+function vediDettaglio(id) {
+window.location.href = 'dettaglio.html?id=' + id;
+}
+
+function filtraPratiche() {
+var search = document.getElementById('searchInput').value.toLowerCase().trim();
+var tipo = document.getElementById('filterTipo').value;
+var stato = document.getElementById('filterStato').value;
+var settore = document.getElementById('filterSettore').value;
+
+var filtrate = [];
+for (var i = 0; i < tuttePratiche.length; i++) {
+var p = tuttePratiche[i];
+var include = true;
+
+if (search) {
+var match = false;
+if (p.titolo && p.titolo.toLowerCase().indexOf(search) !== -1) match = true;
+if (p.inventore && p.inventore.toLowerCase().indexOf(search) !== -1) match = true;
+if (p.titolare && p.titolare.toLowerCase().indexOf(search) !== -1) match = true;
+if (!match) include = false;
+}
+
+if (tipo && p.tipo_brevetto !== tipo) include = false;
+if (stato && p.status !== stato) include = false;
+if (settore && p.settore !== settore) include = false;
+
+if (include) filtrate.push(p);
+}
+
+renderTabella(filtrate);
+}
+
+function getStatusLabel(stato) {
+var labels = {
+'nuova': 'Nuova',
+'bozza': 'In Bozza',
+'lavorazione': 'In Lavorazione',
+'depositata': 'Depositate',
+'concessa': 'Concessa',
+'rifiutata': 'Rifiutata'
+};
+return labels[stato] || stato;
+}
+
+function escapeHtml(text) {
+if (!text) return '';
+var div = document.createElement('div');
+div.textContent = text;
+return div.innerHTML;
+}
+
+function formatData(isoDate) {
+if (!isoDate) return '-';
+var d = new Date(isoDate);
+return d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear();
+}
+
+function showError(msg) {
+var alert = document.getElementById('errorAlert');
+alert.textContent = msg;
+alert.classList.add('show');
+setTimeout(function() { alert.classList.remove('show'); }, 8000);
+}
+
+function showSuccess(msg) {
+var alert = document.getElementById('successAlert');
+alert.textContent = msg;
+alert.classList.add('show');
+setTimeout(function() { alert.classList.remove('show'); }, 5000);
+}
+</script>
 </body>
 </html>
