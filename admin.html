@@ -205,16 +205,9 @@
 
     <script>
         // ============================================================
-        // CREDENZIALI SUPABASE — GIA' INSERITE
+        // USO supabase GIÀ DICHIARATO IN config.js — NON RIDICHIARARE
         // ============================================================
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        
-        // ============================================================
-        // INIZIALIZZAZIONE SUPABASE — UNA SOLA VOLTA
-        // ============================================================
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
+
         // ============================================================
         // VARIABILI GLOBALI
         // ============================================================
@@ -223,7 +216,7 @@
         let paginaCorrente = 1;
         const righePerPagina = 10;
         let praticaSelezionata = null;
-        
+
         // ============================================================
         // INIT
         // ============================================================
@@ -235,7 +228,7 @@
             }
             caricaPratiche();
         });
-        
+
         // ============================================================
         // CARICA PRATICHE
         // ============================================================
@@ -253,14 +246,14 @@
                         utenti:utente_id (nome, cognome, email)
                     `)
                     .order('creato', { ascending: false });
-                
+
                 if (error) throw error;
-                
+
                 pratiche = data || [];
                 praticheFiltrate = [...pratiche];
                 aggiornaStats();
                 renderTabella();
-                
+
             } catch (err) {
                 console.error('Errore caricamento:', err);
                 mostraAlert('Errore caricamento dati: ' + err.message, 'error');
@@ -273,7 +266,7 @@
                 `;
             }
         }
-        
+
         // ============================================================
         // STATS
         // ============================================================
@@ -283,20 +276,20 @@
             const bozza = pratiche.filter(p => p.stato === 'bozza').length;
             const completate = pratiche.filter(p => p.stato === 'completata' || p.stato === 'attiva').length;
             const totale = pratiche.length;
-            
+
             document.getElementById('stat-fatturato').textContent = '€' + fatturato.toLocaleString('it-IT');
             document.getElementById('stat-attesa').textContent = attesa;
             document.getElementById('stat-bozza').textContent = bozza;
             document.getElementById('stat-completate').textContent = completate;
             document.getElementById('stat-totale').textContent = totale;
         }
-        
+
         // ============================================================
         // RENDER TABELLA
         // ============================================================
         function renderTabella() {
             const container = document.getElementById('table-content');
-            
+
             if (praticheFiltrate.length === 0) {
                 container.innerHTML = `
                     <div class="empty">
@@ -307,23 +300,23 @@
                 document.getElementById('pagination').style.display = 'none';
                 return;
             }
-            
+
             const inizio = (paginaCorrente - 1) * righePerPagina;
             const fine = inizio + righePerPagina;
             const pagina = praticheFiltrate.slice(inizio, fine);
             const totalePagine = Math.ceil(praticheFiltrate.length / righePerPagina);
-            
+
             let html = '';
             pagina.forEach(p => {
                 const utente = p.utenti || {};
-                const nomeUtente = utente.nome && utente.cognome 
-                    ? utente.nome + ' ' + utente.cognome 
+                const nomeUtente = utente.nome && utente.cognome
+                    ? utente.nome + ' ' + utente.cognome
                     : (utente.email || 'N/D');
                 const data = new Date(p.creato).toLocaleDateString('it-IT');
                 const statoClass = getStatoClass(p.stato);
                 const statoLabel = getStatoLabel(p.stato);
                 const servizi = p.servizi ? p.servizi.join(', ') : '-';
-                
+
                 html += `
                     <div class="table-row">
                         <div class="col-id">${p.id.substring(0, 8)}</div>
@@ -340,16 +333,16 @@
                     </div>
                 `;
             });
-            
+
             container.innerHTML = html;
-            
-            document.getElementById('pagination-info').textContent = 
+
+            document.getElementById('pagination-info').textContent =
                 `Pagina ${paginaCorrente} di ${totalePagine}`;
             document.getElementById('btn-prev').disabled = paginaCorrente === 1;
             document.getElementById('btn-next').disabled = paginaCorrente === totalePagine;
             document.getElementById('pagination').style.display = totalePagine > 1 ? 'flex' : 'none';
         }
-        
+
         // ============================================================
         // HELPER STATO
         // ============================================================
@@ -363,7 +356,7 @@
             };
             return map[stato] || 'badge-default';
         }
-        
+
         function getStatoLabel(stato) {
             const map = {
                 'bozza': 'In Bozza',
@@ -374,7 +367,7 @@
             };
             return map[stato] || stato;
         }
-        
+
         // ============================================================
         // FILTRI
         // ============================================================
@@ -383,29 +376,29 @@
             const stato = document.getElementById('filter-stato').value;
             const dataDa = document.getElementById('filter-data-da').value;
             const dataA = document.getElementById('filter-data-a').value;
-            
+
             praticheFiltrate = pratiche.filter(p => {
                 const utente = p.utenti || {};
                 const nomeUtente = (utente.nome + ' ' + utente.cognome + ' ' + utente.email).toLowerCase();
-                
-                const matchSearch = !search || 
+
+                const matchSearch = !search ||
                     (p.titolo && p.titolo.toLowerCase().includes(search)) ||
                     nomeUtente.includes(search) ||
                     p.id.toLowerCase().includes(search);
-                
+
                 const matchStato = !stato || p.stato === stato;
-                
+
                 const pData = new Date(p.creato);
                 const matchDataDa = !dataDa || pData >= new Date(dataDa);
                 const matchDataA = !dataA || pData <= new Date(dataA + 'T23:59:59');
-                
+
                 return matchSearch && matchStato && matchDataDa && matchDataA;
             });
-            
+
             paginaCorrente = 1;
             renderTabella();
         }
-        
+
         function resetFiltri() {
             document.getElementById('filter-search').value = '';
             document.getElementById('filter-stato').value = '';
@@ -415,7 +408,7 @@
             paginaCorrente = 1;
             renderTabella();
         }
-        
+
         // ============================================================
         // PAGINAZIONE
         // ============================================================
@@ -427,14 +420,14 @@
                 renderTabella();
             }
         }
-        
+
         // ============================================================
         // AZIONI
         // ============================================================
         function vediPratica(id) {
             window.location.href = 'dettaglio.html?id=' + id;
         }
-        
+
         // ============================================================
         // MODAL CAMBIO STATO
         // ============================================================
@@ -443,38 +436,38 @@
             document.getElementById('nuovo-stato').value = statoAttuale;
             document.getElementById('modal-stato').classList.add('active');
         }
-        
+
         function chiudiModal() {
             document.getElementById('modal-stato').classList.remove('active');
             praticaSelezionata = null;
         }
-        
+
         async function confermaCambioStato() {
             if (!praticaSelezionata) return;
-            
+
             const nuovoStato = document.getElementById('nuovo-stato').value;
-            
+
             try {
                 const { error } = await supabase
                     .from('pratiche')
                     .update({ stato: nuovoStato, aggiornato: new Date().toISOString() })
                     .eq('id', praticaSelezionata);
-                
+
                 if (error) throw error;
-                
+
                 mostraAlert('Stato aggiornato con successo!', 'success');
                 chiudiModal();
                 await caricaPratiche();
-                
+
             } catch (err) {
                 mostraAlert('Errore: ' + err.message, 'error');
             }
         }
-        
+
         document.getElementById('modal-stato').addEventListener('click', function(e) {
             if (e.target === this) chiudiModal();
         });
-        
+
         // ============================================================
         // ALERT
         // ============================================================
@@ -485,7 +478,7 @@
             alert.classList.add('show');
             setTimeout(() => alert.classList.remove('show'), 3000);
         }
-        
+
         // ============================================================
         // LOGOUT
         // ============================================================
