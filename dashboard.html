@@ -523,8 +523,7 @@
             return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
-        function vediDettaglio(id) {
-            alert('Dettaglio pratica: ' + id + '\n\n(In sviluppo - PACCHETTO 5)');
+        function vediDettaglio(id) {window.location.href = 'dettaglio-pratica.html?id=' + id
         }
 
         function logout() {
