@@ -266,26 +266,7 @@
             mostraAlert('Errore di connessione', 'error');
         }
     });
-        // ============================================================
-        let pratiche = [];
-        let praticheFiltrate = [];
-        let paginaCorrente = 1;
-        const righePerPagina = 10;
-        let praticaSelezionata = null;
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session) {
-                    window.location.href = 'login.html';
-                    return;
-                }
-                await caricaPratiche();
-            } catch (err) {
-                console.error('Errore init:', err);
+        
                 mostraAlert('Errore di connessione', 'error');
             }
         });
