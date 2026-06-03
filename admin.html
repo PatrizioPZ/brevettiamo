@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel — BrevettIAmo</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; color: #1a1a2e; }
@@ -231,20 +232,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.error('Errore init:', err);
         mostraAlert('Errore di connessione', 'error');
     }
-});
-            
-            try {
-         Fix: controllo sessione robusto con fallback getUser/getSession       
-         // Controllo sessione robusto
-let sessioneValida = false;
-try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-        sessioneValida = true;
-    }
-} catch (e) {
-    console.log('getUser fallito, provo getSession');
-}
+
 
 if (!sessioneValida) {
     try {
