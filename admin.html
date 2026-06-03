@@ -202,40 +202,36 @@
 
     <div class="alert" id="alert"></div>
 
-    <script>
-        // ============================================================
-        // CONFIGURAZIONE SUPABASE
-        // ============================================================
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+   // ============================================================
+// VARIABILI ADMIN
+// ============================================================
+let pratiche = [];
+let praticheFiltrate = [];
+let paginaCorrente = 1;
+const righePerPagina = 10;
+let praticaSelezionata = null;
 
-        // ============================================================
-        // VARIABILI GLOBALI
-        // ============================================================
-        let pratiche = [];
-        let praticheFiltrate = [];
-        let paginaCorrente = 1;
-        const righePerPagina = 10;
-        let praticaSelezionata = null;
-        let supabaseClient = null;
-
-        // ============================================================
-        // INIT - Aspetta che Supabase sia caricato
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Aspetta che la libreria Supabase sia disponibile
-            let tentativi = 0;
-            while (!window.supabase && tentativi < 30) {
-                await new Promise(r => setTimeout(r, 100));
-                tentativi++;
-            }
-            
-            if (!window.supabase) {
-                mostraAlert('Errore: libreria Supabase non caricata', 'error');
-                return;
-            }
-            
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async function() {
+    if (!supabase) {
+        mostraAlert('Errore: libreria non caricata', 'error');
+        return;
+    }
+    
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = 'index.html';
+            return;
+        }
+        await caricaPratiche();
+    } catch (err) {
+        console.error('Errore init:', err);
+        mostraAlert('Errore di connessione', 'error');
+    }
+});
             
             try {
          Fix: controllo sessione robusto con fallback getUser/getSession       
