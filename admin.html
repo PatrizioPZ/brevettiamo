@@ -238,12 +238,12 @@
             supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
             try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session) {
-                    window.location.href = 'index.html';
-                    return;
-                }
-                await caricaPratiche();
+            //    const { data: { session } } = await supabaseClient.auth.getSession();
+             //   if (!session) {
+             //       window.location.href = 'index.html';
+             //       return;
+            //  }
+               await caricaPratiche();
             } catch (err) {
                 console.error('Errore init:', err);
                 mostraAlert('Errore di connessione', 'error');
