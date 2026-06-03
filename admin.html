@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel — BrevettIAmo</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -202,81 +201,61 @@
     </div>
 
     <div class="alert" id="alert"></div>
-<script>
-    // ============================================================
-    // CREO IL CLIENT SUPABASE DOPO CHE LA LIBRERIA E' CARICATA
-    // ============================================================
-    const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-    let supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-    
-    
-   document.addEventListener('DOMContentLoaded', async function() {
-    if (!supabase) {
-        mostraAlert('Errore: Supabase non caricato', 'error');
-        return;
-    }
-    try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            window.location.href = 'index.html';
-            return;
-        }
-        await caricaPratiche();
-    } catch (err) {
-        console.error('Errore init:', err);
-        mostraAlert('Errore di connessione', 'error');
-    }
-});
-    
-    // ============================================================
-    // VARIABILI GLOBALI
-    // ============================================================
-    let pratiche = [];
-    let praticheFiltrate = [];
-    let paginaCorrente = 1;
-    const righePerPagina = 10;
-    let praticaSelezionata = null;
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    document.addEventListener('DOMContentLoaded', async function() {
-        // Aspetta che Supabase sia caricato
-        let tentativi = 0;
-        while (!initSupabase() && tentativi < 50) {
-            await new Promise(r => setTimeout(r, 100));
-            tentativi++;
-        }
-        
-        if (!supabase) {
-            mostraAlert('Errore: libreria Supabase non caricata', 'error');
-            return;
-        }
-        
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'index.html';
+    <script>
+        // ============================================================
+        // CONFIGURAZIONE SUPABASE
+        // ============================================================
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+
+        // ============================================================
+        // VARIABILI GLOBALI
+        // ============================================================
+        let pratiche = [];
+        let praticheFiltrate = [];
+        let paginaCorrente = 1;
+        const righePerPagina = 10;
+        let praticaSelezionata = null;
+        let supabaseClient = null;
+
+        // ============================================================
+        // INIT - Aspetta che Supabase sia caricato
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Aspetta che la libreria Supabase sia disponibile
+            let tentativi = 0;
+            while (!window.supabase && tentativi < 30) {
+                await new Promise(r => setTimeout(r, 100));
+                tentativi++;
+            }
+            
+            if (!window.supabase) {
+                mostraAlert('Errore: libreria Supabase non caricata', 'error');
                 return;
             }
-            await caricaPratiche();
-        } catch (err) {
-            console.error('Errore init:', err);
-            mostraAlert('Errore di connessione', 'error');
-        }
-    });
-        
+            
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                await caricaPratiche();
+            } catch (err) {
+                console.error('Errore init:', err);
                 mostraAlert('Errore di connessione', 'error');
             }
         });
 
         // ============================================================
-        // CARICA PRATICHE — CORRETTO PER IL TUO SCHEMA
+        // CARICA PRATICHE
         // ============================================================
         async function caricaPratiche() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('pratiche')
                     .select('*')
                     .order('creato', { ascending: false });
@@ -290,7 +269,7 @@
                 
             } catch (err) {
                 console.error('Errore caricamento:', err);
-                mostraAlert('Errore caricamento: ' + err.message, 'error');
+                mostraAlert('Errore caricamento dati: ' + err.message, 'error');
                 document.getElementById('table-content').innerHTML = `
                     <div class="empty">
                         <div class="empty-icon">⚠️</div>
@@ -319,7 +298,7 @@
         }
 
         // ============================================================
-        // RENDER TABELLA — CORRETTO PER IL TUO SCHEMA
+        // RENDER TABELLA
         // ============================================================
         function renderTabella() {
             const container = document.getElementById('table-content');
@@ -481,7 +460,7 @@
             const nuovoStato = document.getElementById('nuovo-stato').value;
             
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('pratiche')
                     .update({ stato: nuovoStato })
                     .eq('id', praticaSelezionata);
@@ -516,8 +495,8 @@
         // LOGOUT
         // ============================================================
         async function logout() {
-            await supabase.auth.signOut();
-            window.location.href = 'login.html';
+            await supabaseClient.auth.signOut();
+            window.location.href = 'index.html';
         }
     </script>
 </body>
