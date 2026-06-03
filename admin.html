@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async function() {
          // Controllo sessione robusto
 let sessioneValida = false;
 try {
-    const { data: { user } } = await supabaseClient.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (user) {
         sessioneValida = true;
     }
@@ -248,7 +248,7 @@ try {
 
 if (!sessioneValida) {
     try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+        const { data: { session } } = await supabase.auth.getSession();
         if (session) {
             sessioneValida = true;
         }
@@ -273,7 +273,7 @@ if (!sessioneValida) {
         // ============================================================
         async function caricaPratiche() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('pratiche')
                     .select('*')
                     .order('creato', { ascending: false });
@@ -478,7 +478,7 @@ if (!sessioneValida) {
             const nuovoStato = document.getElementById('nuovo-stato').value;
             
             try {
-                const { error } = await supabaseClient
+                const { error } = await supabase
                     .from('pratiche')
                     .update({ stato: nuovoStato })
                     .eq('id', praticaSelezionata);
@@ -513,7 +513,7 @@ if (!sessioneValida) {
         // LOGOUT
         // ============================================================
         async function logout() {
-            await supabaseClient.auth.signOut();
+            await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
     </script>
