@@ -205,11 +205,16 @@
 
     <script>
         // ============================================================
-        // CREO IL CLIENT SUPABASE DIRETTAMENTE QUI — AUTONOMO
-        // ============================================================
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+     // ============================================================
+// CREO IL CLIENT SUPABASE — SE NON ESISTE GIÀ
+// ============================================================
+const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+
+// Se supabase non esiste ancora, lo creo
+if (typeof supabase === 'undefined') {
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
 
         // ============================================================
         // VARIABILI GLOBALI
