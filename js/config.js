@@ -12,14 +12,17 @@ const CONFIG = {
     PREZZO_ABBONAMENTO: 299
 };
 
-// Inizializza Supabase SOLO se non è già inizializzato
-if (typeof supabase === 'undefined' || supabase === null) {
+// Inizializza Supabase su window per evitare conflitti
+if (typeof window.supabaseClient === 'undefined') {
     if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-        var supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+        window.supabaseClient = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
     } else {
         console.error('ERRORE: Libreria Supabase non caricata');
     }
 }
+
+// Riferimento globale per retrocompatibilità
+var supabase = window.supabaseClient;
 
 // Helper alert
 function mostraAlert(messaggio, tipo) {
