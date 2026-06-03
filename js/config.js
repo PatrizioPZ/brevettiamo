@@ -12,12 +12,13 @@ const CONFIG = {
     PREZZO_ABBONAMENTO: 299
 };
 
-// Inizializza Supabase
-let supabase;
-if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-} else {
-    console.error('ERRORE: Libreria Supabase non caricata');
+// Inizializza Supabase SOLO se non è già inizializzato
+if (typeof supabase === 'undefined' || supabase === null) {
+    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+        var supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+    } else {
+        console.error('ERRORE: Libreria Supabase non caricata');
+    }
 }
 
 // Helper alert
