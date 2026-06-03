@@ -202,22 +202,70 @@
     </div>
 
     <div class="alert" id="alert"></div>
+<script>
+    // ============================================================
+    // CREO IL CLIENT SUPABASE DOPO CHE LA LIBRERIA E' CARICATA
+    // ============================================================
+    const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+    let supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    
+    
+   document.addEventListener('DOMContentLoaded', async function() {
+    if (!supabase) {
+        mostraAlert('Errore: Supabase non caricato', 'error');
+        return;
+    }
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = 'index.html';
+            return;
+        }
+        await caricaPratiche();
+    } catch (err) {
+        console.error('Errore init:', err);
+        mostraAlert('Errore di connessione', 'error');
+    }
+});
+    
+    // ============================================================
+    // VARIABILI GLOBALI
+    // ============================================================
+    let pratiche = [];
+    let praticheFiltrate = [];
+    let paginaCorrente = 1;
+    const righePerPagina = 10;
+    let praticaSelezionata = null;
 
-    <script>
-        // ============================================================
-     // ============================================================
-// CREO IL CLIENT SUPABASE — SE NON ESISTE GIÀ
-// ============================================================
-const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-
-// Se supabase non esiste ancora, lo creo
-if (typeof supabase === 'undefined') {
-    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}
-
-        // ============================================================
-        // VARIABILI GLOBALI
+    // ============================================================
+    // INIT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Aspetta che Supabase sia caricato
+        let tentativi = 0;
+        while (!initSupabase() && tentativi < 50) {
+            await new Promise(r => setTimeout(r, 100));
+            tentativi++;
+        }
+        
+        if (!supabase) {
+            mostraAlert('Errore: libreria Supabase non caricata', 'error');
+            return;
+        }
+        
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            await caricaPratiche();
+        } catch (err) {
+            console.error('Errore init:', err);
+            mostraAlert('Errore di connessione', 'error');
+        }
+    });
         // ============================================================
         let pratiche = [];
         let praticheFiltrate = [];
