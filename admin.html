@@ -224,12 +224,17 @@
         // INIT
         // ============================================================
         document.addEventListener('DOMContentLoaded', async function() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                await caricaPratiche();
+            } catch (err) {
+                console.error('Errore init:', err);
+                mostraAlert('Errore di connessione', 'error');
             }
-            caricaPratiche();
         });
 
         // ============================================================
@@ -251,7 +256,7 @@
                 
             } catch (err) {
                 console.error('Errore caricamento:', err);
-                mostraAlert('Errore caricamento dati: ' + err.message, 'error');
+                mostraAlert('Errore caricamento: ' + err.message, 'error');
                 document.getElementById('table-content').innerHTML = `
                     <div class="empty">
                         <div class="empty-icon">⚠️</div>
@@ -303,14 +308,11 @@
             
             let html = '';
             pagina.forEach(p => {
-                // Gestione utente_id NULL
                 const nomeUtente = p.utente_id ? 'Utente ' + p.utente_id.substring(0, 8) : 'N/D';
                 const data = p.creato ? new Date(p.creato).toLocaleDateString('it-IT') : 'N/D';
                 const statoClass = getStatoClass(p.stato);
                 const statoLabel = getStatoLabel(p.stato);
-                // tipo_brevetto o tipo
                 const tipo = p.tipo_brevetto || p.tipo || 'N/D';
-                // servizi array
                 let servizi = '-';
                 if (p.servizi && Array.isArray(p.servizi) && p.servizi.length > 0) {
                     servizi = p.servizi.join(', ');
