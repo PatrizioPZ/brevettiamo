@@ -203,62 +203,27 @@
 
     <div class="alert" id="alert"></div>
 
-   // ============================================================
-// VARIABILI ADMIN
-// ============================================================
-let pratiche = [];
-let praticheFiltrate = [];
-let paginaCorrente = 1;
-const righePerPagina = 10;
-let praticaSelezionata = null;
+    <script>
+        let pratiche = [];
+        let praticheFiltrate = [];
+        let paginaCorrente = 1;
+        const righePerPagina = 10;
+        let praticaSelezionata = null;
 
-// ============================================================
-// INIT
-// ============================================================
-document.addEventListener('DOMContentLoaded', async function() {
-    if (!supabase) {
-        mostraAlert('Errore: libreria non caricata', 'error');
-        return;
-    }
-    
-    try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            window.location.href = 'index.html';
-            return;
-        }
-        await caricaPratiche();
-    } catch (err) {
-        console.error('Errore init:', err);
-        mostraAlert('Errore di connessione', 'error');
-    }
-
-
-if (!sessioneValida) {
-    try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            sessioneValida = true;
-        }
-    } catch (e) {
-        console.log('getSession fallito');
-    }
-}
-
-if (!sessioneValida) {
-    window.location.href = 'index.html';
-    return;
-}
-               await caricaPratiche();
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+                await caricaPratiche();
             } catch (err) {
                 console.error('Errore init:', err);
                 mostraAlert('Errore di connessione', 'error');
             }
         });
 
-        // ============================================================
-        // CARICA PRATICHE
-        // ============================================================
         async function caricaPratiche() {
             try {
                 const { data, error } = await supabase
@@ -286,9 +251,6 @@ if (!sessioneValida) {
             }
         }
 
-        // ============================================================
-        // STATS
-        // ============================================================
         function aggiornaStats() {
             const fatturato = pratiche.filter(p => p.stato === 'completata' || p.stato === 'attiva').length * 300;
             const attesa = pratiche.filter(p => p.stato === 'in_attesa').length;
@@ -303,9 +265,6 @@ if (!sessioneValida) {
             document.getElementById('stat-totale').textContent = totale;
         }
 
-        // ============================================================
-        // RENDER TABELLA
-        // ============================================================
         function renderTabella() {
             const container = document.getElementById('table-content');
             
@@ -357,15 +316,12 @@ if (!sessioneValida) {
             container.innerHTML = html;
             
             document.getElementById('pagination-info').textContent = 
-                `Pagina ${paginaCorrente} di ${totalePagine}`;
+                'Pagina ' + paginaCorrente + ' di ' + totalePagine;
             document.getElementById('btn-prev').disabled = paginaCorrente === 1;
             document.getElementById('btn-next').disabled = paginaCorrente === totalePagine;
             document.getElementById('pagination').style.display = totalePagine > 1 ? 'flex' : 'none';
         }
 
-        // ============================================================
-        // HELPER STATO
-        // ============================================================
         function getStatoClass(stato) {
             const map = {
                 'bozza': 'badge-bozza',
@@ -388,9 +344,6 @@ if (!sessioneValida) {
             return map[stato] || stato;
         }
 
-        // ============================================================
-        // FILTRI
-        // ============================================================
         function applicaFiltri() {
             const search = document.getElementById('filter-search').value.toLowerCase();
             const stato = document.getElementById('filter-stato').value;
@@ -427,9 +380,6 @@ if (!sessioneValida) {
             renderTabella();
         }
 
-        // ============================================================
-        // PAGINAZIONE
-        // ============================================================
         function cambiaPagina(delta) {
             const totalePagine = Math.ceil(praticheFiltrate.length / righePerPagina);
             const nuova = paginaCorrente + delta;
@@ -439,16 +389,10 @@ if (!sessioneValida) {
             }
         }
 
-        // ============================================================
-        // AZIONI
-        // ============================================================
         function vediPratica(id) {
             window.location.href = 'dettaglio.html?id=' + id;
         }
 
-        // ============================================================
-        // MODAL CAMBIO STATO
-        // ============================================================
         function apriModalStato(id, statoAttuale) {
             praticaSelezionata = id;
             document.getElementById('nuovo-stato').value = statoAttuale;
@@ -486,9 +430,6 @@ if (!sessioneValida) {
             if (e.target === this) chiudiModal();
         });
 
-        // ============================================================
-        // ALERT
-        // ============================================================
         function mostraAlert(messaggio, tipo) {
             const alert = document.getElementById('alert');
             alert.textContent = messaggio;
@@ -497,9 +438,6 @@ if (!sessioneValida) {
             setTimeout(() => alert.classList.remove('show'), 3000);
         }
 
-        // ============================================================
-        // LOGOUT
-        // ============================================================
         async function logout() {
             await supabase.auth.signOut();
             window.location.href = 'index.html';
