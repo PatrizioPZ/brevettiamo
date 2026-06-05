@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prezzi - BrevettIAmo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; color: #1e3a8a; margin: 30px 0; font-size: 2.5em; }
+        h2 { color: #1e3a8a; margin: 40px 0 20px; font-size: 1.8em; border-bottom: 3px solid #f97316; padding-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 40px; font-size: 1.2em; }
+        .pacchetti { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin: 30px 0; }
+        .pacchetto { background: white; border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .pacchetto:hover { transform: translateY(-10px); }
+        .pacchetto h3 { color: #1e3a8a; font-size: 1.5em; margin-bottom: 15px; }
+        .prezzo { font-size: 3em; color: #f97316; font-weight: bold; margin: 20px 0; }
+        .prezzo span { font-size: 0.4em; color: #666; }
+        .features { list-style: none; margin: 20px 0; }
+        .features li { padding: 10px 0; border-bottom: 1px solid #eee; color: #555; }
+        .btn { display: inline-block; background: #1e3a8a; color: white; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: background 0.3s; }
+        .btn:hover { background: #f97316; }
+        .highlight { border: 3px solid #f97316; position: relative; }
+        .highlight::before { content: "POPOLARE"; position: absolute; top: -15px; right: 20px; background: #f97316; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8em; }
+        .servizi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+        .servizio { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+        .servizio h4 { color: #1e3a8a; margin-bottom: 10px; }
+        .servizio .prezzo-singolo { font-size: 1.5em; color: #f97316; font-weight: bold; }
+        .badge { display: inline-block; padding: 5px 10px; border-radius: 15px; font-size: 0.8em; margin-left: 10px; }
+        .badge-premium { background: #f97316; color: white; }
+        .note { background: #e0f2fe; border-left: 4px solid #1e3a8a; padding: 15px; margin: 30px 0; border-radius: 5px; }
+        .confronto { background: white; border-radius: 10px; padding: 20px; margin: 30px 0; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #1e3a8a; color: white; }
+        td { color: #555; }
+        .risparmio { color: #10b981; font-weight: bold; }
+        footer { text-align: center; padding: 40px; color: #666; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prezzi BrevettIAmo</h1>
+        <p class="subtitle">AI per Brevetti - Prezzi 10x inferiori al mercato tradizionale</p>
+        
+        <div class="note">
+            <p><strong>Nota:</strong> I prezzi dei pacchetti sono invariati. I servizi singoli e abbonamenti sono aumentati del 20% rispetto alla prima stima.</p>
+        </div>
+        
+        <h2>Pacchetti (Invariati)</h2>
+        <div class="pacchetti">
+            <div class="pacchetto">
+                <h3>Starter</h3>
+                <div class="prezzo">EUR 29<span>/una tantum</span></div>
+                <ul class="features">
+                    <li>3 servizi AI selezionati</li>
+                    <li>Supporto via email</li>
+                    <li>Ideale per chi inizia</li>
+                    <li>Accesso immediato</li>
+                </ul>
+                <a href="https://brevettiamo.lemonsqueezy.com/checkout/buy/starter" class="btn">Acquista Starter</a>
+            </div>
+            
+            <div class="pacchetto highlight">
+                <h3>Pro</h3>
+                <div class="prezzo">EUR 99<span>/una tantum</span></div>
+                <ul class="features">
+                    <li>10 servizi AI con priorita</li>
+                    <li>Supporto via chat</li>
+                    <li>Per professionisti</li>
+                    <li>Report avanzati</li>
+                </ul>
+                <a href="https://brevettiamo.lemonsqueezy.com/checkout/buy/pro" class="btn">Acquista Pro</a>
+            </div>
+            
+            <div class="pacchetto">
+                <h3>Enterprise</h3>
+                <div class="prezzo">EUR 299<span>/una tantum</span></div>
+                <ul class="features">
+                    <li>Tutti i servizi illimitati</li>
+                    <li>Consulenza 1:1</li>
+                    <li>Per aziende e studi</li>
+                    <li>Supporto dedicato</li>
+                </ul>
+                <a href="https://brevettiamo.lemonsqueezy.com/checkout/buy/enterprise" class="btn">Acquista Enterprise</a>
+            </div>
+        </div>
+        
+        <h2>Servizi Singoli (+20%)</h2>
+        <div class="servizi-grid">
+            <div class="servizio">
+                <h4>Ricerca Prior Art Base <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 11</div>
+                <p>Ricerca rapida in database brevetti</p>
+            </div>
+            <div class="servizio">
+                <h4>Ricerca Prior Art Avanzata <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 23</div>
+                <p>Con report PDF dettagliato</p>
+            </div>
+            <div class="servizio">
+                <h4>Analisi Brevettabilita <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 18</div>
+                <p>Rapporto completo con parere</p>
+            </div>
+            <div class="servizio">
+                <h4>Redazione Claims Base <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 23</div>
+                <p>Template + AI generation</p>
+            </div>
+            <div class="servizio">
+                <h4>Redazione Claims Pro <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 47</div>
+                <p>Con revisione umana esperto</p>
+            </div>
+            <div class="servizio">
+                <h4>Traduzione Claims <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 14</div>
+                <p>Per lingua (EN, DE, FR, CN)</p>
+            </div>
+            <div class="servizio">
+                <h4>Monitoraggio Concorrenza <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 35/mese</div>
+                <p>Alert automatici su nuovi brevetti</p>
+            </div>
+            <div class="servizio">
+                <h4>Consulenza 1:1 <span class="badge badge-premium">PREMIUM</span></h4>
+                <div class="prezzo-singolo">EUR 59/ora</div>
+                <p>Con esperto brevetti certificato</p>
+            </div>
+        </div>
+        
+        <h2>Abbonamenti (+20%)</h2>
+        <div class="pacchetti">
+            <div class="pacchetto">
+                <h3>Basic</h3>
+                <div class="prezzo">EUR 11<span>/mese</span></div>
+                <ul class="features">
+                    <li>5 servizi/mese</li>
+                    <li>Supporto email</li>
+                    <li>Per startup e studenti</li>
+                </ul>
+                <a href="#" class="btn">Abbonati Basic</a>
+            </div>
+            <div class="pacchetto highlight">
+                <h3>Pro</h3>
+                <div class="prezzo">EUR 35<span>/mese</span></div>
+                <ul class="features">
+                    <li>15 servizi/mese</li>
+                    <li>Supporto chat</li>
+                    <li>Per inventori attivi</li>
+                </ul>
+                <a href="#" class="btn">Abbonati Pro</a>
+            </div>
+            <div class="pacchetto">
+                <h3>Unlimited</h3>
+                <div class="prezzo">EUR 59<span>/mese</span></div>
+                <ul class="features">
+                    <li>Servizi illimitati</li>
+                    <li>Supporto dedicato</li>
+                    <li>Per aziende e studi</li>
+                </ul>
+                <a href="#" class="btn">Abbonati Unlimited</a>
+            </div>
+        </div>
+        
+        <h2>Confronto con Mercato Tradizionale</h2>
+        <div class="confronto">
+            <table>
+                <tr>
+                    <th>Servizio</th>
+                    <th>Mercato Tradizionale</th>
+                    <th>BrevettIAmo</th>
+                    <th>Risparmio</th>
+                </tr>
+                <tr>
+                    <td>Ricerca Prior Art</td>
+                    <td>EUR 50-200</td>
+                    <td>EUR 11-23</td>
+                    <td class="risparmio">-80%</td>
+                </tr>
+                <tr>
+                    <td>Analisi Brevettabilita</td>
+                    <td>EUR 100-300</td>
+                    <td>EUR 18</td>
+                    <td class="risparmio">-90%</td>
+                </tr>
+                <tr>
+                    <td>Redazione Claims</td>
+                    <td>EUR 200-500</td>
+                    <td>EUR 23-47</td>
+                    <td class="risparmio">-90%</td>
+                </tr>
+                <tr>
+                    <td>Consulenza 1:1</td>
+                    <td>EUR 150-300/ora</td>
+                    <td>EUR 59/ora</td>
+                    <td class="risparmio">-75%</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="note">
+            <p><strong>Strategia:</strong> Prezzi 10x inferiori al mercato tradizionale. Qualita AI + revisione umana (80% AI, 20% esperto). Volume alto, margine basso = accessibilita + scalabilita.</p>
+        </div>
+        
+        <footer>
+            <p>BrevettIAmo - AI per Brevetti | patrizio.zanini@gmail.com</p>
+            <p>I prezzi possono variare. Le commissioni LemonSqueezy sono del 5% + EUR 0.50 per transazione.</p>
+        </footer>
+    </div>
+</body>
+</html>
