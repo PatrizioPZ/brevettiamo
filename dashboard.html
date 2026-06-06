@@ -51,6 +51,7 @@ tr:hover { background:#f8f9fa; }
 <div>
 <a href="dashboard.html">Dashboard</a>
 <a href="nuova-pratica.html">Nuova Pratica</a>
+  <a href="#" class="btn-new" onclick="mostraServiziAI()" style="background:#2a5298; margin-left:10px;">+ Servizi AI</a>
 <a href="index.html">Home</a>
   <a href="prezzi.html">Prezzi</a>
 </div>
@@ -272,6 +273,77 @@ var alert = document.getElementById('errorAlert');
 alert.textContent = msg;
 alert.classList.add('show');
 setTimeout(function() { alert.classList.remove('show'); }, 8000);
+}
+  // SERVIZI AI - BACKEND
+const BACKEND_URL = 'https://brevettiamo-backend.onrender.com';
+
+async function mostraServiziAI() {
+    try {
+        const response = await fetch(BACKEND_URL + '/api/services/list');
+        const data = await response.json();
+        
+        let html = '<div style="background:white; padding:20px; border-radius:10px; margin-top:20px;">';
+        html += '<h2 style="color:#1e3c72; margin-bottom:15px;">19 Intelligenze AI</h2>';
+        html += '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:15px;">';
+        
+        for (let s of data.services) {
+            html += '<div style="border:1px solid #ddd; padding:15px; border-radius:8px; cursor:pointer;" onclick="eseguiServizio(\'' + s.id + '\', \'' + s.name + '\')">';
+            html += '<h3 style="color:#2a5298; font-size:1em;">' + s.name + '</h3>';
+            html += '<p style="color:#666; font-size:0.9em;">EUR ' + s.prezzo + ' | ' + s.credits + ' crediti</p>';
+            html += '</div>';
+        }
+        
+        html += '</div>';
+        html += '<div id="aiResult" style="margin-top:20px;"></div>';
+        html += '</div>';
+        
+        document.getElementById('tableContent').innerHTML = html;
+        
+    } catch (err) {
+        showError('Errore caricamento servizi AI: ' + err.message);
+    }
+}
+
+async function eseguiServizio(serviceId, serviceName) {
+    const input = prompt('Descrivi la tua invenzione per ' + serviceName + ':');
+    if (!input) return;
+    
+    document.getElementById('aiResult').innerHTML = '<div class="loading"><div class="spinner"></div><p>Analisi AI in corso...</p></div>';
+    
+    try {
+        const response = await fetch(BACKEND_URL + '/api/services/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                serviceId: serviceId,
+                input: input,
+                language: 'it'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('aiResult').innerHTML = 
+                '<div style="background:#f8f9fa; padding:20px; border-radius:8px; border-left:4px solid #28a745;">' +
+                '<h3 style="color:#28a745;">Risultato ' + serviceName + '</h3>' +
+                '<pre style="white-space:pre-wrap; font-family:Arial; line-height:1.6;">' + escapeHtml(data.result) + '</pre>' +
+                '</div>';
+        } else {
+            document.getElementById('aiResult').innerHTML = 
+                '<div style="background:#f8d7da; padding:20px; border-radius:8px;">' +
+                '<h3 style="color:#721c24;">Errore</h3>' +
+                '<p>' + (data.error || 'Errore sconosciuto') + '</p>' +
+                '</div>';
+        }
+        
+    } catch (err) {
+        document.getElementById('aiResult').innerHTML = 
+            '<div style="background:#f8d7da; padding:20px; border-radius:8px;">' +
+            '<h3 style="color:#721c24;">Errore di connessione</h3>' +
+            '<p>' + err.message + '</p>' +
+            '</div>';
+    }
 }
 </script>
 </body>
