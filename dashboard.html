@@ -51,9 +51,8 @@ tr:hover { background:#f8f9fa; }
 <div>
 <a href="dashboard.html">Dashboard</a>
 <a href="nuova-pratica.html">Nuova Pratica</a>
-  <a href="#" class="btn-new" onclick="mostraServiziAI()" style="background:#2a5298; margin-left:10px;">+ Servizi AI</a>
 <a href="index.html">Home</a>
-  <a href="prezzi.html">Prezzi</a>
+<a href="prezzi.html">Prezzi</a>
 </div>
 </nav>
 
@@ -88,6 +87,7 @@ tr:hover { background:#f8f9fa; }
 <option value="rifiutata">Rifiutata</option>
 </select>
 <a href="nuova-pratica.html" class="btn-new">+ Nuova Pratica</a>
+<a href="#" class="btn-new" onclick="mostraServiziAI()" style="background:#2a5298; margin-left:10px;">+ Servizi AI</a>
 </div>
 
 <div class="table-container">
@@ -274,7 +274,8 @@ alert.textContent = msg;
 alert.classList.add('show');
 setTimeout(function() { alert.classList.remove('show'); }, 8000);
 }
-  // SERVIZI AI - BACKEND
+
+// SERVIZI AI - BACKEND
 const BACKEND_URL = 'https://brevettiamo-backend.onrender.com';
 
 async function mostraServiziAI() {
@@ -284,6 +285,17 @@ async function mostraServiziAI() {
         
         let html = '<div style="background:white; padding:20px; border-radius:10px; margin-top:20px;">';
         html += '<h2 style="color:#1e3c72; margin-bottom:15px;">19 Intelligenze AI</h2>';
+        
+        // Selettore lingua
+        html += '<div style="margin-bottom:15px;">';
+        html += '<label style="font-weight:bold;">Lingua: </label>';
+        html += '<select id="linguaAI" style="padding:8px; border-radius:5px; border:1px solid #ddd;">';
+        html += '<option value="it">Italiano</option>';
+        html += '<option value="en">English</option>';
+        html += '<option value="it-en">Italiano + English</option>';
+        html += '</select>';
+        html += '</div>';
+        
         html += '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:15px;">';
         
         for (let s of data.services) {
@@ -308,7 +320,9 @@ async function eseguiServizio(serviceId, serviceName) {
     const input = prompt('Descrivi la tua invenzione per ' + serviceName + ':');
     if (!input) return;
     
-    document.getElementById('aiResult').innerHTML = '<div class="loading"><div class="spinner"></div><p>Analisi AI in corso...</p></div>';
+    const lingua = document.getElementById('linguaAI')?.value || 'it';
+    
+    document.getElementById('aiResult').innerHTML = '<div class="loading"><div class="spinner"></div><p>Analisi AI in corso... (puo richiedere 20-30 secondi)</p></div>';
     
     try {
         const response = await fetch(BACKEND_URL + '/api/services/execute', {
@@ -317,18 +331,59 @@ async function eseguiServizio(serviceId, serviceName) {
             body: JSON.stringify({
                 serviceId: serviceId,
                 input: input,
-                language: 'it'
+                language: lingua
             })
         });
         
         const data = await response.json();
         
         if (data.success) {
-            document.getElementById('aiResult').innerHTML = 
-                '<div style="background:#f8f9fa; padding:20px; border-radius:8px; border-left:4px solid #28a745;">' +
-                '<h3 style="color:#28a745;">Risultato ' + serviceName + '</h3>' +
-                '<pre style="white-space:pre-wrap; font-family:Arial; line-height:1.6;">' + escapeHtml(data.result) + '</pre>' +
-                '</div>';
+            const docId = 'DOC-' + new Date().getTime();
+            const dataDoc = new Date().toLocaleDateString('it-IT');
+            
+            let html = '<div id="' + docId + '" style="background:white; padding:30px; border-radius:10px; border:2px solid #1e3c72; font-family:Arial,sans-serif;">';
+            
+            // Intestazione documento
+            html += '<div style="border-bottom:3px solid #1e3c72; padding-bottom:15px; margin-bottom:20px;">';
+            html += '<h1 style="color:#1e3c72; margin:0;">BrevettIAmo</h1>';
+            html += '<p style="color:#666; margin:5px 0 0 0;">Documento AI Generato - ' + serviceName + '</p>';
+            html += '<p style="color:#666; margin:0; font-size:0.9em;">ID: ' + docId + ' | Data: ' + dataDoc + '</p>';
+            html += '</div>';
+            
+            // Contenuto AI
+            html += '<div style="line-height:1.8; color:#333;">';
+            html += '<pre style="white-space:pre-wrap; font-family:Arial; font-size:1em; margin:0;">' + escapeHtml(data.result) + '</pre>';
+            html += '</div>';
+            
+            // Footer
+            html += '<div style="border-top:2px solid #1e3c72; margin-top:30px; padding-top:15px; text-align:center; color:#666; font-size:0.85em;">';
+            html += '<p>BrevettIAmo - Servizi AI per Proprieta Intellettuale</p>';
+            html += '<p>Documento generato automaticamente - Da verificare con consulente qualificato</p>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            // Bottoni azione
+            html += '<div style="margin-top:15px; display:flex; gap:10px;">';
+            html += '<button onclick="stampaDocumento(\'' + docId + '\')" style="background:#1e3c72; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">Stampa PDF</button>';
+            html += '<button onclick="scaricaTesto(\'' + docId + '\', \'' + serviceName + '\')" style="background:#28a745; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">Scarica Testo</button>';
+            html += '</div>';
+            
+            document.getElementById('aiResult').innerHTML = html;
+            
+            // Salva su Supabase
+            if (supabaseClient) {
+                await supabaseClient.from('documenti_ai').insert({
+                    doc_id: docId,
+                    service_id: serviceId,
+                    service_name: serviceName,
+                    input: input.substring(0, 500),
+                    output: data.result.substring(0, 2000),
+                    lingua: lingua,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
         } else {
             document.getElementById('aiResult').innerHTML = 
                 '<div style="background:#f8d7da; padding:20px; border-radius:8px;">' +
@@ -344,6 +399,30 @@ async function eseguiServizio(serviceId, serviceName) {
             '<p>' + err.message + '</p>' +
             '</div>';
     }
+}
+
+function stampaDocumento(docId) {
+    const doc = document.getElementById(docId);
+    const win = window.open('', '_blank');
+    win.document.write('<html><head><title>BrevettIAmo - Documento</title></head><body>');
+    win.document.write(doc.innerHTML);
+    win.document.write('</body></html>');
+    win.document.close();
+    win.print();
+}
+
+function scaricaTesto(docId, serviceName) {
+    const doc = document.getElementById(docId);
+    const testo = doc.innerText;
+    const blob = new Blob([testo], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'BrevettIAmo_' + serviceName.replace(/\s+/g, '_') + '_' + new Date().getTime() + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 </script>
 </body>
