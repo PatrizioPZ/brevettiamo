@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrevettIAmo - Privacy e NDA</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Arial,sans-serif; background:#f0f2f5; line-height:1.6; }
+.navbar { background:#1e3c72; color:white; padding:15px 30px; }
+.navbar h1 { font-size:1.3em; }
+.container { max-width:800px; margin:0 auto; padding:20px; }
+.card { background:white; padding:30px; border-radius:10px; margin-bottom:20px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+h2 { color:#1e3c72; margin-bottom:15px; font-size:1.3em; }
+h3 { color:#2a5298; margin:15px 0 10px; font-size:1.1em; }
+p { margin-bottom:10px; color:#333; }
+ul { margin-left:20px; margin-bottom:15px; }
+li { margin-bottom:5px; color:#333; }
+.checkbox { margin:15px 0; }
+.checkbox input { width:18px; height:18px; margin-right:10px; vertical-align:middle; }
+.checkbox label { font-weight:bold; color:#1e3c72; }
+.btn { background:#28a745; color:white; padding:12px 30px; border:none; border-radius:5px; cursor:pointer; font-size:1em; display:block; margin:20px auto; }
+.btn:hover { background:#218838; }
+.btn:disabled { background:#ccc; cursor:not-allowed; }
+.btn-download { background:#1e3c72; display:none; }
+.alert { padding:15px; border-radius:5px; margin-bottom:15px; }
+.alert-success { background:#d4edda; color:#155724; }
+.alert-error { background:#f8d7da; color:#721c24; }
+.timestamp { font-size:0.85em; color:#666; margin-top:20px; border-top:1px solid #ddd; padding-top:10px; }
+</style>
+</head>
+<body>
+
+<<nav class="navbar">
+<h1>BrevettIAmo - Privacy e NDA</h1>
+</nav>
+
+<div class="container">
+
+<div class="card">
+<h2>1. Informativa Privacy (GDPR)</h2>
+<p><strong>Titolare del trattamento:</strong> BrevettIAmo - Patrizio Zanirato</p>
+<p><strong>Email:</strong> privacy@brevettiamo.com</p>
+
+<h3>Dati raccolti</h3>
+<ul>
+<li>Dati anagrafici (nome, email)</li>
+<li>Descrizioni tecniche delle invenzioni</li>
+<li>Documenti AI generati</li>
+<li>Dati di pagamento (gestiti da LemonSqueezy)</li>
+</ul>
+
+<h3>Finalita</h3>
+<ul>
+<li>Erogazione servizi AI per brevetti</li>
+<li>Salvataggio documenti nel tuo account</li>
+<li>Comunicazioni relative al servizio</li>
+</ul>
+
+<h3>Diritti dell'utente</h3>
+<ul>
+<li>Accesso ai dati</li>
+<li>Retifica o cancellazione</li>
+<li>Portabilita dei dati</li>
+<li>Opposizione al trattamento</li>
+</ul>
+
+<p><strong>Conservazione:</strong> I dati sono conservati su server UE (Supabase) con crittografia.</p>
+<p><strong>Terze parti:</strong> OpenRouter (AI), LemonSqueezy (pagamenti), Supabase (database).</p>
+
+<div class="checkbox">
+<input type="checkbox" id="privacyCheck" onchange="verificaCheck()">
+<label for="privacyCheck">Ho letto e accetto l'Informativa Privacy</label>
+</div>
+</div>
+
+<div class="card">
+<h2>2. Accordo di Riservatezza (NDA)</h2>
+
+<h3>Oggetto</h3>
+<p>L'utente conferisce a BrevettIAmo descrizioni tecniche di invenzioni per l'elaborazione AI.</p>
+
+<h3>Impegni di BrevettIAmo</h3>
+<ul>
+<li>Riservatezza assoluta su tutte le informazioni ricevute</li>
+<li>Non divulgazione a terzi</li>
+<li>Utilizzo esclusivo per l'erogazione del servizio richiesto</li>
+<li>Cancellazione dei dati su richiesta dell'utente</li>
+<li>Protezione dei dati con standard di sicurezza industriali</li>
+</ul>
+
+<h3>Impegni dell'Utente</h3>
+<ul>
+<li>Veridicita delle informazioni fornite</li>
+<li>Non utilizzo illecito dei documenti generati</li>
+<li>Rispetto dei diritti di proprieta intellettuale di terzi</li>
+</ul>
+
+<h3>Durata</h3>
+<p>L'obbligo di riservatezza sopravvive alla cessazione del rapporto per 10 anni.</p>
+
+<h3>Foro competente</h3>
+<p>Per qualsiasi controversia, il foro competente e quello di Padova, Italia.</p>
+
+<div class="checkbox">
+<input type="checkbox" id="ndaCheck" onchange="verificaCheck()">
+<label for="ndaCheck">Ho letto e accetto l'Accordo di Riservatezza (NDA)</label>
+</div>
+</div>
+
+<div class="card" id="confermaCard" style="display:none;">
+<h2>3. Conferma e Scarica NDA</h2>
+<div class="alert alert-success">
+<strong>Accettazione completata!</strong><br>
+Data e ora: <span id="dataAccettazione"></span><br>
+ID Transazione: <span id="idTransazione"></span>
+</div>
+<p>Hai accettato simultaneamente:</p>
+<ul>
+<li>Informativa Privacy GDPR</li>
+<li>Accordo di Riservatezza NDA</li>
+</ul>
+<button class="btn btn-download" id="btnDownload" onclick="scaricaNDA()">Scarica NDA in PDF</button>
+</div>
+
+<div class="card" id="bloccoCard">
+<button class="btn" id="btnConferma" disabled onclick="confermaAccettazione()">Conferma Accettazione</button>
+<p style="text-align:center; color:#666; margin-top:10px;">Spunta entrambe le caselle per procedere</p>
+</div>
+
+</div>
+
+<script>
+function verificaCheck() {
+  var privacy = document.getElementById('privacyCheck').checked;
+  var nda = document.getElementById('ndaCheck').checked;
+  var btn = document.getElementById('btnConferma');
+  
+  if (privacy && nda) {
+    btn.disabled = false;
+    btn.style.background = '#28a745';
+  } else {
+    btn.disabled = true;
+    btn.style.background = '#ccc';
+  }
+}
+
+function confermaAccettazione() {
+  var now = new Date();
+  var dataStr = now.toLocaleString('it-IT');
+  var idTrans = 'NDA-' + now.getTime() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+  
+  document.getElementById('dataAccettazione').textContent = dataStr;
+  document.getElementById('idTransazione').textContent = idTrans;
+  
+  document.getElementById('bloccoCard').style.display = 'none';
+  document.getElementById('confermaCard').style.display = 'block';
+  document.getElementById('btnDownload').style.display = 'block';
+  
+  // Salva su Supabase (se disponibile)
+  if (typeof supabase !== 'undefined' && supabase) {
+    supabase.from('accettazioni_nda').insert({
+      id_transazione: idTrans,
+      data_accettazione: now.toISOString(),
+      privacy_accettata: true,
+      nda_accettata: true,
+      ip_utente: 'anonimo',
+      user_agent: navigator.userAgent
+    }).catch(function(e) { console.log('Salvataggio opzionale', e); });
+  }
+  
+  // Salva in localStorage
+  localStorage.setItem('brevettiamo_nda_accettato', 'true');
+  localStorage.setItem('brevettiamo_nda_data', dataStr);
+  localStorage.setItem('brevettiamo_nda_id', idTrans);
+}
+
+function scaricaNDA() {
+  var nda = document.getElementById('dataAccettazione').textContent;
+  var id = document.getElementById('idTransazione').textContent;
+  
+  var testo = 'ACCORDO DI RISERVATEZZA (NDA) - BREVETTIAMO\n';
+  testo += '===========================================\n\n';
+  testo += 'ID Transazione: ' + id + '\n';
+  testo += 'Data Accettazione: ' + nda + '\n\n';
+  testo += 'TITOLARE: BrevettIAmo - Patrizio Zanirato\n';
+  testo += 'EMAIL: privacy@brevettiamo.com\n\n';
+  testo += 'OGGETTO:\n';
+  testo += 'L\'utente ha accettato l\'Accordo di Riservatezza per l\'utilizzo\n';
+  testo += 'dei servizi AI di BrevettIAmo per la proprieta intellettuale.\n\n';
+  testo += 'IMPEGNI DI BREVETTIAMO:\n';
+  testo += '- Riservatezza assoluta su tutte le informazioni ricevute\n';
+  testo += '- Non divulgazione a terzi\n';
+  testo += '- Utilizzo esclusivo per l\'erogazione del servizio richiesto\n';
+  testo += '- Cancellazione dei dati su richiesta dell\'utente\n';
+  testo += '- Protezione dei dati con standard di sicurezza industriali\n\n';
+  testo += 'IMPEGNI DELL\'UTENTE:\n';
+  testo += '- Veridicita delle informazioni fornite\n';
+  testo += '- Non utilizzo illecito dei documenti generati\n';
+  testo += '- Rispetto dei diritti di proprieta intellettuale di terzi\n\n';
+  testo += 'DURATA: 10 anni dalla cessazione del rapporto\n\n';
+  testo += 'FORO COMPETENTE: Padova, Italia\n\n';
+  testo += 'PRIVACY GDPR: Accettata\n';
+  testo += 'NDA: Accettata\n\n';
+  testo += '===========================================\n';
+  testo += 'Documento generato automaticamente da BrevettIAmo\n';
+  testo += 'Questo NDA ha valore legale in Italia\n';
+  
+  var blob = new Blob([testo], { type: 'text/plain' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'NDA_BrevettIAmo_' + id + '.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
