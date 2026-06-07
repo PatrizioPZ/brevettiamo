@@ -318,7 +318,14 @@ async function mostraServiziAI() {
 }
 
 async function eseguiServizio(serviceId, serviceName) {
-    const input = prompt('Descrivi la tua invenzione per ' + serviceName + ':');
+       // Verifica NDA accettato
+    const ndaAccettato = localStorage.getItem('brevettiamo_nda_accettato');
+    if (!ndaAccettato) {
+        window.open('modulo_privacy_nda.html', '_blank');
+        return;
+    }
+
+    const input = prompt('Descrivi la tua invenzione per ' + serviceName + ':'); 
     if (!input) return;
     
     const lingua = document.getElementById('linguaAI')?.value || 'it';
