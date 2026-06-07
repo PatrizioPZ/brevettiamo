@@ -114,7 +114,7 @@
                     <div class="price">EUR 99</div>
                     <div class="desc">Protezione completa per invenzioni tecniche con elaborazione AI avanzata</div>
                 </div>
-                <div class="service-card" onclick="selectService('marchio', 'Marchio d'Impresa', 49, 'starter')">
+                <div class="service-card" onclick="selectService('marchio', 'Marchio dImpresa', 49, 'starter')">
                     <h3>Marchio d'Impresa</h3>
                     <div class="price">EUR 49</div>
                     <div class="desc">Ricerca e redazione per registrazione marchio in Italia e UE</div>
@@ -449,10 +449,10 @@
         // === SERVIZI ===
         const services = {
             brevetto: { name: 'Brevetto Industriale', price: 99, plan: 'pro', desc: 'Protezione completa per invenzioni tecniche' },
-            marchio: { name: 'Marchio d'Impresa', price: 49, plan: 'starter', desc: 'Ricerca e redazione per registrazione marchio' },
+            marchio: { name: 'Marchio dImpresa', price: 49, plan: 'starter', desc: 'Ricerca e redazione per registrazione marchio' },
             design: { name: 'Design Industriale', price: 69, plan: 'pro', desc: 'Protezione estetica e funzionale' },
             modello: { name: 'Modello di Utilita', price: 79, plan: 'pro', desc: 'Protezione per nuovi modelli utili' },
-            ricerca: { name: 'Ricerca Anteriorita', price: 29, plan: 'starter', desc: 'Analisi completa stato dell'arte' },
+            ricerca: { name: 'Ricerca Anteriorita', price: 29, plan: 'starter', desc: 'Analisi completa stato dellarte' },
             pct: { name: 'Strategia PCT', price: 299, plan: 'enterprise', desc: 'Piano deposito internazionale' }
         };
 
@@ -626,7 +626,7 @@
             const nda = document.getElementById('nda-check').checked;
 
             if (!privacy || !nda) {
-                document.getElementById('step3-error').textContent = 'Devi accettare sia la Privacy Policy che l'NDA per procedere.';
+                document.getElementById("step3-error").textContent = "Devi accettare sia la Privacy Policy che lNDA per procedere.";
                 document.getElementById('step3-error').classList.remove('hidden');
                 return false;
             }
@@ -737,7 +737,7 @@
         async function startAIProcessing() {
             const tasks = [
                 { id: 'task1', text: 'Analisi descrizione tecnica', delay: 2000 },
-                { id: 'task2', text: 'Ricerca stato dell'arte', delay: 4000 },
+                { id: 'task2', text: 'Ricerca stato dellarte', delay: 4000 },
                 { id: 'task3', text: 'Redazione claims/brevetto', delay: 6000 },
                 { id: 'task4', text: 'Generazione documento finale', delay: 8000 }
             ];
@@ -805,14 +805,14 @@
                     '---\n\n' +
                     '1. DESCRIZIONE TECNICA\n\n' +
                     praticaData.descrizione + '\n\n' +
-                    '2. STATO DELL'ARTE\n\n' +
-                    (praticaData.background || 'Nessuna informazione sullo stato dell'arte fornita.') + '\n\n' +
+                    '2. STATO DELLARTE\n\n' +
+                    (praticaData.background || 'Nessuna informazione sullo stato dellarte fornita.') + '\n\n' +
                     '3. CLAIMS / RIVENDICAZIONI\n\n' +
                     'Claim 1: [Dispositivo/metodo] caratterizzato da...\n' +
                     'Claim 2: Il dispositivo secondo claim 1, in cui...\n' +
                     'Claim 3: Il dispositivo secondo claim 1 o 2, ulteriormente caratterizzato da...\n\n' +
                     '4. CAMPI DI APPLICAZIONE\n\n' +
-                    (praticaData.applicazioni || 'Da definire in base all'invenzione.') + '\n\n' +
+                    (praticaData.applicazioni || 'Da definire in base allinvenzione.') + '\n\n' +
                     '5. NOTE AI\n\n' +
                     'Documento generato automaticamente da BrevettIAmo AI.\n' +
                     'Revisioni disponibili: illimitate.\n' +
@@ -936,7 +936,7 @@
 
         // === INIZIALIZZAZIONE ===
         document.addEventListener('DOMContentLoaded', () => {
-            // Verifica se c'e' parametro servizio nell'URL
+            // Verifica se c'e parametro servizio nell URL
             const params = new URLSearchParams(window.location.search);
             const servizio = params.get('servizio');
             if (servizio && services[servizio]) {
