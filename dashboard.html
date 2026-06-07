@@ -318,10 +318,13 @@ async function mostraServiziAI() {
 }
 
 async function eseguiServizio(serviceId, serviceName) {
-       // Verifica NDA accettato
+      // Verifica NDA accettato
     const ndaAccettato = localStorage.getItem('brevettiamo_nda_accettato');
     if (!ndaAccettato) {
-     window.location.href = 'modulo_privacy_nda.html';  
+        // Crea un link temporaneo e clicca
+        const link = document.createElement('a');
+        link.href = 'modulo_privacy_nda.html';
+        link.click();
         return;
     }
 
