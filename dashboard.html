@@ -321,7 +321,7 @@ async function eseguiServizio(serviceId, serviceName) {
        // Verifica NDA accettato
     const ndaAccettato = localStorage.getItem('brevettiamo_nda_accettato');
     if (!ndaAccettato) {
-        window.open('modulo_privacy_nda.html', '_blank');
+     window.location.href = 'modulo_privacy_nda.html';  
         return;
     }
 
