@@ -3,63 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BrevettIAmo - Servizi brevettuali AI. Brevetti, marchi, design, ricerche anteriorita. Risultati in 24h.">
-    <meta name="keywords" content="brevetto, marchio, design, ricerca anteriorita, proprieta intellettuale, AI, UIBM">
     <title>BrevettIAmo - Servizi Brevettuali AI</title>
-    <link rel="canonical" href="https://patriziopz.github.io/brevettiamo/index.html">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-        .hidden { display: none !important; }
-        .navbar {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(10px);
-            padding: 16px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        .logo {
-            font-size: 1.6em;
-            font-weight: 800;
-            color: #1e3c72;
-            text-decoration: none;
-            cursor: pointer;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; color: #333; }
+        .navbar { background: rgba(255,255,255,0.95); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left: 0; right: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.6em; font-weight: 800; color: #1e3c72; text-decoration: none; }
         .logo span { color: #764ba2; }
         .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a {
-            color: #495057;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-        .nav-links a:hover { color: #2a5298; }
-        .btn-nav {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white !important;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        .hero {
-            padding: 140px 40px 80px;
-            text-align: center;
-            color: white;
-        }
-        .hero h1 { font-size: 3.2em; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .hero p { font-size: 1.3em; opacity: 0.9; max-width: 700px; margin: 0 auto 40px; line-height: 1.6; }
+        .nav-links a { color: #495057; text-decoration: none; font-weight: 500; }
+        .btn-nav { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white !important; padding: 10px 24px; border-radius: 8px; font-weight: 600; }
+        .hero { padding: 140px 40px 80px; text-align: center; color: white; }
+        .hero h1 { font-size: 3.2em; margin-bottom: 20px; }
+        .hero p { font-size: 1.3em; opacity: 0.9; max-width: 700px; margin: 0 auto 40px; }
         .hero-stats { display: flex; justify-content: center; gap: 60px; margin-top: 40px; }
         .stat { text-align: center; }
         .stat-number { font-size: 2.5em; font-weight: 800; color: #ffd700; }
@@ -67,968 +23,119 @@
         .services-section { background: #f8f9fa; padding: 80px 40px; }
         .section-title { text-align: center; font-size: 2.2em; color: #1e3c72; margin-bottom: 16px; }
         .section-subtitle { text-align: center; color: #6c757d; font-size: 1.1em; max-width: 600px; margin: 0 auto 60px; }
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .service-card {
-            background: white;
-            border-radius: 16px;
-            padding: 40px 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 2px solid transparent;
-            text-align: left;
-        }
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-            border-color: #2a5298;
-        }
-        .service-icon {
-            width: 60px; height: 60px;
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            font-weight: 700;
-            color: white;
-        }
-        .service-card:nth-child(1) .service-icon { background: #1976d2; }
-        .service-card:nth-child(2) .service-icon { background: #c2185b; }
-        .service-card:nth-child(3) .service-icon { background: #7b1fa2; }
-        .service-card:nth-child(4) .service-icon { background: #388e3c; }
-        .service-card:nth-child(5) .service-icon { background: #f57c00; }
-        .service-card:nth-child(6) .service-icon { background: #00796b; }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+        .service-card { background: white; border-radius: 16px; padding: 40px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s; cursor: pointer; border: 2px solid transparent; text-decoration: none; color: inherit; display: block; }
+        .service-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); border-color: #2a5298; }
+        .service-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8em; font-weight: 700; color: white; margin-bottom: 20px; }
+        .icon-b { background: #1976d2; }
+        .icon-m { background: #c2185b; }
+        .icon-r { background: #7b1fa2; }
+        .icon-d { background: #388e3c; }
+        .icon-u { background: #f57c00; }
+        .icon-s { background: #00796b; }
         .service-card h3 { font-size: 1.3em; color: #1e3c72; margin-bottom: 12px; }
         .service-card p { color: #6c757d; line-height: 1.6; margin-bottom: 20px; }
         .service-price { font-size: 1.4em; font-weight: 700; color: #2a5298; }
         .service-price span { font-size: 0.7em; color: #6c757d; font-weight: 400; }
-        .service-badge {
-            display: inline-block;
-            background: #d4edda;
-            color: #155724;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-top: 12px;
-        }
+        .service-badge { display: inline-block; background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; margin-top: 12px; }
         .how-it-works { background: white; padding: 80px 40px; }
-        .steps-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            max-width: 1100px;
-            margin: 0 auto;
-            flex-wrap: wrap;
-        }
+        .steps-container { display: flex; justify-content: center; gap: 20px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; }
         .step-box { flex: 1; min-width: 200px; text-align: center; padding: 30px 20px; }
-        .step-circle {
-            width: 56px; height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.4em;
-            font-weight: 700;
-            margin: 0 auto 16px;
-        }
+        .step-circle { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.4em; font-weight: 700; margin: 0 auto 16px; }
         .step-box h4 { color: #1e3c72; margin-bottom: 8px; }
         .step-box p { color: #6c757d; font-size: 0.95em; }
         .step-arrow { display: flex; align-items: center; color: #2a5298; font-size: 1.5em; font-weight: 700; }
-        .wizard-container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        .wizard-header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .wizard-header h1 { font-size: 2em; margin-bottom: 10px; }
-        .wizard-header p { opacity: 0.9; font-size: 1em; }
-        .service-tag {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-top: 12px;
-        }
-        .progress-bar {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 40px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
-        }
-        .progress-step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #6c757d;
-            font-weight: 500;
-            font-size: 0.85em;
-        }
-        .progress-step.active { color: #2a5298; }
-        .progress-step.completed { color: #28a745; }
-        .progress-step-number {
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            background: #dee2e6;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold;
-            font-size: 0.8em;
-        }
-        .progress-step.active .progress-step-number { background: #2a5298; color: white; }
-        .progress-step.completed .progress-step-number { background: #28a745; color: white; }
-        .wizard-content { padding: 40px; }
-        .wizard-section { display: none; animation: fadeIn 0.3s ease; }
-        .wizard-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .form-group { margin-bottom: 24px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; font-size: 0.95em; }
-        .form-group label .required { color: #e74c3c; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 12px 16px; border: 2px solid #e9ecef;
-            border-radius: 8px; font-size: 1em; transition: all 0.3s; font-family: inherit;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none; border-color: #2a5298; box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
-        }
-        .form-group textarea { min-height: 120px; resize: vertical; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-        .btn-group { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e9ecef; }
-        .btn {
-            padding: 14px 32px; border: none; border-radius: 8px;
-            font-size: 1em; font-weight: 600; cursor: pointer;
-            transition: all 0.3s; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 8px;
-        }
-        .btn-prev { background: #6c757d; color: white; }
-        .btn-prev:hover { background: #5a6268; }
-        .btn-next, .btn-submit {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-        }
-        .btn-next:hover, .btn-submit:hover {
-            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(42,82,152,0.3);
-        }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .btn-secondary:hover { background: #5a6268; }
-        .alert { padding: 16px; border-radius: 8px; margin-bottom: 20px; display: none; }
-        .alert.show { display: block; }
-        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-info { background: #e7f3ff; color: #004085; border: 1px solid #b3d9ff; }
-        .riepilogo-box { background: #f8f9fa; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
-        .riepilogo-box h3 { color: #2a5298; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #e9ecef; }
-        .riepilogo-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e9ecef; }
-        .riepilogo-item:last-child { border-bottom: none; }
-        .riepilogo-label { font-weight: 600; color: #495057; }
-        .riepilogo-value { color: #2c3e50; text-align: right; max-width: 60%; }
-        .price-display {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white; padding: 20px; border-radius: 12px;
-            text-align: center; margin: 20px 0;
-        }
-        .price-display .price { font-size: 2em; font-weight: 800; }
-        .price-display .price-note { opacity: 0.9; font-size: 0.9em; margin-top: 4px; }
-        .nda-section { background: white; border: 2px solid #e9ecef; border-radius: 12px; padding: 30px; margin-bottom: 24px; }
-        .nda-section h2 { color: #1e3c72; margin-bottom: 20px; font-size: 1.3em; }
-        .nda-section h3 { color: #2a5298; margin: 20px 0 12px; font-size: 1.1em; }
-        .nda-section p, .nda-section li { color: #495057; line-height: 1.7; margin-bottom: 8px; }
-        .nda-section ul { padding-left: 20px; }
-        .nda-section ul li { margin-bottom: 6px; }
-        .checkbox-group {
-            margin-top: 24px; padding: 20px; background: #f8f9fa;
-            border-radius: 8px; border: 2px solid #e9ecef;
-        }
-        .checkbox-group label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 1em; color: #2c3e50; margin-bottom: 16px; }
-        .checkbox-group label:last-child { margin-bottom: 0; }
-        .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: #2a5298; }
-        .check-text { font-weight: 600; }
-        .check-desc { font-size: 0.9em; color: #6c757d; margin-top: 4px; }
-        .loading-overlay {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.9); z-index: 1000;
-            align-items: center; justify-content: center; flex-direction: column;
-        }
-        .loading-overlay.show { display: flex; }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid #e9ecef;
-            border-top-color: #2a5298; border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 16px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .success-screen { text-align: center; padding: 60px 40px; }
-        .success-icon {
-            width: 80px; height: 80px; background: #28a745;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px; color: white; font-size: 2.5em; font-weight: 700;
-        }
-        .success-screen h2 { color: #28a745; margin-bottom: 16px; }
-        .success-screen p { color: #6c757d; font-size: 1.1em; margin-bottom: 8px; }
-        .pratica-id {
-            background: #f8f9fa; padding: 16px; border-radius: 8px;
-            margin: 20px 0; font-family: monospace; font-size: 1.1em;
-            color: #2a5298; border: 2px dashed #2a5298;
-        }
-        .warning-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 16px; margin: 20px 0; }
-        .warning-box p { color: #856404; font-size: 0.95em; }
-        .warning-box strong { color: #856404; }
-        .notice-box { background: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 8px; padding: 20px; margin: 24px 0; text-align: left; }
-        .notice-box h4 { color: #004085; margin-bottom: 8px; }
-        .notice-box p, .notice-box li { color: #004085; font-size: 0.95em; line-height: 1.6; }
-        .notice-box ul { padding-left: 20px; margin-top: 8px; }
         .footer { background: #1e3c72; color: white; padding: 40px; text-align: center; }
         .footer p { opacity: 0.8; font-size: 0.9em; }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2em; }
-            .hero-stats { gap: 30px; flex-wrap: wrap; }
-            .navbar { padding: 12px 20px; }
-            .nav-links { display: none; }
-            .step-arrow { display: none; }
-            .wizard-content { padding: 20px; }
-        }
+        @media (max-width: 768px) { .hero h1 { font-size: 2em; } .hero-stats { gap: 30px; flex-wrap: wrap; } .navbar { padding: 12px 20px; } .nav-links { display: none; } .step-arrow { display: none; } }
     </style>
 </head>
 <body>
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <p style="color: #2a5298; font-weight: 600;">Elaborazione in corso...</p>
-    </div>
-
-    <nav class="navbar" id="navbar">
-        <a class="logo" onclick="mostraSezione('home')">Brevett<span>IAmo</span></a>
+    <nav class="navbar">
+        <a href="index.html" class="logo">Brevett<span>IAmo</span></a>
         <div class="nav-links">
-            <a onclick="mostraSezione('home')">Servizi</a>
+            <a href="index.html">Servizi</a>
             <a href="dashboard.html">Dashboard</a>
             <a href="admin.html">Admin</a>
-            <a onclick="mostraSezione('wizard')" class="btn-nav">Inizia Ora</a>
+            <a href="nuova-pratica.html" class="btn-nav">Inizia Ora</a>
         </div>
     </nav>
 
-    <div id="sezione-home">
-        <section class="hero">
-            <h1>Proteggi la Tua Invenzione con l'AI</h1>
-            <p>Servizi brevettuali intelligenti: brevetti, marchi, design e ricerche anteriorita. Risultati professionali in 24 ore, a prezzi accessibili.</p>
-            <div class="hero-stats">
-                <div class="stat"><div class="stat-number">19</div><div class="stat-label">Servizi AI</div></div>
-                <div class="stat"><div class="stat-number">24h</div><div class="stat-label">Tempo di risposta</div></div>
-                <div class="stat"><div class="stat-number">10x</div><div class="stat-label">Piu economico</div></div>
-            </div>
-        </section>
-        <section class="services-section">
-            <h2 class="section-title">Scegli il Tuo Servizio</h2>
-            <p class="section-subtitle">Seleziona il servizio di proprieta intellettuale di cui hai bisogno. Ogni pratica include elaborazione AI e revisione qualita.</p>
-            <div class="services-grid">
-                <div class="service-card" onclick="avviaWizard('brevetto')">
-                    <div class="service-icon">B</div>
-                    <h3>Brevetto per Invenzione</h3>
-                    <p>Redazione completa di domanda di brevetto per invenzione industriale, incluse descrizione, rivendicazioni e figure.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                    <span class="service-badge">Piu richiesto</span>
-                </div>
-                <div class="service-card" onclick="avviaWizard('marchio')">
-                    <div class="service-icon">M</div>
-                    <h3>Marchio</h3>
-                    <p>Deposito marchio nazionale, comunitario o internazionale. Ricerca anteriorita e classificazione Nice inclusa.</p>
-                    <div class="service-price">EUR 29 <span>/ pratica</span></div>
-                    <span class="service-badge">Starter</span>
-                </div>
-                <div class="service-card" onclick="avviaWizard('ricerca')">
-                    <div class="service-icon">R</div>
-                    <h3>Ricerca Anteriorita</h3>
-                    <p>Ricerca completa nelle banche dati brevettuali mondiali. Report dettagliato con analisi di brevettabilita.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                </div>
-                <div class="service-card" onclick="avviaWizard('design')">
-                    <div class="service-icon">D</div>
-                    <h3>Design / Modello Estetico</h3>
-                    <p>Redazione domanda di design industriale. Descrizione figure, classificazione Locarno e gestione deposito.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                </div>
-                <div class="service-card" onclick="avviaWizard('modello')">
-                    <div class="service-icon">U</div>
-                    <h3>Modello di Utilita</h3>
-                    <p>Domanda di modello di utilita per invenzioni con minor grado di inventiva. Procedura rapida e economica.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                </div>
-                <div class="service-card" onclick="avviaWizard('software')">
-                    <div class="service-icon">S</div>
-                    <h3>Brevetto Software / Algoritmo</h3>
-                    <p>Specializzato per software, algoritmi, AI e metodi implementati da computer. Conformita normativa europea.</p>
-                    <div class="service-price">EUR 299 <span>/ pratica</span></div>
-                    <span class="service-badge">Enterprise</span>
-                </div>
-            </div>
-        </section>
-        <section class="how-it-works">
-            <h2 class="section-title">Come Funziona</h2>
-            <p class="section-subtitle">Processo semplice e trasparente in 5 passaggi</p>
-            <div class="steps-container">
-                <div class="step-box"><div class="step-circle">1</div><h4>Scegli il Servizio</h4><p>Seleziona il tipo di pratica brevettuale</p></div>
-                <div class="step-arrow">&rarr;</div>
-                <div class="step-box"><div class="step-circle">2</div><h4>Compila il Modulo</h4><p>Descrivi la tua invenzione e allega documenti</p></div>
-                <div class="step-arrow">&rarr;</div>
-                <div class="step-box"><div class="step-circle">3</div><h4>Accetta NDA</h4><p>Firma digitalmente la privacy e l'accordo di riservatezza</p></div>
-                <div class="step-arrow">&rarr;</div>
-                <div class="step-box"><div class="step-circle">4</div><h4>Pagamento</h4><p>Paga in modo sicuro con carta o bonifico</p></div>
-                <div class="step-arrow">&rarr;</div>
-                <div class="step-box"><div class="step-circle">5</div><h4>Ricevi il Documento</h4><p>Elaborazione AI in 24h, accetta o richiedi modifiche</p></div>
-            </div>
-        </section>
-    </div>
-
-    <div id="sezione-wizard" class="hidden">
-        <div class="wizard-container">
-            <div class="wizard-header">
-                <h1>Nuova Pratica Brevettuale</h1>
-                <p>Compila i dati della nuova pratica. I campi contrassegnati con * sono obbligatori.</p>
-                <div class="service-tag" id="wizardServiceTag">Servizio: Brevetto per Invenzione</div>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-step active" id="progStep1"><div class="progress-step-number">1</div><span>Dati</span></div>
-                <div class="progress-step" id="progStep2"><div class="progress-step-number">2</div><span>Dettagli</span></div>
-                <div class="progress-step" id="progStep3"><div class="progress-step-number">3</div><span>Documenti</span></div>
-                <div class="progress-step" id="progStep4"><div class="progress-step-number">4</div><span>Riepilogo</span></div>
-            </div>
-            <div class="alert alert-error" id="errorAlert"></div>
-            <div class="alert alert-success" id="successAlert"></div>
-            <div class="wizard-content">
-                <div class="wizard-section active" id="wizStep1">
-                    <h2 style="margin-bottom: 24px; color: #2a5298;">Dati Principali</h2>
-                    <div class="form-group">
-                        <label>Titolo della Pratica <span class="required">*</span></label>
-                        <input type="text" id="titolo" placeholder="Es. Sistema di monitoraggio intelligente per ciclismo urbano" maxlength="200">
-                        <div class="error-msg" id="error-titolo" style="color:#e74c3c;font-size:0.85em;margin-top:6px;display:none;">Inserisci un titolo descrittivo</div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Tipo di Brevetto <span class="required">*</span></label>
-                            <select id="tipoBrevetto">
-                                <option value="">Seleziona il tipo</option>
-                                <option value="invenzione">Brevetto per Invenzione Industriale</option>
-                                <option value="modello_utilita">Modello di Utilita</option>
-                                <option value="design">Design / Modello Estetico</option>
-                                <option value="marchi">Marchio</option>
-                                <option value="software">Brevetto Software / Algoritmo</option>
-                                <option value="ricerca">Ricerca Anteriorita</option>
-                                <option value="altro">Altro</option>
-                            </select>
-                            <div class="error-msg" id="error-tipoBrevetto" style="color:#e74c3c;font-size:0.85em;margin-top:6px;display:none;">Seleziona un tipo</div>
-                        </div>
-                        <div class="form-group">
-                            <label>Settore Tecnico <span class="required">*</span></label>
-                            <select id="settore">
-                                <option value="">Seleziona il settore</option>
-                                <option value="meccanica">Meccanica / Automotive</option>
-                                <option value="elettronica">Elettronica / Elettrotecnica</option>
-                                <option value="informatica">Informatica / Software / AI</option>
-                                <option value="chimica">Chimica / Farmaceutica</option>
-                                <option value="biotecnologie">Biotecnologie / Medicale</option>
-                                <option value="energia">Energia / Ambiente</option>
-                                <option value="edilizia">Edilizia / Architettura</option>
-                                <option value="agroalimentare">Agroalimentare</option>
-                                <option value="altro">Altro</option>
-                            </select>
-                            <div class="error-msg" id="error-settore" style="color:#e74c3c;font-size:0.85em;margin-top:6px;display:none;">Seleziona un settore</div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Inventore/i <span class="required">*</span></label>
-                            <input type="text" id="inventore" placeholder="Nome e cognome dell'inventore principale">
-                            <div class="error-msg" id="error-inventore" style="color:#e74c3c;font-size:0.85em;margin-top:6px;display:none;">Inserisci almeno un inventore</div>
-                        </div>
-                        <div class="form-group">
-                            <label>Titolare/i <span class="required">*</span></label>
-                            <input type="text" id="titolare" placeholder="Nome del titolare (persona o azienda)">
-                            <div class="error-msg" id="error-titolare" style="color:#e74c3c;font-size:0.85em;margin-top:6px;display:none;">Inserisci il titolare</div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Priorita / Brevetti Correlati</label>
-                        <input type="text" id="priorita" placeholder="Numero priorita o brevetti correlati (opzionale)">
-                    </div>
-                    <div class="form-group">
-                        <label>Note Aggiuntive</label>
-                        <textarea id="note" placeholder="Eventuali note o informazioni aggiuntive..."></textarea>
-                    </div>
-                </div>
-                <div class="wizard-section" id="wizStep2">
-                    <h2 style="margin-bottom: 24px; color: #2a5298;">Dettagli Tecnici</h2>
-                    <div class="form-group">
-                        <label>Descrizione Tecnica <span class="required">*</span></label>
-                        <textarea id="descrizioneTecnica" placeholder="Descrivi l'invenzione in modo tecnico e dettagliato. Include: problema risolto, soluzione proposta, vantaggi rispetto allo stato dell'arte..."></textarea>
-                        <div class="error-msg" id="error-descrizioneTecnica" style="color:#e74c3c;font-size:0.85em;margin-top:6px;display:none;">Inserisci una descrizione tecnica</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Stato dell'Arte / Background</label>
-                        <textarea id="statoArte" placeholder="Descrivi le tecnologie esistenti e perche la tua invenzione e innovativa..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Campi di Applicazione</label>
-                        <input type="text" id="campiApplicazione" placeholder="Es. Automotive, IoT, Smart City, Industria 4.0...">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Fase di Sviluppo</label>
-                            <select id="faseSviluppo">
-                                <option value="">Seleziona la fase</option>
-                                <option value="idea">Idea / Concept</option>
-                                <option value="prototipo">Prototipo in sviluppo</option>
-                                <option value="test">Test / Validazione</option>
-                                <option value="produzione">Pronto per produzione</option>
-                                <option value="commerciale">Gia commercializzato</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Livello di Protezione Desiderato</label>
-                            <select id="livelloProtezione">
-                                <option value="">Seleziona</option>
-                                <option value="nazionale">Solo Italia</option>
-                                <option value="europeo">Europa (EP)</option>
-                                <option value="pct">Internazionale (PCT)</option>
-                                <option value="usa">USA</option>
-                                <option value="multi">Multi-paese</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="wizard-section" id="wizStep3">
-                    <h2 style="margin-bottom: 24px; color: #2a5298;">Documenti e Allegati</h2>
-                    <div class="form-group">
-                        <label>Documenti Disponibili</label>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-                                <input type="checkbox" id="docDescrizione" style="width: auto;"><span>Descrizione tecnica dettagliata</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-                                <input type="checkbox" id="docDisegni" style="width: auto;"><span>Disegni / Schemi / Figure</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-                                <input type="checkbox" id="docPrototipo" style="width: auto;"><span>Foto / Video del prototipo</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-                                <input type="checkbox" id="docRicerca" style="width: auto;"><span>Ricerca anteriorita (prior art)</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-                                <input type="checkbox" id="docClaims" style="width: auto;"><span>Bozza claims / Rivendicazioni</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; font-weight: normal; cursor: pointer;">
-                                <input type="checkbox" id="docDeposito" style="width: auto;"><span>Documenti per deposito prior</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Link a Documenti (Google Drive, Dropbox, ecc.)</label>
-                        <input type="url" id="linkDocumenti" placeholder="https://drive.google.com/...">
-                    </div>
-                    <div class="form-group">
-                        <label>Note sui Documenti</label>
-                        <textarea id="noteDocumenti" placeholder="Descrivi quali documenti hai, quali mancano, e se hai bisogno di supporto per prepararli..."></textarea>
-                    </div>
-                    <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 16px; margin-top: 20px;">
-                        <strong style="color: #856404;">Suggerimento:</strong>
-                        <p style="color: #856404; margin-top: 8px; font-size: 0.95em;">Non preoccuparti se non hai tutti i documenti. Il nostro sistema AI ti aiutera a preparare quelli necessari per il deposito.</p>
-                    </div>
-                </div>
-                <div class="wizard-section" id="wizStep4">
-                    <h2 style="margin-bottom: 24px; color: #2a5298;">Riepilogo e Conferma</h2>
-                    <div class="riepilogo-box">
-                        <h3>Dati Principali</h3>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Titolo:</span><span class="riepilogo-value" id="r-titolo">-</span></div>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Tipo:</span><span class="riepilogo-value" id="r-tipo">-</span></div>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Settore:</span><span class="riepilogo-value" id="r-settore">-</span></div>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Inventore:</span><span class="riepilogo-value" id="r-inventore">-</span></div>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Titolare:</span><span class="riepilogo-value" id="r-titolare">-</span></div>
-                    </div>
-                    <div class="riepilogo-box">
-                        <h3>Dettagli Tecnici</h3>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Fase:</span><span class="riepilogo-value" id="r-fase">-</span></div>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Protezione:</span><span class="riepilogo-value" id="r-protezione">-</span></div>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Campi:</span><span class="riepilogo-value" id="r-campi">-</span></div>
-                    </div>
-                    <div class="riepilogo-box">
-                        <h3>Documenti</h3>
-                        <div class="riepilogo-item"><span class="riepilogo-label">Documenti selezionati:</span><span class="riepilogo-value" id="r-documenti">-</span></div>
-                    </div>
-                    <div class="price-display">
-                        <div class="price" id="r-price">EUR 99</div>
-                        <div class="price-note">Prezzo finale - Modifiche AI illimitate incluse</div>
-                    </div>
-                    <div class="warning-box">
-                        <strong>Prossimo Passo: NDA e Privacy</strong>
-                        <p style="margin-top: 8px;">Cliccando "Procedi con NDA" i dati verranno salvati e passerai al modulo di accettazione Privacy e NDA. Questo passaggio e obbligatorio prima del pagamento.</p>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-prev" id="btnWizPrev" onclick="prevWizardStep()" style="display: none;">&larr; Indietro</button>
-                    <button class="btn btn-next" id="btnWizNext" onclick="nextWizardStep()">Avanti &rarr;</button>
-                    <button class="btn btn-submit" id="btnWizSubmit" onclick="salvaEProcediNDA()" style="display: none;">Procedi con NDA &rarr;</button>
-                </div>
-            </div>
+    <section class="hero">
+        <h1>Proteggi la Tua Invenzione con l'AI</h1>
+        <p>Servizi brevettuali intelligenti: brevetti, marchi, design e ricerche anteriorita. Risultati professionali in 24 ore, a prezzi accessibili.</p>
+        <div class="hero-stats">
+            <div class="stat"><div class="stat-number">19</div><div class="stat-label">Servizi AI</div></div>
+            <div class="stat"><div class="stat-number">24h</div><div class="stat-label">Tempo di risposta</div></div>
+            <div class="stat"><div class="stat-number">10x</div><div class="stat-label">Piu economico</div></div>
         </div>
-    </div>
+    </section>
 
-    <div id="sezione-nda" class="hidden">
-        <div class="wizard-container">
-            <div class="wizard-header">
-                <h1>Privacy e Accordo di Riservatezza</h1>
-                <p>Accetta l'informativa Privacy e l'NDA per proteggere la tua invenzione.</p>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-step completed"><div class="progress-step-number">1</div><span>Dati</span></div>
-                <div class="progress-step completed"><div class="progress-step-number">2</div><span>Dettagli</span></div>
-                <div class="progress-step completed"><div class="progress-step-number">3</div><span>Documenti</span></div>
-                <div class="progress-step active"><div class="progress-step-number">4</div><span>NDA</span></div>
-            </div>
-            <div class="wizard-content">
-                <div class="alert alert-error" id="ndaErrorAlert"></div>
-                <div class="alert alert-success" id="ndaSuccessAlert"></div>
-                <div class="riepilogo-box" id="ndaRiepilogo">
-                    <h3>Riepilogo Pratica</h3>
-                    <div class="riepilogo-item"><span class="riepilogo-label">ID:</span><span class="riepilogo-value" id="nda-id">-</span></div>
-                    <div class="riepilogo-item"><span class="riepilogo-label">Servizio:</span><span class="riepilogo-value" id="nda-servizio">-</span></div>
-                    <div class="riepilogo-item"><span class="riepilogo-label">Titolo:</span><span class="riepilogo-value" id="nda-titolo">-</span></div>
-                </div>
-                <div class="price-display"><div class="price" id="nda-price">EUR 99</div><div class="price-note">Prezzo finale</div></div>
-                <div class="warning-box">
-                    <strong>Importante:</strong>
-                    <p style="margin-top: 8px;">L'accettazione dell'Informativa Privacy e dell'NDA e obbligatoria per procedere. Senza questa accettazione non possiamo elaborare la tua pratica.</p>
-                </div>
-                <div class="nda-section">
-                    <h2>1. Informativa Privacy (GDPR)</h2>
-                    <p><strong>Titolare:</strong> BrevettIAmo - Patrizio Zanirato | <strong>Email:</strong> privacy@brevettiamo.com</p>
-                    <h3>Dati raccolti</h3>
-                    <ul><li>Dati anagrafici (nome, email)</li><li>Descrizioni tecniche delle invenzioni</li><li>Documenti AI generati</li><li>Dati di pagamento (gestiti da LemonSqueezy)</li></ul>
-                    <h3>Finalita</h3>
-                    <ul><li>Erogazione servizi AI per brevetti</li><li>Salvataggio documenti nel tuo account</li><li>Comunicazioni relative al servizio</li></ul>
-                    <h3>Diritti</h3>
-                    <ul><li>Accesso, rettifica, cancellazione, portabilita, opposizione</li></ul>
-                    <p><strong>Conservazione:</strong> Server UE (Supabase) con crittografia. <strong>Terze parti:</strong> OpenRouter (AI), LemonSqueezy (pagamenti), Supabase (database).</p>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" id="checkPrivacy"><div><div class="check-text">Ho letto e accetto l'Informativa Privacy</div><div class="check-desc">Autorizzo il trattamento dei dati personali secondo il GDPR</div></div></label>
-                    </div>
-                </div>
-                <div class="nda-section">
-                    <h2>2. Accordo di Riservatezza (NDA)</h2>
-                    <h3>Oggetto</h3><p>L'utente conferisce a BrevettIAmo descrizioni tecniche di invenzioni per l'elaborazione AI.</p>
-                    <h3>Impegni di BrevettIAmo</h3>
-                    <ul><li>Riservatezza assoluta su tutte le informazioni ricevute</li><li>Non divulgazione a terzi</li><li>Utilizzo esclusivo per l'erogazione del servizio richiesto</li><li>Cancellazione dei dati su richiesta dell'utente</li><li>Protezione dei dati con standard di sicurezza industriali</li></ul>
-                    <h3>Impegni dell'Utente</h3>
-                    <ul><li>Veridicita delle informazioni fornite</li><li>Non utilizzo illecito dei documenti generati</li><li>Rispetto dei diritti di proprieta intellettuale di terzi</li></ul>
-                    <h3>Durata</h3><p>L'obbligo di riservatezza sopravvive alla cessazione del rapporto per 10 anni.</p>
-                    <h3>Foro competente</h3><p>Padova, Italia.</p>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" id="checkNDA"><div><div class="check-text">Ho letto e accetto l'Accordo di Riservatezza (NDA)</div><div class="check-desc">Accetto i termini di riservatezza per la protezione della mia invenzione</div></div></label>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="btn btn-prev" onclick="tornaAWizard()">&larr; Torna al Modulo</button>
-                    <button class="btn btn-submit" id="btnAccettaNDA" onclick="accettaNDA()" disabled>Accetta e Procedi al Pagamento &rarr;</button>
-                </div>
-            </div>
+    <section class="services-section">
+        <h2 class="section-title">Scegli il Tuo Servizio</h2>
+        <p class="section-subtitle">Seleziona il servizio di proprieta intellettuale di cui hai bisogno. Ogni pratica include elaborazione AI e revisione qualita.</p>
+        <div class="services-grid">
+            <a href="nuova-pratica.html?servizio=brevetto" class="service-card">
+                <div class="service-icon icon-b">B</div>
+                <h3>Brevetto per Invenzione</h3>
+                <p>Redazione completa di domanda di brevetto per invenzione industriale, incluse descrizione, rivendicazioni e figure.</p>
+                <div class="service-price">EUR 99 <span>/ pratica</span></div>
+                <span class="service-badge">Piu richiesto</span>
+            </a>
+            <a href="nuova-pratica.html?servizio=marchio" class="service-card">
+                <div class="service-icon icon-m">M</div>
+                <h3>Marchio</h3>
+                <p>Deposito marchio nazionale, comunitario o internazionale. Ricerca anteriorita e classificazione Nice inclusa.</p>
+                <div class="service-price">EUR 29 <span>/ pratica</span></div>
+                <span class="service-badge">Starter</span>
+            </a>
+            <a href="nuova-pratica.html?servizio=ricerca" class="service-card">
+                <div class="service-icon icon-r">R</div>
+                <h3>Ricerca Anteriorita</h3>
+                <p>Ricerca completa nelle banche dati brevettuali mondiali. Report dettagliato con analisi di brevettabilita.</p>
+                <div class="service-price">EUR 99 <span>/ pratica</span></div>
+            </a>
+            <a href="nuova-pratica.html?servizio=design" class="service-card">
+                <div class="service-icon icon-d">D</div>
+                <h3>Design / Modello Estetico</h3>
+                <p>Redazione domanda di design industriale. Descrizione figure, classificazione Locarno e gestione deposito.</p>
+                <div class="service-price">EUR 99 <span>/ pratica</span></div>
+            </a>
+            <a href="nuova-pratica.html?servizio=modello" class="service-card">
+                <div class="service-icon icon-u">U</div>
+                <h3>Modello di Utilita</h3>
+                <p>Domanda di modello di utilita per invenzioni con minor grado di inventiva. Procedura rapida e economica.</p>
+                <div class="service-price">EUR 99 <span>/ pratica</span></div>
+            </a>
+            <a href="nuova-pratica.html?servizio=software" class="service-card">
+                <div class="service-icon icon-s">S</div>
+                <h3>Brevetto Software / Algoritmo</h3>
+                <p>Specializzato per software, algoritmi, AI e metodi implementati da computer. Conformita normativa europea.</p>
+                <div class="service-price">EUR 299 <span>/ pratica</span></div>
+                <span class="service-badge">Enterprise</span>
+            </a>
         </div>
-    </div>
+    </section>
 
-    <div id="sezione-pagamento" class="hidden">
-        <div class="wizard-container">
-            <div class="wizard-header">
-                <h1>Pagamento</h1>
-                <p>La tua pratica e pronta per l'elaborazione AI</p>
-            </div>
-            <div class="wizard-content">
-                <div class="alert alert-info" id="payInfoAlert"></div>
-                <div class="success-screen">
-                    <div class="success-icon" style="background: #fff3cd; color: #856404;">!</div>
-                    <h2 style="color: #856404;">Sistema Pagamento in Attivazione</h2>
-                    <p>Stiamo configurando il sistema di pagamento sicuro con LemonSqueezy. Il pagamento sara attivo entro pochi giorni.</p>
-                </div>
-                <div class="riepilogo-box">
-                    <h3>Riepilogo Pratica</h3>
-                    <div class="riepilogo-item"><span class="riepilogo-label">ID Pratica:</span><span class="riepilogo-value" id="pay-id">-</span></div>
-                    <div class="riepilogo-item"><span class="riepilogo-label">Servizio:</span><span class="riepilogo-value" id="pay-servizio">-</span></div>
-                    <div class="riepilogo-item"><span class="riepilogo-label">Titolo:</span><span class="riepilogo-value" id="pay-titolo">-</span></div>
-                    <div class="riepilogo-item"><span class="riepilogo-label">Stato:</span><span class="riepilogo-value">In attesa di pagamento</span></div>
-                </div>
-                <div class="price-display"><div class="price" id="pay-price">EUR 99</div><div class="price-note">Prezzo finale - Modifiche AI illimitate incluse</div></div>
-                <div class="notice-box">
-                    <h4>Cosa succede ora?</h4>
-                    <ul><li>La tua pratica e stata salvata nel sistema</li><li>Riceverai una notifica appena il pagamento sara attivo</li><li>Dopo il pagamento, l'AI elaborera il documento in 24 ore</li><li>Puoi richiedere modifiche illimitate senza costi aggiuntivi</li></ul>
-                </div>
-                <div style="text-align: center; margin-top: 30px;">
-                    <a href="dashboard.html" class="btn btn-primary">Vai alla Dashboard</a>
-                    <a onclick="mostraSezione('home')" class="btn btn-secondary">Torna alla Home</a>
-                </div>
-                <p style="text-align: center; color: #6c757d; font-size: 0.85em; margin-top: 30px;">Contatto: info@brevettiamo.it | La pratica rimane salvata per 30 giorni.</p>
-            </div>
+    <section class="how-it-works">
+        <h2 class="section-title">Come Funziona</h2>
+        <p class="section-subtitle">Processo semplice e trasparente in 5 passaggi</p>
+        <div class="steps-container">
+            <div class="step-box"><div class="step-circle">1</div><h4>Scegli il Servizio</h4><p>Seleziona il tipo di pratica brevettuale</p></div>
+            <div class="step-arrow">&rarr;</div>
+            <div class="step-box"><div class="step-circle">2</div><h4>Compila il Modulo</h4><p>Descrivi la tua invenzione e allega documenti</p></div>
+            <div class="step-arrow">&rarr;</div>
+            <div class="step-box"><div class="step-circle">3</div><h4>Accetta NDA</h4><p>Firma digitalmente la privacy e l'accordo di riservatezza</p></div>
+            <div class="step-arrow">&rarr;</div>
+            <div class="step-box"><div class="step-circle">4</div><h4>Pagamento</h4><p>Paga in modo sicuro con carta o bonifico</p></div>
+            <div class="step-arrow">&rarr;</div>
+            <div class="step-box"><div class="step-circle">5</div><h4>Ricevi il Documento</h4><p>Elaborazione AI in 24h, accetta o richiedi modifiche</p></div>
         </div>
-    </div>
+    </section>
 
-    <footer class="footer" id="mainFooter">
+    <footer class="footer">
         <p>BrevettIAmo - Servizi Brevettuali AI | P.IVA in attesa | Contatto: info@brevettiamo.it</p>
         <p style="margin-top: 8px; opacity: 0.6;">Tutti i diritti riservati. Le pratiche sono elaborate da AI e revisionate da esperti.</p>
     </footer>
-<script>
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        let supabaseClient = null;
-
-        function initSupabase() {
-            try {
-                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    console.log('Supabase OK');
-                    return true;
-                }
-                return false;
-            } catch (err) {
-                console.error('Supabase errore:', err);
-                return false;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initSupabase, 500);
-        });
-
-        let stato = {
-            servizio: 'brevetto',
-            prezzo: 99,
-            praticaId: null,
-            wizardStep: 1
-        };
-
-        const serviziMap = {
-            'brevetto': { nome: 'Brevetto per Invenzione', prezzo: 99, tipo: 'invenzione' },
-            'marchio': { nome: 'Marchio', prezzo: 29, tipo: 'marchi' },
-            'ricerca': { nome: 'Ricerca Anteriorita', prezzo: 99, tipo: 'ricerca' },
-            'design': { nome: 'Design / Modello Estetico', prezzo: 99, tipo: 'design' },
-            'modello': { nome: 'Modello di Utilita', prezzo: 99, tipo: 'modello_utilita' },
-            'software': { nome: 'Brevetto Software / Algoritmo', prezzo: 299, tipo: 'software' }
-        };
-
-        function mostraSezione(nome) {
-            document.getElementById('sezione-home').classList.add('hidden');
-            document.getElementById('sezione-wizard').classList.add('hidden');
-            document.getElementById('sezione-nda').classList.add('hidden');
-            document.getElementById('sezione-pagamento').classList.add('hidden');
-
-            if (nome === 'home') {
-                document.getElementById('sezione-home').classList.remove('hidden');
-                document.getElementById('navbar').style.display = 'flex';
-                document.getElementById('mainFooter').style.display = 'block';
-                window.scrollTo(0, 0);
-            } else if (nome === 'wizard') {
-                document.getElementById('sezione-wizard').classList.remove('hidden');
-                document.getElementById('navbar').style.display = 'none';
-                document.getElementById('mainFooter').style.display = 'none';
-                window.scrollTo(0, 0);
-            } else if (nome === 'nda') {
-                document.getElementById('sezione-nda').classList.remove('hidden');
-                document.getElementById('navbar').style.display = 'none';
-                document.getElementById('mainFooter').style.display = 'none';
-                window.scrollTo(0, 0);
-            } else if (nome === 'pagamento') {
-                document.getElementById('sezione-pagamento').classList.remove('hidden');
-                document.getElementById('navbar').style.display = 'none';
-                document.getElementById('mainFooter').style.display = 'none';
-                window.scrollTo(0, 0);
-            }
-        }
-
-        function avviaWizard(servizio) {
-            stato.servizio = servizio;
-            const s = serviziMap[servizio] || serviziMap['brevetto'];
-            stato.prezzo = s.prezzo;
-
-            document.getElementById('wizardServiceTag').textContent = 'Servizio: ' + s.nome;
-            document.getElementById('r-price').textContent = 'EUR ' + s.prezzo;
-
-            const tipoSelect = document.getElementById('tipoBrevetto');
-            for (let i = 0; i < tipoSelect.options.length; i++) {
-                if (tipoSelect.options[i].value === s.tipo) {
-                    tipoSelect.selectedIndex = i;
-                    break;
-                }
-            }
-
-            stato.wizardStep = 1;
-            mostraWizardStep(1);
-            clearWizardErrors();
-
-            mostraSezione('wizard');
-        }
-
-        function mostraWizardStep(step) {
-            document.querySelectorAll('.wizard-section').forEach(s => s.classList.remove('active'));
-            document.getElementById('wizStep' + step).classList.add('active');
-
-            for (let i = 1; i <= 4; i++) {
-                const el = document.getElementById('progStep' + i);
-                el.classList.remove('active', 'completed');
-                if (i < step) el.classList.add('completed');
-                else if (i === step) el.classList.add('active');
-            }
-
-            document.getElementById('btnWizPrev').style.display = step === 1 ? 'none' : 'inline-block';
-            document.getElementById('btnWizNext').style.display = step === 4 ? 'none' : 'inline-block';
-            document.getElementById('btnWizSubmit').style.display = step === 4 ? 'inline-block' : 'none';
-
-            if (step === 4) aggiornaRiepilogo();
-
-            stato.wizardStep = step;
-        }
-
-        function nextWizardStep() {
-            if (validaWizardStep(stato.wizardStep)) {
-                mostraWizardStep(stato.wizardStep + 1);
-            }
-        }
-
-        function prevWizardStep() {
-            mostraWizardStep(stato.wizardStep - 1);
-        }
-
-        function validaWizardStep(step) {
-            let valid = true;
-            clearWizardErrors();
-
-            if (step === 1) {
-                valid = validaCampo('titolo', 'error-titolo') && valid;
-                valid = validaCampo('tipoBrevetto', 'error-tipoBrevetto') && valid;
-                valid = validaCampo('settore', 'error-settore') && valid;
-                valid = validaCampo('inventore', 'error-inventore') && valid;
-                valid = validaCampo('titolare', 'error-titolare') && valid;
-            } else if (step === 2) {
-                valid = validaCampo('descrizioneTecnica', 'error-descrizioneTecnica') && valid;
-            }
-
-            return valid;
-        }
-
-        function validaCampo(inputId, errorId) {
-            const val = document.getElementById(inputId).value.trim();
-            if (!val) {
-                document.getElementById(errorId).style.display = 'block';
-                document.getElementById(inputId).style.borderColor = '#e74c3c';
-                return false;
-            }
-            return true;
-        }
-
-        function clearWizardErrors() {
-            document.querySelectorAll('.error-msg').forEach(e => e.style.display = 'none');
-            document.querySelectorAll('input, select, textarea').forEach(e => e.style.borderColor = '#e9ecef');
-            document.getElementById('errorAlert').classList.remove('show');
-        }
-
-        function showError(msg) {
-            const alert = document.getElementById('errorAlert');
-            alert.textContent = msg;
-            alert.classList.add('show');
-            setTimeout(() => alert.classList.remove('show'), 8000);
-        }
-
-        function showSuccess(msg) {
-            const alert = document.getElementById('successAlert');
-            alert.textContent = msg;
-            alert.classList.add('show');
-            setTimeout(() => alert.classList.remove('show'), 5000);
-        }
-
-        function aggiornaRiepilogo() {
-            const getVal = id => document.getElementById(id).value.trim() || '-';
-            const getText = id => {
-                const el = document.getElementById(id);
-                return el.options[el.selectedIndex]?.text || '-';
-            };
-
-            document.getElementById('r-titolo').textContent = getVal('titolo');
-            document.getElementById('r-tipo').textContent = getText('tipoBrevetto');
-            document.getElementById('r-settore').textContent = getText('settore');
-            document.getElementById('r-inventore').textContent = getVal('inventore');
-            document.getElementById('r-titolare').textContent = getVal('titolare');
-            document.getElementById('r-fase').textContent = getText('faseSviluppo');
-            document.getElementById('r-protezione').textContent = getText('livelloProtezione');
-            document.getElementById('r-campi').textContent = getVal('campiApplicazione') || '-';
-            document.getElementById('r-price').textContent = 'EUR ' + stato.prezzo;
-
-            const docs = [];
-            if (document.getElementById('docDescrizione').checked) docs.push('Descrizione tecnica');
-            if (document.getElementById('docDisegni').checked) docs.push('Disegni');
-            if (document.getElementById('docPrototipo').checked) docs.push('Prototipo');
-            if (document.getElementById('docRicerca').checked) docs.push('Ricerca anteriorita');
-            if (document.getElementById('docClaims').checked) docs.push('Claims');
-            if (document.getElementById('docDeposito').checked) docs.push('Deposito prior');
-            document.getElementById('r-documenti').textContent = docs.length ? docs.join(', ') : 'Nessun documento selezionato';
-        }
-
-        async function salvaEProcediNDA() {
-            if (!supabaseClient) {
-                if (!initSupabase()) {
-                    showError('Connessione al server non disponibile. Ricarica la pagina.');
-                    return;
-                }
-            }
-
-            document.getElementById('loadingOverlay').classList.add('show');
-
-            try {
-                const praticaData = {
-                    titolo: document.getElementById('titolo').value.trim(),
-                    tipo_brevetto: document.getElementById('tipoBrevetto').value,
-                    settore: document.getElementById('settore').value,
-                    inventore: document.getElementById('inventore').value.trim(),
-                    titolare: document.getElementById('titolare').value.trim(),
-                    priorita: document.getElementById('priorita').value.trim() || null,
-                    note: document.getElementById('note').value.trim() || null,
-                    descrizione_tecnica: document.getElementById('descrizioneTecnica').value.trim(),
-                    stato_arte: document.getElementById('statoArte').value.trim() || null,
-                    campi_applicazione: document.getElementById('campiApplicazione').value.trim() || null,
-                    fase_sviluppo: document.getElementById('faseSviluppo').value || null,
-                    livello_protezione: document.getElementById('livelloProtezione').value || null,
-                    doc_descrizione: document.getElementById('docDescrizione').checked,
-                    doc_disegni: document.getElementById('docDisegni').checked,
-                    doc_prototipo: document.getElementById('docPrototipo').checked,
-                    doc_ricerca: document.getElementById('docRicerca').checked,
-                    doc_claims: document.getElementById('docClaims').checked,
-                    doc_deposito: document.getElementById('docDeposito').checked,
-                    link_documenti: document.getElementById('linkDocumenti').value.trim() || null,
-                    note_documenti: document.getElementById('noteDocumenti').value.trim() || null,
-                    servizio: stato.servizio,
-                    prezzo: stato.prezzo,
-                    status: 'in_attesa_nda',
-                    created_at: new Date().toISOString()
-                };
-
-                console.log('Invio dati pratica:', praticaData);
-
-                const { data, error } = await supabaseClient
-                    .from('pratiche')
-                    .insert([praticaData])
-                    .select();
-
-                if (error) {
-                    console.error('Errore Supabase:', error);
-                    throw new Error(error.message || 'Errore durante il salvataggio');
-                }
-
-                console.log('Pratica salvata:', data);
-
-                stato.praticaId = data && data[0] && data[0].id ? data[0].id : null;
-
-                if (!stato.praticaId) {
-                    throw new Error('ID pratica non ricevuto dal server');
-                }
-
-                document.getElementById('nda-id').textContent = stato.praticaId;
-                document.getElementById('nda-servizio').textContent = stato.servizio.toUpperCase();
-                document.getElementById('nda-titolo').textContent = praticaData.titolo;
-                document.getElementById('nda-price').textContent = 'EUR ' + stato.prezzo;
-
-                document.getElementById('loadingOverlay').classList.remove('show');
-                mostraSezione('nda');
-
-            } catch (err) {
-                document.getElementById('loadingOverlay').classList.remove('show');
-                console.error('Errore completo:', err);
-                showError('Errore durante il salvataggio: ' + err.message + '. Verifica la connessione e riprova.');
-            }
-        }
-
-        function tornaAWizard() {
-            mostraSezione('wizard');
-        }
-
-        document.getElementById('checkPrivacy').addEventListener('change', aggiornaBottoneNDA);
-        document.getElementById('checkNDA').addEventListener('change', aggiornaBottoneNDA);
-
-        function aggiornaBottoneNDA() {
-            const privacy = document.getElementById('checkPrivacy').checked;
-            const nda = document.getElementById('checkNDA').checked;
-            document.getElementById('btnAccettaNDA').disabled = !(privacy && nda);
-        }
-
-        async function accettaNDA() {
-            if (!supabaseClient) {
-                showNDAError('Connessione al server non disponibile.');
-                return;
-            }
-
-            if (!stato.praticaId) {
-                showNDAError('ID pratica mancante.');
-                return;
-            }
-
-            document.getElementById('loadingOverlay').classList.add('show');
-
-            try {
-                const { data, error } = await supabaseClient
-                    .from('pratiche')
-                    .update({
-                        status: 'in_attesa_pagamento',
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', stato.praticaId)
-                    .select();
-
-                if (error) {
-                    console.error('Errore aggiornamento:', error);
-                    throw new Error(error.message);
-                }
-
-                console.log('NDA accettato:', data);
-
-                document.getElementById('pay-id').textContent = stato.praticaId;
-                document.getElementById('pay-servizio').textContent = stato.servizio.toUpperCase();
-                document.getElementById('pay-titolo').textContent = document.getElementById('nda-titolo').textContent;
-                document.getElementById('pay-price').textContent = 'EUR ' + stato.prezzo;
-
-                document.getElementById('loadingOverlay').classList.remove('show');
-                mostraSezione('pagamento');
-
-            } catch (err) {
-                document.getElementById('loadingOverlay').classList.remove('show');
-                console.error('Errore:', err);
-                showNDAError('Errore durante il salvataggio: ' + err.message);
-            }
-        }
-
-        function showNDAError(msg) {
-            const alert = document.getElementById('ndaErrorAlert');
-            alert.textContent = msg;
-            alert.classList.add('show');
-            setTimeout(() => alert.classList.remove('show'), 8000);
-        }
-
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            el.addEventListener('input', function() {
-                this.style.borderColor = '#e9ecef';
-                const errorId = 'error-' + this.id;
-                const errorEl = document.getElementById(errorId);
-                if (errorEl) errorEl.style.display = 'none';
-            });
-        });
-    </script>
 </body>
 </html>
-    
