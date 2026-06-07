@@ -299,12 +299,22 @@ async function mostraServiziAI() {
         
         html += '<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:15px;">';
         
-        for (let s of data.services) {
-            html += '<div style="border:1px solid #ddd; padding:15px; border-radius:8px; cursor:pointer;" onclick="eseguiServizio(\'' + s.id + '\', \'' + s.name + '\')">';
-            html += '<h3 style="color:#2a5298; font-size:1em;">' + s.name + '</h3>';
-            html += '<p style="color:#666; font-size:0.9em;">EUR ' + s.prezzo + ' | ' + s.credits + ' crediti</p>';
-            html += '</div>';
-        }
+       const ndaAccettato = localStorage.getItem('brevettiamo_nda_accettato');
+
+for (let s of data.services) {
+    if (ndaAccettato) {
+        html += '<div style="border:1px solid #ddd; padding:15px; border-radius:8px; cursor:pointer;" onclick="eseguiServizio(\'' + s.id + '\', \'' + s.name + '\')">';
+    } else {
+        html += '<a href="modulo_privacy_nda.html" style="text-decoration:none; color:inherit; display:block; border:1px solid #ddd; padding:15px; border-radius:8px;">';
+    }
+    html += '<h3 style="color:#2a5298; font-size:1em;">' + s.name + '</h3>';
+    html += '<p style="color:#666; font-size:0.9em;">EUR ' + s.prezzo + ' | ' + s.credits + ' crediti</p>';
+    if (ndaAccettato) {
+        html += '</div>';
+    } else {
+        html += '</a>';
+    }
+}
         
         html += '</div>';
         html += '<div id="aiResult" style="margin-top:20px;"></div>';
@@ -318,15 +328,7 @@ async function mostraServiziAI() {
 }
 
 async function eseguiServizio(serviceId, serviceName) {
-      // Verifica NDA accettato
-    const ndaAccettato = localStorage.getItem('brevettiamo_nda_accettato');
-    if (!ndaAccettato) {
-        // Crea un link temporaneo e clicca
-        const link = document.createElement('a');
-        link.href = 'modulo_privacy_nda.html';
-        link.click();
-        return;
-    }
+     
 
     const input = prompt('Descrivi la tua invenzione per ' + serviceName + ':'); 
     if (!input) return;
