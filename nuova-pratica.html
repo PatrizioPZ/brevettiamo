@@ -12,22 +12,22 @@
         .header { text-align: center; padding: 30px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; margin-bottom: 30px; }
         .header h1 { font-size: 2.2em; margin-bottom: 10px; }
         .header p { font-size: 1.1em; opacity: 0.9; }
-        
+
         .step-indicator { display: flex; justify-content: center; margin-bottom: 30px; gap: 10px; flex-wrap: wrap; }
         .step { padding: 10px 20px; border-radius: 25px; background: #e0e0e0; color: #666; font-weight: 600; font-size: 0.9em; transition: all 0.3s; }
         .step.active { background: #667eea; color: white; }
         .step.completed { background: #28a745; color: white; }
-        
+
         .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px; }
         .card h2 { color: #667eea; margin-bottom: 20px; font-size: 1.5em; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-        
+
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em; transition: border-color 0.3s; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; }
         .form-group textarea { min-height: 120px; resize: vertical; }
         .required { color: #e74c3c; }
-        
+
         .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .service-card { border: 2px solid #e0e0e0; border-radius: 10px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center; }
         .service-card:hover { border-color: #667eea; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(102,126,234,0.15); }
@@ -43,45 +43,42 @@
         .btn-success { background: #28a745; color: white; }
         .btn-danger { background: #dc3545; color: white; }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        
+
         .nda-box { background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; padding: 20px; max-height: 400px; overflow-y: auto; font-size: 0.9em; margin-bottom: 20px; }
         .nda-box h3 { color: #667eea; margin-bottom: 15px; }
         .nda-box p { margin-bottom: 10px; text-align: justify; }
         .checkbox-group { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
         .checkbox-group input { width: 20px; height: 20px; }
-        
+
         .payment-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .payment-card { border: 2px solid #e0e0e0; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; }
         .payment-card:hover { border-color: #667eea; }
         .payment-card.selected { border-color: #667eea; background: #f8f9ff; }
         .payment-card h4 { margin-bottom: 10px; }
         .payment-card .amount { font-size: 1.5em; font-weight: 700; color: #667eea; }
-        
+
         .ai-result { background: #f8f9ff; border-left: 4px solid #667eea; padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
         .ai-result h3 { color: #667eea; margin-bottom: 15px; }
         .ai-result pre { background: white; padding: 15px; border-radius: 6px; overflow-x: auto; font-size: 0.9em; border: 1px solid #e0e0e0; }
-        
+
         .upload-zone { border: 3px dashed #ccc; border-radius: 10px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s; margin-bottom: 20px; }
         .upload-zone:hover { border-color: #667eea; background: #f8f9ff; }
         .upload-zone.dragover { border-color: #667eea; background: #f0f4ff; }
         .file-list { margin-top: 15px; }
         .file-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px; }
         .file-item button { background: #dc3545; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8em; }
-        
+
         .hidden { display: none !important; }
         .error { color: #dc3545; font-size: 0.9em; margin-top: 5px; }
         .success { color: #28a745; font-size: 0.9em; margin-top: 5px; }
         .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 10px; vertical-align: middle; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
+
         .revision-box { margin-top: 20px; }
         .revision-history { max-height: 300px; overflow-y: auto; margin-bottom: 20px; }
         .revision-item { padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid #667eea; }
         .revision-item .date { font-size: 0.8em; color: #666; margin-bottom: 5px; }
-        
-        .signature-box { border: 2px dashed #667eea; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0; background: #f8f9ff; }
-        .signature-box p { margin-bottom: 10px; }
-        
+
         @media (max-width: 768px) {
             .container { padding: 10px; }
             .header h1 { font-size: 1.5em; }
@@ -96,20 +93,21 @@
             <h1>BrevettIAmo</h1>
             <p>Nuova Pratica - Proteggi la Tua Invenzione con l'AI</p>
         </div>
-        
+
         <div class="step-indicator">
             <div class="step active" id="step1-indicator">1. Servizio</div>
-            <div class="step" id="step2-indicator">2. Privacy e NDA</div>
-            <div class="step" id="step3-indicator">3. Pagamento</div>
-            <div class="step" id="step4-indicator">4. Modulo Tecnico</div>
+            <div class="step" id="step2-indicator">2. Modulo</div>
+            <div class="step" id="step3-indicator">3. Privacy e NDA</div>
+            <div class="step" id="step4-indicator">4. Pagamento</div>
             <div class="step" id="step5-indicator">5. Elaborazione AI</div>
             <div class="step" id="step6-indicator">6. Revisione</div>
         </div>
-                <!-- STEP 1: SCELTA SERVIZIO -->
+
+        <!-- STEP 1: SCELTA SERVIZIO -->
         <div id="step1" class="card">
             <h2>Scegli il Tuo Servizio</h2>
             <p style="margin-bottom: 20px; color: #666;">Seleziona il tipo di pratica di proprieta intellettuale di cui hai bisogno.</p>
-            
+
             <div class="service-grid">
                 <div class="service-card" onclick="selectService('brevetto', 'Brevetto per Invenzione Industriale', 99, 'pro')">
                     <h3>Brevetto Industriale</h3>
@@ -117,7 +115,7 @@
                     <div class="desc">Protezione completa per invenzioni tecniche con elaborazione AI avanzata</div>
                 </div>
                 <div class="service-card" onclick="selectService('marchio', 'Marchio dImpresa', 49, 'starter')">
-                    <h3>Marchio dImpresa</h3>
+                    <h3>Marchio d'Impresa</h3>
                     <div class="price">EUR 49</div>
                     <div class="desc">Ricerca e redazione per registrazione marchio in Italia e UE</div>
                 </div>
@@ -134,7 +132,7 @@
                 <div class="service-card" onclick="selectService('ricerca', 'Ricerca Anteriorita', 29, 'starter')">
                     <h3>Ricerca Anteriorita</h3>
                     <div class="price">EUR 29</div>
-                    <div class="desc">Analisi completa dello stato dellarte per la tua invenzione</div>
+                    <div class="desc">Analisi completa dello stato dell'arte per la tua invenzione</div>
                 </div>
                 <div class="service-card" onclick="selectService('pct', 'Strategia PCT', 299, 'enterprise')">
                     <h3>Strategia PCT Internazionale</h3>
@@ -142,24 +140,110 @@
                     <div class="desc">Piano deposito internazionale con analisi multi-giurisdizione</div>
                 </div>
             </div>
-            
+
             <div id="selected-service-info" class="hidden" style="margin-top: 20px; padding: 15px; background: #f8f9ff; border-radius: 8px;">
                 <h3 style="color: #667eea; margin-bottom: 10px;">Servizio Selezionato</h3>
                 <p><strong id="sel-name"></strong></p>
                 <p style="color: #28a745; font-size: 1.2em; font-weight: 700;">EUR <span id="sel-price"></span></p>
                 <p id="sel-desc" style="color: #666; margin-top: 10px;"></p>
             </div>
-            
+
             <div style="text-align: center; margin-top: 30px;">
-                <button class="btn btn-primary" id="btn-step1-next" onclick="goToStep(2)" disabled>Procedi a Privacy e NDA</button>
+                <button class="btn btn-primary" id="btn-step1-next" onclick="goToStep(2)" disabled>Procedi al Modulo</button>
             </div>
         </div>
-        
-        <!-- STEP 2: PRIVACY + NDA -->
+
+        <!-- STEP 2: COMPILA MODULO -->
         <div id="step2" class="card hidden">
+            <h2>Compila il Modulo</h2>
+            <p style="margin-bottom: 20px; color: #666;">Descrivi la tua invenzione con il massimo dettaglio possibile.</p>
+
+            <div class="form-group">
+                <label>Titolo della Pratica <span class="required">*</span></label>
+                <input type="text" id="pratica-titolo" placeholder="Es: Dispositivo per purificazione aria portatile">
+            </div>
+
+            <div class="form-group">
+                <label>Settore Tecnico <span class="required">*</span></label>
+                <select id="pratica-settore">
+                    <option value="">Seleziona un settore</option>
+                    <option value="meccanica">Meccanica e Macchine</option>
+                    <option value="elettronica">Elettronica e Telecomunicazioni</option>
+                    <option value="informatica">Informatica e Software</option>
+                    <option value="chimica">Chimica e Materiali</option>
+                    <option value="biotech">Biotecnologie e Farmaceutica</option>
+                    <option value="energia">Energia e Ambiente</option>
+                    <option value="agroalimentare">Agroalimentare</option>
+                    <option value="altro">Altro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Inventore/i <span class="required">*</span></label>
+                <input type="text" id="pratica-inventori" placeholder="Nome e cognome degli inventori">
+            </div>
+
+            <div class="form-group">
+                <label>Titolare/i <span class="required">*</span></label>
+                <input type="text" id="pratica-titolari" placeholder="Nome azienda o privato titolare">
+            </div>
+
+            <div class="form-group">
+                <label>Descrizione Tecnica <span class="required">*</span></label>
+                <textarea id="pratica-descrizione" placeholder="Descrivi dettagliatamente la tua invenzione: problema risolto, soluzione proposta, vantaggi tecnici, possibili varianti..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Stato dell'Arte / Background</label>
+                <textarea id="pratica-background" placeholder="Conosci soluzioni simili esistenti? Descrivile qui."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Campi di Applicazione</label>
+                <input type="text" id="pratica-applicazioni" placeholder="Es: Industria alimentare, medicina, automotive...">
+            </div>
+
+            <div class="form-group">
+                <label>Fase di Sviluppo</label>
+                <select id="pratica-fase">
+                    <option value="">Seleziona</option>
+                    <option value="idea">Idea / Concept</option>
+                    <option value="prototipo">Prototipo in sviluppo</option>
+                    <option value="test">Test / Validazione</option>
+                    <option value="produzione">Pronto per produzione</option>
+                </select>
+            </div>
+
+            <!-- UPLOAD FILE -->
+            <div class="form-group">
+                <label>Allega Schizzi, Disegni e Documenti</label>
+                <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+                    <p style="font-size: 1.2em; margin-bottom: 10px;">+</p>
+                    <p>Clicca o trascina qui i tuoi file</p>
+                    <p style="font-size: 0.85em; color: #999; margin-top: 10px;">PDF, JPG, PNG, DWG, DXF (max 10MB cadauno)</p>
+                </div>
+                <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.dwg,.dxf" style="display: none;" onchange="handleFiles(this.files)">
+                <div class="file-list" id="file-list"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Note Aggiuntive</label>
+                <textarea id="pratica-note" placeholder="Qualsiasi altra informazione utile per l'elaborazione AI..."></textarea>
+            </div>
+
+            <div id="step2-error" class="error hidden"></div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-secondary" onclick="goToStep(1)">Indietro</button>
+                <button class="btn btn-primary" onclick="goToStep(3)">Procedi a Privacy e NDA</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: PRIVACY + NDA -->
+        <div id="step3" class="card hidden">
             <h2>Privacy e Accordo di Riservatezza (NDA)</h2>
-            <p style="margin-bottom: 20px; color: #666;">Leggi, accetta e scarica il documento NDA firmato digitalmente da BrevettIAmo.</p>
-            
+            <p style="margin-bottom: 20px; color: #666;">Prima di procedere, leggi e accetta i termini di privacy e riservatezza.</p>
+
             <div class="nda-box">
                 <h3>1. INFORMATIVA PRIVACY (GDPR 2016/679)</h3>
                 <p><strong>Titolare del trattamento:</strong> BrevettIAmo S.r.l., con sede in Italia.</p>
@@ -170,9 +254,9 @@
                 <p>- Adempimenti legali e fiscali</p>
                 <p><strong>Base giuridica:</strong> Art. 6 par. 1 lett. b) GDPR - esecuzione di un contratto.</p>
                 <p><strong>Conservazione:</strong> I dati saranno conservati per 10 anni dalla conclusione della pratica, salvo obblighi di legge diversi.</p>
-                <p><strong>Diritti dellinteressato:</strong> Hai diritto di accesso, retifica, cancellazione, limitazione, portabilita e opposizione. Per esercitare i diritti: privacy@brevettiamo.com</p>
+                <p><strong>Diritti dell'interessato:</strong> Hai diritto di accesso, retifica, cancellazione, limitazione, portabilita e opposizione. Per esercitare i diritti: privacy@brevettiamo.com</p>
                 <p><strong>Responsabile protezione dati:</strong> privacy@brevettiamo.com</p>
-                
+
                 <h3 style="margin-top: 20px;">2. ACCORDO DI RISERVATEZZA (NDA)</h3>
                 <p><strong>Definizioni:</strong> "Informazioni Riservate" includono tutti i dati tecnici, disegni, descrizioni, know-how e documenti forniti dal Cliente.</p>
                 <p><strong>Oblighi di BrevettIAmo:</strong></p>
@@ -185,50 +269,174 @@
                 <p><strong>Esclusioni:</strong> Non sono considerate riservate informazioni di pubblico dominio, gia in possesso di BrevettIAmo, o sviluppate indipendentemente.</p>
                 <p><strong>Violazione:</strong> In caso di violazione, il Cliente ha diritto a richiedere danni e ingiunzione.</p>
                 <p><strong>Legge applicabile:</strong> Foro competente: Tribunale di Milano.</p>
-                
-                <div class="signature-box">
-                    <p><strong>FIRMA DIGITALE BREVETTIAMO</strong></p>
-                    <p style="font-size: 0.85em; color: #666;">Documento siglato digitalmente da BrevettIAmo S.r.l.</p>
-                    <p style="font-size: 0.8em; color: #999;">Data: <span id="nda-brevettiamo-date"></span></p>
-                    <p style="font-size: 0.8em; color: #999;">ID Firma: BREV-NDA-2026-<span id="nda-signature-id"></span></p>
-                </div>
             </div>
-            
+
             <div class="checkbox-group">
                 <input type="checkbox" id="privacy-check">
                 <label for="privacy-check">Dichiaro di aver letto l'informativa privacy e acconsento al trattamento dei miei dati personali.</label>
             </div>
-            
+
             <div class="checkbox-group">
                 <input type="checkbox" id="nda-check">
                 <label for="nda-check">Accetto i termini dell'Accordo di Riservatezza (NDA) e comprendo le conseguenze della violazione.</label>
             </div>
-            
-            <div id="step2-error" class="error hidden"></div>
-            
+
+            <div id="step3-error" class="error hidden"></div>
+
             <div style="text-align: center; margin-top: 30px;">
-                <button class="btn btn-secondary" onclick="goToStep(1)">Indietro</button>
-                <button class="btn btn-primary" id="btn-download-nda" onclick="downloadNDA()" disabled>Scarica NDA Firmato</button>
-                <button class="btn btn-success" id="btn-step2-next" onclick="goToStep(3)" disabled>Procedi al Pagamento</button>
+                <button class="btn btn-secondary" onclick="goToStep(2)">Indietro</button>
+                <button class="btn btn-primary" id="btn-step3-next" onclick="goToStep(4)" disabled>Procedi al Pagamento</button>
             </div>
         </div>
-        
-        <!-- STEP 3: PAGAMENTO -->
-        <div id="step3" class="card hidden">
+
+        <!-- STEP 4: PAGAMENTO -->
+        <div id="step4" class="card hidden">
             <h2>Pagamento</h2>
-            <p style="margin-bottom: 20px; color: #666;">Completa il pagamento per accedere al servizio e iniziare l'    <script>
+            <p style="margin-bottom: 20px; color: #666;">Completa il pagamento per attivare l'elaborazione AI della tua pratica.</p>
+
+            <div style="background: #f8f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">Riepilogo Ordine</h3>
+                <p><strong>Servizio:</strong> <span id="pay-service-name"></span></p>
+                <p><strong>Pratica:</strong> <span id="pay-pratica-titolo"></span></p>
+                <p style="font-size: 1.3em; font-weight: 700; color: #28a745; margin-top: 10px;">Totale: EUR <span id="pay-total"></span></p>
+            </div>
+
+            <div class="payment-options">
+                <div class="payment-card selected" id="pay-card" onclick="selectPayment('card')">
+                    <h4>Carta di Credito/Debito</h4>
+                    <div class="amount" id="pay-card-amount"></div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">Visa, Mastercard, American Express</p>
+                </div>
+                <div class="payment-card" id="pay-bank" onclick="selectPayment('bank')">
+                    <h4>Bonifico Bancario</h4>
+                    <div class="amount" id="pay-bank-amount"></div>
+                    <p style="font-size: 0.85em; color: #666; margin-top: 10px;">Elaborazione in 24-48h</p>
+                </div>
+            </div>
+
+            <div id="payment-form-card" style="margin-top: 20px;">
+                <div class="form-group">
+                    <label>Numero Carta</label>
+                    <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Scadenza</label>
+                        <input type="text" placeholder="MM/AA" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label>CVC</label>
+                        <input type="text" placeholder="123" maxlength="3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Titolare Carta</label>
+                    <input type="text" placeholder="Nome Cognome">
+                </div>
+            </div>
+
+            <div id="payment-form-bank" class="hidden" style="margin-top: 20px; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <p><strong>Intestatario:</strong> BrevettIAmo S.r.l.</p>
+                <p><strong>IBAN:</strong> IT60 X054 2811 1010 0000 0123 456</p>
+                <p><strong>Causale:</strong> <span id="bank-causale"></span></p>
+                <p style="color: #666; margin-top: 10px; font-size: 0.9em;">Invia copia del bonifico a pagamenti@brevettiamo.com. L'elaborazione iniziera dopo conferma ricezione.</p>
+            </div>
+
+            <div id="step4-error" class="error hidden"></div>
+            <div id="step4-loading" class="hidden" style="text-align: center; margin: 20px 0;">
+                <span class="loading"></span> Elaborazione pagamento in corso...
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-secondary" onclick="goToStep(3)">Indietro</button>
+                <button class="btn btn-success" id="btn-pay" onclick="processPayment()">Paga e Attiva Elaborazione AI</button>
+            </div>
+        </div>
+
+        <!-- STEP 5: ELABORAZIONE AI -->
+        <div id="step5" class="card hidden">
+            <h2>Elaborazione AI in Corso</h2>
+            <p style="margin-bottom: 20px; color: #666;">Il nostro sistema AI sta elaborando la tua pratica. Questo processo richiede circa 5-10 minuti.</p>
+
+            <div style="text-align: center; padding: 40px;">
+                <div class="loading" style="width: 60px; height: 60px; border-width: 6px; margin: 0 auto 20px;"></div>
+                <p style="font-size: 1.2em; color: #667eea; font-weight: 600;" id="ai-status">Analisi dei dati in corso...</p>
+                <p style="color: #666; margin-top: 10px;" id="ai-substatus">Stiamo elaborando la descrizione tecnica...</p>
+
+                <div style="margin-top: 30px; background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: left;">
+                    <h4 style="margin-bottom: 10px; color: #555;">Cosa sta facendo l'AI:</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li id="task1" style="padding: 8px 0; color: #666;"> Analisi descrizione tecnica</li>
+                        <li id="task2" style="padding: 8px 0; color: #666;"> Ricerca stato dell'arte</li>
+                        <li id="task3" style="padding: 8px 0; color: #666;"> Redazione claims/brevetto</li>
+                        <li id="task4" style="padding: 8px 0; color: #666;"> Generazione documento finale</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="step5-error" class="error hidden"></div>
+        </div>
+
+        <!-- STEP 6: REVISIONE E ACCETTAZIONE -->
+        <div id="step6" class="card hidden">
+            <h2>Revisione e Accettazione</h2>
+            <p style="margin-bottom: 20px; color: #666;">Ecco il risultato dell'elaborazione AI. Puoi accettarlo o richiedere modifiche illimitate.</p>
+
+            <div id="ai-result-container">
+                <div class="ai-result">
+                    <h3>Documento Generato dall'AI</h3>
+                    <div id="ai-document-content" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; max-height: 500px; overflow-y: auto;">
+                        <p style="text-align: center; color: #999; padding: 40px;">Il documento apparira qui dopo l'elaborazione...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="revision-box">
+                <h3 style="color: #667eea; margin-bottom: 15px;">Richiedi Modifiche</h3>
+                <p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">Descrivi le modifiche desiderate. L'AI rigenerera il documento. Modifiche illimitate incluse.</p>
+                <div class="form-group">
+                    <textarea id="revision-request" placeholder="Es: Aggiungi piu dettagli tecnici nella sezione 3, modifica il claim 1 per includere..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="requestRevision()">
+                    <span id="revision-btn-text">Richiedi Modifica AI</span>
+                    <span id="revision-loading" class="loading hidden"></span>
+                </button>
+            </div>
+
+            <div class="revision-history hidden" id="revision-history">
+                <h3 style="color: #667eea; margin-bottom: 15px;">Storico Revisioni</h3>
+                <div id="revision-list"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
+                <button class="btn btn-success" onclick="acceptDocument()" style="font-size: 1.1em; padding: 16px 40px;">
+                    Accetta Documento e Scarica
+                </button>
+                <p style="color: #666; margin-top: 10px; font-size: 0.9em;">Cliccando accetti il documento finale e potrai scaricarlo in PDF</p>
+            </div>
+
+            <div id="download-section" class="hidden" style="text-align: center; margin-top: 20px; padding: 20px; background: #d4edda; border-radius: 8px;">
+                <h3 style="color: #155724; margin-bottom: 15px;">Documento Accettato!</h3>
+                <p style="color: #155724; margin-bottom: 15px;">La tua pratica e stata completata con successo.</p>
+                <button class="btn btn-success" onclick="downloadDocument()">Scarica Documento PDF</button>
+                <p style="color: #666; margin-top: 10px; font-size: 0.85em;">ID Pratica: <span id="final-pratica-id"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
         // === CONFIGURAZIONE ===
         const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
         const BACKEND_URL = 'https://brevettiamo-backend.onrender.com';
-        
+
         let supabaseClient;
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch(e) {
             console.error('Errore Supabase:', e);
         }
-        
+
         // === STATO APPLICAZIONE ===
         let currentStep = 1;
         let selectedService = null;
@@ -237,7 +445,7 @@
         let praticaData = {};
         let revisionCount = 0;
         let currentDocument = null;
-        
+
         // === SERVIZI ===
         const services = {
             brevetto: { name: 'Brevetto Industriale', price: 99, plan: 'pro', desc: 'Protezione completa per invenzioni tecniche' },
@@ -247,215 +455,64 @@
             ricerca: { name: 'Ricerca Anteriorita', price: 29, plan: 'starter', desc: 'Analisi completa stato dellarte' },
             pct: { name: 'Strategia PCT', price: 299, plan: 'enterprise', desc: 'Piano deposito internazionale' }
         };
-        
+
         // === NAVIGAZIONE STEPS ===
         function goToStep(step) {
+            // Validazione prima di procedere
             if (step === 3 && !validateStep2()) return;
             if (step === 4 && !validateStep3()) return;
             if (step === 5 && !validateStep4()) return;
-            
+
+            // Nascondi tutti gli step
             for (let i = 1; i <= 6; i++) {
                 document.getElementById('step' + i).classList.add('hidden');
                 document.getElementById('step' + i + '-indicator').classList.remove('active');
             }
-            
+
+            // Mostra step target
             document.getElementById('step' + step).classList.remove('hidden');
             document.getElementById('step' + step + '-indicator').classList.add('active');
-            
+
+            // Aggiorna indicatori completati
             for (let i = 1; i < step; i++) {
                 document.getElementById('step' + i + '-indicator').classList.add('completed');
                 document.getElementById('step' + i + '-indicator').classList.remove('active');
             }
-            
+
             currentStep = step;
-            
-            if (step === 3) updatePaymentSummary();
+
+            // Azioni specifiche per step
+            if (step === 4) updatePaymentSummary();
             if (step === 5) startAIProcessing();
             if (step === 6) showAIResult();
-            
+
             window.scrollTo(0, 0);
         }
-        
+
         // === STEP 1: SCELTA SERVIZIO ===
         function selectService(id, name, price, plan) {
             selectedService = { id, name, price, plan };
-            
+
+            // Rimuovi selezione precedente
             document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-            
+
+            // Mostra info selezione
             document.getElementById('selected-service-info').classList.remove('hidden');
             document.getElementById('sel-name').textContent = name;
             document.getElementById('sel-price').textContent = price;
             document.getElementById('sel-desc').textContent = services[id].desc;
-            
+
+            // Abilita bottone avanti
             document.getElementById('btn-step1-next').disabled = false;
         }
-        
-        // === STEP 2: PRIVACY + NDA ===
+
+        // === STEP 2: VALIDAZIONE ===
         function validateStep2() {
-            const privacy = document.getElementById('privacy-check').checked;
-            const nda = document.getElementById('nda-check').checked;
-            
-            if (!privacy || !nda) {
-                document.getElementById('step2-error').textContent = 'Devi accettare sia la Privacy Policy che lNDA per procedere.';
-                document.getElementById('step2-error').classList.remove('hidden');
-                return false;
-            }
-            
-            document.getElementById('step2-error').classList.add('hidden');
-            praticaData.privacyAccepted = true;
-            praticaData.ndaAccepted = true;
-            praticaData.ndaDate = new Date().toISOString();
-            return true;
-        }
-        
-        document.getElementById('privacy-check').addEventListener('change', checkNDA);
-        document.getElementById('nda-check').addEventListener('change', checkNDA);
-        
-        function checkNDA() {
-            const privacy = document.getElementById('privacy-check').checked;
-            const nda = document.getElementById('nda-check').checked;
-            const both = privacy && nda;
-            document.getElementById('btn-download-nda').disabled = !both;
-            document.getElementById('btn-step2-next').disabled = !both;
-        }
-        
-        function downloadNDA() {
-            const ndaContent = generateNDAText();
-            const blob = new Blob([ndaContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'NDA_BrevettIAmo_' + new Date().toISOString().slice(0,10).replace(/-/g,'') + '_' + Math.floor(Math.random()*10000) + '.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-        
-        function generateNDAText() {
-            const date = new Date().toLocaleDateString('it-IT');
-            const id = 'BREV-NDA-2026-' + Math.floor(Math.random()*100000);
-            
-            return `ACCORDO DI RISERVATEZZA (NDA) - BREVETTIAMO
-
-Data: ${date}
-ID Documento: ${id}
-
-PARTI CONTRAENTI:
-- BrevettIAmo S.r.l. (Titolare)
-- Cliente (Contraente)
-
-OGGETTO:
-Accordo di riservatezza per la pratica: ${selectedService ? selectedService.name : 'N/A'}
-
-INFORMATIVA PRIVACY (GDPR 2016/679):
-Titolare: BrevettIAmo S.r.l.
-Finalita: Elaborazione pratica brevettuale tramite AI
-Conservazione: 10 anni
-Diritti: accesso, retifica, cancellazione, portabilita
-DPO: privacy@brevettiamo.com
-
-OBLIGHI DI RISERVATEZZA:
-1. Mantenere stretta riservatezza su tutte le Informazioni Riservate
-2. Utilizzare le informazioni esclusivamente per l'elaborazione della pratica
-3. Non divulgare a terzi senza autorizzazione scritta
-4. Adottare misure di sicurezza tecniche e organizzative adeguate
-5. Restituire o distruggere i documenti su richiesta del Cliente
-
-DURATA: 5 anni dalla data di accettazione
-LEGGE APPLICABILE: Foro competente Tribunale di Milano
-
-FIRMA DIGITALE BREVETTIAMO:
-Documento siglato digitalmente da BrevettIAmo S.r.l.
-Data: ${date}
-ID Firma: ${id}
-
-ACCETTAZIONE CLIENTE:
-Il Cliente dichiara di aver letto e accettato i termini di privacy e riservatezza.
-
-Data accettazione: ${date}
-Servizio selezionato: ${selectedService ? selectedService.name : 'N/A'}
-Prezzo: EUR ${selectedService ? selectedService.price : 'N/A'}
-
----
-BrevettIAmo - Democratizzare la proprieta intellettuale con AI
-`;
-        }
-        
-        // === STEP 3: PAGAMENTO ===
-        function updatePaymentSummary() {
-            document.getElementById('pay-service-name').textContent = selectedService.name;
-            document.getElementById('pay-total').textContent = selectedService.price;
-            document.getElementById('pay-card-amount').textContent = 'EUR ' + selectedService.price;
-            document.getElementById('pay-bank-amount').textContent = 'EUR ' + selectedService.price;
-            document.getElementById('bank-causale').textContent = 'BrevettIAmo - ' + selectedService.name + ' - ' + new Date().toISOString().slice(0,10);
-        }
-        
-        function selectPayment(method) {
-            selectedPayment = method;
-            document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('pay-' + method).classList.add('selected');
-            
-            if (method === 'card') {
-                document.getElementById('payment-form-card').classList.remove('hidden');
-                document.getElementById('payment-form-bank').classList.add('hidden');
-            } else {
-                document.getElementById('payment-form-card').classList.add('hidden');
-                document.getElementById('payment-form-bank').classList.remove('hidden');
-            }
-        }
-        
-        function validateStep3() {
-            return true;
-        }
-        
-        async function processPayment() {
-            const btn = document.getElementById('btn-pay');
-            const loading = document.getElementById('step3-loading');
-            const error = document.getElementById('step3-error');
-            
-            btn.disabled = true;
-            loading.classList.remove('hidden');
-            error.classList.add('hidden');
-            
-            try {
-                await new Promise(r => setTimeout(r, 2000));
-                
-                const { data, error: dbError } = await supabaseClient
-                    .from('pratiche')
-                    .insert([{
-                        titolo: 'Pratica ' + selectedService.name,
-                        tipo_servizio: selectedService.id,
-                        prezzo: selectedService.price,
-                        privacy_accettata: praticaData.privacyAccepted,
-                        nda_accettata: praticaData.ndaAccepted,
-                        nda_data: praticaData.ndaDate,
-                        stato: 'pagato',
-                        created_at: new Date().toISOString()
-                    }])
-                    .select();
-                
-                if (dbError) throw dbError;
-                
-                praticaData.id = data[0].id;
-                goToStep(4);
-                
-            } catch (err) {
-                console.error('Errore pagamento:', err);
-                error.textContent = 'Errore durante il pagamento: ' + err.message;
-                error.classList.remove('hidden');
-                btn.disabled = false;
-            } finally {
-                loading.classList.add('hidden');
-            }
-        }
-        
-        // === STEP 4: MODULO TECNICO ===
-        function validateStep4() {
             const required = ['pratica-titolo', 'pratica-settore', 'pratica-inventori', 'pratica-titolari', 'pratica-descrizione'];
             let valid = true;
-            
+            let errorMsg = '';
+
             for (const id of required) {
                 const el = document.getElementById(id);
                 if (!el.value.trim()) {
@@ -465,50 +522,40 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                     el.style.borderColor = '#e0e0e0';
                 }
             }
-            
-            if (!valid) {
-                document.getElementById('step4-error').textContent = 'Compila tutti i campi obbligatori (con *).';
-                document.getElementById('step4-error').classList.remove('hidden');
+
+            if (!valid) errorMsg = 'Compila tutti i campi obbligatori (con *).';
+
+            const errorEl = document.getElementById('step2-error');
+            if (errorMsg) {
+                errorEl.textContent = errorMsg;
+                errorEl.classList.remove('hidden');
                 return false;
             }
-            
-            document.getElementById('step4-error').classList.add('hidden');
-            
-            praticaData.titolo = document.getElementById('pratica-titolo').value;
-            praticaData.settore = document.getElementById('pratica-settore').value;
-            praticaData.inventori = document.getElementById('pratica-inventori').value;
-            praticaData.titolari = document.getElementById('pratica-titolari').value;
-            praticaData.descrizione = document.getElementById('pratica-descrizione').value;
-            praticaData.background = document.getElementById('pratica-background').value;
-            praticaData.applicazioni = document.getElementById('pratica-applicazioni').value;
-            praticaData.fase = document.getElementById('pratica-fase').value;
-            praticaData.note = document.getElementById('pratica-note').value;
-            praticaData.files = uploadedFiles;
-            
-            try {
-                supabaseClient.from('pratiche').update({
-                    titolo: praticaData.titolo,
-                    settore: praticaData.settore,
-                    inventori: praticaData.inventori,
-                    titolari: praticaData.titolari,
-                    descrizione: praticaData.descrizione,
-                    background: praticaData.background,
-                    applicazioni: praticaData.applicazioni,
-                    fase_sviluppo: praticaData.fase,
-                    note: praticaData.note,
-                    stato: 'in_elaborazione'
-                }).eq('id', praticaData.id);
-            } catch(e) {
-                console.log('Aggiornamento async');
-            }
-            
+            errorEl.classList.add('hidden');
+
+            // Salva dati pratica
+            praticaData = {
+                titolo: document.getElementById('pratica-titolo').value,
+                settore: document.getElementById('pratica-settore').value,
+                inventori: document.getElementById('pratica-inventori').value,
+                titolari: document.getElementById('pratica-titolari').value,
+                descrizione: document.getElementById('pratica-descrizione').value,
+                background: document.getElementById('pratica-background').value,
+                applicazioni: document.getElementById('pratica-applicazioni').value,
+                fase: document.getElementById('pratica-fase').value,
+                note: document.getElementById('pratica-note').value,
+                servizio: selectedService,
+                files: uploadedFiles
+            };
+
             return true;
         }
-        
+
         // === UPLOAD FILE ===
         function handleFiles(files) {
-            const maxSize = 10 * 1024 * 1024;
-            
+            const list = document.getElementById('file-list');
+            const maxSize = 10 * 1024 * 1024; // 10MB
+
             for (const file of files) {
                 if (file.size > maxSize) {
                     alert('File troppo grande: ' + file.name + ' (max 10MB)');
@@ -516,14 +563,14 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                 }
                 uploadedFiles.push(file);
             }
-            
+
             updateFileList();
         }
-        
+
         function updateFileList() {
             const list = document.getElementById('file-list');
             list.innerHTML = '';
-            
+
             uploadedFiles.forEach((file, index) => {
                 const item = document.createElement('div');
                 item.className = 'file-item';
@@ -540,14 +587,15 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                 list.appendChild(item);
             });
         }
-        
+
         function removeFile(index) {
             uploadedFiles.splice(index, 1);
             updateFileList();
         }
-        
+
         function renameFile(index, newName) {
             if (newName && newName.trim()) {
+                // Crea nuovo File con nome modificato
                 const originalFile = uploadedFiles[index];
                 const renamedFile = new File([originalFile], newName.trim(), {
                     type: originalFile.type,
@@ -556,21 +604,144 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                 uploadedFiles[index] = renamedFile;
             }
         }
-        
-        const uploadZone = document.getElementById('upload-zone');
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('dragover');
-        });
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('dragover');
-        });
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('dragover');
-            handleFiles(e.dataTransfer.files);
-        });
-        
+
+        // Drag and drop
+        // Setup upload zone - chiamato quando lo step 4 e visibile
+        function setupUploadZone() {
+            const uploadZone = document.getElementById('upload-zone');
+            if (!uploadZone) return;
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+        }
+
+        // === STEP 3: PRIVACY + NDA ===
+        function validateStep3() {
+            const privacy = document.getElementById('privacy-check').checked;
+            const nda = document.getElementById('nda-check').checked;
+
+            if (!privacy || !nda) {
+                document.getElementById("step3-error").textContent = "Devi accettare sia la Privacy Policy che lNDA per procedere.";
+                document.getElementById('step3-error').classList.remove('hidden');
+                return false;
+            }
+
+            document.getElementById('step3-error').classList.add('hidden');
+            praticaData.privacyAccepted = true;
+            praticaData.ndaAccepted = true;
+            praticaData.ndaDate = new Date().toISOString();
+            return true;
+        }
+
+        // Abilita bottone quando entrambi i checkbox sono selezionati
+        // Event listener per checkbox NDA - aggiunti quando lo step 2 e visibile
+        function setupNDAListeners() {
+            const privacyCheck = document.getElementById('privacy-check');
+            const ndaCheck = document.getElementById('nda-check');
+            if (privacyCheck) privacyCheck.addEventListener('change', checkNDA);
+            if (ndaCheck) ndaCheck.addEventListener('change', checkNDA);
+        }
+
+        function checkNDA() {
+            const privacy = document.getElementById('privacy-check').checked;
+            const nda = document.getElementById('nda-check').checked;
+            document.getElementById('btn-step3-next').disabled = !(privacy && nda);
+        }
+
+        // === STEP 4: PAGAMENTO ===
+        function updatePaymentSummary() {
+            document.getElementById('pay-service-name').textContent = selectedService.name;
+            document.getElementById('pay-pratica-titolo').textContent = praticaData.titolo;
+            document.getElementById('pay-total').textContent = selectedService.price;
+            document.getElementById('pay-card-amount').textContent = 'EUR ' + selectedService.price;
+            document.getElementById('pay-bank-amount').textContent = 'EUR ' + selectedService.price;
+            document.getElementById('bank-causale').textContent = 'BrevettIAmo - ' + praticaData.titolo + ' - ' + new Date().toISOString().slice(0,10);
+        }
+
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('pay-' + method).classList.add('selected');
+
+            if (method === 'card') {
+                document.getElementById('payment-form-card').classList.remove('hidden');
+                document.getElementById('payment-form-bank').classList.add('hidden');
+            } else {
+                document.getElementById('payment-form-card').classList.add('hidden');
+                document.getElementById('payment-form-bank').classList.remove('hidden');
+            }
+        }
+
+        function validateStep4() {
+            if (selectedPayment === 'card') {
+                // Qui andrebbe la validazione reale dei campi carta
+                // Per ora simuliamo
+            }
+            return true;
+        }
+
+        async function processPayment() {
+            const btn = document.getElementById('btn-pay');
+            const loading = document.getElementById('step4-loading');
+            const error = document.getElementById('step4-error');
+
+            btn.disabled = true;
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+
+            try {
+                // Simula pagamento (da sostituire con LemonSqueezy reale)
+                await new Promise(r => setTimeout(r, 2000));
+
+                // Salva pratica su Supabase
+                const { data, error: dbError } = await supabaseClient
+                    .from('pratiche')
+                    .insert([{
+                        titolo: praticaData.titolo,
+                        tipo_servizio: selectedService.id,
+                        settore: praticaData.settore,
+                        inventori: praticaData.inventori,
+                        titolari: praticaData.titolari,
+                        descrizione: praticaData.descrizione,
+                        background: praticaData.background,
+                        applicazioni: praticaData.applicazioni,
+                        fase_sviluppo: praticaData.fase,
+                        note: praticaData.note,
+                        privacy_accettata: praticaData.privacyAccepted,
+                        nda_accettata: praticaData.ndaAccepted,
+                        nda_data: praticaData.ndaDate,
+                        prezzo: selectedService.price,
+                        stato: 'pagato',
+                        created_at: new Date().toISOString()
+                    }])
+                    .select();
+
+                if (dbError) throw dbError;
+
+                praticaData.id = data[0].id;
+
+                // Vai a elaborazione AI
+                goToStep(5);
+
+            } catch (err) {
+                console.error('Errore pagamento:', err);
+                error.textContent = 'Errore durante il pagamento: ' + err.message;
+                error.classList.remove('hidden');
+                btn.disabled = false;
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
         // === STEP 5: ELABORAZIONE AI ===
         async function startAIProcessing() {
             const tasks = [
@@ -579,21 +750,22 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                 { id: 'task3', text: 'Redazione claims/brevetto', delay: 6000 },
                 { id: 'task4', text: 'Generazione documento finale', delay: 8000 }
             ];
-            
+
             const statusEl = document.getElementById('ai-status');
             const substatusEl = document.getElementById('ai-substatus');
-            
+
             for (const task of tasks) {
                 await new Promise(r => setTimeout(r, 2000));
                 document.getElementById(task.id).textContent = ' ' + task.text;
                 document.getElementById(task.id).style.color = '#28a745';
                 statusEl.textContent = task.text + '...';
             }
-            
+
+            // Chiama backend AI
             try {
                 statusEl.textContent = 'Finalizzazione documento...';
                 substatusEl.textContent = 'Stiamo preparando il risultato finale';
-                
+
                 const response = await fetch(BACKEND_URL + '/api/services/execute', {
                     method: 'POST',
                     headers: {
@@ -606,29 +778,31 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                         practiceId: praticaData.id
                     })
                 });
-                
+
                 if (response.ok) {
                     currentDocument = await response.json();
                 } else {
+                    // Fallback: genera documento simulato
                     currentDocument = generateMockDocument();
                 }
-                
+
                 await new Promise(r => setTimeout(r, 1500));
                 goToStep(6);
-                
+
             } catch (err) {
                 console.error('Errore AI:', err);
+                // Fallback
                 currentDocument = generateMockDocument();
                 await new Promise(r => setTimeout(r, 1500));
                 goToStep(6);
             }
         }
-        
+
         function getServiceId(serviceType) {
             const map = { brevetto: 1, marchio: 2, design: 3, modello: 4, ricerca: 5, pct: 13 };
             return map[serviceType] || 1;
         }
-        
+
         function generateMockDocument() {
             return {
                 title: 'DOCUMENTO TECNICO - ' + praticaData.titolo,
@@ -656,7 +830,7 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                     'ID Pratica: ' + (praticaData.id || 'PENDING')
             };
         }
-        
+
         // === STEP 6: REVISIONE ===
         function showAIResult() {
             if (currentDocument) {
@@ -665,23 +839,24 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                 `;
             }
         }
-        
+
         async function requestRevision() {
             const textarea = document.getElementById('revision-request');
             const request = textarea.value.trim();
-            
+
             if (!request) {
                 alert('Descrivi le modifiche desiderate');
                 return;
             }
-            
+
             const btnText = document.getElementById('revision-btn-text');
             const loading = document.getElementById('revision-loading');
-            
+
             btnText.textContent = 'Elaborazione in corso...';
             loading.classList.remove('hidden');
-            
+
             try {
+                // Chiama AI per revisione
                 const response = await fetch(BACKEND_URL + '/api/services/execute', {
                     method: 'POST',
                     headers: {
@@ -694,22 +869,24 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                         practiceId: praticaData.id
                     })
                 });
-                
+
                 let newContent;
                 if (response.ok) {
                     const result = await response.json();
                     newContent = result.content || result.result;
                 } else {
+                    // Fallback: aggiungi revisione al documento
                     newContent = currentDocument.content + '\n\n--- REVISIONE ' + (revisionCount + 1) + ' ---\nRICHIESTA: ' + request + '\n\n[Documento aggiornato con le modifiche richieste]';
                 }
-                
+
                 currentDocument.content = newContent;
                 revisionCount++;
-                
+
+                // Aggiorna storico
                 const history = document.getElementById('revision-history');
                 const list = document.getElementById('revision-list');
                 history.classList.remove('hidden');
-                
+
                 const item = document.createElement('div');
                 item.className = 'revision-item';
                 item.innerHTML = `
@@ -717,10 +894,11 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                     <div><strong>Richiesta:</strong> ${request}</div>
                 `;
                 list.insertBefore(item, list.firstChild);
-                
+
+                // Aggiorna documento
                 showAIResult();
                 textarea.value = '';
-                
+
             } catch (err) {
                 console.error('Errore revisione:', err);
                 alert('Errore durante la revisione. Riprova.');
@@ -729,9 +907,10 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                 loading.classList.add('hidden');
             }
         }
-        
+
         async function acceptDocument() {
             try {
+                // Aggiorna stato pratica
                 await supabaseClient
                     .from('pratiche')
                     .update({ 
@@ -740,17 +919,17 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
                         data_completamento: new Date().toISOString()
                     })
                     .eq('id', praticaData.id);
-                
+
                 document.getElementById('download-section').classList.remove('hidden');
                 document.getElementById('final-pratica-id').textContent = praticaData.id;
-                
+
             } catch (err) {
                 console.error('Errore accettazione:', err);
                 document.getElementById('download-section').classList.remove('hidden');
                 document.getElementById('final-pratica-id').textContent = praticaData.id || 'N/A';
             }
         }
-        
+
         function downloadDocument() {
             const content = currentDocument.content;
             const blob = new Blob([content], { type: 'text/plain' });
@@ -763,22 +942,22 @@ BrevettIAmo - Democratizzare la proprieta intellettuale con AI
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
-        
+
         // === INIZIALIZZAZIONE ===
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('nda-signature-id').textContent = Math.floor(Math.random()*100000);
-            document.getElementById('nda-brevettiamo-date').textContent = new Date().toLocaleDateString('it-IT');
-            
+            // Verifica se c'e parametro servizio nell URL
             const params = new URLSearchParams(window.location.search);
             const servizio = params.get('servizio');
             if (servizio && services[servizio]) {
+                // Pre-seleziona servizio
                 selectedService = { id: servizio, ...services[servizio] };
                 document.getElementById('selected-service-info').classList.remove('hidden');
                 document.getElementById('sel-name').textContent = selectedService.name;
                 document.getElementById('sel-price').textContent = selectedService.price;
                 document.getElementById('sel-desc').textContent = selectedService.desc;
                 document.getElementById('btn-step1-next').disabled = false;
-                
+
+                // Evidenzia card
                 document.querySelectorAll('.service-card').forEach(c => {
                     if (c.textContent.includes(selectedService.name)) c.classList.add('selected');
                 });
