@@ -156,15 +156,10 @@ function confermaAccettazione() {
   document.getElementById('bloccoCard').style.display = 'none';
   document.getElementById('confermaCard').style.display = 'block';
   document.getElementById('btnDownload').style.display = 'block';
-      // Redirect automatico dopo 3 secondi
+     // Redirect al dashboard dopo 2 secondi
     setTimeout(function() {
-        if (window.opener) {
-            window.opener.location.reload();
-            window.close();
-        } else {
-            window.location.href = 'dashboard.html';
-        }
-    }, 3000);
+        window.location.href = 'dashboard.html';
+    }, 2000);
   // Salva su Supabase (se disponibile)
   if (typeof supabase !== 'undefined' && supabase) {
     supabase.from('accettazioni_nda').insert({
