@@ -26,6 +26,7 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; }
 .alert.show { display:block; }
 .alert-success { background:#d4edda; color:#155724; }
 .alert-error { background:#f8d7da; color:#721c24; }
+.loading { text-align:center; padding:20px; color:#666; }
 </style>
 </head>
 <body>
@@ -39,14 +40,15 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; }
 <div class="alert alert-error" id="errorAlert"></div>
 
 <div class="card">
-<h2>Prezzi Servizi Singoli</h2>
-<table>
+<h2>Servizi Singoli (da Supabase)</h2>
+<div class="loading" id="loading">Caricamento servizi...</div>
+<table id="tabellaServizi" style="display:none;">
 <<thead>
-<tr><th>Servizio</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th></tr>
+<tr><th>Servizio</th><th>Slug</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th><th>Azioni</th></tr>
 </thead>
 <tbody id="prezziSingoli"></tbody>
 </table>
-<button class="btn-salva" onclick="salvaPrezzi()">Salva Prezzi</button>
+<button class="btn-salva" onclick="salvaPrezzi()" style="display:none;" id="btnSalva">Salva Modifiche</button>
 </div>
 
 <div class="card">
@@ -69,30 +71,9 @@ button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; }
 
 <script>
 var SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-var SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdvYiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzQ4NTI0MTYwLCJleHAiOjIwNjQxMDAxNjB9.29fa46e3aab68e41aa5db78806976e3fd68b45ae4956715333e975060e789cac';
 var supabaseClient = null;
-
-var serviziDefault = [
-  { id: 'priorArtBase', name: 'Ricerca Prior Art Base', prezzo: 11, credits: 1, attivo: true },
-  { id: 'priorArtAdvanced', name: 'Ricerca Prior Art Avanzata', prezzo: 23, credits: 2, attivo: true },
-  { id: 'brevettabilita', name: 'Analisi Brevettabilita', prezzo: 18, credits: 1, attivo: true },
-  { id: 'claimsBase', name: 'Redazione Claims Base', prezzo: 23, credits: 1, attivo: true },
-  { id: 'claimsPro', name: 'Redazione Claims Pro', prezzo: 47, credits: 2, attivo: true },
-  { id: 'traduzioneClaims', name: 'Traduzione Claims', prezzo: 14, credits: 1, attivo: true },
-  { id: 'monitoraggioConcorrenza', name: 'Monitoraggio Concorrenza', prezzo: 35, credits: 3, attivo: true },
-  { id: 'consulenza11', name: 'Consulenza 1:1', prezzo: 59, credits: 5, attivo: true },
-  { id: 'analisiTecnica', name: 'Analisi Tecnica', prezzo: 29, credits: 2, attivo: true },
-  { id: 'ricercaFigurativa', name: 'Ricerca Figurativa', prezzo: 23, credits: 2, attivo: true },
-  { id: 'nullita', name: 'Analisi Nullita', prezzo: 35, credits: 3, attivo: true },
-  { id: 'opposizione', name: 'Preparazione Opposizione', prezzo: 47, credits: 3, attivo: true },
-  { id: 'licensing', name: 'Strategia Licensing', prezzo: 59, credits: 4, attivo: true },
-  { id: 'valorizzazione', name: 'Valorizzazione Brevetto', prezzo: 99, credits: 5, attivo: true },
-  { id: 'dueDiligence', name: 'Due Diligence IP', prezzo: 149, credits: 6, attivo: true },
-  { id: 'freedomToOperate', name: 'Freedom to Operate', prezzo: 79, credits: 4, attivo: true },
-  { id: 'patentabilitySearch', name: 'Patentability Search', prezzo: 18, credits: 1, attivo: true },
-  { id: 'landscapeAnalysis', name: 'Landscape Analysis', prezzo: 59, credits: 3, attivo: true },
-  { id: 'cad', name: 'Disegno CAD Professionale', prezzo: 99, credits: 4, attivo: true }
-];
+var serviziCorrenti = [];
 
 var abbonamentiDefault = [
   { id: 'starter', name: 'Starter', prezzo: 29, servizi: 10 },
@@ -103,7 +84,8 @@ var abbonamentiDefault = [
 function init() {
   if (window.supabase && window.supabase.createClient) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    caricaPrezzi();
+    caricaServiziSupabase();
+    caricaAbbonamenti();
   } else {
     showError('Errore connessione Supabase');
   }
@@ -111,67 +93,104 @@ function init() {
 
 setTimeout(init, 500);
 
-function caricaPrezzi() {
+async function caricaServiziSupabase() {
+  try {
+    var { data, error } = await supabaseClient
+      .from('servizi_singoli')
+      .select('*')
+      .order('ordine');
+    
+    if (error) throw error;
+    
+    if (!data || data.length === 0) {
+      document.getElementById('loading').textContent = 'Nessun servizio trovato. Verifica tabella servizi_singoli.';
+      return;
+    }
+    
+    serviziCorrenti = data;
+    renderTabella(data);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('tabellaServizi').style.display = 'table';
+    document.getElementById('btnSalva').style.display = 'inline-block';
+    
+  } catch (err) {
+    document.getElementById('loading').textContent = 'Errore: ' + err.message;
+    showError('Errore caricamento: ' + err.message);
+  }
+}
+
+function renderTabella(data) {
   var html = '';
-  for (var i = 0; i < serviziDefault.length; i++) {
-    var s = serviziDefault[i];
-    var btnClass = s.attivo ? 'btn-verde' : 'btn-rosso';
-    var btnText = s.attivo ? 'Attivo' : 'Disattivato';
+  for (var i = 0; i < data.length; i++) {
+    var s = data[i];
+    var btnClass = s.stato === 'attivo' ? 'btn-verde' : 'btn-rosso';
+    var btnText = s.stato === 'attivo' ? 'Attivo' : 'Disattivato';
     html += '<tr>';
-    html += '<td>' + s.name + '</td>';
-    html += '<td><input type="number" id="prezzo_' + s.id + '" value="' + s.prezzo + '"></td>';
-    html += '<td><input type="number" id="crediti_' + s.id + '" value="' + s.credits + '"></td>';
-    html += '<td><button class="' + btnClass + '" id="btn_' + s.id + '" onclick="toggleServizio(\'' + s.id + '\')">' + btnText + '</button></td>';
+    html += '<td>' + s.nome + '</td>';
+    html += '<td><code>' + s.slug + '</code></td>';
+    html += '<td><input type="number" id="prezzo_' + s.id + '" value="' + s.prezzo + '" min="0" step="0.01"></td>';
+    html += '<td><input type="number" id="crediti_' + s.id + '" value="' + s.crediti + '" min="0"></td>';
+    html += '<td><button class="' + btnClass + '" id="btn_' + s.id + '" onclick="toggleStato(\'' + s.id + '\', \'' + s.stato + '\')">' + btnText + '</button></td>';
+    html += '<td><button onclick="salvaSingolo(\'' + s.id + '\')">Salva</button></td>';
     html += '</tr>';
   }
   document.getElementById('prezziSingoli').innerHTML = html;
-
-  var html2 = '';
-  for (var j = 0; j < abbonamentiDefault.length; j++) {
-    var a = abbonamentiDefault[j];
-    html2 += '<tr>';
-    html2 += '<td>' + a.name + '</td>';
-    html2 += '<td><input type="number" id="abb_prezzo_' + a.id + '" value="' + a.prezzo + '"></td>';
-    html2 += '<td><input type="number" id="abb_servizi_' + a.id + '" value="' + a.servizi + '"></td>';
-    html2 += '</tr>';
-  }
-  document.getElementById('prezziAbbonamenti').innerHTML = html2;
 }
 
-function toggleServizio(id) {
-  var btn = document.getElementById('btn_' + id);
-  var attuale = btn.textContent === 'Attivo';
-  var nuovo = !attuale;
+async function toggleStato(id, statoAttuale) {
+  var nuovoStato = statoAttuale === 'attivo' ? 'disattivo' : 'attivo';
   
-  if (nuovo) {
-    btn.textContent = 'Attivo';
-    btn.className = 'btn-verde';
-  } else {
-    btn.textContent = 'Disattivato';
-    btn.className = 'btn-rosso';
+  try {
+    var { error } = await supabaseClient
+      .from('servizi_singoli')
+      .update({ stato: nuovoStato })
+      .eq('id', id);
+    
+    if (error) throw error;
+    
+    showSuccess('Stato aggiornato: ' + nuovoStato);
+    caricaServiziSupabase();
+    
+  } catch (err) {
+    showError('Errore: ' + err.message);
+  }
+}
+
+async function salvaSingolo(id) {
+  var prezzo = parseFloat(document.getElementById('prezzo_' + id).value) || 0;
+  var crediti = parseInt(document.getElementById('crediti_' + id).value) || 1;
+  
+  try {
+    var { error } = await supabaseClient
+      .from('servizi_singoli')
+      .update({ prezzo: prezzo, crediti: crediti })
+      .eq('id', id);
+    
+    if (error) throw error;
+    
+    showSuccess('Servizio salvato!');
+    
+  } catch (err) {
+    showError('Errore salvataggio: ' + err.message);
   }
 }
 
 function salvaPrezzi() {
-  var prezzi = [];
-  for (var i = 0; i < serviziDefault.length; i++) {
-    var s = serviziDefault[i];
-    var btn = document.getElementById('btn_' + s.id);
-    prezzi.push({
-      id: s.id,
-      prezzo: parseInt(document.getElementById('prezzo_' + s.id).value),
-      credits: parseInt(document.getElementById('crediti_' + s.id).value),
-      attivo: btn.textContent === 'Attivo'
-    });
+  salvaSingolo(serviziCorrenti[0].id);
+  showSuccess('Salvataggio in corso...');
+}
+
+function caricaAbbonamenti() {
+  var html = '';
+  for (var j = 0; j < abbonamentiDefault.length; j++) {
+    var a = abbonamentiDefault[j];
+    html += '<tr>';
+    html += '<td>' + a.name + '</td>';
+    html += '<td><input type="number" id="abb_prezzo_' + a.id + '" value="' + a.prezzo + '"></td>';
+    html += '<td><input type="number" id="abb_servizi_' + a.id + '" value="' + a.servizi + '"></td>';
+    html += '</tr>';
   }
-  
-  if (supabaseClient) {
-    supabaseClient.from('config_prezzi').upsert({ id: 'servizi', dati: prezzi }).then(function() {
-      showSuccess('Prezzi e stati salvati su Supabase');
-    }).catch(function(err) {
-      showError('Errore: ' + err.message);
-    });
-  }
+  document.getElementById('prezziAbbonamenti').innerHTML = html;
 }
 
 function salvaAbbonamenti() {
