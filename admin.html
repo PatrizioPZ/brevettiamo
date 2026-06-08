@@ -8,224 +8,176 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:Arial,sans-serif; background:#f0f2f5; }
-.navbar { background:#1e3c72; color:white; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
-.container { max-width:1000px; margin:0 auto; padding:20px; }
-.card { background:white; padding:20px; border-radius:10px; margin-bottom:20px; }
+.navbar { background:#1e3c72; color:white; padding:15px 30px; }
+.container { max-width:1200px; margin:0 auto; padding:20px; }
+.card { background:white; padding:20px; border-radius:10px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
 h2 { color:#1e3c72; margin-bottom:15px; }
-table { width:100%; border-collapse:collapse; }
-th { background:#f8f9fa; padding:10px; text-align:left; }
-td { padding:10px; border-bottom:1px solid #eee; }
-input { width:80px; padding:5px; border:1px solid #ddd; border-radius:3px; }
-button { padding:8px 15px; border:none; border-radius:5px; cursor:pointer; }
-.btn-verde { background:#28a745; color:white; }
-.btn-verde:hover { background:#218838; }
-.btn-rosso { background:#dc3545; color:white; }
-.btn-rosso:hover { background:#c82333; }
-.btn-salva { background:#1e3c72; color:white; padding:10px 20px; margin-top:15px; }
-.alert { padding:15px; border-radius:5px; margin-bottom:15px; display:none; }
-.alert.show { display:block; }
-.alert-success { background:#d4edda; color:#155724; }
-.alert-error { background:#f8d7da; color:#721c24; }
-.loading { text-align:center; padding:20px; color:#666; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:#1e3c72; color:white; padding:12px 8px; text-align:left; }
+td { padding:10px 8px; border-bottom:1px solid #eee; vertical-align:middle; }
+input { width:100%; padding:6px; border:1px solid #ddd; border-radius:3px; font-size:13px; }
+input[type="number"] { width:70px; }
+.stato-attivo { background:#28a745; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600; }
+.stato-disattivo { background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600; }
+.btn-salva { background:#007bff; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; margin-right:5px; }
+.btn-campi { background:#6c757d; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; }
+.loading { text-align:center; padding:40px; color:#666; }
+.error { background:#f8d7da; color:#721c24; padding:15px; border-radius:4px; margin:20px 0; }
+.success { background:#d4edda; color:#155724; padding:15px; border-radius:4px; margin:20px 0; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:25px; }
+.stat-card { background:white; padding:20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.stat-card h3 { font-size:14px; color:#666; margin-bottom:8px; }
+.stat-card .value { font-size:28px; font-weight:bold; color:#1e3c72; }
+.modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+.modal-overlay.active { display:flex; }
+.modal { background:white; border-radius:8px; padding:30px; width:90%; max-width:700px; max-height:80vh; overflow-y:auto; }
+.modal h3 { margin-bottom:20px; color:#1e3c72; }
+.modal textarea { width:100%; min-height:300px; padding:10px; border:1px solid #ddd; border-radius:4px; font-family:monospace; font-size:13px; }
+.modal-buttons { margin-top:20px; text-align:right; }
+.modal-buttons button { margin-left:10px; padding:8px 16px; border-radius:4px; cursor:pointer; border:none; }
+.btn-primary { background:#007bff; color:white; }
+.btn-secondary { background:#6c757d; color:white; }
 </style>
 </head>
 <body>
 
-<<nav class="navbar">
+<div class="navbar">
 <h1>BrevettIAmo - Admin Panel</h1>
-</nav>
+</div>
 
 <div class="container">
-<div class="alert alert-success" id="successAlert"></div>
-<div class="alert alert-error" id="errorAlert"></div>
 
-<div class="card">
-<h2>Servizi Singoli (da Supabase)</h2>
-<div class="loading" id="loading">Caricamento servizi...</div>
-<table id="tabellaServizi" style="display:none;">
-<<thead>
-<tr><th>Servizio</th><th>Slug</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th><th>Azioni</th></tr>
-</thead>
-<tbody id="prezziSingoli"></tbody>
-</table>
-<button class="btn-salva" onclick="salvaPrezzi()" style="display:none;" id="btnSalva">Salva Modifiche</button>
+<div id="messaggi"></div>
+
+<div class="stats">
+<div class="stat-card"><h3>Servizi Attivi</h3><div class="value" id="stat-attivi">-</div></div>
+<div class="stat-card"><h3>Servizi Disattivi</h3><div class="value" id="stat-disattivi">-</div></div>
+<div class="stat-card"><h3>Totale Servizi</h3><div class="value" id="stat-totali">-</div></div>
+<div class="stat-card"><h3>Prezzo Medio</h3><div class="value" id="stat-medio">-</div></div>
 </div>
 
 <div class="card">
-<h2>Prezzi Abbonamenti</h2>
+<h2>Servizi Singoli</h2>
+<div class="loading" id="loading">Caricamento servizi da Supabase...</div>
+<div id="tabella-container" style="display:none;">
 <table>
 <<thead>
-<tr><th>Piano</th><th>Prezzo Mensile (EUR)</th><th>Servizi/Mese</th></tr>
+<tr><th>Ord</th><th>Slug</th><th>Nome</th><th>Categoria</th><th>Prezzo</th><th>Cred</th><th>Tempo</th><th>Stato</th><th>Azioni</th></tr>
 </thead>
-<tbody id="prezziAbbonamenti"></tbody>
+<tbody id="servizi-body"></tbody>
 </table>
-<button class="btn-salva" onclick="salvaAbbonamenti()">Salva Abbonamenti</button>
+</div>
 </div>
 
 <div class="card">
 <h2>Configurazione AI</h2>
-<p>Modello attuale: <strong id="modelloAI">meta-llama/llama-3.1-8b-instruct</strong></p>
-<p>Stato: <strong id="statoAI">Attivo</strong></p>
+<p>Modello: <strong>meta-llama/llama-3.1-8b-instruct</strong></p>
+<p>Stato: <strong>Attivo</strong></p>
+</div>
+
+</div>
+
+<div class="modal-overlay" id="modal-campi">
+<div class="modal">
+<h3>Editor Campi Form JSON</h3>
+<<textarea id="campi-json"></textarea>
+<div class="modal-buttons">
+<button class="btn-secondary" onclick="chiudiModal()">Annulla</button>
+<button class="btn-primary" onclick="salvaCampiForm()">Salva Campi</button>
+</div>
 </div>
 </div>
 
 <script>
-var SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdvYiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzQ4NTI0MTYwLCJleHAiOjIwNjQxMDAxNjB9.29fa46e3aab68e41aa5db78806976e3fd68b45ae4956715333e975060e789cac';
-var supabaseClient = null;
-var serviziCorrenti = [];
+const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdvYiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzQ4NTI0MTYwLCJleHAiOjIwNjQxMDAxNjB9.29fa46e3aab68e41aa5db78806976e3fd68b45ae4956715333e975060e789cac';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let servizioCorrenteId = null;
 
-var abbonamentiDefault = [
-  { id: 'starter', name: 'Starter', prezzo: 29, servizi: 10 },
-  { id: 'pro', name: 'Pro', prezzo: 99, servizi: 50 },
-  { id: 'enterprise', name: 'Enterprise', prezzo: 299, servizi: 999 }
-];
-
-function init() {
-  if (window.supabase && window.supabase.createClient) {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    caricaServiziSupabase();
-    caricaAbbonamenti();
-  } else {
-    showError('Errore connessione Supabase');
-  }
+async function caricaServizi() {
+  const container = document.getElementById('loading');
+  try {
+    const { data, error } = await supabase.from('servizi_singoli').select('*').order('ordine');
+    if (error) throw error;
+    if (!data || data.length === 0) { container.textContent = 'Nessun servizio trovato.'; return; }
+    aggiornaStats(data); renderTabella(data);
+    container.style.display = 'none'; document.getElementById('tabella-container').style.display = 'block';
+  } catch (err) { container.textContent = 'Errore: ' + err.message; mostraMessaggio('Errore: ' + err.message, 'error'); }
 }
 
-setTimeout(init, 500);
-
-async function caricaServiziSupabase() {
-  try {
-    var { data, error } = await supabaseClient
-      .from('servizi_singoli')
-      .select('*')
-      .order('ordine');
-    
-    if (error) throw error;
-    
-    if (!data || data.length === 0) {
-      document.getElementById('loading').textContent = 'Nessun servizio trovato. Verifica tabella servizi_singoli.';
-      return;
-    }
-    
-    serviziCorrenti = data;
-    renderTabella(data);
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('tabellaServizi').style.display = 'table';
-    document.getElementById('btnSalva').style.display = 'inline-block';
-    
-  } catch (err) {
-    document.getElementById('loading').textContent = 'Errore: ' + err.message;
-    showError('Errore caricamento: ' + err.message);
-  }
+function aggiornaStats(data) {
+  const attivi = data.filter(s => s.stato === 'attivo').length;
+  const disattivi = data.filter(s => s.stato === 'disattivo').length;
+  const totale = data.length;
+  const medio = data.length > 0 ? (data.reduce((a, s) => a + parseFloat(s.prezzo), 0) / data.length).toFixed(2) : 0;
+  document.getElementById('stat-attivi').textContent = attivi;
+  document.getElementById('stat-disattivi').textContent = disattivi;
+  document.getElementById('stat-totali').textContent = totale;
+  document.getElementById('stat-medio').textContent = '€' + medio;
 }
 
 function renderTabella(data) {
-  var html = '';
-  for (var i = 0; i < data.length; i++) {
-    var s = data[i];
-    var btnClass = s.stato === 'attivo' ? 'btn-verde' : 'btn-rosso';
-    var btnText = s.stato === 'attivo' ? 'Attivo' : 'Disattivato';
-    html += '<tr>';
-    html += '<td>' + s.nome + '</td>';
-    html += '<td><code>' + s.slug + '</code></td>';
-    html += '<td><input type="number" id="prezzo_' + s.id + '" value="' + s.prezzo + '" min="0" step="0.01"></td>';
-    html += '<td><input type="number" id="crediti_' + s.id + '" value="' + s.crediti + '" min="0"></td>';
-    html += '<td><button class="' + btnClass + '" id="btn_' + s.id + '" onclick="toggleStato(\'' + s.id + '\', \'' + s.stato + '\')">' + btnText + '</button></td>';
-    html += '<td><button onclick="salvaSingolo(\'' + s.id + '\')">Salva</button></td>';
-    html += '</tr>';
-  }
-  document.getElementById('prezziSingoli').innerHTML = html;
+  let html = '';
+  data.forEach(s => {
+    const statoClass = s.stato === 'attivo' ? 'stato-attivo' : 'stato-disattivo';
+    const statoLabel = s.stato === 'attivo' ? 'Attivo' : 'Disattivo';
+    let campiCount = 0;
+    try { campiCount = s.campi_form ? JSON.parse(s.campi_form).length : 0; } catch (e) { campiCount = 0; }
+    html += `<tr data-id="${s.id}">
+      <td><input type="number" value="${s.ordine || 0}" min="0" style="width:50px" id="ord_${s.id}"></td>
+      <td><input type="text" value="${s.slug}" style="width:120px;font-size:11px" id="slug_${s.id}"></td>
+      <td><input type="text" value="${s.nome}" style="width:150px" id="nome_${s.id}"></td>
+      <td><input type="text" value="${s.categoria}" style="width:100px" id="cat_${s.id}"></td>
+      <td><input type="number" value="${s.prezzo}" min="0" step="0.01" style="width:80px" id="prezzo_${s.id}"></td>
+      <td><input type="number" value="${s.crediti}" min="0" style="width:60px" id="cred_${s.id}"></td>
+      <td><input type="text" value="${s.tempo_elaborazione || ''}" style="width:100px" id="tempo_${s.id}"></td>
+      <td><button class="${statoClass}" onclick="toggleStato('${s.id}', '${s.stato}')">${statoLabel}</button></td>
+      <td><button class="btn-salva" onclick="salvaServizio('${s.id}')">Salva</button><button class="btn-campi" onclick="apriCampi('${s.id}')">Campi (${campiCount})</button></td>
+    </tr>`;
+  });
+  document.getElementById('servizi-body').innerHTML = html;
 }
 
 async function toggleStato(id, statoAttuale) {
-  var nuovoStato = statoAttuale === 'attivo' ? 'disattivo' : 'attivo';
-  
-  try {
-    var { error } = await supabaseClient
-      .from('servizi_singoli')
-      .update({ stato: nuovoStato })
-      .eq('id', id);
-    
-    if (error) throw error;
-    
-    showSuccess('Stato aggiornato: ' + nuovoStato);
-    caricaServiziSupabase();
-    
-  } catch (err) {
-    showError('Errore: ' + err.message);
-  }
+  const nuovoStato = statoAttuale === 'attivo' ? 'disattivo' : 'attivo';
+  try { const { error } = await supabase.from('servizi_singoli').update({ stato: nuovoStato }).eq('id', id); if (error) throw error; mostraMessaggio('Stato aggiornato', 'success'); caricaServizi(); } 
+  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
 }
 
-async function salvaSingolo(id) {
-  var prezzo = parseFloat(document.getElementById('prezzo_' + id).value) || 0;
-  var crediti = parseInt(document.getElementById('crediti_' + id).value) || 1;
-  
-  try {
-    var { error } = await supabaseClient
-      .from('servizi_singoli')
-      .update({ prezzo: prezzo, crediti: crediti })
-      .eq('id', id);
-    
-    if (error) throw error;
-    
-    showSuccess('Servizio salvato!');
-    
-  } catch (err) {
-    showError('Errore salvataggio: ' + err.message);
-  }
+async function salvaServizio(id) {
+  const dati = { ordine: parseInt(document.getElementById('ord_' + id).value) || 0, slug: document.getElementById('slug_' + id).value.trim(), nome: document.getElementById('nome_' + id).value.trim(), categoria: document.getElementById('cat_' + id).value.trim(), prezzo: parseFloat(document.getElementById('prezzo_' + id).value) || 0, crediti: parseInt(document.getElementById('cred_' + id).value) || 1, tempo_elaborazione: document.getElementById('tempo_' + id).value.trim() };
+  try { const { error } = await supabase.from('servizi_singoli').update(dati).eq('id', id); if (error) throw error; mostraMessaggio('Servizio salvato!', 'success'); caricaServizi(); } 
+  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
 }
 
-function salvaPrezzi() {
-  salvaSingolo(serviziCorrenti[0].id);
-  showSuccess('Salvataggio in corso...');
+async function apriCampi(id) {
+  servizioCorrenteId = id;
+  try { const { data, error } = await supabase.from('servizi_singoli').select('campi_form').eq('id', id).single(); if (error) throw error; let formatted; try { formatted = JSON.stringify(JSON.parse(data.campi_form || '[]'), null, 2); } catch (e) { formatted = data.campi_form || '[]'; } document.getElementById('campi-json').value = formatted; document.getElementById('modal-campi').classList.add('active'); } 
+  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
 }
 
-function caricaAbbonamenti() {
-  var html = '';
-  for (var j = 0; j < abbonamentiDefault.length; j++) {
-    var a = abbonamentiDefault[j];
-    html += '<tr>';
-    html += '<td>' + a.name + '</td>';
-    html += '<td><input type="number" id="abb_prezzo_' + a.id + '" value="' + a.prezzo + '"></td>';
-    html += '<td><input type="number" id="abb_servizi_' + a.id + '" value="' + a.servizi + '"></td>';
-    html += '</tr>';
-  }
-  document.getElementById('prezziAbbonamenti').innerHTML = html;
+function chiudiModal() { document.getElementById('modal-campi').classList.remove('active'); servizioCorrenteId = null; }
+
+async function salvaCampiForm() {
+  if (!servizioCorrenteId) return;
+  const jsonText = document.getElementById('campi-json').value;
+  try { JSON.parse(jsonText); } catch (e) { mostraMessaggio('JSON non valido', 'error'); return; }
+  try { const { error } = await supabase.from('servizi_singoli').update({ campi_form: jsonText }).eq('id', servizioCorrenteId); if (error) throw error; chiudiModal(); mostraMessaggio('Campi salvati!', 'success'); caricaServizi(); } 
+  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
 }
 
-function salvaAbbonamenti() {
-  var abbonamenti = [];
-  for (var j = 0; j < abbonamentiDefault.length; j++) {
-    var a = abbonamentiDefault[j];
-    abbonamenti.push({
-      id: a.id,
-      prezzo: parseInt(document.getElementById('abb_prezzo_' + a.id).value),
-      servizi: parseInt(document.getElementById('abb_servizi_' + a.id).value)
-    });
-  }
-  
-  if (supabaseClient) {
-    supabaseClient.from('config_prezzi').upsert({ id: 'abbonamenti', dati: abbonamenti }).then(function() {
-      showSuccess('Abbonamenti salvati su Supabase');
-    }).catch(function(err) {
-      showError('Errore: ' + err.message);
-    });
-  }
+function mostraMessaggio(testo, tipo) {
+  const container = document.getElementById('messaggi');
+  const div = document.createElement('div');
+  div.className = tipo;
+  div.textContent = testo;
+  container.appendChild(div);
+  setTimeout(() => div.remove(), 5000);
 }
 
-function showSuccess(msg) {
-  var alert = document.getElementById('successAlert');
-  alert.textContent = msg;
-  alert.classList.add('show');
-  setTimeout(function() { alert.classList.remove('show'); }, 3000);
-}
-
-function showError(msg) {
-  var alert = document.getElementById('errorAlert');
-  alert.textContent = msg;
-  alert.classList.add('show');
-  setTimeout(function() { alert.classList.remove('show'); }, 5000);
-}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') chiudiModal(); });
+document.getElementById('modal-campi').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-campi')) chiudiModal(); });
+document.addEventListener('DOMContentLoaded', caricaServizi);
 </script>
 
 </body>
