@@ -20,6 +20,11 @@
         .stat { text-align: center; }
         .stat-number { font-size: 2.5em; font-weight: 800; color: #ffd700; }
         .stat-label { font-size: 0.95em; opacity: 0.8; margin-top: 4px; }
+        .tabs-container { text-align: center; padding: 30px 0; background: #f8f9fa; }
+        .tab-btn { padding: 12px 30px; margin: 0 5px; border: none; background: #e0e0e0; color: #333; font-size: 16px; cursor: pointer; border-radius: 5px; }
+        .tab-btn.active { background: #1e3c72; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .services-section { background: #f8f9fa; padding: 80px 40px; }
         .section-title { text-align: center; font-size: 2.2em; color: #1e3c72; margin-bottom: 16px; }
         .section-subtitle { text-align: center; color: #6c757d; font-size: 1.1em; max-width: 600px; margin: 0 auto 60px; }
@@ -71,51 +76,69 @@
         </div>
     </section>
 
-    <section class="services-section">
-        <h2 class="section-title">Scegli il Tuo Servizio</h2>
-        <p class="section-subtitle">Seleziona il servizio di proprieta intellettuale di cui hai bisogno. Ogni pratica include elaborazione AI e revisione qualita.</p>
-        <div class="services-grid">
-            <a href="nuova-pratica.html?servizio=brevetto" class="service-card">
-                <div class="service-icon icon-b">B</div>
-                <h3>Brevetto per Invenzione</h3>
-                <p>Redazione completa di domanda di brevetto per invenzione industriale, incluse descrizione, rivendicazioni e figure.</p>
-                <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                <span class="service-badge">Piu richiesto</span>
-            </a>
-            <a href="nuova-pratica.html?servizio=marchio" class="service-card">
-                <div class="service-icon icon-m">M</div>
-                <h3>Marchio</h3>
-                <p>Deposito marchio nazionale, comunitario o internazionale. Ricerca anteriorita e classificazione Nice inclusa.</p>
-                <div class="service-price">EUR 29 <span>/ pratica</span></div>
-                <span class="service-badge">Starter</span>
-            </a>
-            <a href="nuova-pratica.html?servizio=ricerca" class="service-card">
-                <div class="service-icon icon-r">R</div>
-                <h3>Ricerca Anteriorita</h3>
-                <p>Ricerca completa nelle banche dati brevettuali mondiali. Report dettagliato con analisi di brevettabilita.</p>
-                <div class="service-price">EUR 99 <span>/ pratica</span></div>
-            </a>
-            <a href="nuova-pratica.html?servizio=design" class="service-card">
-                <div class="service-icon icon-d">D</div>
-                <h3>Design / Modello Estetico</h3>
-                <p>Redazione domanda di design industriale. Descrizione figure, classificazione Locarno e gestione deposito.</p>
-                <div class="service-price">EUR 99 <span>/ pratica</span></div>
-            </a>
-            <a href="nuova-pratica.html?servizio=modello" class="service-card">
-                <div class="service-icon icon-u">U</div>
-                <h3>Modello di Utilita</h3>
-                <p>Domanda di modello di utilita per invenzioni con minor grado di inventiva. Procedura rapida e economica.</p>
-                <div class="service-price">EUR 99 <span>/ pratica</span></div>
-            </a>
-            <a href="nuova-pratica.html?servizio=software" class="service-card">
-                <div class="service-icon icon-s">S</div>
-                <h3>Brevetto Software / Algoritmo</h3>
-                <p>Specializzato per software, algoritmi, AI e metodi implementati da computer. Conformita normativa europea.</p>
-                <div class="service-price">EUR 299 <span>/ pratica</span></div>
-                <span class="service-badge">Enterprise</span>
-            </a>
-        </div>
-    </section>
+    <!-- TABS -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('pacchetti')" id="tab-pacchetti">Pacchetti</button>
+        <button class="tab-btn" onclick="switchTab('servizi')" id="tab-servizi">Servizi Singoli</button>
+    </div>
+
+    <!-- PACCHETTI -->
+    <div id="pacchetti" class="tab-content active">
+        <section class="services-section">
+            <h2 class="section-title">Scegli il Tuo Servizio</h2>
+            <p class="section-subtitle">Seleziona il servizio di proprieta intellettuale di cui hai bisogno. Ogni pratica include elaborazione AI e revisione qualita.</p>
+            <div class="services-grid">
+                <a href="nuova-pratica.html?servizio=brevetto" class="service-card">
+                    <div class="service-icon icon-b">B</div>
+                    <h3>Brevetto per Invenzione</h3>
+                    <p>Redazione completa di domanda di brevetto per invenzione industriale, incluse descrizione, rivendicazioni e figure.</p>
+                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
+                    <span class="service-badge">Piu richiesto</span>
+                </a>
+                <a href="nuova-pratica.html?servizio=marchio" class="service-card">
+                    <div class="service-icon icon-m">M</div>
+                    <h3>Marchio</h3>
+                    <p>Deposito marchio nazionale, comunitario o internazionale. Ricerca anteriorita e classificazione Nice inclusa.</p>
+                    <div class="service-price">EUR 29 <span>/ pratica</span></div>
+                    <span class="service-badge">Starter</span>
+                </a>
+                <a href="nuova-pratica.html?servizio=ricerca" class="service-card">
+                    <div class="service-icon icon-r">R</div>
+                    <h3>Ricerca Anteriorita</h3>
+                    <p>Ricerca completa nelle banche dati brevettuali mondiali. Report dettagliato con analisi di brevettabilita.</p>
+                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
+                </a>
+                <a href="nuova-pratica.html?servizio=design" class="service-card">
+                    <div class="service-icon icon-d">D</div>
+                    <h3>Design / Modello Estetico</h3>
+                    <p>Redazione domanda di design industriale. Descrizione figure, classificazione Locarno e gestione deposito.</p>
+                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
+                </a>
+                <a href="nuova-pratica.html?servizio=modello" class="service-card">
+                    <div class="service-icon icon-u">U</div>
+                    <h3>Modello di Utilita</h3>
+                    <p>Domanda di modello di utilita per invenzioni con minor grado di inventiva. Procedura rapida e economica.</p>
+                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
+                </a>
+                <a href="nuova-pratica.html?servizio=software" class="service-card">
+                    <div class="service-icon icon-s">S</div>
+                    <h3>Brevetto Software / Algoritmo</h3>
+                    <p>Specializzato per software, algoritmi, AI e metodi implementati da computer. Conformita normativa europea.</p>
+                    <div class="service-price">EUR 299 <span>/ pratica</span></div>
+                    <span class="service-badge">Enterprise</span>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- SERVIZI SINGOLI -->
+    <div id="servizi" class="tab-content">
+        <section class="services-section">
+            <h2 class="section-title">Servizi Singoli</h2>
+            <p class="section-subtitle">Scegli il servizio specifico di cui hai bisogno. Prezzi flessibili, pagamento per singolo servizio.</p>
+            <div id="servizi-singoli-lista" class="services-grid">Caricamento...</div>
+        </section>
+    </div>
 
     <section class="how-it-works">
         <h2 class="section-title">Come Funziona</h2>
@@ -137,5 +160,58 @@
         <p>BrevettIAmo - Servizi Brevettuali AI | P.IVA in attesa | Contatto: info@brevettiamo.it</p>
         <p style="margin-top: 8px; opacity: 0.6;">Tutti i diritti riservati. Le pratiche sono elaborate da AI e revisionate da esperti.</p>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+    <script>
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.style.background = '#e0e0e0';
+                b.style.color = '#333';
+            });
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('tab-' + tab).style.background = '#1e3c72';
+            document.getElementById('tab-' + tab).style.color = 'white';
+            
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            
+            if (tab === 'servizi') caricaServiziSingoli();
+        }
+
+        async function caricaServiziSingoli() {
+            const container = document.getElementById('servizi-singoli-lista');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('servizi_singoli')
+                    .select('*')
+                    .eq('stato', 'attivo')
+                    .order('ordine');
+                
+                if (error) throw error;
+                
+                let html = '';
+                data.forEach(s => {
+                    html += `
+                        <div class="service-card" onclick="window.location.href='servizio.html?slug=${s.slug}'">
+                            <div class="service-icon" style="background: #2a5298;">${s.nome.charAt(0)}</div>
+                            <h3>${s.nome}</h3>
+                            <p>${s.descrizione_breve || ''}</p>
+                            <div class="service-price">EUR ${s.prezzo} <span>/ ${s.crediti} crediti</span></div>
+                            <p style="font-size: 0.9em; color: #999; margin-top: 8px;">${s.tempo_elaborazione || ''}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                
+            } catch (err) {
+                container.innerHTML = '<p style="text-align: center; color: #dc3545;">Errore: ' + err.message + '</p>';
+            }
+        }
+    </script>
 </body>
 </html>
