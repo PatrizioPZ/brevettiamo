@@ -90,118 +90,146 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const SUPABASE_URL='https://YOUR_SUPABASE_URL.supabase.co';
-const SUPABASE_KEY='YOUR_SUPABASE_ANON_KEY';
-const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const SUPABASE_URL='https://wimspqwyvgntwjudesol.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpbXNwcXd5dmdudHdqdWRlc29sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA5MTI0MjYsImV4cCI6MjA0NjQ4ODQyNn0.6cvlSl4Fz2YPSI5t7f1zY8H0Y7Z7Z7Z7Z7Z7Z7Z7Z7Z';
+const sbClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let configData=[],filtro='tutte';
 document.addEventListener('DOMContentLoaded',async()=>{
-const{data:{session}}=await supabase.auth.getSession();
-if(!session){window.location.href='login.html';return}
-const{data:profile}=await supabase.from('profiles').select('role').eq('id',session.user.id).single();
-if(profile?.role!=='admin'){window.location.href='dashboard.html';return}
-await caricaConfig()
+  try{
+    const{data:{session}}=await sbClient.auth.getSession();
+    if(!session){window.location.href='login.html';return}
+    const{data:profile}=await sbClient.from('profiles').select('role').eq('id',session.user.id).single();
+    if(profile?.role!=='admin'){window.location.href='dashboard.html';return}
+    await caricaConfig()
+  }catch(e){
+    console.error('Errore init:',e);
+    mostraToast('Errore caricamento: '+e.message,'danger')
+  }
 });
 async function caricaConfig(){
-const{data,error}=await supabase.from('config_prezzi').select('*').order('categoria').order('chiave');
-if(error){mostraToast('Errore: '+error.message,'danger');return}
-configData=data||[];aggiornaStats();renderConfig()
+  try{
+    const{data,error}=await sbClient.from('config_prezzi').select('*').order('categoria').order('chiave');
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    configData=data||[];
+    aggiornaStats();
+    renderConfig()
+  }catch(e){
+    console.error('Errore caricaConfig:',e);
+    mostraToast('Errore caricamento dati','danger')
+  }
 }
 function aggiornaStats(){
-const p=configData.filter(c=>c.categoria==='pacchetti'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
-const s=configData.filter(c=>c.categoria==='servizi'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
-const x=configData.filter(c=>c.chiave.includes('_attivo')&&c.valore==='false').length;
-document.getElementById('statPacchetti').textContent=p;
-document.getElementById('statServizi').textContent=s;
-document.getElementById('statVariabili').textContent=configData.length;
-document.getElementById('statSospesi').textContent=x
+  const p=configData.filter(c=>c.categoria==='pacchetti'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+  const s=configData.filter(c=>c.categoria==='servizi'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+  const x=configData.filter(c=>c.chiave.includes('_attivo')&&c.valore==='false').length;
+  document.getElementById('statPacchetti').textContent=p;
+  document.getElementById('statServizi').textContent=s;
+  document.getElementById('statVariabili').textContent=configData.length;
+  document.getElementById('statSospesi').textContent=x
 }
 function renderConfig(){
-let f=configData;
-if(filtro!=='tutte')f=f.filter(c=>c.categoria===filtro);
-const g=f.reduce((a,i)=>{if(!a[i.categoria])a[i.categoria]=[];a[i.categoria].push(i);return a},{});
-const c=document.getElementById('configContainer');
-if(!Object.keys(g).length){c.innerHTML='<div class="p-5 text-center text-muted"><i class="bi bi-inbox fs-1 mb-3"></i><p>Nessuna variabile</p></div>';return}
-c.innerHTML=Object.entries(g).map(([cat,items])=>`<div class="p-3 border-bottom bg-light"><span class="badge bg-primary">${cat.toUpperCase()}</span><span class="ms-2 text-muted small">${items.length} variabili</span></div>${items.map(i=>`<div class="config-item"><div class="row align-items-center"><div class="col-md-4"><div class="config-key">${i.chiave}</div><div class="small text-muted">${i.descrizione||''}</div></div><div class="col-md-3"><span class="fw-bold">${i.valore}</span></div><div class="col-md-2"><span class="badge bg-light text-dark border">${i.tipo}</span></div><div class="col-md-3 text-end"><button class="btn btn-sm btn-outline-primary" onclick="modifica('${i.id}')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="elimina('${i.id}')"><i class="bi bi-trash"></i></button></div></div></div>`).join('')}`).join('')
+  let f=configData;
+  if(filtro!=='tutte')f=f.filter(c=>c.categoria===filtro);
+  const g=f.reduce((a,i)=>{if(!a[i.categoria])a[i.categoria]=[];a[i.categoria].push(i);return a},{});
+  const c=document.getElementById('configContainer');
+  if(!Object.keys(g).length){
+    c.innerHTML='<div class="p-5 text-center text-muted"><i class="bi bi-inbox fs-1 mb-3"></i><p>Nessuna variabile</p></div>';
+    return
+  }
+  c.innerHTML=Object.entries(g).map(([cat,items])=>`<div class="p-3 border-bottom bg-light"><span class="badge bg-primary">${cat.toUpperCase()}</span><span class="ms-2 text-muted small">${items.length} variabili</span></div>${items.map(i=>`<div class="config-item"><div class="row align-items-center"><div class="col-md-4"><div class="config-key">${i.chiave}</div><div class="small text-muted">${i.descrizione||''}</div></div><div class="col-md-3"><span class="fw-bold">${i.valore}</span></div><div class="col-md-2"><span class="badge bg-light text-dark border">${i.tipo}</span></div><div class="col-md-3 text-end"><button class="btn btn-sm btn-outline-primary" onclick="modifica('${i.id}')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger ms-1" onclick="elimina('${i.id}')"><i class="bi bi-trash"></i></button></div></div></div>`).join('')}`).join('')
 }
-function filtra(c){filtro=c;document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');renderConfig()}
+function filtra(c){
+  filtro=c;
+  document.querySelectorAll('.btn-outline-primary,.btn-outline-secondary').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderConfig()
+}
 function modifica(id){
-const i=configData.find(c=>c.id===id);
-if(!i)return;
-document.getElementById('editId').value=i.id;
-document.getElementById('editChiave').value=i.chiave;
-document.getElementById('editValore').value=i.valore;
-document.getElementById('editDescrizione').value=i.descrizione||'';
-new bootstrap.Modal(document.getElementById('modalModifica')).show()
+  const i=configData.find(c=>c.id===id);
+  if(!i)return;
+  document.getElementById('editId').value=i.id;
+  document.getElementById('editChiave').value=i.chiave;
+  document.getElementById('editValore').value=i.valore;
+  document.getElementById('editDescrizione').value=i.descrizione||'';
+  new bootstrap.Modal(document.getElementById('modalModifica')).show()
 }
 async function salvaModifica(){
-const id=document.getElementById('editId').value;
-const valore=document.getElementById('editValore').value;
-const descrizione=document.getElementById('editDescrizione').value;
-const{error}=await supabase.from('config_prezzi').update({valore,descrizione,updated_at:new Date().toISOString()}).eq('id',id);
-if(error){mostraToast('Errore: '+error.message,'danger');return}
-bootstrap.Modal.getInstance(document.getElementById('modalModifica')).hide();
-mostraToast('Aggiornato!','success');
-await caricaConfig()
+  try{
+    const id=document.getElementById('editId').value;
+    const valore=document.getElementById('editValore').value;
+    const descrizione=document.getElementById('editDescrizione').value;
+    const{error}=await sbClient.from('config_prezzi').update({valore,descrizione,updated_at:new Date().toISOString()}).eq('id',id);
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    bootstrap.Modal.getInstance(document.getElementById('modalModifica')).hide();
+    mostraToast('Aggiornato!','success');
+    await caricaConfig()
+  }catch(e){
+    mostraToast('Errore salvataggio','danger')
+  }
 }
 async function elimina(id){
-if(!confirm('Eliminare questa variabile?'))return;
-const{error}=await supabase.from('config_prezzi').delete().eq('id',id);
-if(error){mostraToast('Errore: '+error.message,'danger');return}
-mostraToast('Eliminato','success');
-await caricaConfig()
+  if(!confirm('Eliminare questa variabile?'))return;
+  try{
+    const{error}=await sbClient.from('config_prezzi').delete().eq('id',id);
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    mostraToast('Eliminato','success');
+    await caricaConfig()
+  }catch(e){
+    mostraToast('Errore eliminazione','danger')
+  }
 }
 function aggiungiVariabile(){
-const chiave=prompt('Nome chiave (es. servizio_nuovo_prezzo):');
-if(!chiave)return;
-const valore=prompt('Valore:');
-if(!valore)return;
-const categoria=prompt('Categoria (pacchetti/servizi/generale/sistema/integrazioni/notifiche/seo/ai):','generale');
-supabase.from('config_prezzi').insert([{chiave,valore,tipo:'string',categoria,descrizione:'',visibile_admin:true,modificabile_admin:true}]).then(async({error})=>{
-if(error){mostraToast('Errore: '+error.message,'danger');return}
-mostraToast('Creata!','success');
-await caricaConfig()
-})
+  const chiave=prompt('Nome chiave (es. servizio_nuovo_prezzo):');
+  if(!chiave)return;
+  const valore=prompt('Valore:');
+  if(!valore)return;
+  const categoria=prompt('Categoria (pacchetti/servizi/generale/sistema/integrazioni/notifiche/seo/ai):','generale');
+  sbClient.from('config_prezzi').insert([{chiave,valore,tipo:'string',categoria,descrizione:'',visibile_admin:true,modificabile_admin:true}]).then(async({error})=>{
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    mostraToast('Creata!','success');
+    await caricaConfig()
+  }).catch(e=>mostraToast('Errore: '+e.message,'danger'))
 }
 function exportConfig(){
-const d=configData.map(c=>({chiave:c.chiave,valore:c.valore,tipo:c.tipo,descrizione:c.descrizione,categoria:c.categoria}));
-const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
-const u=URL.createObjectURL(b);
-const a=document.createElement('a');
-a.href=u;a.download=`config-${new Date().toISOString().split('T')[0]}.json`;a.click();
-URL.revokeObjectURL(u);
-mostraToast('Esportato','success')
+  const d=configData.map(c=>({chiave:c.chiave,valore:c.valore,tipo:c.tipo,descrizione:c.descrizione,categoria:c.categoria}));
+  const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u;a.download=`config-${new Date().toISOString().split('T')[0]}.json`;a.click();
+  URL.revokeObjectURL(u);
+  mostraToast('Esportato','success')
 }
 function importConfig(){
-const i=document.createElement('input');
-i.type='file';i.accept='.json';
-i.onchange=async(e)=>{
-const f=e.target.files[0];if(!f)return;
-try{
-const t=await f.text();const d=JSON.parse(t);
-let n=0;
-for(const x of d){
-if(!x.chiave||!x.valore)continue;
-const{error}=await supabase.from('config_prezzi').upsert({chiave:x.chiave,valore:x.valore,tipo:x.tipo||'string',descrizione:x.descrizione||'',categoria:x.categoria||'generale'},{onConflict:'chiave'});
-if(!error)n++
-}
-mostraToast(`${n} importati`,'success');
-await caricaConfig()
-}catch(err){mostraToast('Errore: '+err.message,'danger')}
-};
-i.click()
+  const i=document.createElement('input');
+  i.type='file';i.accept='.json';
+  i.onchange=async(e)=>{
+    const f=e.target.files[0];if(!f)return;
+    try{
+      const t=await f.text();const d=JSON.parse(t);
+      let n=0;
+      for(const x of d){
+        if(!x.chiave||!x.valore)continue;
+        const{error}=await sbClient.from('config_prezzi').upsert({chiave:x.chiave,valore:x.valore,tipo:x.tipo||'string',descrizione:x.descrizione||'',categoria:x.categoria||'generale'},{onConflict:'chiave'});
+        if(!error)n++
+      }
+      mostraToast(`${n} importati`,'success');
+      await caricaConfig()
+    }catch(err){mostraToast('Errore: '+err.message,'danger')}
+  };
+  i.click()
 }
 function mostraToast(m,t='success'){
-const c=document.getElementById('toastContainer');
-const d=document.createElement('div');
-d.className='toast-custom';
-d.style.borderLeftColor=t==='danger'?'#ef4444':'#10b981';
-d.innerHTML=`<div class="d-flex align-items-center"><i class="bi ${t==='danger'?'bi-x-circle':'bi-check-circle'} me-2"></i><span>${m}</span></div>`;
-c.appendChild(d);
-setTimeout(()=>d.remove(),5000)
+  const c=document.getElementById('toastContainer');
+  const d=document.createElement('div');
+  d.className='toast-custom';
+  d.style.borderLeftColor=t==='danger'?'#ef4444':'#10b981';
+  d.innerHTML=`<div class="d-flex align-items-center"><i class="bi ${t==='danger'?'bi-x-circle':'bi-check-circle'} me-2"></i><span>${m}</span></div>`;
+  c.appendChild(d);
+  setTimeout(()=>d.remove(),5000)
 }
 async function logout(){
-await supabase.auth.signOut();
-window.location.href='index.html'
+  await sbClient.auth.signOut();
+  window.location.href='index.html'
 }
 </script>
 </body>
