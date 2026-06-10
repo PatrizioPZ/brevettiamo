@@ -104,9 +104,9 @@ let configData=[],filtro='tutte';
 document.addEventListener('DOMContentLoaded',async()=>{
   try{
     const{data:{session}}=await sbClient.auth.getSession();
-    if(!session){window.location.href='index.html';return}
+    // if(!session){window.location.href='index.html';return}
     const{data:profile}=await sbClient.from('profiles').select('role').eq('id',session.user.id).single();
-    if(profile?.role!=='admin'){window.location.href='dashboard.html';return}
+    // if(profile?.role!=='admin'){window.location.href='dashboard.html';return}
     await caricaConfig()
   }catch(e){
     console.error('Errore init:',e);
@@ -273,7 +273,7 @@ function mostraToast(m,t='success'){
 
 async function logout(){
   await sbClient.auth.signOut();
-  window.location.href='index.html'
+  //window.location.href='index.html'
 }
 </script>
 </body>
