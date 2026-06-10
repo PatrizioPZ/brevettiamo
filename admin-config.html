@@ -103,10 +103,10 @@ let configData=[],filtro='tutte';
 
 document.addEventListener('DOMContentLoaded',async()=>{
   try{
-  //  const{data:{session}}=await sbClient.auth.getSession();
-    // if(!session){window.location.href='index.html';return}
-    // const{data:profile}=await sbClient.from('profiles').select('role').eq('id',session.user.id).single();
-    // if(profile?.role!=='admin'){window.location.href='dashboard.html';return}
+    const{data:{session}}=await sbClient.auth.getSession();
+     if(!session){window.location.href='index.html';return}
+     const{data:profile}=await sbClient.from('profiles').select('role').eq('id',session.user.id).single();
+     if(profile?.role!=='admin'){window.location.href='dashboard.html';return}
     await caricaConfig()
   }catch(e){
     console.error('Errore init:',e);
@@ -127,15 +127,15 @@ document.addEventListener('DOMContentLoaded',async()=>{
   }
 }
 
-// function aggiornaStats(){
-//  const p=configData.filter(c=>c.categoria==='pacchetti'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
-//  const s=configData.filter(c=>c.categoria==='servizi'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
-//  const x=configData.filter(c=>c.chiave.includes('_attivo')&&c.valore==='false').length;
-//  document.getElementById('statPacchetti').textContent=p;
-//  document.getElementById('statServizi').textContent=s;
-//  document.getElementById('statVariabili').textContent=configData.length;
-//  document.getElementById('statSospesi').textContent=x
-//}
+function aggiornaStats(){
+  const p=configData.filter(c=>c.categoria==='pacchetti'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+  const s=configData.filter(c=>c.categoria==='servizi'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+ const x=configData.filter(c=>c.chiave.includes('_attivo')&&c.valore==='false').length;
+ document.getElementById('statPacchetti').textContent=p;
+ document.getElementById('statServizi').textContent=s;
+   document.getElementById('statVariabili').textContent=configData.length;
+  document.getElementById('statSospesi').textContent=x
+}
 
 function renderConfig(){
   let f=configData;
