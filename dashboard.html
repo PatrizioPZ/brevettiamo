@@ -114,6 +114,7 @@ try {
 if (window.supabase && window.supabase.createClient) {
 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log('Supabase ok');
+checkAuth(); // AGGIUNGI QUESTA RIGA    
 caricaPratiche();
 return true;
 } else {
