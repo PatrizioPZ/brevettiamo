@@ -114,12 +114,12 @@ document.addEventListener('DOMContentLoaded',async()=>{
   }
 });
 
-async function caricaConfig(){
+ async function caricaConfig(){
   try{
     const{data,error}=await sbClient.from('config_prezzi').select('*').order('categoria').order('chiave');
     if(error){mostraToast('Errore: '+error.message,'danger');return}
     configData=data||[];
-    aggiornaStats();
+ //   aggiornaStats();
     renderConfig()
   }catch(e){
     console.error('Errore caricaConfig:',e);
@@ -127,15 +127,15 @@ async function caricaConfig(){
   }
 }
 
-function aggiornaStats(){
-  const p=configData.filter(c=>c.categoria==='pacchetti'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
-  const s=configData.filter(c=>c.categoria==='servizi'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
-  const x=configData.filter(c=>c.chiave.includes('_attivo')&&c.valore==='false').length;
-  document.getElementById('statPacchetti').textContent=p;
-  document.getElementById('statServizi').textContent=s;
-  document.getElementById('statVariabili').textContent=configData.length;
-  document.getElementById('statSospesi').textContent=x
-}
+// function aggiornaStats(){
+//  const p=configData.filter(c=>c.categoria==='pacchetti'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+//  const s=configData.filter(c=>c.categoria==='servizi'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+//  const x=configData.filter(c=>c.chiave.includes('_attivo')&&c.valore==='false').length;
+//  document.getElementById('statPacchetti').textContent=p;
+//  document.getElementById('statServizi').textContent=s;
+//  document.getElementById('statVariabili').textContent=configData.length;
+//  document.getElementById('statSospesi').textContent=x
+//}
 
 function renderConfig(){
   let f=configData;
