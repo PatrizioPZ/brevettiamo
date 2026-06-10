@@ -1,150 +1,280 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Config - BrevettIAmo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: #f8f9fa; padding: 20px; }
-        .container { max-width: 1200px; }
-        .card { margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .price-input { width: 100px; }
-        .status-badge { font-size: 0.8rem; }
-        .loading { text-align: center; padding: 50px; }
-        .error-alert { margin: 20px 0; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Config - BrevettIAmo</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b}
+.sidebar{background:#1e293b;min-height:100vh;position:fixed;width:260px;color:#fff}
+.sidebar-brand{padding:1.5rem;font-weight:700;font-size:1.25rem;border-bottom:1px solid rgba(255,255,255,0.1)}
+.sidebar-link{display:flex;align-items:center;padding:.75rem 1.5rem;color:rgba(255,255,255,0.7);text-decoration:none;transition:all .2s}
+.sidebar-link:hover,.sidebar-link.active{color:#fff;background:rgba(255,255,255,0.05)}
+.sidebar-link i{width:24px;margin-right:.75rem}
+.main-content{margin-left:260px;padding:2rem}
+.card-admin{background:#fff;border-radius:16px;border:none;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.config-item{padding:1rem 1.5rem;border-bottom:1px solid #f8fafc;transition:all .2s}
+.config-item:hover{background:#f8fafc}
+.config-key{font-family:monospace;font-size:.85rem;color:#2563eb;font-weight:600}
+.badge-categoria{padding:.25rem .75rem;border-radius:20px;font-size:.75rem;font-weight:600}
+.btn-action{padding:.375rem .75rem;border-radius:8px;font-size:.85rem;font-weight:500}
+.toast-container{position:fixed;top:20px;right:20px;z-index:1050}
+.toast-custom{background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15);padding:1rem 1.5rem;margin-bottom:.5rem;border-left:4px solid #10b981;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(100px)}to{opacity:1;transform:translateX(0)}}
+.filter-btn{padding:.5rem 1rem;border-radius:20px;border:2px solid #e2e8f0;background:#fff;font-size:.85rem;font-weight:500;cursor:pointer;transition:all .2s;margin-right:.5rem;margin-bottom:.5rem}
+.filter-btn:hover,.filter-btn.active{border-color:#2563eb;background:#eff6ff;color:#2563eb}
+.category-header{background:#f8fafc;padding:1rem 1.5rem;border-bottom:2px solid #e2e8f0;font-weight:700;color:#1e293b}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mb-4">BrevettIAmo - Pannello Admin Configurazione Prezzi</h1>
-        
-        <div id="status" class="alert alert-info">
-            Connessione a Supabase in corso...
-        </div>
-        
-        <div id="error-container"></div>
-        
-        <div id="content" style="display:none;">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Configurazione Prezzi (44 variabili)</h5>
-                    <button class="btn btn-primary btn-sm" onclick="salvaTutti()">Salva Tutti</button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Chiave</th>
-                                    <th>Valore</th>
-                                    <th>Tipo</th>
-                                    <th>Descrizione</th>
-                                    <th>Azione</th>
-                                </tr>
-                            </thead>
-                            <tbody id="config-table"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="sidebar">
+<div class="sidebar-brand"><i class="bi bi-shield-check me-2"></i>BrevettIAmo</div>
+<div class="p-3">
+<a href="admin.html" class="sidebar-link"><i class="bi bi-grid"></i>Dashboard</a>
+<a href="admin-servizi.html" class="sidebar-link"><i class="bi bi-box-seam"></i>Servizi</a>
+<a href="admin-config.html" class="sidebar-link active"><i class="bi bi-sliders"></i>Config</a>
+<a href="admin-pratiche.html" class="sidebar-link"><i class="bi bi-file-earmark-text"></i>Pratiche UIBM</a>
+<a href="admin-utenti.html" class="sidebar-link"><i class="bi bi-people"></i>Utenti</a>
+<a href="index.html" class="sidebar-link"><i class="bi bi-house"></i>Sito</a>
+<a href="#" onclick="logout()" class="sidebar-link text-danger"><i class="bi bi-box-arrow-right"></i>Esci</a>
+</div>
+</div>
+<div class="main-content">
+<div class="d-flex justify-content-between align-items-center mb-4">
+<div>
+<h2 class="fw-bold mb-1">Configurazione</h2>
+<p class="text-muted mb-0">Gestisci prezzi e impostazioni</p>
+</div>
+<div class="d-flex gap-2">
+<button class="btn btn-outline-primary btn-sm" onclick="exportConfig()"><i class="bi bi-download me-1"></i>Esporta</button>
+<button class="btn btn-outline-primary btn-sm" onclick="importConfig()"><i class="bi bi-upload me-1"></i>Importa</button>
+<button class="btn btn-primary btn-sm" onclick="aggiungiVariabile()"><i class="bi bi-plus-lg me-1"></i>Nuova</button>
+</div>
+</div>
+<div class="row g-4 mb-4">
+<div class="col-md-3"><div class="card-admin p-4"><div class="d-flex align-items-center"><div class="rounded-3 p-3 bg-primary bg-opacity-10 me-3"><i class="bi bi-currency-euro fs-4 text-primary"></i></div><div><div class="text-muted small">Pacchetti</div><div class="fs-4 fw-bold" id="statPacchetti">0</div></div></div></div></div>
+<div class="col-md-3"><div class="card-admin p-4"><div class="d-flex align-items-center"><div class="rounded-3 p-3 bg-success bg-opacity-10 me-3"><i class="bi bi-check-circle fs-4 text-success"></i></div><div><div class="text-muted small">Servizi</div><div class="fs-4 fw-bold" id="statServizi">0</div></div></div></div></div>
+<div class="col-md-3"><div class="card-admin p-4"><div class="d-flex align-items-center"><div class="rounded-3 p-3 bg-warning bg-opacity-10 me-3"><i class="bi bi-exclamation-triangle fs-4 text-warning"></i></div><div><div class="text-muted small">Variabili</div><div class="fs-4 fw-bold" id="statVariabili">0</div></div></div></div></div>
+<div class="col-md-3"><div class="card-admin p-4"><div class="d-flex align-items-center"><div class="rounded-3 p-3 bg-danger bg-opacity-10 me-3"><i class="bi bi-x-circle fs-4 text-danger"></i></div><div><div class="text-muted small">Sospesi</div><div class="fs-4 fw-bold" id="statSospesi">0</div></div></div></div></div>
+</div>
+<div class="card-admin mb-4">
+<div class="p-3 border-bottom">
+<h6 class="fw-bold mb-3">Filtri per categoria</h6>
+<div id="filtriContainer">
+<button class="filter-btn active" onclick="filtra('tutte')">Tutte</button>
+<button class="filter-btn" onclick="filtra('pacchetti')">Pacchetti</button>
+<button class="filter-btn" onclick="filtra('servizi')">Servizi</button>
+<button class="filter-btn" onclick="filtra('generale')">Generale</button>
+<button class="filter-btn" onclick="filtra('sistema')">Sistema</button>
+<button class="filter-btn" onclick="filtra('integrazioni')">Integrazioni</button>
+<button class="filter-btn" onclick="filtra('notifiche')">Notifiche</button>
+<button class="filter-btn" onclick="filtra('seo')">SEO</button>
+<button class="filter-btn" onclick="filtra('ai')">AI</button>
+</div>
+</div>
+</div>
+<div class="card-admin">
+<div class="p-3 border-bottom d-flex justify-content-between"><h5 class="mb-0"><i class="bi bi-gear me-2"></i>Configurazioni</h5><button class="btn btn-sm btn-outline-secondary" onclick="caricaConfig()"><i class="bi bi-arrow-clockwise"></i></button></div>
+<div id="configContainer"></div>
+</div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+<div class="modal fade" id="modalModifica" tabindex="-1">
+<div class="modal-dialog"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title fw-bold">Modifica</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+<div class="modal-body">
+<input type="hidden" id="editId">
+<div class="mb-3"><label class="form-label fw-semibold">Chiave</label><input type="text" class="form-control" id="editChiave" readonly></div>
+<div class="mb-3"><label class="form-label fw-semibold">Valore</label><input type="text" class="form-control" id="editValore"></div>
+<div class="mb-3"><label class="form-label fw-semibold">Descrizione</label><textarea class="form-control" id="editDescrizione" rows="2"></textarea></div>
+</div>
+<div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annulla</button><button type="button" class="btn btn-primary" onclick="salvaModifica()">Salva</button></div>
+</div></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const sbClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let configData=[],filtro='tutte';
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
-    <script>
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        
-        let sbClient = null;
-        let configData = [];
-        
-        async function init() {
-            try {
-                sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                await caricaConfig();
-            } catch (e) {
-                mostraErrore('Errore connessione Supabase: ' + e.message);
-            }
-        }
-        
-        async function caricaConfig() {
-            try {
-                const { data, error } = await sbClient
-                    .from('config_prezzi')
-                    .select('*')
-                    .order('chiave');
-                
-                if (error) {
-                    mostraErrore('Errore query: ' + error.message);
-                    return;
-                }
-                
-                configData = data || [];
-                mostraConfig();
-                document.getElementById('status').className = 'alert alert-success';
-                document.getElementById('status').textContent = 'Connesso! ' + configData.length + ' variabili caricate.';
-                document.getElementById('content').style.display = 'block';
-            } catch (e) {
-                mostraErrore('Errore caricamento: ' + e.message);
-            }
-        }
-        
-        function mostraConfig() {
-            const tbody = document.getElementById('config-table');
-            tbody.innerHTML = '';
-            
-            configData.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><code>${item.chiave}</code></td>
-                    <td><input type="text" class="form-control price-input" id="val-${item.id}" value="${item.valore}"></td>
-                    <td><span class="badge bg-secondary">${item.tipo || 'text'}</span></td>
-                    <td>${item.descrizione || '-'}</td>
-                    <td><button class="btn btn-sm btn-success" onclick="salvaSingolo('${item.id}')">Salva</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        
-        async function salvaSingolo(id) {
-            const valore = document.getElementById('val-' + id).value;
-            try {
-                const { error } = await sbClient
-                    .from('config_prezzi')
-                    .update({ valore: valore })
-                    .eq('id', id);
-                
-                if (error) {
-                    alert('Errore: ' + error.message);
-                } else {
-                    alert('Salvato!');
-                }
-            } catch (e) {
-                alert('Errore: ' + e.message);
-            }
-        }
-        
-        async function salvaTutti() {
-            for (let item of configData) {
-                const valore = document.getElementById('val-' + item.id).value;
-                try {
-                    await sbClient.from('config_prezzi').update({ valore: valore }).eq('id', item.id);
-                } catch (e) {
-                    console.error('Errore su ' + item.chiave + ': ' + e.message);
-                }
-            }
-            alert('Tutti i valori salvati!');
-        }
-        
-        function mostraErrore(msg) {
-            document.getElementById('status').className = 'alert alert-danger';
-            document.getElementById('status').textContent = msg;
-            const div = document.getElementById('error-container');
-            div.innerHTML = '<div class="alert alert-danger error-alert">' + msg + '</div>';
-        }
-        
-        init();
-    </script>
+document.addEventListener('DOMContentLoaded',async()=>{
+  try{
+    const{data:{session}}=await sbClient.auth.getSession();
+    if(!session){window.location.href='index.html';return}
+    const{data:profile}=await sbClient.from('profiles').select('role').eq('id',session.user.id).single();
+    if(profile?.role!=='admin'){window.location.href='dashboard.html';return}
+    await caricaConfig()
+  }catch(e){
+    console.error('Errore init:',e);
+    mostraToast('Errore caricamento: '+e.message,'danger')
+  }
+});
+
+async function caricaConfig(){
+  try{
+    const{data,error}=await sbClient.from('config_prezzi').select('*').order('categoria').order('chiave');
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    configData=data||[];
+    aggiornaStats();
+    renderConfig()
+  }catch(e){
+    console.error('Errore caricaConfig:',e);
+    mostraToast('Errore caricamento dati','danger')
+  }
+}
+
+function aggiornaStats(){
+  const p=configData.filter(c=>c.categoria==='pacchetti'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+  const s=configData.filter(c=>c.categoria==='servizi'&&c.chiave.includes('_attivo')&&c.valore==='true').length;
+  const x=configData.filter(c=>c.chiave.includes('_attivo')&&c.valore==='false').length;
+  document.getElementById('statPacchetti').textContent=p;
+  document.getElementById('statServizi').textContent=s;
+  document.getElementById('statVariabili').textContent=configData.length;
+  document.getElementById('statSospesi').textContent=x
+}
+
+function renderConfig(){
+  let f=configData;
+  if(filtro!=='tutte')f=f.filter(c=>c.categoria===filtro);
+  const g=f.reduce((a,i)=>{if(!a[i.categoria])a[i.categoria]=[];a[i.categoria].push(i);return a},{});
+  const c=document.getElementById('configContainer');
+  if(!Object.keys(g).length){
+    c.innerHTML='<div class="p-5 text-center text-muted"><i class="bi bi-inbox fs-1 mb-3"></i><p>Nessuna variabile in questa categoria</p></div>';
+    return
+  }
+  c.innerHTML=Object.entries(g).map(([cat,items])=>`
+    <div class="category-header">
+      <span class="badge bg-primary">${cat.toUpperCase()}</span>
+      <span class="ms-2 text-muted">${items.length} variabili</span>
+    </div>
+    ${items.map(i=>`
+      <div class="config-item">
+        <div class="row align-items-center">
+          <div class="col-md-4">
+            <div class="config-key">${i.chiave}</div>
+            <div class="small text-muted">${i.descrizione||''}</div>
+          </div>
+          <div class="col-md-3">
+            <span class="fw-bold">${i.valore}</span>
+          </div>
+          <div class="col-md-2">
+            <span class="badge bg-light text-dark border">${i.tipo}</span>
+          </div>
+          <div class="col-md-3 text-end">
+            <button class="btn btn-sm btn-outline-primary" onclick="modifica('${i.id}')"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-outline-danger ms-1" onclick="elimina('${i.id}')"><i class="bi bi-trash"></i></button>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  `).join('')
+}
+
+function filtra(c){
+  filtro=c;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderConfig()
+}
+
+function modifica(id){
+  const i=configData.find(c=>c.id===id);
+  if(!i)return;
+  document.getElementById('editId').value=i.id;
+  document.getElementById('editChiave').value=i.chiave;
+  document.getElementById('editValore').value=i.valore;
+  document.getElementById('editDescrizione').value=i.descrizione||'';
+  new bootstrap.Modal(document.getElementById('modalModifica')).show()
+}
+
+async function salvaModifica(){
+  try{
+    const id=document.getElementById('editId').value;
+    const valore=document.getElementById('editValore').value;
+    const descrizione=document.getElementById('editDescrizione').value;
+    const{error}=await sbClient.from('config_prezzi').update({valore,descrizione,updated_at:new Date().toISOString()}).eq('id',id);
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    bootstrap.Modal.getInstance(document.getElementById('modalModifica')).hide();
+    mostraToast('Aggiornato!','success');
+    await caricaConfig()
+  }catch(e){
+    mostraToast('Errore salvataggio','danger')
+  }
+}
+
+async function elimina(id){
+  if(!confirm('Eliminare questa variabile?'))return;
+  try{
+    const{error}=await sbClient.from('config_prezzi').delete().eq('id',id);
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    mostraToast('Eliminato','success');
+    await caricaConfig()
+  }catch(e){
+    mostraToast('Errore eliminazione','danger')
+  }
+}
+
+function aggiungiVariabile(){
+  const chiave=prompt('Nome chiave (es. servizio_nuovo_prezzo):');
+  if(!chiave)return;
+  const valore=prompt('Valore:');
+  if(!valore)return;
+  const categoria=prompt('Categoria (pacchetti/servizi/generale/sistema/integrazioni/notifiche/seo/ai):','generale');
+  sbClient.from('config_prezzi').insert([{chiave,valore,tipo:'string',categoria,descrizione:'',visibile_admin:true,modificabile_admin:true}]).then(async({error})=>{
+    if(error){mostraToast('Errore: '+error.message,'danger');return}
+    mostraToast('Creata!','success');
+    await caricaConfig()
+  }).catch(e=>mostraToast('Errore: '+e.message,'danger'))
+}
+
+function exportConfig(){
+  const d=configData.map(c=>({chiave:c.chiave,valore:c.valore,tipo:c.tipo,descrizione:c.descrizione,categoria:c.categoria}));
+  const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const u=URL.createObjectURL(b);
+  const a=document.createElement('a');
+  a.href=u;a.download=`config-${new Date().toISOString().split('T')[0]}.json`;a.click();
+  URL.revokeObjectURL(u);
+  mostraToast('Esportato','success')
+}
+
+function importConfig(){
+  const i=document.createElement('input');
+  i.type='file';i.accept='.json';
+  i.onchange=async(e)=>{
+    const f=e.target.files[0];if(!f)return;
+    try{
+      const t=await f.text();const d=JSON.parse(t);
+      let n=0;
+      for(const x of d){
+        if(!x.chiave||!x.valore)continue;
+        const{error}=await sbClient.from('config_prezzi').upsert({chiave:x.chiave,valore:x.valore,tipo:x.tipo||'string',descrizione:x.descrizione||'',categoria:x.categoria||'generale'},{onConflict:'chiave'});
+        if(!error)n++
+      }
+      mostraToast(`${n} importati`,'success');
+      await caricaConfig()
+    }catch(err){mostraToast('Errore: '+err.message,'danger')}
+  };
+  i.click()
+}
+
+function mostraToast(m,t='success'){
+  const c=document.getElementById('toastContainer');
+  const d=document.createElement('div');
+  d.className='toast-custom';
+  d.style.borderLeftColor=t==='danger'?'#ef4444':'#10b981';
+  d.innerHTML=`<div class="d-flex align-items-center"><i class="bi ${t==='danger'?'bi-x-circle':'bi-check-circle'} me-2"></i><span>${m}</span></div>`;
+  c.appendChild(d);
+  setTimeout(()=>d.remove(),5000)
+}
+
+async function logout(){
+  await sbClient.auth.signOut();
+  window.location.href='index.html'
+}
+</script>
 </body>
 </html>
