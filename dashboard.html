@@ -451,6 +451,15 @@ const { data: { session } } = await supabaseClient.auth.getSession();
   }
   return session.user.id;
 }  
+  async function logout() {
+  try {
+    await supabaseClient.auth.signOut();
+    window.location.href = 'login.html';
+  } catch (e) {
+    console.error('Errore logout:', e);
+    window.location.href = 'login.html';
+  }
+}
 </script>
 
 </body>
