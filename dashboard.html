@@ -114,8 +114,10 @@ try {
 if (window.supabase && window.supabase.createClient) {
 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log('Supabase ok');
-checkAuth(); // AGGIUNGI QUESTA RIGA    
-caricaPratiche();
+// SOSTITUISCI riga 117-118 con:
+checkAuth().then(userId => {
+  if (userId) caricaPratiche(userId);
+});;
 return true;
 } else {
 showError('Errore connessione server');
@@ -129,11 +131,11 @@ return false;
 
 setTimeout(initSupabase, 500);
 
-async function caricaPratiche() {
+async function caricaPratiche(userId) {
 if (!supabaseClient) return;
 try {
 console.log('Carico pratiche...');
-var result = await supabaseClient.from('pratiche').select('*').order('created_at', {ascending:false});
+var result = await supabaseClient.from('pratiche').select('*').eq('user_id', userId).order('created_at', {ascending:false});
 if (result.error) throw result.error;
 tuttePratiche = result.data || [];
 console.log('Pratiche caricate: ' + tuttePratiche.length);
