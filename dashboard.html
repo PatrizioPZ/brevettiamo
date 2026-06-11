@@ -45,6 +45,7 @@ tr:hover { background:#f8f9fa; }
 @media (max-width:768px) { .stats { grid-template-columns:repeat(2,1fr); } }
 @media (max-width:480px) { .stats { grid-template-columns:1fr; } }
 </style>
+  <link rel="stylesheet" href="chatbot.css">
 </head>
 <body>
 <<nav class="navbar">
@@ -461,6 +462,6 @@ const { data: { session } } = await supabaseClient.auth.getSession();
   }
 }
 </script>
-
+<script src="chatbot.js"></script>
 </body>
 </html>
