@@ -1,8 +1,3 @@
-// ============================================
-// CHATBOT.JS - BREVVETTIAMO (VERSIONE GEMINI)
-// Chiama backend Render per risposte AI intelligenti
-// ============================================
-
 class Chatbot {
   constructor() {
     this.isOpen = false;
@@ -94,34 +89,26 @@ class Chatbot {
     
     if (!message) return;
 
-    // Aggiungi messaggio utente
     this.addMessage(message, 'user');
     input.value = '';
-    
-    // Mostra indicatore typing
     this.showTyping(true);
 
     try {
-      // Chiama backend Render
       const response = await fetch(`${this.backendUrl}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: message,
-          history: this.messages.slice(-10) // Ultimi 10 messaggi per contesto
+          history: this.messages.slice(-10)
         })
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error('HTTP error! status: ' + response.status);
       }
 
       const data = await response.json();
-      
-      // Aggiungi risposta bot
       this.addMessage(data.reply, 'bot');
-      
-      // Salva storico
       this.saveChatHistory();
 
     } catch (error) {
@@ -138,9 +125,8 @@ class Chatbot {
   addMessage(text, sender) {
     const messagesContainer = document.getElementById('chatbot-messages');
     const messageDiv = document.createElement('div');
-    messageDiv.className = `chatbot-message ${sender}-message`;
+    messageDiv.className = 'chatbot-message ' + sender + '-message';
     
-    // Formatta link e markdown base
     const formattedText = this.formatMessage(text);
     
     messageDiv.innerHTML = `
@@ -151,24 +137,14 @@ class Chatbot {
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     
-    // Salva in array messaggi
     this.messages.push({ role: sender, text: text, time: new Date().toISOString() });
   }
 
   formatMessage(text) {
-    // Converti URL in link cliccabili
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    text = text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener">$1</a>');
-    
-    // Converti **testo** in grassetto
+    text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
     text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
-    // Converti *testo* in corsivo
     text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    
-    // Converti newline in <br>
     text = text.replace(/\n/g, '<br>');
-    
     return text;
   }
 
@@ -189,7 +165,6 @@ class Chatbot {
   }
 
   saveChatHistory() {
-    // Salva solo ultimi 20 messaggi in localStorage
     const recentMessages = this.messages.slice(-20);
     localStorage.setItem('brevettiamo_chat_history', JSON.stringify(recentMessages));
   }
@@ -199,7 +174,6 @@ class Chatbot {
     if (saved) {
       try {
         const history = JSON.parse(saved);
-        // Non ricarichiamo i messaggi nel DOM per pulizia, ma teniamo lo storico per contesto
         this.messages = history;
       } catch (e) {
         console.error('Error loading chat history:', e);
@@ -208,7 +182,6 @@ class Chatbot {
   }
 }
 
-// Inizializza chatbot quando DOM e pronto
 document.addEventListener('DOMContentLoaded', () => {
   window.brevettiamoChatbot = new Chatbot();
 });
