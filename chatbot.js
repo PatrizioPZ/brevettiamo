@@ -100,7 +100,7 @@ class Chatbot {
 
     try {
       // CHIAMA GEMINI DIRETTAMENTE
-  ,const response = await fetch(
+  const response = await fetch(
   `https://corsproxy.io/?https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.geminiApiKey}`,
         {
           method: 'POST',
