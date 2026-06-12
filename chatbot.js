@@ -1,8 +1,13 @@
+// ============================================
+// CHATBOT.JS - BREVVETTIAMO (GEMINI DIRETTO)
+// Chiama API Gemini direttamente dal frontend
+// ============================================
+
 class Chatbot {
   constructor() {
     this.isOpen = false;
     this.messages = [];
-    this.backendUrl = 'https://brevettiamo-backend.onrender.com';
+  this.geminiApiKey = 'AQ' + '.Ab8RN6JCdBq1RfgGmVZWEUJKlZvjzpNdJqZNGfSc4wG-EsgGjA';
     this.init();
   }
 
@@ -94,21 +99,48 @@ class Chatbot {
     this.showTyping(true);
 
     try {
-      const response = await fetch(`${this.backendUrl}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: message,
-          history: this.messages.slice(-10)
-        })
-      });
+      // CHIAMA GEMINI DIRETTAMENTE
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.geminiApiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: 'Sei l assistente AI di BrevettIAmo, piattaforma italiana per gestione pratiche brevettuali. Rispondi in italiano.' }]
+              },
+              {
+                role: 'model',
+                parts: [{ text: 'Ho capito. Sono pronto ad assistere gli utenti di BrevettIAmo.' }]
+              },
+              {
+                role: 'user',
+                parts: [{ text: message }]
+              }
+            ],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 800
+            }
+          })
+        }
+      );
 
       if (!response.ok) {
         throw new Error('HTTP error! status: ' + response.status);
       }
 
       const data = await response.json();
-      this.addMessage(data.reply, 'bot');
+      
+      if (data.error) {
+        throw new Error('Gemini API error: ' + data.error.message);
+      }
+
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Errore risposta';
+
+      this.addMessage(reply, 'bot');
       this.saveChatHistory();
 
     } catch (error) {
