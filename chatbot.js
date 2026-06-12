@@ -1,250 +1,214 @@
-// CHATBOT BREVETTIAMO - JavaScript
-(function(){
-  const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
-  const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-  let sbClient=null;
-  let userId=null;
-  let chatOpen=false;
-  let unreadCount=0;
+// ============================================
+// CHATBOT.JS - BREVVETTIAMO (VERSIONE GEMINI)
+// Chiama backend Render per risposte AI intelligenti
+// ============================================
 
-  // Inizializza
-  function init(){
-    if(typeof supabase!=='undefined'){
-      sbClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-    }
-    createChatHTML();
-    loadUser();
-    showWelcome();
+class Chatbot {
+  constructor() {
+    this.isOpen = false;
+    this.messages = [];
+    this.backendUrl = 'https://brevettiamo-backend.onrender.com';
+    this.init();
   }
 
-  async function loadUser(){
-    if(!sbClient)return;
-    try{
-      const{data:{session}}=await sbClient.auth.getSession();
-      if(session){
-        userId=session.user.id;
-        loadHistory();
-      }
-    }catch(e){console.error('Errore auth:',e)}
+  init() {
+    this.createChatbotHTML();
+    this.attachEventListeners();
+    this.loadChatHistory();
   }
 
-  async function loadHistory(){
-    if(!userId||!sbClient)return;
-    try{
-      const{data}=await sbClient.from('chat_messages').select('*').eq('user_id',userId).order('created_at',{ascending:true}).limit(50);
-      if(data&&data.length>0){
-        const msgs=document.getElementById('chatMessages');
-        msgs.innerHTML='';
-        data.forEach(m=>addMessage(m.content,m.is_user,false,false));
-      }
-    }catch(e){console.error('Errore storico:',e)}
-  }
-
-  function createChatHTML(){
-    if(document.getElementById('chatWidget'))return;
-
-    const div=document.createElement('div');
-    div.id='chatWidget';
-    div.className='chat-widget';
-    div.innerHTML=`
-      <button class="chat-toggle" onclick="window.brevettiamoChat.toggle()" id="chatToggle">
-        <i class="bi bi-chat-dots"></i>
-        <span class="chat-badge" id="chatBadge" style="display:none">0</span>
-      </button>
-      <div class="chat-window" id="chatWindow">
-        <div class="chat-header">
-          <div>
-            <h6><i class="bi bi-robot me-2"></i>BrevettIAmo AI</h6>
-            <div class="status"><span class="status-dot"></span>Online</div>
+  createChatbotHTML() {
+    const chatbotHTML = `
+      <div id="chatbot-container" class="chatbot-container">
+        <div class="chatbot-header">
+          <span class="chatbot-title">Assistente BrevettIAmo</span>
+          <button id="chatbot-close" class="chatbot-close">&times;</button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages">
+          <div class="chatbot-message bot-message">
+            <div class="message-content">
+              Ciao! Sono l'assistente AI di BrevettIAmo. Come posso aiutarti con i tuoi brevetti o la piattaforma?
+            </div>
+            <div class="message-time">${this.getCurrentTime()}</div>
           </div>
-          <button class="btn-close" onclick="window.brevettiamoChat.toggle()"><i class="bi bi-x-lg"></i></button>
         </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="quick-replies" id="quickReplies">
-          <button class="quick-reply" onclick="window.brevettiamoChat.quickReply('Quanto costa un brevetto?')">Prezzi</button>
-          <button class="quick-reply" onclick="window.brevettiamoChat.quickReply('Come funziona?')">Procedura</button>
-          <button class="quick-reply" onclick="window.brevettiamoChat.quickReply('Servizi disponibili')">Servizi</button>
-          <button class="quick-reply" onclick="window.brevettiamoChat.quickReply('Tempi di consegna')">Tempi</button>
-        </div>
-        <div class="chat-input">
-          <input type="text" id="chatInput" placeholder="Scrivi un messaggio..." onkeypress="if(event.key==='Enter')window.brevettiamoChat.send()">
-          <button onclick="window.brevettiamoChat.send()" id="sendBtn"><i class="bi bi-send"></i></button>
+        <div class="chatbot-input-area">
+          <div id="chatbot-typing" class="chatbot-typing hidden">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="chatbot-input-wrapper">
+            <input type="text" id="chatbot-input" placeholder="Scrivi un messaggio..." maxlength="500">
+            <button id="chatbot-send" class="chatbot-send-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
+      <button id="chatbot-toggle" class="chatbot-toggle">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
     `;
+
+    const div = document.createElement('div');
+    div.innerHTML = chatbotHTML;
     document.body.appendChild(div);
   }
 
-  function showWelcome(){
-    const msgs=document.getElementById('chatMessages');
-    if(!msgs)return;
-    msgs.innerHTML=`
-      <div class="welcome-msg">
-        <i class="bi bi-shield-check"></i>
-        <h5>Ciao! Sono l'assistente AI di BrevettIAmo</h5>
-        <p>Posso aiutarti con brevetti, marchi, design e ricerche anteriorita.<br>Come posso esserti utile oggi?</p>
-      </div>
-    `;
+  attachEventListeners() {
+    const toggle = document.getElementById('chatbot-toggle');
+    const close = document.getElementById('chatbot-close');
+    const send = document.getElementById('chatbot-send');
+    const input = document.getElementById('chatbot-input');
+
+    toggle.addEventListener('click', () => this.toggleChat());
+    close.addEventListener('click', () => this.toggleChat());
+    send.addEventListener('click', () => this.sendMessage());
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') this.sendMessage();
+    });
   }
 
-  function toggle(){
-    const win=document.getElementById('chatWindow');
-    const btn=document.getElementById('chatToggle');
-    if(!win)return;
-    chatOpen=!chatOpen;
-    win.classList.toggle('active',chatOpen);
-    if(chatOpen){
-      btn.innerHTML='<i class="bi bi-x-lg"></i>'+(unreadCount>0?'<span class="chat-badge" id="chatBadge">'+unreadCount+'</span>':'');
-      unreadCount=0;
-      updateBadge();
-      setTimeout(()=>document.getElementById('chatInput')?.focus(),100);
-    }else{
-      btn.innerHTML='<i class="bi bi-chat-dots"></i>'+(unreadCount>0?'<span class="chat-badge" id="chatBadge">'+unreadCount+'</span>':'');
+  toggleChat() {
+    const container = document.getElementById('chatbot-container');
+    const toggle = document.getElementById('chatbot-toggle');
+    this.isOpen = !this.isOpen;
+    
+    if (this.isOpen) {
+      container.classList.add('open');
+      toggle.classList.add('hidden');
+      document.getElementById('chatbot-input').focus();
+    } else {
+      container.classList.remove('open');
+      toggle.classList.remove('hidden');
     }
   }
 
-  function updateBadge(){
-    const badge=document.getElementById('chatBadge');
-    if(badge){
-      badge.style.display=unreadCount>0?'flex':'none';
-      badge.textContent=unreadCount;
-    }
-  }
+  async sendMessage() {
+    const input = document.getElementById('chatbot-input');
+    const message = input.value.trim();
+    
+    if (!message) return;
 
-  function addMessage(text,isUser,save=true,animate=true){
-    const msgs=document.getElementById('chatMessages');
-    if(!msgs)return;
-    const div=document.createElement('div');
-    div.className='message '+(isUser?'user':'bot')+(animate?'':' style="animation:none"');
-    const time=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
-    div.innerHTML=text+'<div class="message-time">'+time+'</div>';
-    msgs.appendChild(div);
-    msgs.scrollTop=msgs.scrollHeight;
-    if(save&&!isUser&&!chatOpen){
-      unreadCount++;
-      updateBadge();
-    }
-  }
+    // Aggiungi messaggio utente
+    this.addMessage(message, 'user');
+    input.value = '';
+    
+    // Mostra indicatore typing
+    this.showTyping(true);
 
-  function showTyping(){
-    const msgs=document.getElementById('chatMessages');
-    if(!msgs)return;
-    const div=document.createElement('div');
-    div.className='message bot typing';
-    div.id='typingIndicator';
-    div.innerHTML='<i class="bi bi-three-dots"></i> Sto scrivendo...';
-    msgs.appendChild(div);
-    msgs.scrollTop=msgs.scrollHeight;
-  }
+    try {
+      // Chiama backend Render
+      const response = await fetch(`${this.backendUrl}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: message,
+          history: this.messages.slice(-10) // Ultimi 10 messaggi per contesto
+        })
+      });
 
-  function hideTyping(){
-    const el=document.getElementById('typingIndicator');
-    if(el)el.remove();
-  }
-
-  function quickReply(text){
-    const input=document.getElementById('chatInput');
-    if(input)input.value=text;
-    send();
-  }
-
-  async function send(){
-    const input=document.getElementById('chatInput');
-    const btn=document.getElementById('sendBtn');
-    if(!input)return;
-    const text=input.value.trim();
-    if(!text)return;
-
-    input.value='';
-    btn.disabled=true;
-    addMessage(text,true);
-    showTyping();
-
-    try{
-      const response=await getAIResponse(text);
-      hideTyping();
-      addMessage(response,false);
-
-      if(userId&&sbClient){
-        await sbClient.from('chat_messages').insert([
-          {user_id:userId,content:text,is_user:true},
-          {user_id:userId,content:response,is_user:false}
-        ]);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    }catch(e){
-      hideTyping();
-      addMessage('Mi dispiace, ho avuto un problema tecnico. Riprova tra poco.',false);
-      console.error('Errore chat:',e);
-    }
 
-    btn.disabled=false;
-    input.focus();
+      const data = await response.json();
+      
+      // Aggiungi risposta bot
+      this.addMessage(data.reply, 'bot');
+      
+      // Salva storico
+      this.saveChatHistory();
+
+    } catch (error) {
+      console.error('Chatbot error:', error);
+      this.addMessage(
+        'Mi dispiace, sto avendo problemi di connessione. Riprova tra qualche istante o contatta il supporto.',
+        'bot'
+      );
+    } finally {
+      this.showTyping(false);
+    }
   }
 
-  async function getAIResponse(userMessage){
-    const lower=userMessage.toLowerCase();
-
-    if(lower.includes('prezz')||lower.includes('cost')||lower.includes('quanto')){
-      return 'I prezzi partono da 29 EUR per il pacchetto Starter. I servizi singoli partono da 19 EUR. Visita la pagina <a href="prezzi.html" style="color:#2563eb;text-decoration:underline;">Prezzi</a> per il listino completo.';
-    }
-    if(lower.includes('procedur')||lower.includes('come funziona')||lower.includes('funziona')){
-      return 'E semplice: 1) Scegli il servizio, 2) Descrivi la tua invenzione, 3) L AI prepara i documenti, 4) Tu li revisioni, 5) Depositi tramite UIBM o con nostra assistenza. Tempo medio: 24-48 ore per la preparazione.';
-    }
-    if(lower.includes('serviz')||lower.includes('offert')){
-      return 'Offriamo: Ricerca Anteriorita (19 EUR), Redazione Descrizione Tecnica (49 EUR), Deposito Brevetto UIBM (99 EUR), Ricerca Marchi (29 EUR), Design e Modelli (39 EUR), Consulenza Strategica (59 EUR). Tutti i servizi sono AI-assisted con revisione umana.';
-    }
-    if(lower.includes('temp')||lower.includes('quando')||lower.includes('veloc')){
-      return 'Tempi standard: Ricerca anteriorita 2-4 ore, Redazione documenti 24-48 ore, Deposito UIBM 1-3 giorni lavorativi. I tempi possono variare in base alla complessita della pratica.';
-    }
-    if(lower.includes('brevett')||lower.includes('invenzion')){
-      return 'Un brevetto protegge la tua invenzione per 20 anni. Offriamo assistenza completa: dalla ricerca anteriorita alla redazione della descrizione tecnica fino al deposito UIBM. Il pacchetto completo parte da 99 EUR.';
-    }
-    if(lower.includes('marchio')||lower.includes('logo')||lower.includes('brand')){
-      return 'La ricerca marchi verifica se il tuo nome/logo e gia registrato. Costa 29 EUR e include report dettagliato. Il deposito marchio UIBM e incluso nel pacchetto Pro (99 EUR).';
-    }
-    if(lower.includes('design')||lower.includes('modello')){
-      return 'Il design industriale protegge l aspetto estetico di un prodotto per 25 anni. Offriamo ricerca e deposito a partire da 39 EUR.';
-    }
-    if(lower.includes('ai')||lower.includes('intelligenza')||lower.includes('artificiale')){
-      return 'Usiamo AI avanzata per analizzare milioni di documenti brevettuali in pochi minuti. L AI redige bozze professionali che vengono poi revisionate da esperti. Qualita garantita: 80% AI, 20% umano.';
-    }
-    if(lower.includes('uman')||lower.includes('espert')||lower.includes('revis')){
-      return 'Ogni documento AI viene revisionato da un esperto brevettuale prima della consegna. Non sei soddisfatto? Offriamo 2 revisioni gratuite incluse nel prezzo.';
-    }
-    if(lower.includes('pagament')||lower.includes('carta')||lower.includes('paypal')){
-      return 'Accettiamo carte di credito, PayPal, bonifico bancario. I pagamenti sono gestiti in modo sicuro tramite LemonSqueezy. Fattura sempre inclusa.';
-    }
-    if(lower.includes('nd')||lower.includes('riservatezz')||lower.includes('privacy')){
-      return 'La riservatezza e garantita da NDA digitale. I tuoi dati sono criptati e non condivisi con terzi. Leggi la nostra <a href="modulo_privacy_nda.html" style="color:#2563eb;text-decoration:underline;">Privacy Policy e NDA</a>.';
-    }
-    if(lower.includes('ciao')||lower.includes('salve')||lower.includes('buongiorno')){
-      return 'Ciao! Sono l assistente AI di BrevettIAmo. Come posso aiutarti oggi? Puoi chiedermi informazioni su prezzi, servizi, tempi o procedura.';
-    }
-    if(lower.includes('grazi')||lower.includes('thank')){
-      return 'Prego! Se hai altre domande, sono qui. Oppure puoi creare una pratica direttamente dal <a href="dashboard.html" style="color:#2563eb;text-decoration:underline;">Dashboard</a>.';
-    }
-    if(lower.includes('login')||lower.includes('acced')||lower.includes('registr')){
-      return 'Puoi accedere con Google, Apple o email/password. Clicca su Accedi in alto a destra. Se non hai un account, la registrazione e gratuita e richiede solo 30 secondi.';
-    }
-    if(lower.includes('portale')||lower.includes('bacheca')||lower.includes('annunci')){
-      return 'Stiamo sviluppando un portale per brevettatori e studi legali con bacheca annunci e offerta servizi. Sarai aggiornato non appena sara disponibile!';
-    }
-
-    return 'Interessante domanda! Per una risposta piu dettagliata ti consiglio di: 1) Consultare la <a href="index.html" style="color:#2563eb;text-decoration:underline;">homepage</a> per i servizi, 2) Visitare la pagina <a href="prezzi.html" style="color:#2563eb;text-decoration:underline;">Prezzi</a>, o 3) Creare una pratica dal <a href="dashboard.html" style="color:#2563eb;text-decoration:underline;">Dashboard</a> per assistenza personalizzata.';
+  addMessage(text, sender) {
+    const messagesContainer = document.getElementById('chatbot-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chatbot-message ${sender}-message`;
+    
+    // Formatta link e markdown base
+    const formattedText = this.formatMessage(text);
+    
+    messageDiv.innerHTML = `
+      <div class="message-content">${formattedText}</div>
+      <div class="message-time">${this.getCurrentTime()}</div>
+    `;
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    // Salva in array messaggi
+    this.messages.push({ role: sender, text: text, time: new Date().toISOString() });
   }
 
-  // Espone funzioni globali
-  window.brevettiamoChat={
-    toggle:toggle,
-    send:send,
-    quickReply:quickReply,
-    init:init
-  };
-
-  // Avvia quando DOM pronto
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',init);
-  }else{
-    init();
+  formatMessage(text) {
+    // Converti URL in link cliccabili
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    text = text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    
+    // Converti **testo** in grassetto
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Converti *testo* in corsivo
+    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Converti newline in <br>
+    text = text.replace(/\n/g, '<br>');
+    
+    return text;
   }
-})();
+
+  showTyping(show) {
+    const typing = document.getElementById('chatbot-typing');
+    if (show) {
+      typing.classList.remove('hidden');
+    } else {
+      typing.classList.add('hidden');
+    }
+  }
+
+  getCurrentTime() {
+    return new Date().toLocaleTimeString('it-IT', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  }
+
+  saveChatHistory() {
+    // Salva solo ultimi 20 messaggi in localStorage
+    const recentMessages = this.messages.slice(-20);
+    localStorage.setItem('brevettiamo_chat_history', JSON.stringify(recentMessages));
+  }
+
+  loadChatHistory() {
+    const saved = localStorage.getItem('brevettiamo_chat_history');
+    if (saved) {
+      try {
+        const history = JSON.parse(saved);
+        // Non ricarichiamo i messaggi nel DOM per pulizia, ma teniamo lo storico per contesto
+        this.messages = history;
+      } catch (e) {
+        console.error('Error loading chat history:', e);
+      }
+    }
+  }
+}
+
+// Inizializza chatbot quando DOM e pronto
+document.addEventListener('DOMContentLoaded', () => {
+  window.brevettiamoChatbot = new Chatbot();
+});
