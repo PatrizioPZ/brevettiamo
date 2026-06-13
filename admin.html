@@ -52,7 +52,18 @@ input[type="number"] { width:70px; }
 <div class="container">
 
 <div id="messaggi"></div>
-
+<div class="card">
+<h2>Pacchetti</h2>
+<div class="loading" id="loading-pacchetti">Caricamento pacchetti da Supabase...</div>
+<div id="tabella-pacchetti-container" style="display:none;">
+<table>
+<<thead>
+<tr><th>Ord</th><th>Slug</th><th>Nome</th><th>Categoria</th><th>Prezzo</th><th>Cred</th><th>Tempo</th><th>Stato</th><th>Azioni</th></tr>
+</thead>
+<tbody id="pacchetti-body"></tbody>
+</table>
+</div>
+</div>
 <div class="stats">
 <div class="stat-card"><h3>Servizi Attivi</h3><div class="value" id="stat-attivi">-</div></div>
 <div class="stat-card"><h3>Servizi Disattivi</h3><div class="value" id="stat-disattivi">-</div></div>
@@ -189,7 +200,77 @@ function mostraMessaggio(testo, tipo) {
 
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') chiudiModal(); });
 document.getElementById('modal-campi').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-campi')) chiudiModal(); });
-document.addEventListener('DOMContentLoaded', caricaServizi);
+document.addEventListener('DOMContentLoaded', () => {
+  caricaPacchetti();
+  caricaServizi();
+});
+  // ============ PACCHETTI ============
+async function caricaPacchetti() {
+  const container = document.getElementById('loading-pacchetti');
+  try {
+    const { data, error } = await supabaseClient.from('pacchetti').select('*').order('ordine');
+    if (error) throw error;
+    if (!data || data.length === 0) { 
+      container.textContent = 'Nessun pacchetto trovato.'; 
+      return; 
+    }
+    renderPacchetti(data);
+    container.style.display = 'none';
+    document.getElementById('tabella-pacchetti-container').style.display = 'block';
+  } catch (err) { 
+    container.textContent = 'Errore: ' + err.message; 
+  }
+}
+
+function renderPacchetti(data) {
+  let html = '';
+  data.forEach(p => {
+    const statoClass = p.stato === 'attivo' ? 'stato-attivo' : 'stato-disattivo';
+    const statoLabel = p.stato === 'attivo' ? 'Attivo' : 'Disattivo';
+    html += '<tr data-id="' + p.id + '">' +
+      '<td><input type="number" value="' + (p.ordine || 0) + '" min="0" style="width:50px" id="ord_p_' + p.id + '"></td>' +
+      '<td><input type="text" value="' + (p.slug || '') + '" style="width:120px;font-size:11px" id="slug_p_' + p.id + '"></td>' +
+      '<td><input type="text" value="' + (p.nome || '') + '" style="width:150px" id="nome_p_' + p.id + '"></td>' +
+      '<td><input type="text" value="' + (p.categoria || '') + '" style="width:100px" id="cat_p_' + p.id + '"></td>' +
+      '<td><input type="number" value="' + (p.prezzo || 0) + '" min="0" step="0.01" style="width:80px" id="prezzo_p_' + p.id + '"></td>' +
+      '<td><input type="number" value="' + (p.crediti || 0) + '" min="0" style="width:60px" id="cred_p_' + p.id + '"></td>' +
+      '<td><input type="text" value="' + (p.tempo_elaborazione || '') + '" style="width:100px" id="tempo_p_' + p.id + '"></td>' +
+      '<td><button class="' + statoClass + '" onclick="toggleStatoPacchetto(\'' + p.id + '\', \'' + p.stato + '\')">' + statoLabel + '</button></td>' +
+      '<td><button class="btn-salva" onclick="salvaPacchetto(\'' + p.id + '\')">Salva</button></td>' +
+      '</tr>';
+  });
+  document.getElementById('pacchetti-body').innerHTML = html;
+}
+
+async function toggleStatoPacchetto(id, statoAttuale) {
+  const nuovoStato = statoAttuale === 'attivo' ? 'disattivo' : 'attivo';
+  try { 
+    const { error } = await supabaseClient.from('pacchetti').update({ stato: nuovoStato }).eq('id', id); 
+    if (error) throw error; 
+    caricaPacchetti(); 
+  } catch (err) { 
+    alert('Errore: ' + err.message); 
+  }
+}
+
+async function salvaPacchetto(id) {
+  const data = {
+    ordine: parseInt(document.getElementById('ord_p_' + id).value) || 0,
+    slug: document.getElementById('slug_p_' + id).value.trim(),
+    nome: document.getElementById('nome_p_' + id).value.trim(),
+    categoria: document.getElementById('cat_p_' + id).value.trim(),
+    prezzo: parseFloat(document.getElementById('prezzo_p_' + id).value) || 0,
+    crediti: parseInt(document.getElementById('cred_p_' + id).value) || 0,
+    tempo_elaborazione: document.getElementById('tempo_p_' + id).value.trim()
+  };
+  try { 
+    const { error } = await supabaseClient.from('pacchetti').update(data).eq('id', id); 
+    if (error) throw error; 
+    caricaPacchetti(); 
+  } catch (err) { 
+    alert('Errore: ' + err.message); 
+  }
+}
 </script>
   
 <script src="chatbot.js"></script>
