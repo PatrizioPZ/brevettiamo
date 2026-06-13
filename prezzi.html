@@ -41,6 +41,15 @@
         .loading { text-align: center; padding: 50px; color: #666; }
         .spinner { width: 40px; height: 40px; border: 3px solid #eee; border-top-color: #2a5298; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .help-icon { display:inline-block;width:20px;height:20px;background:#f97316;color:white;border-radius:50%;text-align:center;line-height:20px;font-size:12px;cursor:pointer;margin-left:5px;font-weight:bold; }
+        .help-icon:hover { background:#1e3c72; }
+        .tooltip-modal { display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;justify-content:center;align-items:center;padding:20px; }
+        .tooltip-modal.active { display:flex; }
+        .tooltip-content { background:white;border-radius:15px;padding:30px;max-width:600px;max-height:80vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.3);position:relative; }
+        .tooltip-close { position:absolute;top:15px;right:15px;background:#f0f0f0;border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px;font-weight:bold;color:#666; }
+        .tooltip-title { color:#1e3c72;margin-bottom:20px;font-size:1.3em;padding-right:30px; }
+        .tooltip-body { line-height:1.8;color:#333;font-size:0.95em; }
+        .tooltip-footer { margin-top:20px;padding-top:15px;border-top:2px solid #f97316;color:#666;font-size:0.85em;font-style:italic; }
     </style>
     <link rel="stylesheet" href="chatbot.css">
 </head>
@@ -120,6 +129,95 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
+    var tooltipDataPacchetti = {};
+    
+    async function caricaTooltipPacchetti() {
+        try {
+            const { data, error } = await supabaseClient.from('pacchetti')
+                .select('slug, help_text')
+                .eq('stato', 'attivo');
+            if (error) throw error;
+            if (data) {
+                data.forEach(p => {
+                    tooltipDataPacchetti[p.slug] = p.help_text || 'Nessuna descrizione disponibile.';
+                });
+            }
+        } catch (err) {
+            console.error('Errore caricamento tooltip pacchetti:', err);
+        }
+    }
+    
+    function mostraTooltipPacchetto(slug, nome) {
+        var testo = tooltipDataPacchetti[slug] || 'Pacchetto BrevettIAmo';
+        var modal = document.getElementById('tooltip-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'tooltip-modal';
+            modal.className = 'tooltip-modal';
+            modal.innerHTML = '<div class="tooltip-content">' +
+                '<button class="tooltip-close" onclick="chiudiTooltip()">&times;</button>' +
+                '<h3 class="tooltip-title"></h3>' +
+                '<div class="tooltip-body"></div>' +
+                '<div class="tooltip-footer">BrevettIAmo - AI per Brevetti | Qualita: 80% AI + 20% esperto umano</div>' +
+                '</div>';
+            document.body.appendChild(modal);
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) chiudiTooltip();
+            });
+        }
+        modal.querySelector('.tooltip-title').textContent = nome;
+        modal.querySelector('.tooltip-body').innerHTML = formattaTooltip(testo);
+        modal.classList.add('active');
+    }
+    
+    function formattaTooltip(testo) {
+        return testo.split('\n').map(function(line) {
+            if (line.indexOf('Cosa fa:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">Cosa fa:</strong> ' + line.replace('Cosa fa:', '') + '</p>';
+            if (line.indexOf('A cosa serve:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">A cosa serve:</strong> ' + line.replace('A cosa serve:', '') + '</p>';
+            if (line.indexOf('Quando va fatta:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">Quando:</strong> ' + line.replace('Quando va fatta:', '') + '</p>';
+            if (line.indexOf('Quando usarlo:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">Quando usarlo:</strong> ' + line.replace('Quando usarlo:', '') + '</p>';
+            if (line.indexOf('Affidabilita:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">Affidabilita:</strong> <span style="color:#28a745;font-weight:bold;">' + line.replace('Affidabilita:', '') + '</span></p>';
+            if (line.indexOf('Tempo:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">Tempo:</strong> ' + line.replace('Tempo:', '') + '</p>';
+            if (line.indexOf('Consiglio:') === 0) return '<p style="margin:8px 0;padding:10px;background:#e8f4fd;border-radius:8px;border-left:3px solid #f97316;"><strong style="color:#f97316;">Consiglio:</strong> ' + line.replace('Consiglio:', '') + '</p>';
+            if (line.indexOf('Risparmio:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">Risparmio:</strong> <span style="color:#28a745;font-weight:bold;">' + line.replace('Risparmio:', '') + '</span></p>';
+            if (line.indexOf('Cosa include:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">Cosa include:</strong> ' + line.replace('Cosa include:', '') + '</p>';
+            if (line.indexOf('A chi serve:') === 0) return '<p style="margin:8px 0;"><strong style="color:#2a5298;">A chi serve:</strong> ' + line.replace('A chi serve:', '') + '</p>';
+            return '<p style="margin:8px 0;">' + line + '</p>';
+        }).join('');
+    }
+    
+    function chiudiTooltip() {
+        var modal = document.getElementById('tooltip-modal');
+        if (modal) modal.classList.remove('active');
+    }
+    
+    function aggiungiTooltipPacchetti() {
+        var pacchettiDiv = document.querySelectorAll('#pacchetti-container .pacchetto, #abbonamenti-container .pacchetto');
+        pacchettiDiv.forEach(function(div) {
+            var h3 = div.querySelector('h3');
+            if (h3) {
+                var nomePacchetto = h3.textContent.trim();
+                var link = div.querySelector('a');
+                var href = link ? link.getAttribute('href') : '';
+                var match = href.match(/buy\/([^\/]+)/);
+                var slug = match ? match[1] : '';
+                
+                if (slug) {
+                    var helpBtn = document.createElement('span');
+                    helpBtn.className = 'help-icon';
+                    helpBtn.innerHTML = '?';
+                    helpBtn.title = 'Clicca per sapere cosa include questo pacchetto';
+                    helpBtn.onclick = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        mostraTooltipPacchetto(slug, nomePacchetto);
+                    };
+                    h3.appendChild(helpBtn);
+                }
+            }
+        });
+    }
+    
     async function caricaPacchetti() {
         try {
             const { data, error } = await supabaseClient.from('pacchetti')
@@ -148,6 +246,11 @@
                     '</div>';
             });
             container.innerHTML = html;
+            
+            setTimeout(function() {
+                aggiungiTooltipPacchetti();
+                caricaTooltipPacchetti();
+            }, 100);
         } catch (err) {
             document.getElementById('pacchetti-container').innerHTML = '<p>Errore caricamento pacchetti.</p>';
             console.error(err);
@@ -182,6 +285,11 @@
                     '</div>';
             });
             container.innerHTML = html;
+            
+            setTimeout(function() {
+                aggiungiTooltipPacchetti();
+                caricaTooltipPacchetti();
+            }, 100);
         } catch (err) {
             document.getElementById('abbonamenti-container').innerHTML = '<p>Errore caricamento abbonamenti.</p>';
             console.error(err);
