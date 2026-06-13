@@ -138,7 +138,7 @@
                 .eq('stato', 'attivo');
             if (error) throw error;
             if (data) {
-                data.forEach(p => {
+                data.forEach(function(p) {
                     tooltipDataPacchetti[p.slug] = p.help_text || 'Nessuna descrizione disponibile.';
                 });
             }
@@ -192,7 +192,6 @@
     }
     
     function aggiungiTooltipPacchetti() {
-        // PACCHETTI (una tantum) - slug dal link href
         var pacchettiDiv = document.querySelectorAll('#pacchetti-container .pacchetto');
         pacchettiDiv.forEach(function(div) {
             var h3 = div.querySelector('h3');
@@ -218,7 +217,6 @@
             }
         });
         
-        // ABBONAMENTI - slug dalla mappa nome->slug
         var abbonamentiDiv = document.querySelectorAll('#abbonamenti-container .pacchetto');
         var abbonamentiMap = {
             'Basic': 'basic',
@@ -264,9 +262,9 @@
             }
             
             let html = '';
-            data.forEach(p => {
-                const highlight = p.slug === 'pro' ? 'highlight' : '';
-                const featuresHtml = p.features ? p.features.map(f => '<li>' + f + '</li>').join('') : '';
+            data.forEach(function(p) {
+                var highlight = p.slug === 'pro' ? 'highlight' : '';
+                var featuresHtml = p.features ? p.features.map(function(f) { return '<li>' + f + '</li>'; }).join('') : '';
                 html += '<div class="pacchetto ' + highlight + '">' +
                     '<h3>' + p.nome + '</h3>' +
                     '<div class="prezzo">EUR ' + p.prezzo + '<span>/una tantum</span></div>' +
@@ -276,7 +274,6 @@
             });
             container.innerHTML = html;
             
-            // Aggiungi tooltip DOPO aver renderizzato
             aggiungiTooltipPacchetti();
             caricaTooltipPacchetti();
         } catch (err) {
@@ -302,9 +299,9 @@
             }
             
             let html = '';
-            data.forEach(p => {
-                const highlight = p.slug === 'pro-abbonamento' ? 'highlight' : '';
-                const featuresHtml = p.features ? p.features.map(f => '<li>' + f + '</li>').join('') : '';
+            data.forEach(function(p) {
+                var highlight = p.slug === 'pro-abbonamento' ? 'highlight' : '';
+                var featuresHtml = p.features ? p.features.map(function(f) { return '<li>' + f + '</li>'; }).join('') : '';
                 html += '<div class="pacchetto ' + highlight + '">' +
                     '<h3>' + p.nome + '</h3>' +
                     '<div class="prezzo">EUR ' + p.prezzo + '<span>/mese</span></div>' +
@@ -314,7 +311,6 @@
             });
             container.innerHTML = html;
             
-            // Aggiungi tooltip DOPO aver renderizzato
             aggiungiTooltipPacchetti();
             caricaTooltipPacchetti();
         } catch (err) {
@@ -339,7 +335,7 @@
             }
             
             let html = '';
-            data.forEach(s => {
+            data.forEach(function(s) {
                 html += '<div class="servizio">' +
                     '<h4>' + s.nome + ' <span class="badge badge-premium">PREMIUM</span></h4>' +
                     '<div class="prezzo-singolo">EUR ' + s.prezzo + '</div>' +
@@ -353,7 +349,7 @@
         }
     }
     
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
         caricaPacchetti();
         caricaAbbonamenti();
         caricaServizi();
