@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benvenuto Beta - BrevettIAmo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; text-align: center; padding: 50px 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; font-size: 2em; }
+        .beta-badge { display: inline-block; background: #f97316; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; margin-bottom: 20px; }
+        p { line-height: 1.8; margin-bottom: 15px; color: #555; }
+        .btn { display: inline-block; background: #1e3a8a; color: white; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: background 0.3s; }
+        .btn:hover { background: #f97316; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="beta-badge">VERSIONE BETA</div>
+        <h1>Benvenuto in BrevettIAmo!</h1>
+        <p>Grazie per aver scelto il pacchetto <strong id="nome-pacchetto"></strong>.</p>
+        <p>Stai accedendo alla <strong>versione beta</strong> della nostra piattaforma AI per brevetti.</p>
+        <p>Durante la beta puoi:</p>
+        <ul style="text-align: left; margin: 20px 0; padding-left: 30px; color: #555;">
+            <li>Testare tutti i servizi AI</li>
+            <li>Ricevere supporto prioritario</li>
+            <li>Contribuire al miglioramento della piattaforma</li>
+        </ul>
+        <p><strong>Prezzo speciale beta:</strong> <span id="prezzo-pacchetto"></span></p>
+        <a href="mailto:patrizio.zanini@gmail.com?subject=Attivazione Beta BrevettIAmo" class="btn">Attiva il tuo pacchetto</a>
+        <p style="margin-top: 20px; font-size: 0.9em; color: #888;">Contattaci via email per attivare il servizio.</p>
+    </div>
+    
+    <script>
+        var urlParams = new URLSearchParams(window.location.search);
+        var pacchetto = urlParams.get('pacchetto') || 'Starter';
+        document.getElementById('nome-pacchetto').textContent = pacchetto;
+        
+        var prezzi = {
+            'starter': 'EUR 29',
+            'pro': 'EUR 99',
+            'enterprise': 'EUR 299',
+            'basic': 'EUR 11/mese',
+            'pro-abbonamento': 'EUR 35/mese',
+            'unlimited': 'EUR 59/mese'
+        };
+        document.getElementById('prezzo-pacchetto').textContent = prezzi[pacchetto] || 'EUR 29';
+    </script>
+</body>
+</html>
