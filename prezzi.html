@@ -41,7 +41,7 @@
         .loading { text-align: center; padding: 50px; color: #666; }
         .spinner { width: 40px; height: 40px; border: 3px solid #eee; border-top-color: #2a5298; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .help-icon { display:inline-block;width:20px;height:20px;background:#f97316;color:white;border-radius:50%;text-align:center;line-height:20px;font-size:12px;cursor:pointer;margin-left:5px;font-weight:bold; }
+        .help-icon { display:inline-block;width:20px;height:20px;background:#f97316;color:white;border-radius:50%;text-align:center;line-height:20px;font-size:12px;cursor:pointer;margin-left:5px;font-weight:bold;vertical-align:middle; }
         .help-icon:hover { background:#1e3c72; }
         .tooltip-modal { display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;justify-content:center;align-items:center;padding:20px; }
         .tooltip-modal.active { display:flex; }
@@ -192,27 +192,56 @@
     }
     
     function aggiungiTooltipPacchetti() {
-        var pacchettiDiv = document.querySelectorAll('#pacchetti-container .pacchetto, #abbonamenti-container .pacchetto');
+        // PACCHETTI (una tantum) - slug dal link href
+        var pacchettiDiv = document.querySelectorAll('#pacchetti-container .pacchetto');
         pacchettiDiv.forEach(function(div) {
             var h3 = div.querySelector('h3');
-            if (h3) {
-                var nomePacchetto = h3.textContent.trim();
+            if (h3 && !h3.querySelector('.help-icon')) {
+                var nome = h3.textContent.trim();
                 var link = div.querySelector('a');
                 var href = link ? link.getAttribute('href') : '';
                 var match = href.match(/buy\/([^\/]+)/);
                 var slug = match ? match[1] : '';
                 
                 if (slug) {
-                    var helpBtn = document.createElement('span');
-                    helpBtn.className = 'help-icon';
-                    helpBtn.innerHTML = '?';
-                    helpBtn.title = 'Clicca per sapere cosa include questo pacchetto';
-                    helpBtn.onclick = function(e) {
+                    var btn = document.createElement('span');
+                    btn.className = 'help-icon';
+                    btn.innerHTML = '?';
+                    btn.title = 'Clicca per sapere cosa include';
+                    btn.onclick = function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        mostraTooltipPacchetto(slug, nomePacchetto);
+                        mostraTooltipPacchetto(slug, nome);
                     };
-                    h3.appendChild(helpBtn);
+                    h3.appendChild(btn);
+                }
+            }
+        });
+        
+        // ABBONAMENTI - slug dalla mappa nome->slug
+        var abbonamentiDiv = document.querySelectorAll('#abbonamenti-container .pacchetto');
+        var abbonamentiMap = {
+            'Basic': 'basic',
+            'Pro': 'pro-abbonamento',
+            'Unlimited': 'unlimited'
+        };
+        abbonamentiDiv.forEach(function(div) {
+            var h3 = div.querySelector('h3');
+            if (h3 && !h3.querySelector('.help-icon')) {
+                var nome = h3.textContent.trim();
+                var slug = abbonamentiMap[nome] || '';
+                
+                if (slug) {
+                    var btn = document.createElement('span');
+                    btn.className = 'help-icon';
+                    btn.innerHTML = '?';
+                    btn.title = 'Clicca per sapere cosa include';
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        mostraTooltipPacchetto(slug, nome);
+                    };
+                    h3.appendChild(btn);
                 }
             }
         });
@@ -247,10 +276,9 @@
             });
             container.innerHTML = html;
             
-            setTimeout(function() {
-                aggiungiTooltipPacchetti();
-                caricaTooltipPacchetti();
-            }, 100);
+            // Aggiungi tooltip DOPO aver renderizzato
+            aggiungiTooltipPacchetti();
+            caricaTooltipPacchetti();
         } catch (err) {
             document.getElementById('pacchetti-container').innerHTML = '<p>Errore caricamento pacchetti.</p>';
             console.error(err);
@@ -286,10 +314,9 @@
             });
             container.innerHTML = html;
             
-            setTimeout(function() {
-                aggiungiTooltipPacchetti();
-                caricaTooltipPacchetti();
-            }, 100);
+            // Aggiungi tooltip DOPO aver renderizzato
+            aggiungiTooltipPacchetti();
+            caricaTooltipPacchetti();
         } catch (err) {
             document.getElementById('abbonamenti-container').innerHTML = '<p>Errore caricamento abbonamenti.</p>';
             console.error(err);
