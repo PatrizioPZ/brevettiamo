@@ -1,226 +1,114 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BrevettIAmo - Privacy e NDA</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:Arial,sans-serif; background:#f0f2f5; line-height:1.6; }
-.navbar { background:#1e3c72; color:white; padding:15px 30px; }
-.navbar h1 { font-size:1.3em; }
-.container { max-width:800px; margin:0 auto; padding:20px; }
-.card { background:white; padding:30px; border-radius:10px; margin-bottom:20px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
-h2 { color:#1e3c72; margin-bottom:15px; font-size:1.3em; }
-h3 { color:#2a5298; margin:15px 0 10px; font-size:1.1em; }
-p { margin-bottom:10px; color:#333; }
-ul { margin-left:20px; margin-bottom:15px; }
-li { margin-bottom:5px; color:#333; }
-.checkbox { margin:15px 0; }
-.checkbox input { width:18px; height:18px; margin-right:10px; vertical-align:middle; }
-.checkbox label { font-weight:bold; color:#1e3c72; }
-.btn { background:#28a745; color:white; padding:12px 30px; border:none; border-radius:5px; cursor:pointer; font-size:1em; display:block; margin:20px auto; }
-.btn:hover { background:#218838; }
-.btn:disabled { background:#ccc; cursor:not-allowed; }
-.btn-download { background:#1e3c72; display:none; }
-.alert { padding:15px; border-radius:5px; margin-bottom:15px; }
-.alert-success { background:#d4edda; color:#155724; }
-.alert-error { background:#f8d7da; color:#721c24; }
-.timestamp { font-size:0.85em; color:#666; margin-top:20px; border-top:1px solid #ddd; padding-top:10px; }
-</style>
-  <link rel="stylesheet" href="chatbot.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy e NDA - BrevettIAmo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; padding: 50px 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h1 { color: #1e3a8a; margin-bottom: 20px; font-size: 2em; text-align: center; }
+        h2 { color: #1e3a8a; margin: 30px 0 15px; font-size: 1.3em; border-bottom: 2px solid #f97316; padding-bottom: 10px; }
+        h3 { color: #2a5298; margin: 20px 0 10px; font-size: 1.1em; }
+        p { line-height: 1.8; margin-bottom: 15px; color: #555; }
+        ul { margin: 15px 0; padding-left: 30px; color: #555; }
+        li { margin-bottom: 8px; line-height: 1.6; }
+        .checkbox-container { margin: 30px 0; padding: 20px; background: #f0f2f5; border-radius: 10px; }
+        .checkbox-container input { margin-right: 10px; width: 20px; height: 20px; cursor: pointer; }
+        .checkbox-container label { font-size: 1.1em; cursor: pointer; color: #333; }
+        .btn { display: inline-block; background: #ccc; color: white; padding: 15px 40px; border-radius: 30px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: background 0.3s; pointer-events: none; border: none; }
+        .btn.active { background: #1e3a8a; pointer-events: auto; cursor: pointer; }
+        .btn.active:hover { background: #f97316; }
+        .warning { color: #dc3545; font-size: 0.9em; margin-top: 10px; display: none; }
+        .download-btn { display: inline-block; background: #28a745; color: white; padding: 10px 30px; border-radius: 20px; text-decoration: none; font-weight: bold; margin-top: 15px; font-size: 0.9em; }
+        .download-btn:hover { background: #218838; }
+        .note-box { background: #e8f4fd; border-left: 4px solid #f97316; padding: 15px; margin: 20px 0; border-radius: 5px; }
+    </style>
 </head>
 <body>
-
-<<nav class="navbar">
-<h1>BrevettIAmo - Privacy e NDA</h1>
-</nav>
-
-<div class="container">
-
-<div class="card">
-<h2>1. Informativa Privacy (GDPR)</h2>
-<p><strong>Titolare del trattamento:</strong> BrevettIAmo - Patrizio Zanirato</p>
-<p><strong>Email:</strong> privacy@brevettiamo.com</p>
-
-<h3>Dati raccolti</h3>
-<ul>
-<li>Dati anagrafici (nome, email)</li>
-<li>Descrizioni tecniche delle invenzioni</li>
-<li>Documenti AI generati</li>
-<li>Dati di pagamento (gestiti da LemonSqueezy)</li>
-</ul>
-
-<h3>Finalita</h3>
-<ul>
-<li>Erogazione servizi AI per brevetti</li>
-<li>Salvataggio documenti nel tuo account</li>
-<li>Comunicazioni relative al servizio</li>
-</ul>
-
-<h3>Diritti dell'utente</h3>
-<ul>
-<li>Accesso ai dati</li>
-<li>Retifica o cancellazione</li>
-<li>Portabilita dei dati</li>
-<li>Opposizione al trattamento</li>
-</ul>
-
-<p><strong>Conservazione:</strong> I dati sono conservati su server UE (Supabase) con crittografia.</p>
-<p><strong>Terze parti:</strong> OpenRouter (AI), LemonSqueezy (pagamenti), Supabase (database).</p>
-
-<div class="checkbox">
-<input type="checkbox" id="privacyCheck" onchange="verificaCheck()">
-<label for="privacyCheck">Ho letto e accetto l'Informativa Privacy</label>
-</div>
-</div>
-
-<div class="card">
-<h2>2. Accordo di Riservatezza (NDA)</h2>
-
-<h3>Oggetto</h3>
-<p>L'utente conferisce a BrevettIAmo descrizioni tecniche di invenzioni per l'elaborazione AI.</p>
-
-<h3>Impegni di BrevettIAmo</h3>
-<ul>
-<li>Riservatezza assoluta su tutte le informazioni ricevute</li>
-<li>Non divulgazione a terzi</li>
-<li>Utilizzo esclusivo per l'erogazione del servizio richiesto</li>
-<li>Cancellazione dei dati su richiesta dell'utente</li>
-<li>Protezione dei dati con standard di sicurezza industriali</li>
-</ul>
-
-<h3>Impegni dell'Utente</h3>
-<ul>
-<li>Veridicita delle informazioni fornite</li>
-<li>Non utilizzo illecito dei documenti generati</li>
-<li>Rispetto dei diritti di proprieta intellettuale di terzi</li>
-</ul>
-
-<h3>Durata</h3>
-<p>L'obbligo di riservatezza sopravvive alla cessazione del rapporto per 10 anni.</p>
-
-<h3>Foro competente</h3>
-<p>Per qualsiasi controversia, il foro competente e quello di Padova, Italia.</p>
-
-<div class="checkbox">
-<input type="checkbox" id="ndaCheck" onchange="verificaCheck()">
-<label for="ndaCheck">Ho letto e accetto l'Accordo di Riservatezza (NDA)</label>
-</div>
-</div>
-
-<div class="card" id="confermaCard" style="display:none;">
-<h2>3. Conferma e Scarica NDA</h2>
-<div class="alert alert-success">
-<strong>Accettazione completata!</strong><br>
-Data e ora: <span id="dataAccettazione"></span><br>
-ID Transazione: <span id="idTransazione"></span>
-</div>
-<p>Hai accettato simultaneamente:</p>
-<ul>
-<li>Informativa Privacy GDPR</li>
-<li>Accordo di Riservatezza NDA</li>
-</ul>
-<button class="btn btn-download" id="btnDownload" onclick="scaricaNDA()">Scarica NDA in PDF</button>
-</div>
-
-<div class="card" id="bloccoCard">
-<button class="btn" id="btnConferma" disabled onclick="confermaAccettazione()">Conferma Accettazione</button>
-<p style="text-align:center; color:#666; margin-top:10px;">Spunta entrambe le caselle per procedere</p>
-</div>
-
-</div>
-
-<script>
-function verificaCheck() {
-  var privacy = document.getElementById('privacyCheck').checked;
-  var nda = document.getElementById('ndaCheck').checked;
-  var btn = document.getElementById('btnConferma');
-  
-  if (privacy && nda) {
-    btn.disabled = false;
-    btn.style.background = '#28a745';
-  } else {
-    btn.disabled = true;
-    btn.style.background = '#ccc';
-  }
-}
-
-function confermaAccettazione() {
-  var now = new Date();
-  var dataStr = now.toLocaleString('it-IT');
-  var idTrans = 'NDA-' + now.getTime() + '-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-  
-  document.getElementById('dataAccettazione').textContent = dataStr;
-  document.getElementById('idTransazione').textContent = idTrans;
-  
-  document.getElementById('bloccoCard').style.display = 'none';
-  document.getElementById('confermaCard').style.display = 'block';
-  document.getElementById('btnDownload').style.display = 'block';
-     // Redirect al dashboard dopo 2 secondi
-    setTimeout(function() {
-        window.location.href = 'dashboard.html';
-    }, 2000);
-  // Salva su Supabase (se disponibile)
-  if (typeof supabase !== 'undefined' && supabase) {
-    supabase.from('accettazioni_nda').insert({
-      id_transazione: idTrans,
-      data_accettazione: now.toISOString(),
-      privacy_accettata: true,
-      nda_accettata: true,
-      ip_utente: 'anonimo',
-      user_agent: navigator.userAgent
-    }).catch(function(e) { console.log('Salvataggio opzionale', e); });
-  }
-  
-  // Salva in localStorage
-  localStorage.setItem('brevettiamo_nda_accettato', 'true');
-  localStorage.setItem('brevettiamo_nda_data', dataStr);
-  localStorage.setItem('brevettiamo_nda_id', idTrans);
-}
-
-function scaricaNDA() {
-  var nda = document.getElementById('dataAccettazione').textContent;
-  var id = document.getElementById('idTransazione').textContent;
-  
-  var testo = 'ACCORDO DI RISERVATEZZA (NDA) - BREVETTIAMO\n';
-  testo += '===========================================\n\n';
-  testo += 'ID Transazione: ' + id + '\n';
-  testo += 'Data Accettazione: ' + nda + '\n\n';
-  testo += 'TITOLARE: BrevettIAmo - Patrizio Zanirato\n';
-  testo += 'EMAIL: privacy@brevettiamo.com\n\n';
-  testo += 'OGGETTO:\n';
-  testo += 'L\'utente ha accettato l\'Accordo di Riservatezza per l\'utilizzo\n';
-  testo += 'dei servizi AI di BrevettIAmo per la proprieta intellettuale.\n\n';
-  testo += 'IMPEGNI DI BREVETTIAMO:\n';
-  testo += '- Riservatezza assoluta su tutte le informazioni ricevute\n';
-  testo += '- Non divulgazione a terzi\n';
-  testo += '- Utilizzo esclusivo per l\'erogazione del servizio richiesto\n';
-  testo += '- Cancellazione dei dati su richiesta dell\'utente\n';
-  testo += '- Protezione dei dati con standard di sicurezza industriali\n\n';
-  testo += 'IMPEGNI DELL\'UTENTE:\n';
-  testo += '- Veridicita delle informazioni fornite\n';
-  testo += '- Non utilizzo illecito dei documenti generati\n';
-  testo += '- Rispetto dei diritti di proprieta intellettuale di terzi\n\n';
-  testo += 'DURATA: 10 anni dalla cessazione del rapporto\n\n';
-  testo += 'FORO COMPETENTE: Padova, Italia\n\n';
-  testo += 'PRIVACY GDPR: Accettata\n';
-  testo += 'NDA: Accettata\n\n';
-  testo += '===========================================\n';
-  testo += 'Documento generato automaticamente da BrevettIAmo\n';
-  testo += 'Questo NDA ha valore legale in Italia\n';
-  
-  var blob = new Blob([testo], { type: 'text/plain' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'NDA_BrevettIAmo_' + id + '.txt';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-</script>
-<script src="chatbot.js"></script>
+    <div class="container">
+        <h1>Privacy e NDA</h1>
+        <p>Per procedere con il servizio <strong id="nome-pacchetto"></strong>, leggi e accetta i seguenti documenti.</p>
+        
+        <div class="note-box">
+            <p><strong>Nota:</strong> Questo documento ha valore legale. La tua accettazione viene registrata nel sistema con marca temporale.</p>
+        </div>
+        
+        <h2>ACCORDO DI RISERVATEZZA (NDA), TERMINI DI SERVIZIO E MANLEVA</h2>
+        <p><strong>Piattaforma:</strong> BrevettIAmo</p>
+        
+        <h3>1. OGGETTO E PERFEZIONAMENTO DELL'ACCORDO</h3>
+        <p>Il presente accordo tutela la riservatezza delle informazioni e delle idee che l'Utente si appresta a inserire nella piattaforma "BrevettIAmo". L'accordo si intende formalizzato, concluso e perfezionato a tutti gli effetti di legge mediante l'apposizione della spunta digitale obbligatoria sul sito web, successiva alla fase di pagamento. Fanno fede legale i log informatici e le marche temporali registrate nel database della piattaforma, che attestano l'accettazione integrale del presente testo.</p>
+        
+        <h3>2. ACCORDO DI RISERVATEZZA PER I SERVIZI DIGITALI AUTOMATIZZATI</h3>
+        <p>Il Gestore della piattaforma si impegna a non utilizzare, non riprodurre, non copiare e non divulgare a terzi le informazioni descrittive dei progetti inviate dall'Utente. Nella modalità di erogazione standard (digitale), l'analisi del progetto avviene esclusivamente tramite processi informatici e algoritmi protetti. Nessun operatore umano o collaboratore del Gestore ha accesso alla descrizione dell'idea, garantendo la totale riservatezza tecnologica e strutturale del dato.</p>
+        
+        <h3>3. SERVIZIO DI ASSISTENZA UMANA E TERZIETÀ DEI CONSULENTI</h3>
+        <p>Qualora l'Utente acquisti il servizio integrativo di "Assistenza Umana", la revisione e la consulenza sul progetto saranno delegate a un professionista indipendente (Freelancer) terzo e autonomo rispetto alla piattaforma. Il Gestore funge esclusivamente da intermediario tecnologico e commerciale. Il Freelancer risponderà direttamente, in via esclusiva e sotto la propria responsabilità professionale della riservatezza dei dati e della propria condotta. Lo sblocco dei fondi a favore del Freelancer (payout tramite Lemon Squeezy a scadenze fisse ogni 15 giorni) e il rilascio del report finale sono subordinati alla conferma di soddisfazione espressa dall'Utente a conclusione del servizio.</p>
+        
+        <h3>4. DICHIARAZIONE DI TITOLARITÀ E MANLEVA TOTALE SUI DATI</h3>
+        <p>L'Utente dichiara e garantisce, sotto la propria esclusiva responsabilità civile e penale, di essere il legittimo titolare, inventore o avente diritto dell'idea e dei dati inseriti. Nel caso in cui l'Utente fornisca generalità false, email fittizie o immetta nella piattaforma progetti di proprietà di terzi senza formale consenso, lo stesso si assume ogni responsabilità di legge. L'Utente esonera e manleva interamente il Gestore di "BrevettIAmo" e i suoi collaboratori da qualsiasi richiesta di risarcimento, contestazione o azione legale promossa da terzi.</p>
+        
+        <h3>5. AVVISO IMPORTANTE E LIMITI DEL SERVIZIO (FASE BETA)</h3>
+        <p>L'Utente prende atto che la piattaforma è in una versione sperimentale (Beta). Il servizio ha valore puramente informativo, di orientamento concettuale e di supporto allo sviluppo. Non costituisce in alcun modo un deposito di brevetto ufficiale presso le autorità competenti (es. UIBM, EPO, WIPO) né una consulenza legale o tecnica formale. Il Gestore non si assume responsabilità per l'eventuale perdita del requisito di "novità" dell'idea qualora l'Utente decida autonomamente di divulgarla al di fuori dei canali protetti della piattaforma.</p>
+        
+        <h3>6. ESCLUSIONE DI RESPONSABILITÀ SULL'UTILIZZO DEI RISULTATI (SCARICO RESPONSABILITÀ)</h3>
+        <p>I report, le analisi, i testi e qualsiasi materiale o output generato dalla piattaforma (sia in modalità automatica che tramite Assistenza Umana) costituiscono un parere puramente indicativo basato sui dati forniti dall'Utente. Il Gestore e il Freelancer non garantiscono l'accuratezza assoluta, la completezza, né la commerciabilità o la reale brevettabilità dell'idea esaminata. L'Utente si assume l'esclusiva responsabilità e ogni rischio derivante dall'utilizzo pratico o commerciale delle informazioni fornite dalla piattaforma. Il Gestore non potrà in nessun caso essere ritenuto responsabile per danni diretti, indiretti, perdite finanziarie, mancati guadagni o rigetti di domande di brevetto derivanti dalle decisioni prese dall'Utente sulla base dei risultati ottenuti dal servizio.</p>
+        
+        <p style="margin-top: 30px; font-size: 0.9em; color: #888; text-align: center;">
+            Copia ad uso informativo dell'accordo di riservatezza accettato elettronicamente.<br>
+            Generato automaticamente dal sistema BrevettIAmo.
+        </p>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="scaricaNDA()" class="download-btn">Scarica NDA in PDF</button>
+        </div>
+        
+        <div class="checkbox-container">
+            <input type="checkbox" id="accetta" onchange="verificaAccettazione()">
+            <label for="accetta">Ho letto e accetto integralmente la Privacy Policy, l'Accordo di Non-Divulgazione (NDA), i Termini di Servizio e la Manleva sopra descritti.</label>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="#" id="procedi-btn" class="btn">Procedi al servizio</a>
+            <p class="warning" id="warning">Devi accettare tutti i documenti per procedere.</p>
+        </div>
+    </div>
+    
+    <script>
+        var urlParams = new URLSearchParams(window.location.search);
+        var pacchetto = urlParams.get('pacchetto') || 'Starter';
+        document.getElementById('nome-pacchetto').textContent = pacchetto;
+        
+        function verificaAccettazione() {
+            var checkbox = document.getElementById('accetta');
+            var btn = document.getElementById('procedi-btn');
+            var warning = document.getElementById('warning');
+            
+            if (checkbox.checked) {
+                btn.classList.add('active');
+                btn.href = 'servizio.html?pacchetto=' + pacchetto;
+                warning.style.display = 'none';
+            } else {
+                btn.classList.remove('active');
+                btn.href = '#';
+                warning.style.display = 'block';
+            }
+        }
+        
+        function scaricaNDA() {
+            var testo = document.querySelector('.container').innerText;
+            var blob = new Blob([testo], { type: 'text/plain' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'NDA_BrevettIAmo_' + pacchetto + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
 </body>
 </html>
