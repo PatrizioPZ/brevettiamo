@@ -50,43 +50,9 @@
         </div>
         
         <h2>Pacchetti (Invariati)</h2>
-        <div class="pacchetti">
-            <div class="pacchetto">
-                <h3>Starter</h3>
-                <div class="prezzo">EUR 29<span>/una tantum</span></div>
-                <ul class="features">
-                    <li>3 servizi AI selezionati</li>
-                    <li>Supporto via email</li>
-                    <li>Ideale per chi inizia</li>
-                    <li>Accesso immediato</li>
-                </ul>
-                <a href="https://brevettiamo.lemonsqueezy.com/checkout/buy/starter" class="btn">Acquista Starter</a>
-            </div>
-            
-            <div class="pacchetto highlight">
-                <h3>Pro</h3>
-                <div class="prezzo">EUR 99<span>/una tantum</span></div>
-                <ul class="features">
-                    <li>10 servizi AI con priorita</li>
-                    <li>Supporto via chat</li>
-                    <li>Per professionisti</li>
-                    <li>Report avanzati</li>
-                </ul>
-                <a href="https://brevettiamo.lemonsqueezy.com/checkout/buy/pro" class="btn">Acquista Pro</a>
-            </div>
-            
-            <div class="pacchetto">
-                <h3>Enterprise</h3>
-                <div class="prezzo">EUR 299<span>/una tantum</span></div>
-                <ul class="features">
-                    <li>Tutti i servizi illimitati</li>
-                    <li>Consulenza 1:1</li>
-                    <li>Per aziende e studi</li>
-                    <li>Supporto dedicato</li>
-                </ul>
-                <a href="https://brevettiamo.lemonsqueezy.com/checkout/buy/enterprise" class="btn">Acquista Enterprise</a>
-            </div>
-        </div>
+<div id="pacchetti-container" class="pacchetti">
+    <div class="loading"><div class="spinner"></div><p>Caricamento pacchetti...</p></div>
+</div>
         
         <h2>Servizi Singoli (+20%)</h2>
         <div class="servizi-grid">
@@ -132,39 +98,10 @@
             </div>
         </div>
         
-        <h2>Abbonamenti (+20%)</h2>
-        <div class="pacchetti">
-            <div class="pacchetto">
-                <h3>Basic</h3>
-                <div class="prezzo">EUR 11<span>/mese</span></div>
-                <ul class="features">
-                    <li>5 servizi/mese</li>
-                    <li>Supporto email</li>
-                    <li>Per startup e studenti</li>
-                </ul>
-                <a href="#" class="btn">Abbonati Basic</a>
-            </div>
-            <div class="pacchetto highlight">
-                <h3>Pro</h3>
-                <div class="prezzo">EUR 35<span>/mese</span></div>
-                <ul class="features">
-                    <li>15 servizi/mese</li>
-                    <li>Supporto chat</li>
-                    <li>Per inventori attivi</li>
-                </ul>
-                <a href="#" class="btn">Abbonati Pro</a>
-            </div>
-            <div class="pacchetto">
-                <h3>Unlimited</h3>
-                <div class="prezzo">EUR 59<span>/mese</span></div>
-                <ul class="features">
-                    <li>Servizi illimitati</li>
-                    <li>Supporto dedicato</li>
-                    <li>Per aziende e studi</li>
-                </ul>
-                <a href="#" class="btn">Abbonati Unlimited</a>
-            </div>
-        </div>
+       <h2>Abbonamenti (+20%)</h2>
+<div id="abbonamenti-container" class="pacchetti">
+    <div class="loading"><div class="spinner"></div><p>Caricamento abbonamenti...</p></div>
+</div>
         
         <h2>Confronto con Mercato Tradizionale</h2>
         <div class="confronto">
@@ -212,5 +149,76 @@
         </footer>
     </div>
     <script src="chatbot.js"></script>
+    <script>
+const SUPABASE_URL = 'https://jtekravlmqnluvaiapmwb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function caricaPacchetti() {
+    try {
+        const { data, error } = await supabaseClient.from('pacchetti')
+            .select('*')
+            .eq('categoria', 'pacchetto')
+            .eq('stato', 'attivo')
+            .order('ordine');
+        if (error) throw error;
+        const container = document.getElementById('pacchetti-container');
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p>Nessun pacchetto disponibile.</p>';
+            return;
+        }
+        let html = '';
+        data.forEach(p => {
+            const highlight = p.slug === 'pro' ? 'highlight' : '';
+            const featuresHtml = p.features ? p.features.map(f => '<li>' + f + '</li>').join('') : '';
+            html += '<div class="pacchetto ' + highlight + '">' +
+                '<h3>' + p.nome + '</h3>' +
+                '<div class="prezzo">EUR ' + p.prezzo + '<span>/una tantum</span></div>' +
+                '<ul class="features">' + featuresHtml + '</ul>' +
+                '<a href="#" class="btn">Acquista ' + p.nome + '</a>' +
+                '</div>';
+        });
+        container.innerHTML = html;
+    } catch (err) {
+        document.getElementById('pacchetti-container').innerHTML = '<p>Errore caricamento.</p>';
+    }
+}
+
+async function caricaAbbonamenti() {
+    try {
+        const { data, error } = await supabaseClient.from('pacchetti')
+            .select('*')
+            .eq('categoria', 'abbonamento')
+            .eq('stato', 'attivo')
+            .order('ordine');
+        if (error) throw error;
+        const container = document.getElementById('abbonamenti-container');
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p>Nessun abbonamento disponibile.</p>';
+            return;
+        }
+        let html = '';
+        data.forEach(p => {
+            const highlight = p.slug === 'pro-abbonamento' ? 'highlight' : '';
+            const featuresHtml = p.features ? p.features.map(f => '<li>' + f + '</li>').join('') : '';
+            html += '<div class="pacchetto ' + highlight + '">' +
+                '<h3>' + p.nome + '</h3>' +
+                '<div class="prezzo">EUR ' + p.prezzo + '<span>/mese</span></div>' +
+                '<ul class="features">' + featuresHtml + '</ul>' +
+                '<a href="#" class="btn">Abbonati ' + p.nome + '</a>' +
+                '</div>';
+        });
+        container.innerHTML = html;
+    } catch (err) {
+        document.getElementById('abbonamenti-container').innerHTML = '<p>Errore caricamento.</p>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    caricaPacchetti();
+    caricaAbbonamenti();
+  
+});
+</script> 
 </body>
 </html>
