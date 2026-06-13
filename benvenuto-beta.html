@@ -28,13 +28,14 @@
             <li>Contribuire al miglioramento della piattaforma</li>
         </ul>
         <p><strong>Prezzo speciale beta:</strong> <span id="prezzo-pacchetto"></span></p>
-       <a href="privacy-nda.html?pacchetto=" + pacchetto class="btn">Attiva il tuo pacchetto</a>
+       <a href="#" id="attiva-btn" class="btn">Attiva il tuo pacchetto</a>
         <p style="margin-top: 20px; font-size: 0.9em; color: #888;">Contattaci via email per attivare il servizio.</p>
     </div>
     
     <script>
         var urlParams = new URLSearchParams(window.location.search);
         var pacchetto = urlParams.get('pacchetto') || 'Starter';
+        document.getElementById('attiva-btn').href = 'privacy-nda.html?pacchetto=' + pacchetto;
         document.getElementById('nome-pacchetto').textContent = pacchetto;
         
         var prezzi = {
