@@ -3,276 +3,683 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<title>BrevettIAmo - Admin</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<title>Admin — BrevettIAmo v1.0.0-BETA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:Arial,sans-serif; background:#f0f2f5; }
-.navbar { background:#1e3c72; color:white; padding:15px 30px; }
-.container { max-width:1200px; margin:0 auto; padding:20px; }
-.card { background:white; padding:20px; border-radius:10px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-h2 { color:#1e3c72; margin-bottom:15px; }
-table { width:100%; border-collapse:collapse; font-size:13px; }
-th { background:#1e3c72; color:white; padding:12px 8px; text-align:left; }
-td { padding:10px 8px; border-bottom:1px solid #eee; vertical-align:middle; }
-input { width:100%; padding:6px; border:1px solid #ddd; border-radius:3px; font-size:13px; }
-input[type="number"] { width:70px; }
-.stato-attivo { background:#28a745; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600; }
-.stato-disattivo { background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600; }
-.btn-salva { background:#007bff; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; margin-right:5px; }
-.btn-campi { background:#6c757d; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; font-size:12px; }
-.loading { text-align:center; padding:40px; color:#666; }
-.error { background:#f8d7da; color:#721c24; padding:15px; border-radius:4px; margin:20px 0; }
-.success { background:#d4edda; color:#155724; padding:15px; border-radius:4px; margin:20px 0; }
-.stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:25px; }
-.stat-card { background:white; padding:20px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-.stat-card h3 { font-size:14px; color:#666; margin-bottom:8px; }
-.stat-card .value { font-size:28px; font-weight:bold; color:#1e3c72; }
-.modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
-.modal-overlay.active { display:flex; }
-.modal { background:white; border-radius:8px; padding:30px; width:90%; max-width:700px; max-height:80vh; overflow-y:auto; }
-.modal h3 { margin-bottom:20px; color:#1e3c72; }
-.modal textarea { width:100%; min-height:300px; padding:10px; border:1px solid #ddd; border-radius:4px; font-family:monospace; font-size:13px; }
-.modal-buttons { margin-top:20px; text-align:right; }
-.modal-buttons button { margin-left:10px; padding:8px 16px; border-radius:4px; cursor:pointer; border:none; }
-.btn-primary { background:#007bff; color:white; }
-.btn-secondary { background:#6c757d; color:white; }
+:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--om:rgba(26,26,26,0.15);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;overflow-x:hidden}
+
+/* LOGIN SCREEN */
+.login-screen{position:fixed;inset:0;background:linear-gradient(135deg,var(--n) 0%,var(--f) 100%);display:flex;align-items:center;justify-content:center;z-index:10000}
+.login-box{background:var(--p);padding:3rem;max-width:400px;width:90%;border:3px solid var(--o);text-align:center}
+.login-box h2{font-family:'Cinzel',serif;color:var(--f);margin-bottom:1rem;letter-spacing:2px}
+.login-box p{color:var(--fc);font-size:0.9rem;margin-bottom:2rem}
+.login-box input{width:100%;padding:1rem;margin-bottom:1rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:1rem}
+.login-box input:focus{outline:none;border-color:var(--o)}
+.login-box button{width:100%;padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;font-size:1rem;letter-spacing:2px;cursor:pointer;transition:all 0.3s}
+.login-box button:hover{background:var(--os)}
+.login-error{color:var(--r);font-size:0.85rem;margin-top:1rem;display:none}
+
+/* ADMIN HEADER */
+.ad-header{background:var(--n);color:var(--p);padding:1rem 2rem;border-bottom:3px solid var(--o);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000}
+.ad-header h1{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--o);letter-spacing:2px}
+.ad-header .version{font-family:'Cinzel',serif;font-size:0.7rem;color:var(--r);background:var(--p);padding:0.2rem 0.6rem;border-radius:3px}
+.ad-header .user-info{font-size:0.85rem;opacity:0.8}
+.ad-header button{background:var(--r);color:var(--b);border:none;padding:0.5rem 1rem;font-family:'Cinzel',serif;cursor:pointer;transition:all 0.3s}
+.ad-header button:hover{background:var(--rs)}
+
+/* ADMIN GRID */
+.ad-container{max-width:1400px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:250px 1fr;gap:2rem}
+
+/* SIDEBAR */
+.ad-sidebar{background:var(--b);border:2px solid var(--ps);padding:1.5rem}
+.ad-sidebar h3{font-family:'Cinzel',serif;font-size:0.9rem;color:var(--o);letter-spacing:2px;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--ps)}
+.ad-sidebar a{display:block;padding:0.8rem;color:var(--f);text-decoration:none;font-size:0.9rem;transition:all 0.3s;border-left:3px solid transparent}
+.ad-sidebar a:hover,.ad-sidebar a.active{background:var(--p);border-left-color:var(--o);color:var(--o)}
+.ad-sidebar .sec-title{font-family:'Cinzel',serif;font-size:0.75rem;color:var(--fc);margin-top:1.5rem;margin-bottom:0.5rem;letter-spacing:1px}
+
+/* MAIN CONTENT */
+.ad-main{background:var(--b);border:2px solid var(--ps);padding:2rem}
+.ad-main h2{font-family:'Cinzel',serif;font-size:1.5rem;color:var(--f);margin-bottom:1.5rem;letter-spacing:2px}
+
+/* DASHBOARD CARDS */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem}
+.dash-card{background:var(--p);border:2px solid var(--ps);padding:1.5rem;text-align:center;transition:all 0.3s}
+.dash-card:hover{border-color:var(--o);transform:translateY(-3px)}
+.dash-card .num{font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--o);font-weight:700}
+.dash-card .lab{font-family:'Cinzel',serif;font-size:0.75rem;color:var(--fc);letter-spacing:2px;text-transform:uppercase;margin-top:0.5rem}
+.dash-card .sub{font-size:0.75rem;color:var(--fc);opacity:0.7;margin-top:0.3rem}
+
+/* TABLES */
+.ad-table{width:100%;border-collapse:collapse;margin-bottom:2rem}
+.ad-table th{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--o);letter-spacing:1px;padding:1rem;text-align:left;border-bottom:2px solid var(--o);background:var(--p)}
+.ad-table td{padding:1rem;border-bottom:1px solid var(--ps);font-size:0.9rem}
+.ad-table tr:hover{background:var(--p)}
+.ad-table .status{font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:3px;font-family:'Cinzel',serif;letter-spacing:1px}
+.st-active{background:var(--v);color:var(--b)}.st-susp{background:var(--r);color:var(--b)}.st-beta{background:var(--o);color:var(--n)}
+
+/* INPUTS */
+.ad-input{width:100%;padding:0.6rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.ad-input:focus{outline:none;border-color:var(--o)}
+.ad-input.num{width:80px;text-align:center}
+.ad-select{padding:0.6rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.ad-select:focus{outline:none;border-color:var(--o)}
+
+/* BUTTONS */
+.ad-btn{font-family:'Cinzel',serif;padding:0.6rem 1.5rem;border:2px solid var(--o);background:transparent;color:var(--o);font-size:0.8rem;letter-spacing:1px;cursor:pointer;transition:all 0.3s}
+.ad-btn:hover{background:var(--o);color:var(--b)}
+.ad-btn.primary{background:var(--o);color:var(--b)}.ad-btn.primary:hover{background:var(--os)}
+.ad-btn.danger{background:var(--r);border-color:var(--r);color:var(--b)}.ad-btn.danger:hover{background:var(--rs)}
+.ad-btn.save{background:var(--v);border-color:var(--v);color:var(--b)}.ad-btn.save:hover{background:var(--vc)}
+
+/* RELIABILITY BAR */
+.rel-bar-mini{width:100px;height:6px;background:var(--ps);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:0.5rem}
+.rel-fill-mini{height:100%;border-radius:3px}
+
+/* LOGS */
+.log-entry{padding:0.8rem;border-bottom:1px solid var(--ps);font-size:0.85rem}
+.log-entry .time{font-family:'Cinzel',serif;color:var(--o);font-size:0.75rem;margin-right:1rem}
+.log-entry .user{color:var(--f);font-weight:600}
+.log-entry .action{color:var(--fc)}
+.log-entry .detail{color:var(--os);font-style:italic}
+
+/* BANNER EDITOR */
+.banner-editor{background:var(--p);border:2px solid var(--ps);padding:1.5rem;margin-bottom:2rem}
+.banner-editor h4{font-family:'Cinzel',serif;color:var(--o);margin-bottom:1rem;font-size:0.9rem}
+.banner-editor textarea{width:100%;padding:1rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.9rem;min-height:100px;resize:vertical}
+.banner-editor textarea:focus{outline:none;border-color:var(--o)}
+
+/* TABS */
+.ad-tabs{display:flex;gap:0.5rem;margin-bottom:2rem;border-bottom:2px solid var(--ps)}
+.ad-tab{padding:0.8rem 1.5rem;font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:1px;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.3s}
+.ad-tab:hover{color:var(--o)}
+.ad-tab.active{border-bottom-color:var(--o);color:var(--o)}
+
+/* HIDDEN */
+.hidden{display:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.ad-container{grid-template-columns:1fr}
+.ad-sidebar{display:none}
+.dash-grid{grid-template-columns:1fr 1fr}
+.ad-header{flex-direction:column;gap:1rem}
+}
 </style>
-  <link rel="stylesheet" href="chatbot.css">
+<base target="_blank">
 </head>
 <body>
 
-<div class="navbar">
-<h1>BrevettIAmo - Admin Panel</h1>
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="login-screen">
+<div class="login-box">
+<h2>ADMIN ACCESS</h2>
+<p>Pannello di controllo BrevettIAmo<br>Solo personale autorizzato</p>
+<input type="email" id="login-email" placeholder="Email admin" value="">
+<input type="password" id="login-password" placeholder="Password">
+<button onclick="doLogin()">ACCEDI</button>
+<div class="login-error" id="login-error">Credenziali non valide o utente non autorizzato</div>
+</div>
 </div>
 
-<div class="container">
+<!-- ADMIN INTERFACE -->
+<div id="admin-interface" class="hidden">
 
-<div id="messaggi"></div>
-<div class="card">
-<h2>Pacchetti</h2>
-<div class="loading" id="loading-pacchetti">Caricamento pacchetti da Supabase...</div>
-<div id="tabella-pacchetti-container" style="display:none;">
-<table>
-<<thead>
-<tr><th>Ord</th><th>Slug</th><th>Nome</th><th>Categoria</th><th>Prezzo</th><th>Cred</th><th>Tempo</th><th>Stato</th><th>Azioni</th></tr>
-</thead>
-<tbody id="pacchetti-body"></tbody>
+<!-- HEADER -->
+<div class="ad-header">
+<div style="display:flex;align-items:center;gap:1rem">
+<h1>BREVETTIAMO ADMIN</h1>
+<span class="version">v1.0.0-BETA</span>
+</div>
+<div style="display:flex;align-items:center;gap:1rem">
+<span class="user-info" id="user-info">Admin</span>
+<button onclick="doLogout()">ESCI</button>
+</div>
+</div>
+
+<!-- CONTAINER -->
+<div class="ad-container">
+
+<!-- SIDEBAR -->
+<div class="ad-sidebar">
+<h3>NAVIGAZIONE</h3>
+<a href="#" class="active" onclick="showTab('dashboard')">Dashboard</a>
+<a href="#" onclick="showTab('services')">Servizi BrevettIAmo</a>
+<a href="#" onclick="showTab('occhio')">L'OCCHIO</a>
+<a href="#" onclick="showTab('pricing')">Pacchetti & Prezzi</a>
+<a href="#" onclick="showTab('stats')">Statistiche</a>
+<a href="#" onclick="showTab('banner')">Banner & Disclaimer</a>
+<div class="sec-title">SICUREZZA</div>
+<a href="#" onclick="showTab('logs')">Log Operazioni</a>
+<a href="#" onclick="showTab('users')">Utenti</a>
+<a href="#" onclick="showTab('backup')">Backup & Export</a>
+</div>
+
+<!-- MAIN -->
+<div class="ad-main">
+
+<!-- DASHBOARD -->
+<div id="tab-dashboard">
+<h2>Dashboard</h2>
+<div class="dash-grid">
+<div class="dash-card">
+<div class="num" id="dash-users">0</div>
+<div class="lab">Utenti Registrati</div>
+<div class="sub">Beta testers attivi</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-services">6</div>
+<div class="lab">Servizi Attivi</div>
+<div class="sub">Di 6 totali</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-occhio">4</div>
+<div class="lab">Servizi L'OCCHIO</div>
+<div class="sub">Tutti operativi</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-reliability">78%</div>
+<div class="lab">Affidabilita Media</div>
+<div class="sub">In incremento</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-piva">NO</div>
+<div class="lab">P.IVA</div>
+<div class="sub" style="color:var(--r)">Servizi umani sospesi</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-payments">NO</div>
+<div class="lab">Pagamenti</div>
+<div class="sub" style="color:var(--v)">Tutto gratuito</div>
+</div>
+</div>
+
+<h3 style="font-family:'Cinzel',serif;color:var(--o);margin-bottom:1rem;font-size:1rem">STATO PIATTAFORMA</h3>
+<table class="ad-table">
+<tr><th>Componente</th><th>Stato</th><th>Affidabilita</th><th>Note</th></tr>
+<tr><td>Wizard Brevetto</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:85%;background:var(--v)"></div></div>85%</td><td>Funzionante</td></tr>
+<tr><td>Analisi 19 IA</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:78%;background:var(--o)"></div></div>78%</td><td>Funzionante</td></tr>
+<tr><td>Tavole SVG</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:82%;background:var(--v)"></div></div>82%</td><td>Funzionante</td></tr>
+<tr><td>Ricerca Prior Art</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:75%;background:var(--o)"></div></div>75%</td><td>Funzionante</td></tr>
+<tr><td>Rivendicazioni</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:72%;background:var(--o)"></div></div>72%</td><td>Funzionante</td></tr>
+<tr><td>Report Completo</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:80%;background:var(--v)"></div></div>80%</td><td>Funzionante</td></tr>
+<tr><td>Assistenza Umana</td><td><span class="status st-susp">SOSPESO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:0%;background:var(--r)"></div></div>N/D</td><td>Attesa P.IVA</td></tr>
+<tr><td>L'OCCHIO Falco</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:82%;background:var(--v)"></div></div>82%</td><td>Funzionante</td></tr>
+<tr><td>L'OCCHIO Lince</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:75%;background:var(--o)"></div></div>75%</td><td>Funzionante</td></tr>
+<tr><td>L'OCCHIO Aquila</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:68%;background:var(--o)"></div></div>68%</td><td>Funzionante</td></tr>
+<tr><td>L'OCCHIO Giove</td><td><span class="status st-active">ATTIVO</span></td><td><div class="rel-bar-mini"><div class="rel-fill-mini" style="width:80%;background:var(--v)"></div></div>80%</td><td>Funzionante</td></tr>
 </table>
 </div>
+
+<!-- SERVICES -->
+<div id="tab-services" class="hidden">
+<h2>Servizi BrevettIAmo</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">Modifica stato, affidabilita e prezzi di mercato. Le modifiche sono loggate automaticamente.</p>
+<table class="ad-table" id="srv-table">
+<tr><th>Servizio</th><th>Stato</th><th>Affidabilita</th><th>Prezzo Mercato</th><th>Risparmio Tempo</th><th>Risparmio Costo</th><th>Azioni</th></tr>
+<!-- Popolato via JS -->
+</table>
+<div style="text-align:right;margin-top:1rem">
+<button class="ad-btn save" onclick="saveServices()">SALVA MODIFICHE</button>
 </div>
-<div class="stats">
-<div class="stat-card"><h3>Servizi Attivi</h3><div class="value" id="stat-attivi">-</div></div>
-<div class="stat-card"><h3>Servizi Disattivi</h3><div class="value" id="stat-disattivi">-</div></div>
-<div class="stat-card"><h3>Totale Servizi</h3><div class="value" id="stat-totali">-</div></div>
-<div class="stat-card"><h3>Prezzo Medio</h3><div class="value" id="stat-medio">-</div></div>
 </div>
 
-<div class="card">
-<h2>Servizi Singoli</h2>
-<div class="loading" id="loading">Caricamento servizi da Supabase...</div>
-<div id="tabella-container" style="display:none;">
-<table>
-<<thead>
-<tr><th>Ord</th><th>Slug</th><th>Nome</th><th>Categoria</th><th>Prezzo</th><th>Cred</th><th>Tempo</th><th>Stato</th><th>Azioni</th></tr>
-</thead>
-<tbody id="servizi-body"></tbody>
+<!-- OCCHIO -->
+<div id="tab-occhio" class="hidden">
+<h2>L'OCCHIO — Servizi Sorveglianza</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">Gestisci i 4 servizi di monitoraggio e la loro affidabilita.</p>
+<table class="ad-table" id="oc-table">
+<tr><th>Servizio</th><th>Stato</th><th>Affidabilita</th><th>Dettaglio</th><th>Azioni</th></tr>
+</table>
+<div style="text-align:right;margin-top:1rem">
+<button class="ad-btn save" onclick="saveOcchio()">SALVA MODIFICHE</button>
+</div>
+</div>
+
+<!-- PRICING -->
+<div id="tab-pricing" class="hidden">
+<h2>Pacchetti e Prezzi</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">I prezzi sono INDICATIVI. Nessun pagamento e attivo durante la beta.</p>
+<table class="ad-table" id="pr-table">
+<tr><th>Pacchetto</th><th>Prezzo</th><th>Periodo</th><th>Affidabilita</th><th>Feature</th><th>Azioni</th></tr>
+</table>
+<div style="text-align:right;margin-top:1rem">
+<button class="ad-btn save" onclick="savePricing()">SALVA MODIFICHE</button>
+</div>
+</div>
+
+<!-- STATS -->
+<div id="tab-stats" class="hidden">
+<h2>Statistiche Piattaforma</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">Modifica i valori mostrati nella barra statistiche della homepage.</p>
+<div class="banner-editor">
+<h4>Statistiche Homepage</h4>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+<div>
+<label style="font-size:0.8rem;color:var(--fc);display:block;margin-bottom:0.3rem">Beta Testers</label>
+<input type="number" class="ad-input" id="stat-users" value="127">
+</div>
+<div>
+<label style="font-size:0.8rem;color:var(--fc);display:block;margin-bottom:0.3rem">Ore Risparmiate</label>
+<input type="number" class="ad-input" id="stat-hours" value="2847">
+</div>
+<div>
+<label style="font-size:0.8rem;color:var(--fc);display:block;margin-bottom:0.3rem">Euro Risparmiati</label>
+<input type="number" class="ad-input" id="stat-money" value="45600">
+</div>
+<div>
+<label style="font-size:0.8rem;color:var(--fc);display:block;margin-bottom:0.3rem">Affidabilita Media (%)</label>
+<input type="number" class="ad-input" id="stat-reliability" value="78" min="0" max="100">
+</div>
+</div>
+<button class="ad-btn save" onclick="saveStats()">AGGIORNA STATISTICHE</button>
+</div>
+</div>
+
+<!-- BANNER -->
+<div id="tab-banner" class="hidden">
+<h2>Banner Beta & Disclaimer</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">Modifica il testo legale mostrato in tutte le pagine.</p>
+<div class="banner-editor">
+<h4>Testo Banner Rosso (top)</h4>
+<textarea id="banner-text">BETA v1.0.0 — TUTTI I SERVIZI SONO GRATUITI — I PREZZI SONO INDICATIVI — NESSUN PAGAMENTO ATTIVO</textarea>
+</div>
+<div class="banner-editor">
+<h4>Disclaimer Legale</h4>
+<textarea id="disclaimer-text">Questa piattaforma e in fase BETA sperimentale. Tutti i servizi sono offerti GRATUITAMENTE e i prezzi visualizzati hanno solo scopo informativo. Nessun pagamento e attualmente attivo. I risultati generati dall'Intelligenza Artificiale hanno un livello di affidabilita indicato per ciascun servizio. L'utente e invitato a verificare sempre con un professionista abilitato (Avvocato, Consulente Proprieta Industriale, Ingegnere). Il gestore declina ogni responsabilita civile e professionale per i risultati ottenuti. Servizi con assistenza umana sono temporaneamente SOSPESI in attesa dell'attivazione della P.IVA e del reclutamento delle figure professionali qualificate.</textarea>
+</div>
+<div class="banner-editor">
+<h4>Footer Legale</h4>
+<textarea id="footer-text">BREVETTIAMO v1.0.0-BETA | Piattaforma sperimentale | Nessun pagamento attivo | Servizi con assistenza umana sospesi | P.IVA in fase di attivazione | L'utente e responsabile della verifica dei risultati con professionisti abilitati.</textarea>
+</div>
+<div style="text-align:right">
+<button class="ad-btn save" onclick="saveBanner()">SALVA TESTI LEGALI</button>
+</div>
+</div>
+
+<!-- LOGS -->
+<div id="tab-logs" class="hidden">
+<h2>Log Operazioni</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">Traccia di tutte le modifiche effettuate dall'admin.</p>
+<div style="display:flex;gap:1rem;margin-bottom:1rem">
+<button class="ad-btn" onclick="loadLogs()">AGGIORNA</button>
+<button class="ad-btn" onclick="exportLogs()">ESPORTA CSV</button>
+</div>
+<div id="logs-container" style="max-height:500px;overflow-y:auto;border:2px solid var(--ps)">
+<!-- Popolato via JS -->
+</div>
+</div>
+
+<!-- USERS -->
+<div id="tab-users" class="hidden">
+<h2>Gestione Utenti</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">Visualizza e gestisci gli utenti registrati.</p>
+<table class="ad-table" id="users-table">
+<tr><th>Email</th><th>Ruolo</th><th>Data Registrazione</th><th>Stato</th><th>Azioni</th></tr>
 </table>
 </div>
+
+<!-- BACKUP -->
+<div id="tab-backup" class="hidden">
+<h2>Backup & Export</h2>
+<p style="color:var(--fc);margin-bottom:1.5rem">Esporta dati per backup legale e archiviazione.</p>
+<div class="dash-grid">
+<div class="dash-card" style="cursor:pointer" onclick="exportUsers()">
+<div class="num">CSV</div>
+<div class="lab">Utenti</div>
+<div class="sub">Esporta tutti i dati utente</div>
+</div>
+<div class="dash-card" style="cursor:pointer" onclick="exportLogs()">
+<div class="num">CSV</div>
+<div class="lab">Log Operazioni</div>
+<div class="sub">Esporta log completo</div>
+</div>
+<div class="dash-card" style="cursor:pointer" onclick="exportServices()">
+<div class="num">JSON</div>
+<div class="lab">Configurazione</div>
+<div class="sub">Esporta stato servizi</div>
+</div>
+<div class="dash-card" style="cursor:pointer" onclick="exportAll()">
+<div class="num">ZIP</div>
+<div class="lab">Backup Completo</div>
+<div class="sub">Tutti i dati piattaforma</div>
+</div>
+</div>
 </div>
 
-<div class="card">
-<h2>Configurazione AI</h2>
-<p>Modello: <strong>meta-llama/llama-3.1-8b-instruct</strong></p>
-<p>Stato: <strong>Attivo</strong></p>
-</div>
+</div><!-- /ad-main -->
+</div><!-- /ad-container -->
+</div><!-- /admin-interface -->
 
-</div>
-
-<div class="modal-overlay" id="modal-campi">
-<div class="modal">
-<h3>Editor Campi Form JSON</h3>
-<<textarea id="campi-json"></textarea>
-<div class="modal-buttons">
-<button class="btn-secondary" onclick="chiudiModal()">Annulla</button>
-<button class="btn-primary" onclick="salvaCampiForm()">Salva Campi</button>
-</div>
-</div>
-</div>
-
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-let servizioCorrenteId = null;
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-async function caricaServizi() {
-  const container = document.getElementById('loading');
-  try {
-    const { data, error } = await supabaseClient.from('servizi_singoli').select('*').order('ordine');
-    if (error) throw error;
-    if (!data || data.length === 0) { container.textContent = 'Nessun servizio trovato.'; return; }
-    aggiornaStats(data); renderTabella(data);
-    container.style.display = 'none'; document.getElementById('tabella-container').style.display = 'block';
-  } catch (err) { container.textContent = 'Errore: ' + err.message; mostraMessaggio('Errore: ' + err.message, 'error'); }
+let currentUser=null;
+let currentTab='dashboard';
+
+// DEFAULT DATA
+let SRV_DATA=[
+{id:'wizard',name:'Wizard Brevetto',status:'active',rel:85,price:2500,saveT:'15 ore',saveM:'€2.500'},
+{id:'analisi',name:'Analisi con 19 IA',status:'active',rel:78,price:1800,saveT:'20 ore',saveM:'€1.800'},
+{id:'tavole',name:'Tavole SVG',status:'active',rel:82,price:1200,saveT:'10 ore',saveM:'€1.200'},
+{id:'priorart',name:'Ricerca Prior Art',status:'active',rel:75,price:3000,saveT:'25 ore',saveM:'€3.000'},
+{id:'rivend',name:'Redazione Rivendicazioni',status:'active',rel:72,price:3500,saveT:'30 ore',saveM:'€3.500'},
+{id:'report',name:'Report Completo',status:'active',rel:80,price:2000,saveT:'18 ore',saveM:'€2.000'}
+];
+
+let OC_DATA=[
+{id:'falco',name:'FALCO',status:'active',rel:82,det:'Scansione: 24/7'},
+{id:'lince',name:'LINCE',status:'active',rel:75,det:'Alert: Istantanei'},
+{id:'aquila',name:'AQUILA',status:'active',rel:68,det:'Azione: Immediata'},
+{id:'giove',name:'GIOVE',status:'active',rel:80,det:'Copertura: Globale'}
+];
+
+let PR_DATA=[
+{id:'starter',name:'STARTER',price:29,period:'/mese',rel:72},
+{id:'pro',name:'PRO',price:99,period:'/mese',rel:80},
+{id:'enterprise',name:'ENTERPRISE',price:299,period:'/mese',rel:85}
+];
+
+let LOGS=[];
+
+// LOGIN
+async function doLogin(){
+const email=document.getElementById('login-email').value;
+const password=document.getElementById('login-password').value;
+const error=document.getElementById('login-error');
+
+try{
+const {data,error:authError}=await supabase.auth.signInWithPassword({email,password});
+if(authError)throw authError;
+
+// Check admin role
+const {data:profile}=await supabase.from('profiles').select('role').eq('id',data.user.id).single();
+if(!profile||profile.role!=='admin'){
+await supabase.auth.signOut();
+throw new Error('Non autorizzato');
 }
 
-function aggiornaStats(data) {
-  const attivi = data.filter(s => s.stato === 'attivo').length;
-  const disattivi = data.filter(s => s.stato === 'disattivo').length;
-  const totale = data.length;
-  const medio = data.length > 0 ? (data.reduce((a, s) => a + parseFloat(s.prezzo), 0) / data.length).toFixed(2) : 0;
-  document.getElementById('stat-attivi').textContent = attivi;
-  document.getElementById('stat-disattivi').textContent = disattivi;
-  document.getElementById('stat-totali').textContent = totale;
-  document.getElementById('stat-medio').textContent = '€' + medio;
+currentUser=data.user;
+document.getElementById('user-info').textContent=email;
+document.getElementById('login-screen').classList.add('hidden');
+document.getElementById('admin-interface').classList.remove('hidden');
+
+addLog('LOGIN','Accesso admin effettuato');
+loadAllData();
+
+}catch(e){
+error.style.display='block';
+error.textContent='Errore: '+(e.message||'Credenziali non valide');
+console.error(e);
+}
 }
 
-function renderTabella(data) {
-  let html = '';
-  data.forEach(s => {
-    const statoClass = s.stato === 'attivo' ? 'stato-attivo' : 'stato-disattivo';
-    const statoLabel = s.stato === 'attivo' ? 'Attivo' : 'Disattivo';
-    let campiCount = 0;
-    try { campiCount = s.campi_form ? JSON.parse(s.campi_form).length : 0; } catch (e) { campiCount = 0; }
-    html += `<tr data-id="${s.id}">
-      <td><input type="number" value="${s.ordine || 0}" min="0" style="width:50px" id="ord_${s.id}"></td>
-      <td><input type="text" value="${s.slug}" style="width:120px;font-size:11px" id="slug_${s.id}"></td>
-      <td><input type="text" value="${s.nome}" style="width:150px" id="nome_${s.id}"></td>
-      <td><input type="text" value="${s.categoria}" style="width:100px" id="cat_${s.id}"></td>
-      <td><input type="number" value="${s.prezzo}" min="0" step="0.01" style="width:80px" id="prezzo_${s.id}"></td>
-      <td><input type="number" value="${s.crediti}" min="0" style="width:60px" id="cred_${s.id}"></td>
-      <td><input type="text" value="${s.tempo_elaborazione || ''}" style="width:100px" id="tempo_${s.id}"></td>
-      <td><button class="${statoClass}" onclick="toggleStato('${s.id}', '${s.stato}')">${statoLabel}</button></td>
-      <td><button class="btn-salva" onclick="salvaServizio('${s.id}')">Salva</button><button class="btn-campi" onclick="apriCampi('${s.id}')">Campi (${campiCount})</button></td>
-    </tr>`;
-  });
-  document.getElementById('servizi-body').innerHTML = html;
+function doLogout(){
+supabase.auth.signOut();
+location.reload();
 }
 
-async function toggleStato(id, statoAttuale) {
-  const nuovoStato = statoAttuale === 'attivo' ? 'disattivo' : 'attivo';
-  try { const { error } = await supabaseClient.from('servizi_singoli').update({ stato: nuovoStato }).eq('id', id); if (error) throw error; mostraMessaggio('Stato aggiornato', 'success'); caricaServizi(); } 
-  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
+// TAB SWITCHING
+function showTab(tab){
+document.querySelectorAll('[id^="tab-"]').forEach(el=>el.classList.add('hidden'));
+document.getElementById('tab-'+tab).classList.remove('hidden');
+document.querySelectorAll('.ad-sidebar a').forEach(a=>a.classList.remove('active'));
+event.target.classList.add('active');
+currentTab=tab;
+
+if(tab==='logs')loadLogs();
+if(tab==='users')loadUsers();
 }
 
-async function salvaServizio(id) {
-const dati = {
-    ordine: parseInt(document.getElementById('ord_' + id).value) || 0,
-    slug: document.getElementById('slug_' + id).value.trim(),
-    nome: document.getElementById('nome_' + id).value.trim(),
-    categoria: document.getElementById('cat_' + id).value.trim(),
-    prezzo: parseFloat(document.getElementById('prezzo_' + id).value) || 0,
-    crediti: parseInt(document.getElementById('cred_' + id).value) || 1,
-    tempo_elaborazione: document.getElementById('tempo_' + id).value.trim()
+// LOAD DATA
+async function loadAllData(){
+try{
+// Load from Supabase
+const {data:srv}=await supabase.from('services').select('*');
+if(srv)SRV_DATA=srv;
+
+const {data:oc}=await supabase.from('occhio_services').select('*');
+if(oc)OC_DATA=oc;
+
+const {data:pr}=await supabase.from('pricing').select('*');
+if(pr)PR_DATA=pr;
+
+const {data:stats}=await supabase.from('platform_stats').select('*').single();
+if(stats){
+document.getElementById('stat-users').value=stats.beta_testers||127;
+document.getElementById('stat-hours').value=stats.hours_saved||2847;
+document.getElementById('stat-money').value=stats.money_saved||45600;
+document.getElementById('stat-reliability').value=stats.avg_reliability||78;
+}
+
+renderServices();
+renderOcchio();
+renderPricing();
+
+}catch(e){
+console.log('Using defaults:',e);
+renderServices();
+renderOcchio();
+renderPricing();
+}
+}
+
+// RENDER FUNCTIONS
+function getStClass(s){return s==='active'?'st-active':s==='suspended'?'st-susp':'st-beta';}
+function getStLabel(s){return s==='active'?'ATTIVO':s==='suspended'?'SOSPESO':'BETA';}
+function getRelClass(r){return r>=80?'rel-high':r>=70?'rel-med':'rel-low';}
+
+function renderServices(){
+const tbody=document.getElementById('srv-table');
+tbody.innerHTML='<tr><th>Servizio</th><th>Stato</th><th>Affidabilita</th><th>Prezzo Mercato</th><th>Risparmio Tempo</th><th>Risparmio Costo</th><th>Azioni</th></tr>'+
+SRV_DATA.map((s,i)=>`<tr>
+<td><strong>${s.name}</strong></td>
+<td><select class="ad-select" onchange="SRV_DATA[${i}].status=this.value;renderServices();">
+<option value="active" ${s.status==='active'?'selected':''}>ATTIVO</option>
+<option value="suspended" ${s.status==='suspended'?'selected':''}>SOSPESO</option>
+<option value="beta" ${s.status==='beta'?'selected':''}>BETA</option>
+</select></td>
+<td><input type="number" class="ad-input num" value="${s.rel}" min="0" max="100" onchange="SRV_DATA[${i}].rel=parseInt(this.value);renderServices();">%</td>
+<td><input type="number" class="ad-input" value="${s.price}" onchange="SRV_DATA[${i}].price=parseInt(this.value)"></td>
+<td><input type="text" class="ad-input" value="${s.saveT}" onchange="SRV_DATA[${i}].saveT=this.value"></td>
+<td><input type="text" class="ad-input" value="${s.saveM}" onchange="SRV_DATA[${i}].saveM=this.value"></td>
+<td><button class="ad-btn danger" onclick="deleteService(${i})">Elimina</button></td>
+</tr>`).join('');
+}
+
+function renderOcchio(){
+const tbody=document.getElementById('oc-table');
+tbody.innerHTML='<tr><th>Servizio</th><th>Stato</th><th>Affidabilita</th><th>Dettaglio</th><th>Azioni</th></tr>'+
+OC_DATA.map((o,i)=>`<tr>
+<td><strong>${o.name}</strong></td>
+<td><select class="ad-select" onchange="OC_DATA[${i}].status=this.value;renderOcchio();">
+<option value="active" ${o.status==='active'?'selected':''}>ATTIVO</option>
+<option value="suspended" ${o.status==='suspended'?'selected':''}>SOSPESO</option>
+</select></td>
+<td><input type="number" class="ad-input num" value="${o.rel}" min="0" max="100" onchange="OC_DATA[${i}].rel=parseInt(this.value);renderOcchio();">%</td>
+<td><input type="text" class="ad-input" value="${o.det}" onchange="OC_DATA[${i}].det=this.value"></td>
+<td><button class="ad-btn danger" onclick="deleteOcchio(${i})">Elimina</button></td>
+</tr>`).join('');
+}
+
+function renderPricing(){
+const tbody=document.getElementById('pr-table');
+tbody.innerHTML='<tr><th>Pacchetto</th><th>Prezzo</th><th>Periodo</th><th>Affidabilita</th><th>Azioni</th></tr>'+
+PR_DATA.map((p,i)=>`<tr>
+<td><strong>${p.name}</strong></td>
+<td><input type="number" class="ad-input num" value="${p.price}" onchange="PR_DATA[${i}].price=parseInt(this.value)"></td>
+<td><input type="text" class="ad-input" value="${p.period}" onchange="PR_DATA[${i}].period=this.value"></td>
+<td><input type="number" class="ad-input num" value="${p.rel}" min="0" max="100" onchange="PR_DATA[${i}].rel=parseInt(this.value)">%</td>
+<td><button class="ad-btn danger" onclick="deletePricing(${i})">Elimina</button></td>
+</tr>`).join('');
+}
+
+// SAVE FUNCTIONS
+async function saveServices(){
+try{
+for(const s of SRV_DATA){
+await supabase.from('services').upsert({id:s.id,name:s.name,status:s.status,reliability:s.rel,market_price:s.price,save_time:s.saveT,save_money:s.saveM});
+}
+addLog('SERVIZI','Modificati servizi BrevettIAmo');
+alert('Servizi salvati su Supabase!');
+}catch(e){
+console.error(e);
+alert('Errore salvataggio. Dati mantenuti in locale.');
+}
+}
+
+async function saveOcchio(){
+try{
+for(const o of OC_DATA){
+await supabase.from('occhio_services').upsert({id:o.id,name:o.name,status:o.status,reliability:o.rel,detail:o.det});
+}
+addLog('OCCHIO','Modificati servizi L'OCCHIO');
+alert('Servizi L'OCCHIO salvati!');
+}catch(e){
+console.error(e);
+alert('Errore salvataggio.');
+}
+}
+
+async function savePricing(){
+try{
+for(const p of PR_DATA){
+await supabase.from('pricing').upsert({id:p.id,name:p.name,price:p.price,period:p.period,reliability:p.rel});
+}
+addLog('PREZZI','Modificati pacchetti prezzo');
+alert('Prezzi salvati!');
+}catch(e){
+console.error(e);
+alert('Errore salvataggio.');
+}
+}
+
+async function saveStats(){
+try{
+const stats={
+beta_testers:parseInt(document.getElementById('stat-users').value),
+hours_saved:parseInt(document.getElementById('stat-hours').value),
+money_saved:parseInt(document.getElementById('stat-money').value),
+avg_reliability:parseInt(document.getElementById('stat-reliability').value)
 };
-  try { const { error } = await supabaseClient.from('servizi_singoli').update(dati).eq('id', id); if (error) throw error; mostraMessaggio('Servizio salvato!', 'success'); caricaServizi(); } 
-  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
+await supabase.from('platform_stats').upsert({id:1,...stats});
+addLog('STATS','Aggiornate statistiche piattaforma');
+alert('Statistiche aggiornate!');
+}catch(e){
+console.error(e);
+alert('Errore aggiornamento statistiche.');
+}
 }
 
-async function apriCampi(id) {
-  servizioCorrenteId = id;
-  try { const { data, error } = await supabaseClient.from('servizi_singoli').select('campi_form').eq('id', id).single(); if (error) throw error; let formatted; try { formatted = JSON.stringify(JSON.parse(data.campi_form || '[]'), null, 2); } catch (e) { formatted = data.campi_form || '[]'; } document.getElementById('campi-json').value = formatted; document.getElementById('modal-campi').classList.add('active'); } 
-  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
+async function saveBanner(){
+try{
+const banner=document.getElementById('banner-text').value;
+const disclaimer=document.getElementById('disclaimer-text').value;
+const footer=document.getElementById('footer-text').value;
+await supabase.from('legal_texts').upsert({id:1,banner,disclaimer,footer});
+addLog('LEGAL','Modificati testi legali');
+alert('Testi legali salvati!');
+}catch(e){
+console.error(e);
+alert('Errore salvataggio testi.');
+}
 }
 
-function chiudiModal() { document.getElementById('modal-campi').classList.remove('active'); servizioCorrenteId = null; }
-
-async function salvaCampiForm() {
-  if (!servizioCorrenteId) return;
-  const jsonText = document.getElementById('campi-json').value;
-  try { JSON.parse(jsonText); } catch (e) { mostraMessaggio('JSON non valido', 'error'); return; }
-  try { const { error } = await supabaseClient.from('servizi_singoli').update({ campi_form: jsonText }).eq('id', servizioCorrenteId); if (error) throw error; chiudiModal(); mostraMessaggio('Campi salvati!', 'success'); caricaServizi(); } 
-  catch (err) { mostraMessaggio('Errore: ' + err.message, 'error'); }
+// LOGS
+function addLog(action,detail){
+const log={
+time:new Date().toISOString(),
+user:currentUser?.email||'unknown',
+action,
+detail
+};
+LOGS.unshift(log);
 }
 
-function mostraMessaggio(testo, tipo) {
-  const container = document.getElementById('messaggi');
-  const div = document.createElement('div');
-  div.className = tipo;
-  div.textContent = testo;
-  container.appendChild(div);
-  setTimeout(() => div.remove(), 5000);
+function loadLogs(){
+const container=document.getElementById('logs-container');
+if(LOGS.length===0){
+container.innerHTML='<div style="padding:2rem;text-align:center;color:var(--fc)">Nessuna operazione registrata in questa sessione</div>';
+return;
+}
+container.innerHTML=LOGS.map(l=>`
+<div class="log-entry">
+<span class="time">${new Date(l.time).toLocaleString('it-IT')}</span>
+<span class="user">${l.user}</span>
+<span class="action">${l.action}</span>
+<span class="detail">${l.detail}</span>
+</div>
+`).join('');
 }
 
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') chiudiModal(); });
-document.getElementById('modal-campi').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-campi')) chiudiModal(); });
-document.addEventListener('DOMContentLoaded', () => {
-  caricaPacchetti();
-  caricaServizi();
+// USERS
+async function loadUsers(){
+try{
+const {data:users}=await supabase.from('profiles').select('*,users(email)').limit(50);
+const tbody=document.getElementById('users-table');
+if(!users||users.length===0){
+tbody.innerHTML='<tr><th>Email</th><th>Ruolo</th><th>Data Registrazione</th><th>Stato</th><th>Azioni</th></tr><tr><td colspan="5" style="text-align:center;padding:2rem">Nessun utente registrato</td></tr>';
+return;
+}
+tbody.innerHTML='<tr><th>Email</th><th>Ruolo</th><th>Data Registrazione</th><th>Stato</th><th>Azioni</th></tr>'+
+users.map(u=>`<tr>
+<td>${u.users?.email||'N/D'}</td>
+<td>${u.role||'user'}</td>
+<td>${new Date(u.created_at).toLocaleDateString('it-IT')}</td>
+<td><span class="status ${u.role==='admin'?'st-active':'st-beta'}">${u.role==='admin'?'ADMIN':'USER'}</span></td>
+<td><button class="ad-btn" onclick="promoteUser('${u.id}')">${u.role==='admin'?'Degrada':'Promuovi'}</button></td>
+</tr>`).join('');
+}catch(e){
+console.error(e);
+document.getElementById('users-table').innerHTML='<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--r)">Errore caricamento utenti</td></tr>';
+}
+}
+
+// EXPORT
+function exportLogs(){
+if(LOGS.length===0){alert('Nessun log da esportare');return;}
+const csv='Time,User,Action,Detail\n'+LOGS.map(l=>`${l.time},${l.user},${l.action},"${l.detail}"`).join('\n');
+downloadFile(csv,'logs_brevettiamo.csv','text/csv');
+}
+
+function exportUsers(){
+alert('Funzione export utenti — richiede query Supabase');
+}
+
+function exportServices(){
+const data={services:SRV_DATA,occhio:OC_DATA,pricing:PR_DATA};
+downloadFile(JSON.stringify(data,null,2),'config_brevettiamo.json','application/json');
+}
+
+function exportAll(){
+alert('Backup completo — richiede implementazione ZIP lato server');
+}
+
+function downloadFile(content,filename,type){
+const blob=new Blob([content],{type});
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;
+a.download=filename;
+a.click();
+URL.revokeObjectURL(url);
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded',()=>{
+// Check existing session
+supabase.auth.getSession().then(({data})=>{
+if(data.session){
+doLogin(); // Will verify admin role
+}
 });
-  // ============ PACCHETTI ============
-async function caricaPacchetti() {
-  const container = document.getElementById('loading-pacchetti');
-  try {
-    const { data, error } = await supabaseClient.from('pacchetti').select('*').order('ordine');
-    if (error) throw error;
-    if (!data || data.length === 0) { 
-      container.textContent = 'Nessun pacchetto trovato.'; 
-      return; 
-    }
-    renderPacchetti(data);
-    container.style.display = 'none';
-    document.getElementById('tabella-pacchetti-container').style.display = 'block';
-  } catch (err) { 
-    container.textContent = 'Errore: ' + err.message; 
-  }
-}
-
-function renderPacchetti(data) {
-  let html = '';
-  data.forEach(p => {
-    const statoClass = p.stato === 'attivo' ? 'stato-attivo' : 'stato-disattivo';
-    const statoLabel = p.stato === 'attivo' ? 'Attivo' : 'Disattivo';
-    html += '<tr data-id="' + p.id + '">' +
-      '<td><input type="number" value="' + (p.ordine || 0) + '" min="0" style="width:50px" id="ord_p_' + p.id + '"></td>' +
-      '<td><input type="text" value="' + (p.slug || '') + '" style="width:120px;font-size:11px" id="slug_p_' + p.id + '"></td>' +
-      '<td><input type="text" value="' + (p.nome || '') + '" style="width:150px" id="nome_p_' + p.id + '"></td>' +
-      '<td><input type="text" value="' + (p.categoria || '') + '" style="width:100px" id="cat_p_' + p.id + '"></td>' +
-      '<td><input type="number" value="' + (p.prezzo || 0) + '" min="0" step="0.01" style="width:80px" id="prezzo_p_' + p.id + '"></td>' +
-      '<td><input type="number" value="' + (p.crediti || 0) + '" min="0" style="width:60px" id="cred_p_' + p.id + '"></td>' +
-      '<td><input type="text" value="' + (p.tempo_elaborazione || '') + '" style="width:100px" id="tempo_p_' + p.id + '"></td>' +
-      '<td><button class="' + statoClass + '" onclick="toggleStatoPacchetto(\'' + p.id + '\', \'' + p.stato + '\')">' + statoLabel + '</button></td>' +
-      '<td><button class="btn-salva" onclick="salvaPacchetto(\'' + p.id + '\')">Salva</button></td>' +
-      '</tr>';
-  });
-  document.getElementById('pacchetti-body').innerHTML = html;
-}
-
-async function toggleStatoPacchetto(id, statoAttuale) {
-  const nuovoStato = statoAttuale === 'attivo' ? 'disattivo' : 'attivo';
-  try { 
-    const { error } = await supabaseClient.from('pacchetti').update({ stato: nuovoStato }).eq('id', id); 
-    if (error) throw error; 
-    caricaPacchetti(); 
-  } catch (err) { 
-    alert('Errore: ' + err.message); 
-  }
-}
-
-async function salvaPacchetto(id) {
-  const data = {
-    ordine: parseInt(document.getElementById('ord_p_' + id).value) || 0,
-    slug: document.getElementById('slug_p_' + id).value.trim(),
-    nome: document.getElementById('nome_p_' + id).value.trim(),
-    categoria: document.getElementById('cat_p_' + id).value.trim(),
-    prezzo: parseFloat(document.getElementById('prezzo_p_' + id).value) || 0,
-    crediti: parseInt(document.getElementById('cred_p_' + id).value) || 0,
-    tempo_elaborazione: document.getElementById('tempo_p_' + id).value.trim()
-  };
-  try { 
-    const { error } = await supabaseClient.from('pacchetti').update(data).eq('id', id); 
-    if (error) throw error; 
-    caricaPacchetti(); 
-  } catch (err) { 
-    alert('Errore: ' + err.message); 
-  }
-}
+});
 </script>
-  
-<script src="chatbot.js"></script>
 </body>
 </html>
