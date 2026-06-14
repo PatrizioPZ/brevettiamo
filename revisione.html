@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revisione — BrevettIAmo v1.0.0-BETA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--bl:#4A90E2;--om:rgba(26,26,26,0.15);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+
+.rev-container{max-width:800px;width:100%;background:var(--b);border:3px solid var(--o);padding:3rem;box-shadow:0 20px 60px var(--om)}
+.rev-container::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--r),var(--o),var(--r));margin:-3rem -3rem 2rem -3rem}
+
+.rev-header{text-align:center;margin-bottom:2rem}
+.rev-header .version{display:inline-block;background:var(--r);color:var(--b);padding:0.3rem 1rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;margin-bottom:1rem}
+.rev-header h1{font-family:'Cinzel',serif;font-size:1.8rem;color:var(--f);letter-spacing:2px}
+.rev-header .subtitle{font-family:'Playfair Display',serif;font-style:italic;color:var(--fc)}
+
+.progress-bar{display:flex;justify-content:center;gap:0.5rem;margin-bottom:2rem}
+.progress-step{width:40px;height:4px;background:var(--ps);border-radius:2px;transition:all 0.3s}
+.progress-step.active{background:var(--o)}
+.progress-step.done{background:var(--v)}
+
+.step-indicator{text-align:center;margin-bottom:2rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--fc);letter-spacing:2px}
+
+/* CHOICE CARDS */
+.choice-area{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem}
+.choice-card{background:var(--p);border:3px solid var(--ps);padding:2rem;text-align:center;cursor:pointer;transition:all 0.3s;position:relative}
+.choice-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--o);transform:scaleX(0);transition:transform 0.3s}
+.choice-card:hover::before{transform:scaleX(1)}
+.choice-card:hover{border-color:var(--o);transform:translateY(-5px);box-shadow:0 10px 30px var(--om)}
+.choice-card.selected{border-color:var(--v);background:rgba(45,106,79,0.05)}
+.choice-card.selected::before{transform:scaleX(1);background:var(--v)}
+
+.choice-card .icon{width:60px;height:60px;margin:0 auto 1rem;background:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--o)}
+.choice-card .icon svg{width:30px;height:30px;fill:var(--o)}
+.choice-card h3{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--f);margin-bottom:0.5rem;letter-spacing:1px}
+.choice-card p{color:var(--fc);font-size:0.85rem;margin-bottom:1rem}
+.choice-card .note{font-size:0.75rem;font-family:'Cinzel',serif;letter-spacing:1px;padding:0.3rem 0.8rem;display:inline-block}
+
+.card-accept .note{background:var(--v);color:var(--b)}
+.card-regen .note{background:var(--bl);color:var(--b)}
+
+/* REGENERATE FORM */
+.regen-form{background:var(--p);border:2px solid var(--ps);padding:2rem;margin-bottom:2rem;display:none}
+.regen-form.active{display:block}
+.regen-form h3{font-family:'Cinzel',serif;color:var(--o);margin-bottom:1rem;letter-spacing:2px;font-size:1rem}
+.regen-form p{color:var(--fc);font-size:0.9rem;margin-bottom:1.5rem}
+
+.regen-option{margin-bottom:1rem;padding:1rem;background:var(--b);border:2px solid var(--ps);cursor:pointer;transition:all 0.3s}
+.regen-option:hover{border-color:var(--o)}
+.regen-option.selected{border-color:var(--bl);background:rgba(74,144,226,0.05)}
+.regen-option h4{font-family:'Cinzel',serif;font-size:0.9rem;color:var(--f);margin-bottom:0.3rem}
+.regen-option p{font-size:0.8rem;color:var(--fc)}
+
+.regen-text{width:100%;padding:1rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.9rem;min-height:100px;resize:vertical;margin-bottom:1rem}
+.regen-text:focus{outline:none;border-color:var(--o)}
+
+/* FEEDBACK */
+.feedback-area{background:var(--p);border:2px solid var(--ps);padding:2rem;margin-bottom:2rem;display:none}
+.feedback-area.active{display:block}
+.feedback-area h3{font-family:'Cinzel',serif;color:var(--o);margin-bottom:1rem;letter-spacing:2px;font-size:1rem}
+
+.feedback-stars{display:flex;gap:0.5rem;justify-content:center;margin:1rem 0}
+.feedback-stars .star{width:40px;height:40px;cursor:pointer;transition:all 0.3s}
+.feedback-stars .star svg{width:100%;height:100%;fill:var(--ps);transition:all 0.3s}
+.feedback-stars .star:hover svg,.feedback-stars .star.active svg{fill:var(--o)}
+
+.feedback-text{width:100%;padding:1rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.9rem;min-height:80px;resize:vertical;margin-bottom:1rem}
+.feedback-text:focus{outline:none;border-color:var(--o)}
+
+/* NAV */
+.rev-nav{display:flex;justify-content:space-between;margin-top:2rem;padding-top:2rem;border-top:2px solid var(--ps)}
+.rev-nav .btn{font-family:'Cinzel',serif;padding:1rem 2rem;border:2px solid var(--o);background:transparent;color:var(--o);font-size:0.9rem;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-decoration:none}
+.rev-nav .btn:hover{background:var(--o);color:var(--b)}
+.rev-nav .btn.primary{background:var(--o);color:var(--b)}.rev-nav .btn.primary:hover{background:var(--os)}
+.rev-nav .btn:disabled{background:var(--ps);border-color:var(--ps);color:var(--fc);cursor:not-allowed}
+
+/* SAGGIO BOT */
+.saggio-bot{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(197,160,89,0.4);transition:all 0.3s;z-index:999}
+.saggio-bot:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(197,160,89,0.6)}
+.saggio-bot svg{width:30px;height:30px;fill:var(--b)}
+.saggio-panel{position:fixed;bottom:90px;right:2rem;width:350px;max-height:500px;background:var(--b);border:2px solid var(--o);box-shadow:0 10px 40px var(--om);display:none;flex-direction:column;z-index:998}
+.saggio-panel.active{display:flex}
+.saggio-header{background:var(--n);color:var(--p);padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
+.saggio-header button{background:none;border:none;color:var(--o);cursor:pointer;font-size:1.2rem}
+.saggio-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;max-height:350px}
+.saggio-msg{padding:0.8rem 1rem;border-radius:8px;max-width:85%;font-size:0.85rem}
+.saggio-msg.bot{background:var(--p);align-self:flex-start;border-bottom-left-radius:2px}
+.saggio-msg.user{background:var(--o);color:var(--b);align-self:flex-end;border-bottom-right-radius:2px}
+.saggio-input{display:flex;border-top:2px solid var(--ps)}
+.saggio-input input{flex:1;padding:1rem;border:none;background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.saggio-input input:focus{outline:none}
+.saggio-input button{padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;cursor:pointer}
+
+/* HIDDEN */
+.hidden{display:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){.rev-container{padding:2rem 1.5rem}.choice-area{grid-template-columns:1fr}.saggio-panel{width:calc(100% - 2rem);right:1rem;bottom:80px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<div class="rev-container">
+
+<!-- HEADER -->
+<div class="rev-header">
+<span class="version">BETA v1.0.0</span>
+<h1>REVISIONE RISULTATI</h1>
+<p class="subtitle">Accetta l'analisi AI o richiedi rigenerazione con modifiche</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+<div class="progress-step done"></div>
+<div class="progress-step done"></div>
+<div class="progress-step done"></div>
+<div class="progress-step active"></div>
+</div>
+<div class="step-indicator">PASSO 4 DI 4 — DECISIONE FINALE</div>
+
+<!-- CHOICE -->
+<div class="choice-area" id="choice-area">
+<div class="choice-card card-accept" onclick="selectAccept(this)">
+<div class="icon">
+<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+</div>
+<h3>ACCETTO RISULTATO AI</h3>
+<p>Scarico subito il report completo con descrizione, rivendicazioni e tavole. Uso come bozza per il deposito.</p>
+<span class="note">GRATIS — IMMEDIATO</span>
+</div>
+
+<div class="choice-card card-regen" onclick="selectRegen(this)">
+<div class="icon">
+<svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+</div>
+<h3>RIGENERA CON IA</h3>
+<p>Indica cosa non va. L'IA rigenera la descrizione, le rivendicazioni o le tavole con i parametri corretti.</p>
+<span class="note">GRATIS — RIGENERAZIONE IA</span>
+</div>
+</div>
+
+<!-- REGENERATE FORM -->
+<div class="regen-form" id="regen-form">
+<h3>COSA NON VA?</h3>
+<p>Seleziona cosa vuoi che l'IA rigeneri o descrivi il problema:</p>
+
+<div class="regen-option" onclick="selectRegenOption(this,'descrizione')">
+<h4>Descrizione Tecnica</h4>
+<p>Rigenera la descrizione con altri parametri o piu dettagli</p>
+</div>
+<div class="regen-option" onclick="selectRegenOption(this,'rivendicazioni')">
+<h4>Rivendicazioni</h4>
+<p>Rigenera le rivendicazioni piu larghe o piu strette</p>
+</div>
+<div class="regen-option" onclick="selectRegenOption(this,'tavole')">
+<h4>Tavole SVG</h4>
+<p>Rigenera le tavole con altre viste o dettagli</p>
+</div>
+<div class="regen-option" onclick="selectRegenOption(this,'tutto')">
+<h4>Tutto</h4>
+<p>Rigenera l'intero report da capo con nuovi parametri</p>
+</div>
+
+<textarea class="regen-text" id="regen-text" placeholder="Descrivi cosa non va: 'La descrizione e troppo generica', 'Le rivendicazioni sono troppo larghe', 'Manca il dettaglio X'..."></textarea>
+
+<div style="text-align:center">
+<button class="btn primary" onclick="regenerateAI()" style="padding:1rem 2rem;background:var(--bl);border-color:var(--bl);color:var(--b);font-family:'Cinzel',serif;cursor:pointer">RIGENERA CON IA →</button>
+</div>
+</div>
+
+<!-- FEEDBACK -->
+<div class="feedback-area" id="feedback-area">
+<h3>FEEDBACK BREVETTIAMO</h3>
+<p style="text-align:center;color:var(--fc);font-size:0.9rem;margin-bottom:1.5rem">Aiutaci a migliorare l'IA! Il tuo feedback e prezioso.</p>
+
+<div style="margin-bottom:1.5rem">
+<label style="display:block;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--o);margin-bottom:0.5rem">Quanto sei soddisfatto del risultato AI?</label>
+<div class="feedback-stars" id="stars-soddisfazione">
+<div class="star" onclick="setStar(1)"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+<div class="star" onclick="setStar(2)"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+<div class="star" onclick="setStar(3)"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+<div class="star" onclick="setStar(4)"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+<div class="star" onclick="setStar(5)"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+</div>
+</div>
+
+<textarea class="feedback-text" id="feedback-text" placeholder="Cosa miglioreresti? (opzionale)"></textarea>
+
+<div style="text-align:center">
+<button class="btn primary" onclick="submitFeedback()" style="padding:1rem 2rem;background:var(--o);border-color:var(--o);color:var(--b);font-family:'Cinzel',serif;cursor:pointer">INVIA FEEDBACK</button>
+</div>
+</div>
+
+<!-- NAV -->
+<div class="rev-nav" id="rev-nav">
+<button class="btn" onclick="goTo('servizio.html')">← Indietro</button>
+<button class="btn primary hidden" id="btn-accept" onclick="acceptAndGo()">ACCETTA E SCARICA →</button>
+</div>
+
+</div><!-- /rev-container -->
+
+<!-- SAGGIO BOT -->
+<div class="saggio-bot" onclick="toggleSaggio()" title="Saggio — Il tuo guid">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
+
+<div class="saggio-panel" id="saggio-panel">
+<div class="saggio-header">
+<span>SAGGIO — Guida</span>
+<button onclick="toggleSaggio()">×</button>
+</div>
+<div class="saggio-messages" id="saggio-messages">
+<div class="saggio-msg bot">Sei al passo finale! Puoi accettare il risultato AI (gratis, immediato) o chiedere alla IA di rigenerare con modifiche. Nessuna revisione umana: tutto e gestito dall'IA. Cosa vuoi fare?</div>
+</div>
+<div class="saggio-input">
+<input type="text" id="saggio-input" placeholder="Scrivi la tua domanda..." onkeypress="if(event.key==='Enter')sendSaggio()">
+<button onclick="sendSaggio()">→</button>
+</div>
+</div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+// STATE
+let feedback={soddisfazione:0,testo:''};
+let choice=null;
+let regenOption=null;
+
+// SELECT ACCEPT
+function selectAccept(card){
+document.querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected'));
+card.classList.add('selected');
+document.getElementById('regen-form').classList.remove('active');
+document.getElementById('feedback-area').classList.add('active');
+document.getElementById('btn-accept').classList.remove('hidden');
+choice='accept';
+}
+
+// SELECT REGEN
+function selectRegen(card){
+document.querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected'));
+card.classList.add('selected');
+document.getElementById('regen-form').classList.add('active');
+document.getElementById('feedback-area').classList.remove('active');
+document.getElementById('btn-accept').classList.add('hidden');
+choice='regen';
+}
+
+// SELECT REGEN OPTION
+function selectRegenOption(el,type){
+document.querySelectorAll('.regen-option').forEach(o=>o.classList.remove('selected'));
+el.classList.add('selected');
+regenOption=type;
+}
+
+// REGENERATE AI
+async function regenerateAI(){
+const text=document.getElementById('regen-text').value;
+if(!regenOption){alert('Seleziona cosa rigenerare');return;}
+
+// Show loading
+alert('Rigenerazione IA in corso... (simulazione)\n\nTipo: '+regenOption+'\nNote: '+text+'\n\nIn produzione, l\'IA rigenererebbe il contenuto con i nuovi parametri.');
+
+// Redirect back to servizio
+window.location.href='servizio.html?regen='+regenOption+'&note='+encodeURIComponent(text);
+}
+
+// STARS
+function setStar(n){
+feedback.soddisfazione=n;
+document.querySelectorAll('#stars-soddisfazione .star').forEach((s,i)=>{
+if(i<n)s.classList.add('active');
+else s.classList.remove('active');
+});
+}
+
+// SUBMIT FEEDBACK
+async function submitFeedback(){
+feedback.testo=document.getElementById('feedback-text').value;
+
+try{
+const {data:{session}}=await supabase.auth.getSession();
+const userId=session?.user?.id;
+
+await supabase.from('feedback').insert({
+user_id:userId,
+soddisfazione:feedback.soddisfazione,
+suggerimenti:feedback.testo,
+servizio_usato:'analisi_ia'
+});
+
+alert('Grazie per il feedback!');
+window.location.href='output.html';
+
+}catch(e){
+console.error(e);
+window.location.href='output.html';
+}
+}
+
+// ACCEPT AND GO
+async function acceptAndGo(){
+try{
+const {data:{session}}=await supabase.auth.getSession();
+const userId=session?.user?.id;
+
+await supabase.from('flusso_utente').update({
+step:5,
+revisione_accettata:true,
+updated_at:new Date().toISOString()
+}).eq('user_id',userId).order('created_at',{ascending:false}).limit(1);
+
+window.location.href='output.html';
+
+}catch(e){
+console.error(e);
+window.location.href='output.html';
+}
+}
+
+// NAV
+function goTo(url){window.location.href=url;}
+
+// SAGGIO BOT
+function toggleSaggio(){document.getElementById('saggio-panel').classList.toggle('active');}
+
+const SAGGIO_ANSWERS={
+'accetta':'Accettare il risultato AI significa scaricare subito il report con descrizione, rivendicazioni e tavole. E gratis e immediato.',
+'rigenera':'Rigenerare con IA significa che l'intelligenza artificiale ricrea il contenuto con i tuoi parametri corretti. Seleziona cosa rigenerare e descrivi le modifiche.',
+'umana':'NON c'e revisione umana in questa fase. Solo IA. I servizi umani (SAPIENTIA) sono FUTURE e richiedono P.IVA.',
+'parametri':'Puoi chiedere all'IA di: rendere la descrizione piu tecnica, allargare/stringere rivendicazioni, aggiungere dettagli alle tavole, o rifare tutto da capo.',
+'gratis':'Tutto gratis in beta. Rigenerazioni illimitate. Nessun pagamento.',
+'help':'Puoi: accettare risultato AI, rigenerare con IA (descrizione, rivendicazioni, tavole, tutto), o chiedermi altro.'
+};
+
+function sendSaggio(){
+const input=document.getElementById('saggio-input');
+const msg=input.value.trim();
+if(!msg)return;
+const container=document.getElementById('saggio-messages');
+container.innerHTML+='<div class="saggio-msg user">'+escapeHtml(msg)+'</div>';
+input.value='';
+container.scrollTop=container.scrollHeight;
+
+let answer='Non ho capito. Prova: accetta, rigenera, umana, parametri, gratis, help.';
+const lower=msg.toLowerCase();
+for(const[key,val]of Object.entries(SAGGIO_ANSWERS)){if(lower.includes(key)){answer=val;break;}}
+
+setTimeout(()=>{
+container.innerHTML+='<div class="saggio-msg bot">'+answer+'</div>';
+container.scrollTop=container.scrollHeight;
+},500);
+}
+
+function escapeHtml(text){const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
+</script>
+</body>
+</html>
