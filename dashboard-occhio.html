@@ -7,19 +7,293 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #0f172a; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; }
-        .gradient-text { background: linear-gradient(135deg, #3b82f6, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; transition: all 0.3s; }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15); }
-        .btn { background: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 8px; border: none; cursor: pointer; }
-        .btn:hover { background: #1d4ed8; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; display: none; align-items: center; justify-content: center; }
-.modal-content { background: #1e293b; border: 1px solid #3b82f6; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; color: white; position: relative; }
-        .input { width: 100%; background: #374151; border: 1px solid #4b5563; border-radius: 8px; padding: 0.5rem; color: white; margin-bottom: 1rem; }
-        label { display: block; color: #9ca3af; margin-bottom: 0.5rem; }
-        body.modal-open { overflow: hidden; }
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --accent: #4299e1;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #e53e3e;
+            --dark: #0f172a;
+            --card: #1e293b;
+        }
+        
+        body {
+            background: var(--dark);
+            color: #e2e8f0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .occhio-pulse {
+            animation: pulse-occhio 2s infinite;
+        }
+        
+        @keyframes pulse-occhio {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(66, 153, 225, 0.15);
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-active { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .status-warning { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
+        .status-critical { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #4299e1, #48bb78);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .sidebar {
+            background: var(--card);
+            border-right: 1px solid #334155;
+        }
+        
+        .service-card {
+            background: var(--card);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+        }
+        
+        .allert-item {
+            background: var(--card);
+            border-left: 4px solid var(--warning);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .allert-critical {
+            border-left-color: var(--danger);
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .guanciali-bg {
+            background: linear-gradient(135deg, rgba(26, 54, 93, 0.9), rgba(15, 23, 42, 0.95));
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 8px;
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            color: white;
+            position: relative;
+        }
+        
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 4px;
+        }
+        
+        .input {
+            width: 100%;
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        .btn {
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: #4b5563;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: #6b7280;
+        }
+        
+        .upload-area {
+            border: 2px dashed #4b5563;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .file-list {
+            margin-bottom: 1rem;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background: #374151;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .file-item i {
+            margin-right: 0.5rem;
+            color: #3b82f6;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        
+        .close-btn:hover {
+            color: white;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 0 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .step.active {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .step.completed {
+            color: #48bb78;
+        }
+        
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4b5563;
+            margin-right: 0.5rem;
+        }
+        
+        .step.active .step-dot {
+            background: #3b82f6;
+        }
+        
+        .step.completed .step-dot {
+            background: #48bb78;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -27,7 +301,7 @@
     <nav class="bg-gray-900 border-b border-gray-700 px-6 py-4">
         <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <i class="fas fa-eye text-3xl text-blue-400 pulse"></i>
+                <i class="fas fa-eye text-3xl text-blue-400 occhio-pulse"></i>
                 <div>
                     <h1 class="text-xl font-bold text-white">BrevettIAmo</h1>
                     <p class="text-sm text-gray-400">L'OCCHIO Dashboard</p>
@@ -38,34 +312,74 @@
                     <p class="text-sm text-gray-400">Pacchetto</p>
                     <p class="font-bold text-green-400" id="pacchetto-nome">Starter</p>
                 </div>
-                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm text-white">Esci</button>
+                <div class="text-right">
+                    <p class="text-sm text-gray-400">Analisi oggi</p>
+                    <p class="font-bold text-blue-400"><span id="analisi-usate">0</span>/<span id="analisi-totali">10</span></p>
+                </div>
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm text-white transition">
+                    <i class="fas fa-sign-out-alt"></i> Esci
+                </button>
             </div>
         </div>
     </nav>
 
     <div class="flex">
         <!-- Sidebar -->
-        <aside class="w-64 min-h-screen bg-gray-800 border-r border-gray-700 p-6">
+        <aside class="sidebar w-64 min-h-screen p-6">
             <nav class="space-y-2">
                 <a href="#" class="flex items-center space-x-3 bg-blue-600 bg-opacity-20 text-blue-400 px-4 py-3 rounded-lg">
-                    <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
                 </a>
-                <a href="index.html" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700">
-                    <i class="fas fa-home"></i><span>Home</span>
+                <a href="index.html" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
                 </a>
-                <a href="prezzi.html" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700">
-                    <i class="fas fa-tag"></i><span>Prezzi</span>
+                <a href="prezzi.html" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-tag"></i>
+                    <span>Prezzi</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-search"></i>
+                    <span>Ricerca Brevetti</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Le Mie Pratiche</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-bell"></i>
+                    <span>Allert</span>
+                    <span id="allert-count" class="bg-red-500 text-white text-xs px-2 py-1 rounded-full">0</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-calendar"></i>
+                    <span>Scadenze</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 text-gray-400 hover:text-white px-4 py-3 rounded-lg hover:bg-gray-700 transition">
+                    <i class="fas fa-cog"></i>
+                    <span>Impostazioni</span>
                 </a>
             </nav>
+            
+            <!-- Info Beta -->
+            <div class="mt-8 p-4 bg-yellow-900 bg-opacity-30 border border-yellow-700 rounded-lg">
+                <p class="text-yellow-400 text-sm font-bold mb-2"><i class="fas fa-flask"></i> Modalita Beta</p>
+                <p class="text-yellow-300 text-xs">Tutti i servizi sono gratis. Limite: <span id="beta-limite">10</span> analisi/giorno.</p>
+                <p class="text-yellow-300 text-xs mt-1">Giorni rimasti: <span id="beta-giorni">60</span></p>
+            </div>
         </aside>
 
-        <!-- Main -->
+        <!-- Main Content -->
         <main class="flex-1 p-8">
-            <!-- Status OCCHIO -->
-            <div class="bg-gradient-to-r from-blue-900 to-gray-900 rounded-2xl p-8 mb-8 border border-blue-700">
+            <!-- L'OCCHIO Status -->
+            <div class="guanciali-bg rounded-2xl p-8 mb-8 border border-blue-800">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-6">
-                        <i class="fas fa-eye text-6xl text-blue-400 pulse"></i>
+                        <div class="relative">
+                            <i class="fas fa-eye text-6xl text-blue-400 occhio-pulse"></i>
+                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-900"></div>
+                        </div>
                         <div>
                             <h2 class="text-3xl font-bold gradient-text mb-2">L'OCCHIO e ATTIVO</h2>
                             <p class="text-gray-300 text-lg">Sorveglianza 24/7 su <span id="canali-monitorati" class="text-blue-400 font-bold">3</span> canali</p>
@@ -73,69 +387,102 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-gray-400 text-sm">Stato sistema</p>
-                        <p class="text-green-400 font-bold text-xl">OPERATIVO</p>
+                        <div class="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                            <p class="text-gray-400 text-sm">Stato sistema</p>
+                            <p class="text-green-400 font-bold text-xl">OPERATIVO</p>
+                            <p class="text-gray-500 text-xs mt-1">Ultimo check: <span id="ultimo-check">ora</span></p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Servizi -->
-            <h3 class="text-xl font-bold mb-4">Servizi del tuo pacchetto</h3>
-            <div id="servizi-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <!-- Caricato da JS -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Servizi Attivi -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-cubes text-blue-400 mr-2"></i>
+                        Servizi del tuo pacchetto
+                    </h3>
+                    <div id="servizi-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Servizi caricati dinamicamente -->
+                    </div>
+                </div>
+
+                <!-- Allert Recenti -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-bell text-yellow-400 mr-2"></i>
+                        Allert Recenti
+                    </h3>
+                    <div id="allert-list" class="space-y-3">
+                        <!-- Allert caricati dinamicamente -->
+                    </div>
+                    <div id="no-allert" class="text-center py-8 text-gray-500">
+                        <i class="fas fa-check-circle text-4xl text-green-500 mb-2"></i>
+                        <p>Nessun allert attivo</p>
+                        <p class="text-sm">L'OCCHIO non ha rilevato infrazioni</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Statistiche -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="card text-center">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+                <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 text-center">
+                    <div class="flex items-center justify-between mb-2">
+                        <i class="fas fa-search text-blue-400 text-2xl"></i>
+                        <span class="text-green-400 text-sm">+12%</span>
+                    </div>
                     <p class="text-3xl font-bold text-white" id="stat-infrazioni">0</p>
-                    <p class="text-sm text-gray-400">Infrazioni rilevate</p>
+                    <p class="text-gray-400 text-sm">Infrazioni rilevate</p>
                 </div>
-                <div class="card text-center">
+                <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 text-center">
+                    <div class="flex items-center justify-between mb-2">
+                        <i class="fas fa-gavel text-green-400 text-2xl"></i>
+                        <span class="text-green-400 text-sm">Auto</span>
+                    </div>
                     <p class="text-3xl font-bold text-white" id="stat-azioni">0</p>
-                    <p class="text-sm text-gray-400">Azioni automatiche</p>
+                    <p class="text-gray-400 text-sm">Azioni auto eseguite</p>
                 </div>
-                <div class="card text-center">
-                    <p class="text-3xl font-bold text-green-400" id="stat-risparmio">0</p>
-                    <p class="text-sm text-gray-400">Euro risparmiati</p>
+                <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 text-center">
+                    <div class="flex items-center justify-between mb-2">
+                        <i class="fas fa-euro-sign text-yellow-400 text-2xl"></i>
+                        <span class="text-green-400 text-sm">Risparmio</span>
+                    </div>
+                    <p class="text-3xl font-bold text-white" id="stat-risparmio">0</p>
+                    <p class="text-gray-400 text-sm">Euro risparmiati</p>
                 </div>
-                <div class="card text-center">
-                    <p class="text-3xl font-bold text-blue-400" id="stat-canali">3</p>
-                    <p class="text-sm text-gray-400">Canali monitorati</p>
+                <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 text-center">
+                    <div class="flex items-center justify-between mb-2">
+                        <i class="fas fa-globe text-purple-400 text-2xl"></i>
+                        <span class="text-blue-400 text-sm">Attivi</span>
+                    </div>
+                    <p class="text-3xl font-bold text-white" id="stat-canali">3</p>
+                    <p class="text-gray-400 text-sm">Canali monitorati</p>
+                </div>
+            </div>
+
+            <!-- Calendario Scadenze -->
+            <div class="mt-8 bg-gray-800 rounded-xl p-6 border border-gray-700">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-calendar-alt text-red-400 mr-2"></i>
+                    Scadenze Brevettuali
+                </h3>
+                <div id="calendario-scadenze" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Scadenze caricate dinamicamente -->
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Modal Form -->
+    <!-- Modal -->
     <div id="modal-occhio" class="modal-overlay">
-        <div class="modal-content">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold" id="modal-title">Servizio OCCHIO</h2>
-                <button onclick="chiudiModal()" class="text-gray-400 hover:text-white">X</button>
-            </div>
-            <p class="text-gray-300 mb-4" id="modal-desc">Descrizione servizio</p>
-            <form onsubmit="return false;">
-                <label>Descrizione Tecnica *</label>
-                <textarea id="desc-tecnica" class="input" rows="4" placeholder="Inserisci la descrizione tecnica..."></textarea>
-                
-                <label>Rivendicazioni (una per riga) *</label>
-                <textarea id="rivendicazioni" class="input" rows="4" placeholder="1. Rivendicazione principale..."></textarea>
-                
-                <label>Abstract (max 150 parole) *</label>
-                <textarea id="abstract" class="input" rows="3" placeholder="Riassunto breve..."></textarea>
-                
-                <label>Keywords tecniche</label>
-                <input type="text" id="keywords" class="input" placeholder="meccanica, elettronica, software...">
-                
-                <button onclick="attivaOcchio()" class="btn w-full py-3 text-lg font-bold">
-                    <i class="fas fa-eye mr-2"></i> Attiva L'OCCHIO
-                </button>
-            </form>
+        <div class="modal-content" id="modal-content">
+            <!-- Contenuto caricato dinamicamente -->
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="config.js"></script>
-<script src="dashboard-occhio.js"></script>
+    <script src="dashboard-occhio.js"></script>
 </body>
 </html>
