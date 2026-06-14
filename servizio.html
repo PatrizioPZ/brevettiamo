@@ -1,197 +1,472 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrevettIAmo - Servizio</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; color: #333; }
-        .navbar { background: #1e3c72; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar a { color: white; text-decoration: none; font-weight: 600; }
-        .container { max-width: 800px; margin: 0 auto; padding: 30px; }
-        .card { background: white; padding: 30px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h1 { color: #1e3c72; margin-bottom: 10px; }
-        .prezzo { font-size: 2em; color: #2a5298; font-weight: 700; margin: 20px 0; }
-        .prezzo span { font-size: 0.5em; color: #666; font-weight: 400; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #1e3c72; }
-        input[type="text"], input[type="number"], select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
-        textarea { min-height: 120px; resize: vertical; }
-        .required label:after { content: " *"; color: #dc3545; }
-        .btn { padding: 14px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: 600; }
-        .btn-primary { background: #1e3c72; color: white; }
-        .btn-primary:hover { background: #2a5298; }
-        .loading { text-align: center; padding: 40px; color: #666; }
-        .error { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin: 20px 0; }
-        .success { background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin: 20px 0; }
-    </style>
-  <link rel="stylesheet" href="chatbot.css">  
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Servizio IA — BrevettIAmo v1.0.0-BETA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--bl:#4A90E2;--om:rgba(26,26,26,0.15);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;min-height:100vh;padding:2rem}
+
+.srv-container{max-width:1000px;margin:0 auto;background:var(--b);border:3px solid var(--o);padding:3rem;box-shadow:0 20px 60px var(--om)}
+.srv-container::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--r),var(--o),var(--r));margin:-3rem -3rem 2rem -3rem}
+
+.srv-header{text-align:center;margin-bottom:2rem}
+.srv-header .version{display:inline-block;background:var(--r);color:var(--b);padding:0.3rem 1rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;margin-bottom:1rem}
+.srv-header h1{font-family:'Cinzel',serif;font-size:1.8rem;color:var(--f);letter-spacing:2px}
+.srv-header .subtitle{font-family:'Playfair Display',serif;font-style:italic;color:var(--fc)}
+
+.progress-bar{display:flex;justify-content:center;gap:0.5rem;margin-bottom:2rem}
+.progress-step{width:40px;height:4px;background:var(--ps);border-radius:2px;transition:all 0.3s}
+.progress-step.active{background:var(--o)}
+.progress-step.done{background:var(--v)}
+
+.step-indicator{text-align:center;margin-bottom:2rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--fc);letter-spacing:2px}
+
+/* LOADING */
+.loading-area{text-align:center;padding:3rem}
+.loading-area h2{font-family:'Cinzel',serif;color:var(--o);margin-bottom:1rem;letter-spacing:2px}
+.loading-area p{color:var(--fc);font-style:italic;margin-bottom:2rem}
+
+.ia-pulse{display:flex;justify-content:center;gap:2rem;margin-bottom:2rem}
+.ia-node{text-align:center;opacity:0.3;transition:all 0.5s}
+.ia-node.active{opacity:1;transform:scale(1.1)}
+.ia-node.done{opacity:0.5}
+.ia-node .icon{width:50px;height:50px;margin:0 auto 0.5rem;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--o)}
+.ia-node.active .icon{background:var(--o)}
+.ia-node.active .icon svg{fill:var(--b)}
+.ia-node .icon svg{width:24px;height:24px;fill:var(--o)}
+.ia-node .label{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1px;color:var(--fc)}
+
+.progress-pct{font-family:'Playfair Display',serif;font-size:3rem;color:var(--o);margin:1rem 0}
+.progress-label{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--fc);letter-spacing:2px}
+
+/* RESULTS */
+.results-area{display:none}
+.results-area.active{display:block}
+
+.result-section{margin-bottom:2rem;border:2px solid var(--ps);padding:2rem;background:var(--p)}
+.result-section h3{font-family:'Cinzel',serif;color:var(--o);font-size:1rem;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.result-section h3 .num{width:28px;height:28px;background:var(--o);color:var(--b);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:0.8rem;border-radius:50%}
+
+/* RELIABILITY */
+.rel-display{margin-bottom:1.5rem}
+.rel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
+.rel-label{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--fc);letter-spacing:1px}
+.rel-value{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--o)}
+.rel-bar{width:100%;height:10px;background:var(--ps);border-radius:5px;overflow:hidden}
+.rel-fill{height:100%;border-radius:5px;transition:width 1s ease}
+.rel-high{background:var(--v)}.rel-med{background:var(--o)}.rel-low{background:var(--r)}
+.rel-note{font-size:0.8rem;color:var(--fc);margin-top:0.5rem;font-style:italic}
+
+/* ANALYSIS CARDS */
+.analysis-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
+.analysis-card{background:var(--b);border:2px solid var(--ps);padding:1.5rem;transition:all 0.3s}
+.analysis-card:hover{border-color:var(--o);transform:translateY(-3px)}
+.analysis-card h4{font-family:'Cinzel',serif;color:var(--f);font-size:0.9rem;letter-spacing:1px;margin-bottom:0.5rem}
+.analysis-card .ia-name{font-size:0.75rem;color:var(--o);font-family:'Cinzel',serif;letter-spacing:1px;margin-bottom:0.5rem}
+.analysis-card p{color:var(--fc);font-size:0.85rem;line-height:1.6}
+.analysis-card .confidence{font-size:0.75rem;color:var(--v);margin-top:0.5rem;font-weight:600}
+
+/* SVG PREVIEW */
+.svg-preview{background:var(--b);border:2px solid var(--ps);padding:2rem;text-align:center;margin-bottom:2rem}
+.svg-preview h3{font-family:'Cinzel',serif;color:var(--o);margin-bottom:1rem;letter-spacing:2px}
+.svg-preview svg{max-width:100%;height:auto;border:1px solid var(--ps);background:var(--b)}
+
+/* CLAIMS */
+.claims-list{list-style:none}
+.claims-list li{padding:1rem;border-bottom:1px solid var(--ps);font-size:0.9rem;line-height:1.6}
+.claims-list li .claim-num{font-family:'Cinzel',serif;color:var(--o);font-size:0.8rem;letter-spacing:1px;margin-bottom:0.3rem;display:block}
+.claims-list li:last-child{border-bottom:none}
+
+/* NAV */
+.srv-nav{display:flex;justify-content:space-between;margin-top:2rem;padding-top:2rem;border-top:2px solid var(--ps)}
+.srv-nav .btn{font-family:'Cinzel',serif;padding:1rem 2rem;border:2px solid var(--o);background:transparent;color:var(--o);font-size:0.9rem;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-decoration:none}
+.srv-nav .btn:hover{background:var(--o);color:var(--b)}
+.srv-nav .btn.primary{background:var(--o);color:var(--b)}.srv-nav .btn.primary:hover{background:var(--os)}
+.srv-nav .btn.save{background:var(--v);border-color:var(--v);color:var(--b)}.srv-nav .btn.save:hover{background:var(--vc)}
+
+/* SAGGIO BOT */
+.saggio-bot{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(197,160,89,0.4);transition:all 0.3s;z-index:999}
+.saggio-bot:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(197,160,89,0.6)}
+.saggio-bot svg{width:30px;height:30px;fill:var(--b)}
+.saggio-panel{position:fixed;bottom:90px;right:2rem;width:350px;max-height:500px;background:var(--b);border:2px solid var(--o);box-shadow:0 10px 40px var(--om);display:none;flex-direction:column;z-index:998}
+.saggio-panel.active{display:flex}
+.saggio-header{background:var(--n);color:var(--p);padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
+.saggio-header button{background:none;border:none;color:var(--o);cursor:pointer;font-size:1.2rem}
+.saggio-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;max-height:350px}
+.saggio-msg{padding:0.8rem 1rem;border-radius:8px;max-width:85%;font-size:0.85rem}
+.saggio-msg.bot{background:var(--p);align-self:flex-start;border-bottom-left-radius:2px}
+.saggio-msg.user{background:var(--o);color:var(--b);align-self:flex-end;border-bottom-right-radius:2px}
+.saggio-input{display:flex;border-top:2px solid var(--ps)}
+.saggio-input input{flex:1;padding:1rem;border:none;background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.saggio-input input:focus{outline:none}
+.saggio-input button{padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;cursor:pointer}
+
+/* HIDDEN */
+.hidden{display:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){.srv-container{padding:2rem 1.5rem}.ia-pulse{gap:1rem}.saggio-panel{width:calc(100% - 2rem);right:1rem;bottom:80px}}
+</style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="index.html">BrevettIAmo</a>
-        <a href="index.html">Torna ai Servizi</a>
-    </nav>
+<div class="srv-container">
 
-    <div class="container">
-        <div id="messaggi"></div>
-        
-        <div id="loading" class="loading">Caricamento servizio...</div>
-        
-        <div id="servizio-container" style="display:none;">
-            <div class="card">
-                <h1 id="nome-servizio"></h1>
-                <p id="descrizione-servizio" style="color:#666;"></p>
-                <div class="prezzo">
-                    EUR <span id="prezzo-servizio"></span>
-                    <span>/ <span id="crediti-servizio"></span> crediti</span>
-                </div>
-                <p id="tempo-servizio" style="color:#999; font-size:14px;"></p>
-            </div>
+<!-- HEADER -->
+<div class="srv-header">
+<span class="version">BETA v1.0.0</span>
+<h1>ANALISI INTELLIGENZA ARTIFICIALE</h1>
+<p class="subtitle">Visione + Testo = Descrizione completa della tua invenzione</p>
+</div>
 
-            <div class="card">
-                <h2>Compila i dati</h2>
-                <form id="form-dinamico"></form>
-            </div>
+<!-- PROGRESS -->
+<div class="progress-bar">
+<div class="progress-step done"></div>
+<div class="progress-step done"></div>
+<div class="progress-step active"></div>
+<div class="progress-step"></div>
+</div>
+<div class="step-indicator">PASSO 3 DI 4 — ANALISI IA</div>
 
-            <div class="card">
-                <h2>Pagamento</h2>
-                <p>Riepilogo: <strong id="riepilogo-prezzo"></strong></p>
-                <button class="btn btn-primary" onclick="procediPagamento()">Procedi al Pagamento</button>
-            </div>
-        </div>
-    </div>
+<!-- LOADING -->
+<div class="loading-area" id="loading-area">
+<h2>L'IA sta analizzando i tuoi documenti</h2>
+<p>Stiamo utilizzando 2 intelligenze artificiali specializzate:<br>una per l'immagine (Vision) e una per il testo (Language)</p>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
-    <script>
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<div class="ia-pulse">
+<div class="ia-node active" id="node-vision">
+<div class="icon">
+<<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+</div>
+<div class="label">IA VISION</div>
+</div>
+<div class="ia-node" id="node-text">
+<div class="icon">
+<<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+</div>
+<div class="label">IA TESTO</div>
+</div>
+<div class="ia-node" id="node-synthesis">
+<div class="icon">
+<<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+</div>
+<div class="label">SINTESI</div>
+</div>
+</div>
 
-        let servizioCorrente = null;
-        let slug = new URLSearchParams(window.location.search).get('slug');
+<div class="progress-pct" id="progress-pct">0%</div>
+<div class="progress-label">Analisi in corso...</div>
+</div>
 
-        async function caricaServizio() {
-            if (!slug) {
-                mostraErrore('Nessun servizio selezionato. Torna alla <a href="index.html">homepage</a>.');
-                return;
-            }
+<!-- RESULTS -->
+<div class="results-area" id="results-area">
 
-            try {
-                const { data, error } = await supabaseClient
-                    .from('servizi_singoli')
-                    .select('*')
-                    .eq('slug', slug)
-                    .eq('stato', 'attivo')
-                    .single();
+<!-- AFFIDABILITY -->
+<div class="result-section">
+<h3><div class="num">1</div> AFFIDABILITA ANALISI</h3>
+<div class="rel-display">
+<div class="rel-header">
+<span class="rel-label">LIVELLO DI CONFIDENZA IA</span>
+<span class="rel-value" id="rel-value">0%</span>
+</div>
+<div class="rel-bar"><div class="rel-fill" id="rel-fill" style="width:0%"></div></div>
+<p class="rel-note" id="rel-note">Calcolo in corso...</p>
+</div>
+</div>
 
-                if (error) throw error;
-                if (!data) throw new Error('Servizio non trovato');
+<!-- VISION ANALYSIS -->
+<div class="result-section">
+<h3><div class="num">2</div> ANALISI VISIVA (IA Vision)</h3>
+<div id="vision-results">
+<div class="analysis-grid">
+<div class="analysis-card">
+<h4>Oggetto Identificato</h4>
+<div class="ia-name">Llama Vision 3.2</div>
+<p id="vision-object">Analisi in corso...</p>
+<div class="confidence">Confidenza: <span id="conf-object">--</span></div>
+</div>
+<div class="analysis-card">
+<h4>Componenti</h4>
+<div class="ia-name">Llama Vision 3.2</div>
+<p id="vision-parts">Analisi in corso...</p>
+<div class="confidence">Confidenza: <span id="conf-parts">--</span></div>
+</div>
+<div class="analysis-card">
+<h4>Funzione Presunta</h4>
+<div class="ia-name">Llama Vision 3.2</div>
+<p id="vision-function">Analisi in corso...</p>
+<div class="confidence">Confidenza: <span id="conf-function">--</span></div>
+</div>
+<div class="analysis-card">
+<h4>Tecnologia / Campo</h4>
+<div class="ia-name">Llama Vision 3.2</div>
+<p id="vision-field">Analisi in corso...</p>
+<div class="confidence">Confidenza: <span id="conf-field">--</span></div>
+</div>
+</div>
+</div>
+</div>
 
-                servizioCorrente = data;
-                renderServizio(data);
-                generaForm(data.campi_form);
+<!-- TEXT ANALYSIS -->
+<div class="result-section">
+<h3><div class="num">3</div> ANALISI TESTUALE (IA Language)</h3>
+<div id="text-results">
+<div class="analysis-grid">
+<div class="analysis-card">
+<h4>Descrizione Tecnica</h4>
+<div class="ia-name">Mistral 7B</div>
+<p id="text-desc">Generazione in corso...</p>
+<div class="confidence">Affidabilita: <span id="conf-desc">--</span></div>
+</div>
+<div class="analysis-card">
+<h4>Rivendicazione Principale</h4>
+<div class="ia-name">Mistral 7B</div>
+<p id="text-claim">Generazione in corso...</p>
+<div class="confidence">Affidabilita: <span id="conf-claim">--</span></div>
+</div>
+<div class="analysis-card">
+<h4>Campo Applicazione</h4>
+<div class="ia-name">Mistral 7B</div>
+<p id="text-field">Generazione in corso...</p>
+<div class="confidence">Affidabilita: <span id="conf-tfield">--</span></div>
+</div>
+<div class="analysis-card">
+<h4>Vantaggi vs Stato Arte</h4>
+<div class="ia-name">Mistral 7B</div>
+<p id="text-advantages">Generazione in corso...</p>
+<div class="confidence">Affidabilita: <span id="conf-adv">--</span></div>
+</div>
+</div>
+</div>
+</div>
 
-            } catch (err) {
-                mostraErrore('Errore: ' + err.message);
-            }
-        }
+<!-- SVG TAVOLE -->
+<div class="result-section">
+<h3><div class="num">4</div> TAVOLE ILLUSTRATIVE SVG</h3>
+<div class="svg-preview" id="svg-preview">
+<h3>Tavola 1 — Vista Generale</h3>
+<<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" id="tavola-svg">
+<<rect x="50" y="50" width="300" height="200" fill="none" stroke="#C5A059" stroke-width="2"/>
+<text x="200" y="150" text-anchor="middle" font-family="Cinzel" font-size="14" fill="#4A4A4A">Tavola Generata dall'IA</text>
+<text x="200" y="170" text-anchor="middle" font-family="Lora" font-size="10" fill="#6A6A6A">In attesa di analisi immagine...</text>
+</svg>
+</div>
+</div>
 
-        function renderServizio(s) {
-            document.getElementById('nome-servizio').textContent = s.nome;
-            document.getElementById('descrizione-servizio').textContent = s.descrizione_completa || s.descrizione_breve || '';
-            document.getElementById('prezzo-servizio').textContent = s.prezzo;
-            document.getElementById('crediti-servizio').textContent = s.crediti;
-            document.getElementById('tempo-servizio').textContent = 'Tempo elaborazione: ' + (s.tempo_elaborazione || 'N/D');
-            document.getElementById('riepilogo-prezzo').textContent = 'EUR ' + s.prezzo + ' (' + s.crediti + ' crediti)';
-            
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('servizio-container').style.display = 'block';
-        }
+<!-- CLAIMS -->
+<div class="result-section">
+<h3><div class="num">5</div> RIVENDICAZIONI</h3>
+<ul class="claims-list" id="claims-list">
+<li><span class="claim-num">RIVENDICAZIONE 1 (Indipendente)</span><span id="claim-1">In attesa di generazione...</span></li>
+<li><span class="claim-num">RIVENDICAZIONE 2 (Dipendente)</span><span id="claim-2">In attesa di generazione...</span></li>
+<li><span class="claim-num">RIVENDICAZIONE 3 (Dipendente)</span><span id="claim-3">In attesa di generazione...</span></li>
+</ul>
+</div>
 
-        function generaForm(campiJson) {
-            const form = document.getElementById('form-dinamico');
-            let campi = [];
-            
-            try {
-                campi = JSON.parse(campiJson || '[]');
-            } catch (e) {
-                campi = [];
-            }
+<!-- NAV -->
+<div class="srv-nav">
+<button class="btn" onclick="goTo('wizard.html')">← Indietro</button>
+<button class="btn save" onclick="saveResults()">SALVA RISULTATI</button>
+<button class="btn primary" onclick="goTo('revisione.html')">REVISIONE →</button>
+</div>
 
-            let html = '';
-            campi.forEach(campo => {
-                const required = campo.required ? 'required' : '';
-                const requiredClass = campo.required ? 'required' : '';
-                
-                html += `<div class="form-group ${requiredClass}">`;
-                html += `<label for="${campo.id}">${campo.label}</label>`;
-                
-                if (campo.type === 'select') {
-                    html += `<select id="${campo.id}" name="${campo.id}" ${required}>`;
-                    html += `<option value="">Seleziona...</option>`;
-                    campo.options.forEach(opt => {
-                        html += `<option value="${opt}">${opt}</option>`;
-                    });
-                    html += `</select>`;
-                } else if (campo.type === 'textarea') {
-                    html += `<textarea id="${campo.id}" name="${campo.id}" placeholder="${campo.placeholder || ''}" rows="${campo.rows || 4}" ${required}></textarea>`;
-                } else if (campo.type === 'number') {
-                    html += `<input type="number" id="${campo.id}" name="${campo.id}" placeholder="${campo.placeholder || ''}" min="${campo.min || 0}" max="${campo.max || 999}" ${required}>`;
-                } else if (campo.type === 'file') {
-                    html += `<input type="file" id="${campo.id}" name="${campo.id}" accept="${campo.accept || '*'}" ${campo.multiple ? 'multiple' : ''} ${required}>`;
-                } else {
-                    html += `<input type="text" id="${campo.id}" name="${campo.id}" placeholder="${campo.placeholder || ''}" ${required}>`;
-                }
-                
-                html += `</div>`;
-            });
+</div><!-- /results-area -->
 
-            html += `<button type="button" class="btn btn-primary" onclick="salvaDati()">Salva Dati</button>`;
-            form.innerHTML = html;
-        }
+</div><!-- /srv-container -->
 
-        function salvaDati() {
-            const form = document.getElementById('form-dinamico');
-            const formData = new FormData(form);
-            const dati = {};
-            
-            for (let [key, value] of formData.entries()) {
-                dati[key] = value;
-            }
-            
-            localStorage.setItem('servizio_' + slug, JSON.stringify(dati));
-            mostraSuccesso('Dati salvati! Procedi al pagamento.');
-        }
+<!-- SAGGIO BOT -->
+<div class="saggio-bot" onclick="toggleSaggio()" title="Saggio — Il tuo guid">
+<<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
 
-        function procediPagamento() {
-            if (!servizioCorrente) return;
-            
-            // Reindirizza a pagamento con parametri
-            const params = new URLSearchParams({
-                servizio: slug,
-                prezzo: servizioCorrente.prezzo,
-                crediti: servizioCorrente.crediti
-            });
-            
-            window.location.href = 'pagamento.html?' + params.toString();
-        }
+<div class="saggio-panel" id="saggio-panel">
+<div class="saggio-header">
+<span>SAGGIO — Guida</span>
+<button onclick="toggleSaggio()">×</button>
+</div>
+<div class="saggio-messages" id="saggio-messages">
+<div class="saggio-msg bot">L'IA sta analizzando i tuoi documenti. Vision analizza le immagini, Testo genera descrizione e rivendicazioni. L'affidabilita indica quanto e confidente. Cosa vuoi sapere?</div>
+</div>
+<div class="saggio-input">
+<input type="text" id="saggio-input" placeholder="Scrivi la tua domanda..." onkeypress="if(event.key==='Enter')sendSaggio()">
+<button onclick="sendSaggio()">→</button>
+</div>
+</div>
 
-        function mostraErrore(msg) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('messaggi').innerHTML = '<div class="error">' + msg + '</div>';
-        }
+<script>
+// STATE
+let analysisResults={};
+let currentType='brevetto';
 
-        function mostraSuccesso(msg) {
-            document.getElementById('messaggi').innerHTML = '<div class="success">' + msg + '</div>';
-            setTimeout(() => document.getElementById('messaggi').innerHTML = '', 3000);
-        }
+// INIT
+function init(){
+const params=new URLSearchParams(window.location.search);
+currentType=params.get('type')||'brevetto';
+simulateAnalysis();
+}
 
-        document.addEventListener('DOMContentLoaded', caricaServizio);
-    </script>
-<script src="chatbot.js"></script>
-    
+// SIMULATE ANALYSIS
+function simulateAnalysis(){
+const steps=[
+{node:'node-vision',pct:25,time:1500},
+{node:'node-text',pct:50,time:3000},
+{node:'node-synthesis',pct:75,time:4500},
+{done:true,pct:100,time:6000}
+];
+
+let currentStep=0;
+function nextStep(){
+if(currentStep>=steps.length){
+showResults();
+return;
+}
+const step=steps[currentStep];
+if(step.node){
+document.querySelectorAll('.ia-node').forEach(n=>n.classList.remove('active'));
+document.getElementById(step.node).classList.add('active');
+}
+updateProgress(step.pct);
+currentStep++;
+setTimeout(nextStep,step.time/3);
+}
+nextStep();
+}
+
+function updateProgress(pct){
+document.getElementById('progress-pct').textContent=pct+'%';
+const fill=document.getElementById('rel-fill');
+fill.style.width=pct+'%';
+if(pct<<70)fill.className='rel-fill rel-low';
+else if(pct<<80)fill.className='rel-fill rel-med';
+else fill.className='rel-fill rel-high';
+}
+
+function showResults(){
+document.getElementById('loading-area').style.display='none';
+document.getElementById('results-area').classList.add('active');
+
+const demoData={
+vision:{
+object:'Dispositivo meccanico di bloccaggio a scatto',
+parts:'Leva azionatrice (1), molla elicoidale (2), gancio di bloccaggio (3), base di supporto (4)',
+function:'Chiusura rapida e sicura tramite azionamento manuale della leva con ritorno automatico',
+field:'Meccanica applicata, sicurezza personale, protezioni sportive'
+},
+text:{
+desc:'Sistema di bloccaggio rapido per casco protettivo, caratterizzato da una leva azionabile manualmente connessa a un gancio mediante molla elicoidale. Il sistema permette apertura e chiusura con una sola mano, garantendo sicurezza meccanica senza componenti elettrici.',
+claim:'Sistema di bloccaggio per casco protettivo, comprendente una leva (1), una molla elicoidale (2) e un gancio (3), dove la leva azionata manualmente sposta il gancio tra posizione aperta e chiusa, con ritorno automatico mediante detta molla.',
+field:'Caschi protettivi per sport, industria, motociclismo. Dispositivi di sicurezza personale.',
+advantages:'Apertura/chiusura monomanuale, ritorno automatico, sicurezza meccanica (non elettronica), manutenzione ridotta, costo contenuto.'
+},
+claims:[
+'Sistema di bloccaggio per casco protettivo, comprendente una leva (1), una molla elicoidale (2) e un gancio (3), dove la leva azionata manualmente sposta il gancio tra posizione aperta e chiusa.',
+'Sistema secondo rivendicazione 1, dove detta molla elicoidale (2) fornisce ritorno automatico del gancio (3) in posizione chiusa.',
+'Sistema secondo rivendicazione 1, dove detta leva (1) è posizionata lateralmente rispetto al casco per azionamento ergonomico.'
+],
+reliability:78
+};
+
+updateReliability(demoData.reliability);
+document.getElementById('vision-object').textContent=demoData.vision.object;
+document.getElementById('vision-parts').textContent=demoData.vision.parts;
+document.getElementById('vision-function').textContent=demoData.vision.function;
+document.getElementById('vision-field').textContent=demoData.vision.field;
+
+document.getElementById('text-desc').textContent=demoData.text.desc;
+document.getElementById('text-claim').textContent=demoData.text.claim;
+document.getElementById('text-field').textContent=demoData.text.field;
+document.getElementById('text-advantages').textContent=demoData.text.advantages;
+
+document.getElementById('claim-1').textContent=demoData.claims[0];
+document.getElementById('claim-2').textContent=demoData.claims[1];
+document.getElementById('claim-3').textContent=demoData.claims[2];
+
+generateSVG(demoData.vision.parts);
+analysisResults=demoData;
+}
+
+function updateReliability(val){
+document.getElementById('rel-value').textContent=val+'%';
+document.getElementById('rel-fill').style.width=val+'%';
+const note=document.getElementById('rel-note');
+if(val>=80){note.textContent='Affidabilita ALTA — Buon punto di partenza per la tua domanda di brevetto.';}
+else if(val>=70){note.textContent='Affidabilita MEDIA — Utile ma verifica attentamente con un professionista.';}
+else{note.textContent='Affidabilita IN SVILUPPO — Usa come bozza, revisione consigliata.';}
+}
+
+function generateSVG(parts){
+const svg=document.getElementById('tavola-svg');
+svg.innerHTML=`
+<<defs>
+<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+<<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E8DCC8" stroke-width="0.5"/>
+</pattern>
+</defs>
+<<rect width="400" height="300" fill="url(#grid)"/>
+<<rect x="50" y="50" width="300" height="200" fill="none" stroke="#C5A059" stroke-width="2"/>
+<<circle cx="150" cy="150" r="30" fill="none" stroke="#4A90E2" stroke-width="2"/>
+<text x="150" y="155" text-anchor="middle" font-family="Cinzel" font-size="10" fill="#4A90E2">1</text>
+<<line x1="200" y1="120" x2="200" y2="180" stroke="#FFD700" stroke-width="3"/>
+<text x="210" y="155" font-family="Cinzel" font-size="10" fill="#FFD700">2</text>
+<<path d="M 250 130 Q 280 150 250 170" fill="none" stroke="#C5A059" stroke-width="2"/>
+<text x="285" y="155" font-family="Cinzel" font-size="10" fill="#C5A059">3</text>
+<text x="200" y="250" text-anchor="middle" font-family="Cinzel" font-size="12" fill="#4A4A4A">TAVOLA 1 — VISTA GENERALE</text>
+<text x="200" y="270" text-anchor="middle" font-family="Lora" font-size="9" fill="#6A6A6A">BrevettIAmo v1.0.0-BETA</text>
+`;
+}
+
+function saveResults(){
+alert('Risultati salvati! Puoi procedere alla revisione.');
+}
+
+function goTo(url){window.location.href=url;}
+
+// SAGGIO BOT
+function toggleSaggio(){document.getElementById('saggio-panel').classList.toggle('active');}
+
+const SAGGIO_ANSWERS={
+'vision':'IA Vision analizza le tue immagini e schizzi. Identifica oggetto, componenti, funzione. E la prima fase dell\'analisi.',
+'testo':'IA Testo genera descrizione tecnica, rivendicazioni, campo applicazione. Parte dall\'analisi visiva e dalla tua descrizione.',
+'affidabilita':'L\'affidabilita indica quanto l\'IA e confidente. 80%+ = buono, 70-79% = medio, sotto 70% = verifica attentamente.',
+'tavole':'Le tavole SVG sono disegni vettoriali generati automaticamente. Le puoi scaricare e modificare. Non sostituiscono il disegnatore professionista.',
+'rivendicazioni':'Le rivendicazioni definiscono COSA proteggi. La 1 e indipendente (la piu larga). Le altre sono dipendenti (piu specifiche).',
+'salva':'Salva i risultati per non perderli. Poi puoi procedere alla revisione o scaricare il report.',
+'revisione':'Puoi accettare il risultato AI o richiedere revisione umana. Per ora l\'umana e sospesa (attesa P.IVA).',
+'help':'Posso aiutarti con: Vision, Testo, affidabilita, tavole, rivendicazioni, come salvare, revisione.'
+};
+
+function sendSaggio(){
+const input=document.getElementById('saggio-input');
+const msg=input.value.trim();
+if(!msg)return;
+const container=document.getElementById('saggio-messages');
+container.innerHTML+='<div class="saggio-msg user">'+escapeHtml(msg)+'</div>';
+input.value='';
+container.scrollTop=container.scrollHeight;
+
+let answer='Non ho capito. Prova: vision, testo, affidabilita, tavole, rivendicazioni, salva, revisione, help.';
+const lower=msg.toLowerCase();
+for(const[key,val]of Object.entries(SAGGIO_ANSWERS)){if(lower.includes(key)){answer=val;break;}}
+
+setTimeout(()=>{
+container.innerHTML+='<div class="saggio-msg bot">'+answer+'</div>';
+container.scrollTop=container.scrollHeight;
+},500);
+}
+
+function escapeHtml(text){
+const div=document.createElement('div');
+div.textContent=text;
+return div.innerHTML;
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded',init);
+</script>
 </body>
 </html>
