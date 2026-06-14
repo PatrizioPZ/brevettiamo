@@ -102,9 +102,12 @@ class BrevettIAmoDashboard {
     const div = document.createElement('div');
     div.className = 'service-card card-hover';
     
-    const limiteText = servizio.limite === 'illimitati' ? 'Illimitati' : 
-                       servizio.limite === 0 ? 'Non disponibile' : 
-                       `${servizio.usato}/${servizio.limite}`;
+   const limiteText = servizio.limite === 'illimitati' ? 'Illimitati' : 
+                   servizio.limite === 0 ? 'Non disponibile' : 
+                   typeof servizio.limite === 'object' ? 
+                     (servizio.limite.ricerche_giorno === 'illimitati' ? 'Illimitati' : 
+                      `${servizio.usato}/${servizio.limite.ricerche_giorno}`) :
+                   `${servizio.usato}/${servizio.limite}`;
     
     const statusClass = servizio.limite === 0 ? 'text-gray-500' : 'text-green-400';
     const icona = this.getIconaServizio(servizio.icona);
