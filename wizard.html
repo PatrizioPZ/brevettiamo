@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wizard — BrevettIAmo v1.0.0-BETA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--om:rgba(26,26,26,0.15);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;min-height:100vh;padding:2rem}
+
+.wizard-container{max-width:900px;margin:0 auto;background:var(--b);border:3px solid var(--o);padding:3rem;box-shadow:0 20px 60px var(--om)}
+.wizard-container::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--r),var(--o),var(--r));margin:-3rem -3rem 2rem -3rem}
+
+.wizard-header{text-align:center;margin-bottom:2rem}
+.wizard-header .version{display:inline-block;background:var(--r);color:var(--b);padding:0.3rem 1rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;margin-bottom:1rem}
+.wizard-header h1{font-family:'Cinzel',serif;font-size:1.8rem;color:var(--f);letter-spacing:2px}
+.wizard-header .subtitle{font-family:'Playfair Display',serif;font-style:italic;color:var(--fc)}
+
+.progress-bar{display:flex;justify-content:center;gap:0.5rem;margin-bottom:2rem}
+.progress-step{width:40px;height:4px;background:var(--ps);border-radius:2px;transition:all 0.3s}
+.progress-step.active{background:var(--o)}
+.progress-step.done{background:var(--v)}
+
+.step-indicator{text-align:center;margin-bottom:2rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--fc);letter-spacing:2px}
+
+/* STEP 1: SCELTA */
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-bottom:2rem}
+.choice-card{background:var(--p);border:2px solid var(--ps);padding:2rem;text-align:center;cursor:pointer;transition:all 0.3s;position:relative}
+.choice-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:var(--o);transform:scaleX(0);transition:transform 0.3s}
+.choice-card:hover::before{transform:scaleX(1)}
+.choice-card:hover{border-color:var(--o);transform:translateY(-5px);box-shadow:0 10px 30px var(--om)}
+.choice-card.selected{border-color:var(--v);background:rgba(45,106,79,0.05)}
+.choice-card.selected::before{transform:scaleX(1);background:var(--v)}
+.choice-icon{width:60px;height:60px;margin:0 auto 1rem;background:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--o)}
+.choice-icon svg{width:30px;height:30px;fill:var(--o)}
+.choice-card h3{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--f);margin-bottom:0.5rem;letter-spacing:1px}
+.choice-card p{color:var(--fc);font-size:0.85rem}
+.choice-card .price{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--o);margin-top:1rem}
+
+/* STEP 2: UPLOAD */
+.upload-area{border:3px dashed var(--ps);padding:3rem;text-align:center;transition:all 0.3s;margin-bottom:2rem;background:var(--p)}
+.upload-area:hover{border-color:var(--o);background:rgba(197,160,89,0.05)}
+.upload-area.dragover{border-color:var(--v);background:rgba(45,106,79,0.05)}
+.upload-area svg{width:60px;height:60px;fill:var(--o);margin-bottom:1rem}
+.upload-area h3{font-family:'Cinzel',serif;color:var(--f);margin-bottom:0.5rem}
+.upload-area p{color:var(--fc);font-size:0.9rem;margin-bottom:1rem}
+.upload-area .formats{font-size:0.75rem;color:var(--fc);font-family:'Cinzel',serif;letter-spacing:1px}
+.upload-input{display:none}
+
+.file-list{margin-bottom:2rem}
+.file-item{display:flex;align-items:center;gap:1rem;padding:0.8rem;background:var(--p);border:1px solid var(--ps);margin-bottom:0.5rem}
+.file-item svg{width:24px;height:24px;fill:var(--o);flex-shrink:0}
+.file-item .name{flex:1;font-size:0.9rem}
+.file-item .size{font-size:0.75rem;color:var(--fc);font-family:'Cinzel',serif}
+.file-item .remove{background:var(--r);color:var(--b);border:none;padding:0.3rem 0.6rem;font-family:'Cinzel',serif;font-size:0.7rem;cursor:pointer}
+.file-item .remove:hover{background:var(--rs)}
+
+/* STEP 3: DESCRIZIONE */
+.desc-area{margin-bottom:2rem}
+.desc-area label{display:block;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--o);letter-spacing:1px;margin-bottom:0.5rem}
+.desc-area textarea{width:100%;padding:1rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.95rem;min-height:150px;resize:vertical}
+.desc-area textarea:focus{outline:none;border-color:var(--o)}
+.desc-area .hint{font-size:0.8rem;color:var(--fc);margin-top:0.5rem;font-style:italic}
+
+/* NAVIGATION */
+.wizard-nav{display:flex;justify-content:space-between;margin-top:2rem;padding-top:2rem;border-top:2px solid var(--ps)}
+.wizard-nav .btn{font-family:'Cinzel',serif;padding:1rem 2rem;border:2px solid var(--o);background:transparent;color:var(--o);font-size:0.9rem;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-decoration:none}
+.wizard-nav .btn:hover{background:var(--o);color:var(--b)}
+.wizard-nav .btn.primary{background:var(--o);color:var(--b)}.wizard-nav .btn.primary:hover{background:var(--os)}
+.wizard-nav .btn:disabled{background:var(--ps);border-color:var(--ps);color:var(--fc);cursor:not-allowed}
+.wizard-nav .btn.hidden{visibility:hidden}
+
+/* SAGGIO BOT */
+.saggio-bot{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(197,160,89,0.4);transition:all 0.3s;z-index:999}
+.saggio-bot:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(197,160,89,0.6)}
+.saggio-bot svg{width:30px;height:30px;fill:var(--b)}
+.saggio-panel{position:fixed;bottom:90px;right:2rem;width:350px;max-height:500px;background:var(--b);border:2px solid var(--o);box-shadow:0 10px 40px var(--om);display:none;flex-direction:column;z-index:998}
+.saggio-panel.active{display:flex}
+.saggio-header{background:var(--n);color:var(--p);padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
+.saggio-header button{background:none;border:none;color:var(--o);cursor:pointer;font-size:1.2rem}
+.saggio-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;max-height:350px}
+.saggio-msg{padding:0.8rem 1rem;border-radius:8px;max-width:85%;font-size:0.85rem}
+.saggio-msg.bot{background:var(--p);align-self:flex-start;border-bottom-left-radius:2px}
+.saggio-msg.user{background:var(--o);color:var(--b);align-self:flex-end;border-bottom-right-radius:2px}
+.saggio-input{display:flex;border-top:2px solid var(--ps)}
+.saggio-input input{flex:1;padding:1rem;border:none;background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.saggio-input input:focus{outline:none}
+.saggio-input button{padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;cursor:pointer}
+
+/* HIDDEN */
+.hidden{display:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){.wizard-container{padding:2rem 1.5rem}.choice-grid{grid-template-columns:1fr}.saggio-panel{width:calc(100% - 2rem);right:1rem;bottom:80px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<div class="wizard-container">
+
+<!-- HEADER -->
+<div class="wizard-header">
+<span class="version">BETA v1.0.0</span>
+<h1>WIZARD BREVETTIAMO</h1>
+<p class="subtitle">Definisci la protezione per la tua invenzione</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+<div class="progress-step done"></div>
+<div class="progress-step active"></div>
+<div class="progress-step"></div>
+<div class="progress-step"></div>
+</div>
+<div class="step-indicator">PASSO 2 DI 4 — SCELTA E UPLOAD</div>
+
+<!-- STEP 1: SCELTA TIPO -->
+<div id="step-1">
+<h2 style="font-family:'Cinzel',serif;text-align:center;margin-bottom:1.5rem;font-size:1.3rem;letter-spacing:2px">Cosa vuoi proteggere?</h2>
+<div class="choice-grid">
+<div class="choice-card" onclick="selectType('brevetto',this)">
+<div class="choice-icon">
+<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+</div>
+<h3>BREVETTO</h3>
+<p>Invenzione tecnica, procedimento, dispositivo, software brevettabile</p>
+<div class="price">Gratis (Beta)</div>
+</div>
+<div class="choice-card" onclick="selectType('marchio',this)">
+<div class="choice-icon">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+</div>
+<h3>MARCHIO</h3>
+<p>Nome, logo, segno distintivo del tuo prodotto o servizio</p>
+<div class="price">Gratis (Beta)</div>
+</div>
+<div class="choice-card" onclick="selectType('disegno',this)">
+<div class="choice-icon">
+<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+</div>
+<h3>DISEGNO / MODELLO</h3>
+<p>Forma, aspetto estetico, design di un prodotto</p>
+<div class="price">Gratis (Beta)</div>
+</div>
+</div>
+<div class="wizard-nav">
+<button class="btn" onclick="goTo('welcome.html')">← Indietro</button>
+<button class="btn primary hidden" id="btn-step1-next" onclick="goToStep(2)">Avanti →</button>
+</div>
+</div>
+
+<!-- STEP 2: UPLOAD -->
+<div id="step-2" class="hidden">
+<h2 style="font-family:'Cinzel',serif;text-align:center;margin-bottom:1.5rem;font-size:1.3rem;letter-spacing:2px">Carica i tuoi documenti</h2>
+
+<div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()" ondrop="dropFiles(event)" ondragover="dragOver(event)" ondragleave="dragLeave(event)">
+<svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+<h3>Trascina i file qui</h3>
+<p>o clicca per selezionare</p>
+<span class="formats">PDF, JPG, PNG, SVG — Max 10MB ciascuno</span>
+<input type="file" class="upload-input" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png,.svg" onchange="handleFiles(this.files)">
+</div>
+
+<div class="file-list" id="file-list"></div>
+
+<div class="desc-area">
+<label>Descrizione della tua invenzione (opzionale ma consigliata)</label>
+<textarea id="desc-text" placeholder="Descrivi la tua invenzione: cosa fa, come funziona, problema che risolve, vantaggi rispetto alle soluzioni esistenti..."></textarea>
+<p class="hint">Più dettagli fornisci, migliore sarà l'analisi IA. Puoi anche aggiungere schizzi sopra.</p>
+</div>
+
+<div class="wizard-nav">
+<button class="btn" onclick="goToStep(1)">← Indietro</button>
+<button class="btn primary" id="btn-step2-next" onclick="goToStep(3)">Avanti →</button>
+</div>
+</div>
+
+<!-- STEP 3: RIEPILOGO -->
+<div id="step-3" class="hidden">
+<h2 style="font-family:'Cinzel',serif;text-align:center;margin-bottom:1.5rem;font-size:1.3rem;letter-spacing:2px">Riepilogo</h2>
+
+<div style="background:var(--p);border:2px solid var(--ps);padding:2rem;margin-bottom:2rem">
+<div style="margin-bottom:1rem"><strong style="font-family:'Cinzel',serif;color:var(--o)">Tipo:</strong> <span id="summary-type" style="text-transform:uppercase;letter-spacing:1px"></span></div>
+<div style="margin-bottom:1rem"><strong style="font-family:'Cinzel',serif;color:var(--o)">Documenti:</strong> <span id="summary-files"></span></div>
+<div><strong style="font-family:'Cinzel',serif;color:var(--o)">Descrizione:</strong> <span id="summary-desc" style="font-style:italic;color:var(--fc)"></span></div>
+</div>
+
+<div class="wizard-nav">
+<button class="btn" onclick="goToStep(2)">← Modifica</button>
+<button class="btn primary" onclick="startAnalysis()">AVVIA ANALISI IA →</button>
+</div>
+</div>
+
+</div><!-- /wizard-container -->
+
+<!-- SAGGIO BOT -->
+<div class="saggio-bot" onclick="toggleSaggio()" title="Saggio — Il tuo guid">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
+
+<div class="saggio-panel" id="saggio-panel">
+<div class="saggio-header">
+<span>SAGGIO — Guida</span>
+<button onclick="toggleSaggio()">×</button>
+</div>
+<div class="saggio-messages" id="saggio-messages">
+<div class="saggio-msg bot">Ciao! Sono il Saggio. Qui scegli cosa proteggere: brevetto (invenzione tecnica), marchio (nome/logo), o disegno (forma estetica). Poi carica schizzi e descrivi. Cosa vuoi sapere?</div>
+</div>
+<div class="saggio-input">
+<input type="text" id="saggio-input" placeholder="Scrivi la tua domanda..." onkeypress="if(event.key==='Enter')sendSaggio()">
+<button onclick="sendSaggio()">→</button>
+</div>
+</div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+// STATE
+let state={
+type:null,
+files:[],
+description:''
+};
+
+let currentStep=1;
+
+// STEP NAVIGATION
+function goToStep(step){
+document.querySelectorAll('[id^="step-"]').forEach(el=>el.classList.add('hidden'));
+document.getElementById('step-'+step).classList.remove('hidden');
+currentStep=step;
+updateProgress(step+1);
+
+if(step===3)updateSummary();
+}
+
+function updateProgress(step){
+const steps=document.querySelectorAll('.progress-step');
+steps.forEach((s,i)=>{
+s.classList.remove('active','done');
+if(i<step-1)s.classList.add('done');
+if(i===step-1)s.classList.add('active');
+});
+}
+
+function goTo(url){
+window.location.href=url;
+}
+
+// SELECT TYPE
+function selectType(type,card){
+state.type=type;
+document.querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected'));
+card.classList.add('selected');
+document.getElementById('btn-step1-next').classList.remove('hidden');
+}
+
+// FILE UPLOAD
+function dragOver(e){e.preventDefault();document.getElementById('upload-area').classList.add('dragover');}
+function dragLeave(e){e.preventDefault();document.getElementById('upload-area').classList.remove('dragover');}
+function dropFiles(e){e.preventDefault();document.getElementById('upload-area').classList.remove('dragover');handleFiles(e.dataTransfer.files);}
+
+function handleFiles(fileList){
+const files=Array.from(fileList).filter(f=>{
+const valid=['pdf','jpg','jpeg','png','svg'];
+const ext=f.name.split('.').pop().toLowerCase();
+return valid.includes(ext)&&f.size<=10*1024*1024;
+});
+
+files.forEach(file=>{
+state.files.push({name:file.name,size:file.size,file:file});
+});
+
+renderFiles();
+}
+
+function renderFiles(){
+const list=document.getElementById('file-list');
+if(state.files.length===0){list.innerHTML='';return;}
+
+list.innerHTML=state.files.map((f,i)=>`
+<div class="file-item">
+<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+<span class="name">${f.name}</span>
+<span class="size">${(f.size/1024).toFixed(1)} KB</span>
+<button class="remove" onclick="removeFile(${i})">×</button>
+</div>
+`).join('');
+}
+
+function removeFile(index){
+state.files.splice(index,1);
+renderFiles();
+}
+
+// DESCRIPTION
+document.getElementById('desc-text').addEventListener('input',function(){
+state.description=this.value;
+});
+
+// SUMMARY
+function updateSummary(){
+document.getElementById('summary-type').textContent=state.type||'Non selezionato';
+document.getElementById('summary-files').textContent=state.files.length>0?state.files.length+' file caricati':'Nessun file';
+document.getElementById('summary-desc').textContent=state.description||'Nessuna descrizione';
+}
+
+// START ANALYSIS
+async function startAnalysis(){
+try{
+// Upload files to Supabase Storage
+const uploadedUrls=[];
+for(const f of state.files){
+const fileName=Date.now()+'_'+f.name;
+const {data,error}=await supabase.storage.from('documenti').upload(fileName,f.file);
+if(error)throw error;
+const {data:{publicUrl}}=supabase.storage.from('documenti').getPublicUrl(fileName);
+uploadedUrls.push(publicUrl);
+}
+
+// Update flusso
+const {data:{session}}=await supabase.auth.getSession();
+const userId=session?.user?.id;
+
+await supabase.from('flusso_utente').update({
+step:3,
+servizio_scelto:state.type,
+documenti_caricati:uploadedUrls,
+descrizione:state.description,
+updated_at:new Date().toISOString()
+}).eq('user_id',userId).order('created_at',{ascending:false}).limit(1);
+
+// Go to service
+window.location.href='servizio.html?type='+state.type;
+
+}catch(e){
+console.error('Errore:',e);
+alert('Errore nel caricamento. Riprova o contatta supporto.');
+}
+}
+
+// SAGGIO BOT
+function toggleSaggio(){
+document.getElementById('saggio-panel').classList.toggle('active');
+}
+
+const SAGGIO_ANSWERS={
+'brevetto':'Un BREVETTO protegge un'invenzione tecnica: come funziona, cosa fa, la struttura. Dura 20 anni. Esempio: un nuovo motore, un software con effetto tecnico, un dispositivo medico.',
+'marchio':'Un MARCHIO protegge un nome, logo, slogan che identifica il tuo prodotto/servizio. Dura 10 anni, rinnovabile. Esempio: "Nike", il logo Apple, un jingle.',
+'disegno':'Un DISEGNO/MODELLO protegge l'ASPETTO ESTETICO di un prodotto: forma, colore, decorazione. Dura 25 anni. Esempio: la forma di una bottiglia, il design di una lampada.',
+'file':'Puoi caricare: PDF, JPG, PNG, SVG. Max 10MB ciascuno. Schizzi, foto, descrizioni, documenti tecnici. Più carichi, migliore l'analisi IA.',
+'descrizione':'Scrivi: cosa fa la tua invenzione, che problema risolve, come funziona, vantaggi rispetto allo stato dell'arte. Non devi essere perfetto, l'IA ti aiuta a strutturare.',
+'ai':'L'analisi IA esamina i tuoi documenti e genera: descrizione tecnica, rivendicazioni, ricerca prior art, tavole illustrative. Ogni servizio mostra la sua affidabilita.',
+'gratis':'Tutto gratis in beta. Nessun pagamento. I prezzi indicativi sono per il futuro, quando avremo P.IVA e servizi umani.',
+'help':'Posso spiegare: brevetto vs marchio vs disegno, che file caricare, come descrivere, cosa fa l'IA, quanto costa. Cosa vuoi sapere?'
+};
+
+function sendSaggio(){
+const input=document.getElementById('saggio-input');
+const msg=input.value.trim();
+if(!msg)return;
+
+const container=document.getElementById('saggio-messages');
+container.innerHTML+='<div class="saggio-msg user">'+escapeHtml(msg)+'</div>';
+input.value='';
+container.scrollTop=container.scrollHeight;
+
+let answer='Non ho capito. Prova: brevetto, marchio, disegno, file, descrizione, AI, gratis, help.';
+const lower=msg.toLowerCase();
+for(const[key,val]of Object.entries(SAGGIO_ANSWERS)){
+if(lower.includes(key)){answer=val;break;}
+}
+
+setTimeout(()=>{
+container.innerHTML+='<div class="saggio-msg bot">'+answer+'</div>';
+container.scrollTop=container.scrollHeight;
+},500);
+}
+
+function escapeHtml(text){
+const div=document.createElement('div');
+div.textContent=text;
+return div.innerHTML;
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded',()=>{
+updateProgress(2);
+});
+</script>
+</body>
+</html>
