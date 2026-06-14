@@ -105,42 +105,42 @@ body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-he
 <aside class="chat-sidebar">
 <h3>STANZE TEMATICHE</h3>
 <ul class="room-list" id="room-list">
-<li class="room-item active" onclick="joinRoom('brevetti-software')">
+<li class="room-item active" onclick="joinRoom(this, 'brevetti-software')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg></div>
 <div class="info"><div class="name">Brevetti Software</div><div class="count">12 online</div></div>
 <div class="status"></div>
 </li>
-<li class="room-item" onclick="joinRoom('brevetti-meccanici')">
+<li class="room-item" onclick="joinRoom(this, 'brevetti-meccanici')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg></div>
 <div class="info"><div class="name">Brevetti Meccanici</div><div class="count">8 online</div></div>
 <div class="status"></div>
 </li>
-<li class="room-item" onclick="joinRoom('chimica-farmaceutica')">
+<li class="room-item" onclick="joinRoom(this, 'chimica-farmaceutica')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg></div>
 <div class="info"><div class="name">Chimica & Farmaceutica</div><div class="count">5 online</div></div>
 <div class="status"></div>
 </li>
-<li class="room-item" onclick="joinRoom('elettronica-iot')">
+<li class="room-item" onclick="joinRoom(this, 'elettronica-iot')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
 <div class="info"><div class="name">Elettronica & IoT</div><div class="count">15 online</div></div>
 <div class="status"></div>
 </li>
-<li class="room-item" onclick="joinRoom('design-marchi')">
+<li class="room-item" onclick="joinRoom(this, 'design-marchi')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></div>
 <div class="info"><div class="name">Design & Marchi</div><div class="count">6 online</div></div>
 <div class="status"></div>
 </li>
-<li class="room-item" onclick="joinRoom('finanziamenti-startup')">
+<li class="room-item" onclick="joinRoom(this, 'finanziamenti-startup')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.73 1.36 4.73 4.04c-.01 2.18-1.58 3.1-3.53 3.47z"/></svg></div>
 <div class="info"><div class="name">Finanziamenti & Startup</div><div class="count">9 online</div></div>
 <div class="status"></div>
 </li>
-<li class="room-item" onclick="joinRoom('uibm-italia')">
+<li class="room-item" onclick="joinRoom(this, 'uibm-italia')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
 <div class="info"><div class="name">UIBM & Procedure Italia</div><div class="count">20 online</div></div>
 <div class="status"></div>
 </li>
-<li class="room-item" onclick="joinRoom('epo-europa')">
+<li class="room-item" onclick="joinRoom(this, 'epo-europa')">
 <div class="icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></div>
 <div class="info"><div class="name">EPO & Brevetti Europei</div><div class="count">11 online</div></div>
 <div class="status"></div>
@@ -291,16 +291,28 @@ const ROOMS={
 let currentRoom='brevetti-software';
 let lastHumanMsg = null;
 
-// JOIN ROOM
-function joinRoom(roomId){
+// JOIN ROOM - CORRETTO
+function joinRoom(element, roomId){
   currentRoom=roomId;
   const room=ROOMS[roomId];
+  
+  // Rimuovi active da tutti
   document.querySelectorAll('.room-item').forEach(r=>r.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  
+  // Aggiungi active a quello cliccato
+  element.classList.add('active');
+  
+  // Aggiorna header
   document.getElementById('room-name').textContent=room.name;
   document.getElementById('room-meta').textContent=room.count+' online — Stanza crittografata';
+  
+  // Pulisci messaggi
   document.getElementById('chat-messages').innerHTML='';
+  
+  // Aggiungi messaggio sistema
   addSystemMessage('Sei entrato in '+room.name);
+  
+  // Aggiungi welcome BrevettIAmo
   addBrevettiamoWelcome();
 }
 
@@ -411,7 +423,7 @@ async function sendChat(){
 // AUTO-RESPONSE IF NO ONE ANSWERS
 setInterval(()=>{
   if(lastHumanMsg && (Date.now() - lastHumanMsg > 300000)){
-    addBrevettiamoResponse('Sembra che nessuno sia disponibile ora. Prova a scrivere in un'altra stanza o usa il Wizard su brevettiamo.com per un'analisi AI immediata!');
+    addBrevettiamoResponse('Sembra che nessuno sia disponibile ora. Prova a scrivere in un\'altra stanza o usa il Wizard su brevettiamo.com per un\'analisi AI immediata!');
     lastHumanMsg = null;
   }
 }, 60000);
