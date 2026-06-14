@@ -16,9 +16,10 @@
         .btn { background: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 8px; border: none; cursor: pointer; }
         .btn:hover { background: #1d4ed8; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 50; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: #1e293b; border: 1px solid #3b82f6; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 90vh; overflow: auto; color: white; }
+.modal-content { background: #1e293b; border: 1px solid #3b82f6; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; color: white; position: relative; }
         .input { width: 100%; background: #374151; border: 1px solid #4b5563; border-radius: 8px; padding: 0.5rem; color: white; margin-bottom: 1rem; }
         label { display: block; color: #9ca3af; margin-bottom: 0.5rem; }
+        body.modal-open { overflow: hidden; }
     </style>
 </head>
 <body>
