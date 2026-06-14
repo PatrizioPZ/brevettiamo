@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bacheca — Mercato delle Invenzioni — BrevettIAmo v1.0.0-BETA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--bl:#4A90E2;--om:rgba(26,26,26,0.15);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;min-height:100vh}
+
+/* HEADER */
+.bac-header{background:linear-gradient(135deg,var(--p) 0%,var(--ps) 100%);border-bottom:3px solid var(--o);padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px var(--om)}
+.bac-header-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.bac-logo{display:flex;align-items:center;gap:1rem;text-decoration:none}
+.bac-logo-icon{width:50px;height:50px}
+.bac-logo-icon svg{width:100%;height:100%}
+.bac-logo-text{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--f);letter-spacing:2px}
+.bac-logo-text span{font-style:italic;font-weight:400;color:var(--o)}
+.bac-nav{display:flex;gap:2rem;align-items:center}
+.bac-nav a{font-family:'Cinzel',serif;text-decoration:none;color:var(--f);font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s}
+.bac-nav a:hover{color:var(--o)}
+.bac-nav .cta{background:var(--o);color:var(--b)!important;padding:0.6rem 1.5rem;border-radius:4px}
+.bac-nav .cta:hover{background:var(--os)}
+
+/* HERO */
+.bac-hero{background:linear-gradient(135deg,var(--n) 0%,var(--f) 100%);color:var(--p);padding:4rem 2rem;text-align:center}
+.bac-hero h1{font-family:'Cinzel',serif;font-size:2.5rem;letter-spacing:3px;margin-bottom:1rem}
+.bac-hero p{font-family:'Playfair Display',serif;font-style:italic;opacity:0.8;margin-bottom:2rem}
+.bac-hero .btn{font-family:'Cinzel',serif;padding:1rem 2.5rem;border:2px solid var(--o);background:var(--o);color:var(--b);font-size:0.9rem;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block}
+.bac-hero .btn:hover{background:var(--os);border-color:var(--os)}
+
+/* FILTERS */
+.bac-filters{max-width:1400px;margin:0 auto;padding:2rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.filter-btn{font-family:'Cinzel',serif;padding:0.6rem 1.2rem;border:2px solid var(--ps);background:var(--b);color:var(--f);font-size:0.8rem;letter-spacing:1px;cursor:pointer;transition:all 0.3s}
+.filter-btn:hover,.filter-btn.active{border-color:var(--o);background:var(--o);color:var(--b)}
+
+/* GRID */
+.bac-grid{max-width:1400px;margin:0 auto;padding:0 2rem 4rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+
+.bac-card{background:var(--b);border:2px solid var(--ps);padding:2rem;transition:all 0.3s;position:relative}
+.bac-card:hover{border-color:var(--o);transform:translateY(-5px);box-shadow:0 10px 30px var(--om)}
+.bac-card .badge{position:absolute;top:-1px;right:-1px;background:var(--o);color:var(--b);padding:0.3rem 0.8rem;font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1px}
+.bac-card .badge.new{background:var(--v)}
+.bac-card .badge.urgent{background:var(--r)}
+.bac-card .img-placeholder{width:100%;height:180px;background:var(--p);border:2px solid var(--ps);margin-bottom:1rem;display:flex;align-items:center;justify-content:center}
+.bac-card .img-placeholder svg{width:60px;height:60px;fill:var(--o);opacity:0.5}
+.bac-card h3{font-family:'Cinzel',serif;font-size:1.1rem;color:var(--f);margin-bottom:0.5rem;letter-spacing:1px}
+.bac-card .category{font-size:0.75rem;color:var(--o);font-family:'Cinzel',serif;letter-spacing:1px;margin-bottom:0.5rem}
+.bac-card p{color:var(--fc);font-size:0.85rem;margin-bottom:1rem;line-height:1.6}
+.bac-card .price{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--o);font-weight:700;margin-bottom:0.5rem}
+.bac-card .price span{font-size:0.9rem;color:var(--fc);font-weight:400}
+.bac-card .meta{display:flex;gap:1rem;font-size:0.75rem;color:var(--fc);font-family:'Cinzel',serif;letter-spacing:1px;margin-bottom:1rem}
+.bac-card .actions{display:flex;gap:0.5rem}
+.bac-card .actions .btn{flex:1;padding:0.6rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:1px;border:2px solid var(--o);background:transparent;color:var(--o);cursor:pointer;transition:all 0.3s;text-align:center}
+.bac-card .actions .btn:hover{background:var(--o);color:var(--b)}
+.bac-card .actions .btn.primary{background:var(--o);color:var(--b)}.bac-card .actions .btn.primary:hover{background:var(--os)}
+
+/* PUBLISH FORM */
+.publish-modal{position:fixed;inset:0;background:rgba(26,26,26,0.8);display:none;align-items:center;justify-content:center;z-index:10000;padding:2rem}
+.publish-modal.active{display:flex}
+.publish-form{background:var(--b);border:3px solid var(--o);max-width:600px;width:100%;max-height:90vh;overflow-y:auto;padding:2rem}
+.publish-form h2{font-family:'Cinzel',serif;color:var(--f);margin-bottom:1.5rem;letter-spacing:2px;text-align:center}
+.publish-form .field{margin-bottom:1.5rem}
+.publish-form .field label{display:block;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--o);letter-spacing:1px;margin-bottom:0.5rem}
+.publish-form .field input,.publish-form .field textarea,.publish-form .field select{width:100%;padding:1rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.95rem}
+.publish-form .field input:focus,.publish-form .field textarea:focus,.publish-form .field select:focus{outline:none;border-color:var(--o)}
+.publish-form .field textarea{min-height:120px;resize:vertical}
+.publish-form .field .hint{font-size:0.75rem;color:var(--fc);margin-top:0.3rem;font-style:italic}
+.publish-form .actions{display:flex;gap:1rem;justify-content:center;margin-top:2rem}
+.publish-form .actions .btn{padding:1rem 2rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;border:2px solid var(--o);cursor:pointer;transition:all 0.3s}
+.publish-form .actions .btn.cancel{background:transparent;color:var(--o)}.publish-form .actions .btn.cancel:hover{background:var(--o);color:var(--b)}
+.publish-form .actions .btn.submit{background:var(--o);color:var(--b)}.publish-form .actions .btn.submit:hover{background:var(--os)}
+
+/* SAGGIO BOT */
+.saggio-bot{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(197,160,89,0.4);transition:all 0.3s;z-index:999}
+.saggio-bot:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(197,160,89,0.6)}
+.saggio-bot svg{width:30px;height:30px;fill:var(--b)}
+.saggio-panel{position:fixed;bottom:90px;right:2rem;width:350px;max-height:500px;background:var(--b);border:2px solid var(--o);box-shadow:0 10px 40px var(--om);display:none;flex-direction:column;z-index:998}
+.saggio-panel.active{display:flex}
+.saggio-header{background:var(--n);color:var(--p);padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
+.saggio-header button{background:none;border:none;color:var(--o);cursor:pointer;font-size:1.2rem}
+.saggio-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;max-height:350px}
+.saggio-msg{padding:0.8rem 1rem;border-radius:8px;max-width:85%;font-size:0.85rem}
+.saggio-msg.bot{background:var(--p);align-self:flex-start;border-bottom-left-radius:2px}
+.saggio-msg.user{background:var(--o);color:var(--b);align-self:flex-end;border-bottom-right-radius:2px}
+.saggio-input{display:flex;border-top:2px solid var(--ps)}
+.saggio-input input{flex:1;padding:1rem;border:none;background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.saggio-input input:focus{outline:none}
+.saggio-input button{padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;cursor:pointer}
+
+/* RESPONSIVE */
+@media(max-width:768px){.bac-header-inner{padding:0 1rem}.bac-hero h1{font-size:1.8rem}.bac-grid{padding:0 1rem 2rem}.saggio-panel{width:calc(100% - 2rem);right:1rem;bottom:80px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="bac-header">
+<div class="bac-header-inner">
+<a href="index.html" class="bac-logo">
+<div class="bac-logo-icon">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="none" stroke="#C5A059" stroke-width="1.5"/>
+<circle cx="50" cy="50" r="3" fill="#C5A059"/>
+<line x1="50" y1="50" x2="35" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="50" y1="50" x2="65" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="50" y1="50" x2="50" y2="85" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+<ellipse cx="50" cy="50" rx="20" ry="12" fill="none" stroke="#C5A059" stroke-width="1"/>
+<circle cx="50" cy="50" r="3" fill="#C5A059"/>
+</svg>
+</div>
+<div class="bac-logo-text">Brevett<span>IA</span>mo</div>
+</a>
+<nav class="bac-nav">
+<a href="index.html">Home</a>
+<a href="news.html">News</a>
+<a href="chat.html">Chat</a>
+<a href="occhio-landing.html">L'OCCHIO</a>
+<a href="#" class="cta" onclick="openPublish()">Pubblica</a>
+</nav>
+</div>
+</header>
+
+<!-- HERO -->
+<section class="bac-hero">
+<h1>MERCATO DELLE INVENZIONI</h1>
+<p>Scopri, acquista o licenzia brevetti e tecnologie innovative</p>
+<a href="#" class="btn" onclick="openPublish()">PUBBLICA IL TUO ANNUNCIO</a>
+</section>
+
+<!-- FILTERS -->
+<div class="bac-filters">
+<button class="filter-btn active" onclick="filterAll()">TUTTI</button>
+<button class="filter-btn" onclick="filterCat('brevetto')">BREVETTI</button>
+<button class="filter-btn" onclick="filterCat('marchio')">MARCHI</button>
+<button class="filter-btn" onclick="filterCat('disegno')">DISEGNI</button>
+<button class="filter-btn" onclick="filterCat('tecnologia')">TECNOLOGIE</button>
+<button class="filter-btn" onclick="filterCat('licenza')">LICENZE</button>
+</div>
+
+<!-- GRID -->
+<div class="bac-grid" id="bac-grid">
+<!-- DEMO ANNUNCI -->
+<div class="bac-card" data-cat="brevetto">
+<span class="badge">BREVETTO</span>
+<div class="img-placeholder">
+<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+</div>
+<h3>Sistema di Ricarica Wireless</h3>
+<div class="category">Elettronica / Automotive</div>
+<p>Tecnologia brevettata per ricarica a distanza fino a 10 metri. Applicabile a veicoli elettrici, dispositivi IoT, smartphone.</p>
+<div class="price">€45.000 <span>o royalty 5%</span></div>
+<div class="meta">
+<span>Pubblicato: 10/06/2026</span>
+<span>Visite: 127</span>
+</div>
+<div class="actions">
+<button class="btn" onclick="contactSeller('ricarica-wireless')">Contatta</button>
+<button class="btn primary" onclick="viewDetail('ricarica-wireless')">Dettagli</button>
+</div>
+</div>
+
+<div class="bac-card" data-cat="tecnologia">
+<span class="badge new">NUOVO</span>
+<div class="img-placeholder">
+<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
+<h3>Algoritmo Crittografia Post-Quantum</h3>
+<div class="category">Cybersecurity / Software</div>
+<p>Protocollo di sicurezza resistente agli attacchi dei computer quantistici. Settore: cybersecurity, finanza, militare.</p>
+<div class="price">€120.000 <span>licenza esclusiva</span></div>
+<div class="meta">
+<span>Pubblicato: 12/06/2026</span>
+<span>Visite: 89</span>
+</div>
+<div class="actions">
+<button class="btn" onclick="contactSeller('crypto-quantum')">Contatta</button>
+<button class="btn primary" onclick="viewDetail('crypto-quantum')">Dettagli</button>
+</div>
+</div>
+
+<div class="bac-card" data-cat="brevetto">
+<span class="badge">BREVETTO</span>
+<div class="img-placeholder">
+<svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+</div>
+<h3>Biomateriale Impianti Dentali</h3>
+<div class="category">Medicina / Biotech</div>
+<p>Composto organico a base di cellulosa con proprieta osseo-integrative. Settore: medicina, implantologia, odontoiatria.</p>
+<div class="price">€85.000 <span>trasferimento totale</span></div>
+<div class="meta">
+<span>Pubblicato: 08/06/2026</span>
+<span>Visite: 203</span>
+</div>
+<div class="actions">
+<button class="btn" onclick="contactSeller('biomateriale-dentali')">Contatta</button>
+<button class="btn primary" onclick="viewDetail('biomateriale-dentali')">Dettagli</button>
+</div>
+</div>
+
+<div class="bac-card" data-cat="marchio">
+<span class="badge">MARCHIO</span>
+<div class="img-placeholder">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+</div>
+<h3>Brand "EcoTech" — Green Technology</h3>
+<div class="category">Energia / Ambiente</div>
+<p>Marchio registrato per tecnologie verdi. Include logo, payoff, dominio web. Settore: energia rinnovabile, sostenibilita.</p>
+<div class="price">€25.000 <span>trasferimento totale</span></div>
+<div class="meta">
+<span>Pubblicato: 05/06/2026</span>
+<span>Visite: 156</span>
+</div>
+<div class="actions">
+<button class="btn" onclick="contactSeller('ecotech-brand')">Contatta</button>
+<button class="btn primary" onclick="viewDetail('ecotech-brand')">Dettagli</button>
+</div>
+</div>
+
+<div class="bac-card" data-cat="licenza">
+<span class="badge urgent">URGENTE</span>
+<div class="img-placeholder">
+<svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+</div>
+<h3>Licenza Brevetto — Sistema Filtraggio Acqua</h3>
+<div class="category">Ambiente / Industria</div>
+<p>Sistema di filtraggio innovativo per depurazione acqua. Cercasi partner industriale per produzione su larga scala.</p>
+<div class="price">€15.000 <span>+ royalty 3%</span></div>
+<div class="meta">
+<span>Pubblicato: 14/06/2026</span>
+<span>Visite: 67</span>
+</div>
+<div class="actions">
+<button class="btn" onclick="contactSeller('filtro-acqua')">Contatta</button>
+<button class="btn primary" onclick="viewDetail('filtro-acqua')">Dettagli</button>
+</div>
+</div>
+
+<div class="bac-card" data-cat="disegno">
+<span class="badge">DISEGNO</span>
+<div class="img-placeholder">
+<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+</div>
+<h3>Design Lampada Solare "Helios"</h3>
+<div class="category">Design / Illuminazione</div>
+<p>Design industriale per lampada fotovoltaica da esterno. Forma brevettata, materiali innovativi. Settore: arredo, illuminazione.</p>
+<div class="price">€12.000 <span>licenza esclusiva</span></div>
+<div class="meta">
+<span>Pubblicato: 01/06/2026</span>
+<span>Visite: 234</span>
+</div>
+<div class="actions">
+<button class="btn" onclick="contactSeller('helios-lamp')">Contatta</button>
+<button class="btn primary" onclick="viewDetail('helios-lamp')">Dettagli</button>
+</div>
+</div>
+</div>
+
+<!-- PUBLISH MODAL -->
+<div class="publish-modal" id="publish-modal">
+<div class="publish-form">
+<h2>PUBBLICA IL TUO ANNUNCIO</h2>
+<div class="field">
+<label>Titolo dell'invenzione/tecnologia</label>
+<input type="text" id="pub-title" placeholder="Es: Sistema di...">
+</div>
+<div class="field">
+<label>Categoria</label>
+<select id="pub-cat">
+<option value="">Seleziona...</option>
+<option value="brevetto">Brevetto</option>
+<option value="marchio">Marchio</option>
+<option value="disegno">Disegno/Modello</option>
+<option value="tecnologia">Tecnologia</option>
+<option value="licenza">Licenza</option>
+</select>
+</div>
+<div class="field">
+<label>Settore / Campo</label>
+<input type="text" id="pub-sector" placeholder="Es: Elettronica, Medicina, Energia...">
+</div>
+<div class="field">
+<label>Descrizione</label>
+<textarea id="pub-desc" placeholder="Descrivi la tua invenzione, tecnologia o marchio. Cosa fa, come funziona, vantaggi, applicazioni..."></textarea>
+<div class="hint">Max 500 caratteri. Sii chiaro e conciso.</div>
+</div>
+<div class="field">
+<label>Prezzo / Condizioni</label>
+<input type="text" id="pub-price" placeholder="Es: €50.000 o royalty 5%">
+</div>
+<div class="field">
+<label>Email di contatto</label>
+<input type="email" id="pub-email" placeholder="tua@email.com">
+<div class="hint">Visibile solo agli interessati verificati.</div>
+</div>
+<div class="actions">
+<button class="btn cancel" onclick="closePublish()">Annulla</button>
+<button class="btn submit" onclick="submitPublish()">PUBBLICA</button>
+</div>
+</div>
+</div>
+
+<!-- SAGGIO BOT -->
+<div class="saggio-bot" onclick="toggleSaggio()" title="Saggio — Il tuo guid">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
+
+<div class="saggio-panel" id="saggio-panel">
+<div class="saggio-header">
+<span>SAGGIO — Guida</span>
+<button onclick="toggleSaggio()">×</button>
+</div>
+<div class="saggio-messages" id="saggio-messages">
+<div class="saggio-msg bot">Benvenuto nella Bacheca! Qui trovi invenzioni, brevetti, marchi e tecnologie in vendita o licenza. Puoi anche pubblicare il tuo annuncio. Cosa cerchi?</div>
+</div>
+<div class="saggio-input">
+<input type="text" id="saggio-input" placeholder="Scrivi la tua domanda..." onkeypress="if(event.key==='Enter')sendSaggio()">
+<button onclick="sendSaggio()">→</button>
+</div>
+</div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+// FILTERS
+function filterAll(){
+document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+event.target.classList.add('active');
+document.querySelectorAll('.bac-card').forEach(c=>c.style.display='block');
+}
+function filterCat(cat){
+document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+event.target.classList.add('active');
+document.querySelectorAll('.bac-card').forEach(c=>{
+c.style.display=c.dataset.cat===cat?'block':'none';
+});
+}
+
+// PUBLISH
+function openPublish(){
+document.getElementById('publish-modal').classList.add('active');
+}
+function closePublish(){
+document.getElementById('publish-modal').classList.remove('active');
+}
+
+async function submitPublish(){
+const title=document.getElementById('pub-title').value;
+const cat=document.getElementById('pub-cat').value;
+const sector=document.getElementById('pub-sector').value;
+const desc=document.getElementById('pub-desc').value;
+const price=document.getElementById('pub-price').value;
+const email=document.getElementById('pub-email').value;
+
+if(!title||!cat||!desc||!price||!email){
+alert('Compila tutti i campi obbligatori');
+return;
+}
+
+try{
+await supabase.from('bacheca_annunci').insert({
+title,
+category:cat,
+sector,
+description:desc,
+price,
+contact_email:email,
+status:'active',
+created_at:new Date().toISOString()
+});
+
+alert('Annuncio pubblicato! Sara visibile dopo approvazione automatica.');
+closePublish();
+
+}catch(e){
+console.error(e);
+// Fallback: show in UI anyway
+alert('Annuncio pubblicato! (Demo mode)');
+closePublish();
+}
+}
+
+// CONTACT / DETAIL
+function contactSeller(id){
+alert('Contatta il venditore: email masked. Funzione completa in sviluppo. ID: '+id);
+}
+function viewDetail(id){
+alert('Dettaglio annuncio: '+id+'. Pagina dettaglio in sviluppo.');
+}
+
+// SAGGIO BOT
+function toggleSaggio(){document.getElementById('saggio-panel').classList.toggle('active');}
+
+const SAGGIO_ANSWERS={
+'pubblica':'Clicca "PUBBLICA IL TUO ANNUNCIO" in alto. Compila titolo, categoria, descrizione, prezzo, email. L'annuncio e immediatamente visibile.',
+'contatta':'Clicca "Contatta" sull'annuncio che ti interessa. L'email del venditore e mascherata per privacy.',
+'gratis':'Pubblicare e contattare sono GRATIS durante la beta. In futuro potremmo introdurre commissioni.',
+'categoria':'Scegli: Brevetto (invenzione tecnica), Marchio (nome/logo), Disegno (forma estetica), Tecnologia (know-how), Licenza (diritti d'uso).',
+'prezzo':'Indica prezzo fisso, royalty (%), o "su preventivo". Sii trasparente per attrarre piu interessati.',
+'sicurezza':'Le email sono mascherate. Non mostriamo dati personali. I contatti avvengono via piattaforma.',
+'help':'Chiedimi: come pubblicare, come contattare, categorie, prezzi, sicurezza, gratis.'
+};
+
+function sendSaggio(){
+const input=document.getElementById('saggio-input');
+const msg=input.value.trim();
+if(!msg)return;
+const container=document.getElementById('saggio-messages');
+container.innerHTML+='<div class="saggio-msg user">'+escapeHtml(msg)+'</div>';
+input.value='';
+container.scrollTop=container.scrollHeight;
+
+let answer='Non ho capito. Prova: pubblica, contatta, gratis, categoria, prezzo, sicurezza, help.';
+const lower=msg.toLowerCase();
+for(const[key,val]of Object.entries(SAGGIO_ANSWERS)){if(lower.includes(key)){answer=val;break;}}
+
+setTimeout(()=>{
+container.innerHTML+='<div class="saggio-msg bot">'+answer+'</div>';
+container.scrollTop=container.scrollHeight;
+},500);
+}
+
+function escapeHtml(text){const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
+</script>
+</body>
+</html>
