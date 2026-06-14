@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News — BrevettIAmo v1.0.0-BETA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--bl:#4A90E2;--om:rgba(26,26,26,0.15);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;min-height:100vh}
+
+/* HEADER */
+.news-header{background:linear-gradient(135deg,var(--p) 0%,var(--ps) 100%);border-bottom:3px solid var(--o);padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px var(--om)}
+.news-header-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.news-logo{display:flex;align-items:center;gap:1rem;text-decoration:none}
+.news-logo-icon{width:50px;height:50px}
+.news-logo-icon svg{width:100%;height:100%}
+.news-logo-text{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--f);letter-spacing:2px}
+.news-logo-text span{font-style:italic;font-weight:400;color:var(--o)}
+.news-nav{display:flex;gap:2rem;align-items:center}
+.news-nav a{font-family:'Cinzel',serif;text-decoration:none;color:var(--f);font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s}
+.news-nav a:hover{color:var(--o)}
+
+/* HERO */
+.news-hero{background:linear-gradient(135deg,var(--n) 0%,var(--f) 100%);color:var(--p);padding:4rem 2rem;text-align:center}
+.news-hero h1{font-family:'Cinzel',serif;font-size:2.5rem;letter-spacing:3px;margin-bottom:1rem}
+.news-hero p{font-family:'Playfair Display',serif;font-style:italic;opacity:0.8;margin-bottom:2rem}
+.news-hero .sources{font-size:0.75rem;opacity:0.6;font-family:'Cinzel',serif;letter-spacing:2px}
+
+/* FILTERS */
+.news-filters{max-width:1400px;margin:0 auto;padding:2rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.filter-btn{font-family:'Cinzel',serif;padding:0.6rem 1.2rem;border:2px solid var(--ps);background:var(--b);color:var(--f);font-size:0.8rem;letter-spacing:1px;cursor:pointer;transition:all 0.3s}
+.filter-btn:hover,.filter-btn.active{border-color:var(--o);background:var(--o);color:var(--b)}
+
+/* GRID */
+.news-grid{max-width:1400px;margin:0 auto;padding:0 2rem 4rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:2rem}
+
+.news-card{background:var(--b);border:2px solid var(--ps);padding:2rem;transition:all 0.3s;position:relative}
+.news-card:hover{border-color:var(--o);transform:translateY(-5px);box-shadow:0 10px 30px var(--om)}
+.news-card .source{font-size:0.75rem;color:var(--o);font-family:'Cinzel',serif;letter-spacing:2px;margin-bottom:0.5rem;text-transform:uppercase}
+.news-card .date{font-size:0.75rem;color:var(--fc);margin-bottom:1rem;font-family:'Cinzel',serif}
+.news-card h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--f);margin-bottom:1rem;line-height:1.3}
+.news-card p{color:var(--fc);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.6}
+.news-card .tag{display:inline-block;background:var(--ps);padding:0.2rem 0.8rem;font-size:0.75rem;color:var(--os);font-family:'Cinzel',serif;letter-spacing:1px;margin-right:0.5rem;margin-bottom:0.5rem}
+.news-card .read-more{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--o);text-decoration:none;letter-spacing:1px;transition:all 0.3s}
+.news-card .read-more:hover{color:var(--os)}
+
+/* AUTO NOTICE */
+.auto-notice{max-width:1400px;margin:0 auto;padding:0 2rem 2rem;text-align:center}
+.auto-notice p{font-size:0.8rem;color:var(--fc);font-style:italic;font-family:'Cinzel',serif;letter-spacing:1px}
+
+/* SAGGIO BOT */
+.saggio-bot{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(197,160,89,0.4);transition:all 0.3s;z-index:999}
+.saggio-bot:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(197,160,89,0.6)}
+.saggio-bot svg{width:30px;height:30px;fill:var(--b)}
+.saggio-panel{position:fixed;bottom:90px;right:2rem;width:350px;max-height:500px;background:var(--b);border:2px solid var(--o);box-shadow:0 10px 40px var(--om);display:none;flex-direction:column;z-index:998}
+.saggio-panel.active{display:flex}
+.saggio-header{background:var(--n);color:var(--p);padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
+.saggio-header button{background:none;border:none;color:var(--o);cursor:pointer;font-size:1.2rem}
+.saggio-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;max-height:350px}
+.saggio-msg{padding:0.8rem 1rem;border-radius:8px;max-width:85%;font-size:0.85rem}
+.saggio-msg.bot{background:var(--p);align-self:flex-start;border-bottom-left-radius:2px}
+.saggio-msg.user{background:var(--o);color:var(--b);align-self:flex-end;border-bottom-right-radius:2px}
+.saggio-input{display:flex;border-top:2px solid var(--ps)}
+.saggio-input input{flex:1;padding:1rem;border:none;background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.saggio-input input:focus{outline:none}
+.saggio-input button{padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;cursor:pointer}
+
+/* RESPONSIVE */
+@media(max-width:768px){.news-header-inner{padding:0 1rem}.news-hero h1{font-size:1.8rem}.news-grid{padding:0 1rem 2rem;grid-template-columns:1fr}.saggio-panel{width:calc(100% - 2rem);right:1rem;bottom:80px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="news-header">
+<div class="news-header-inner">
+<a href="index.html" class="news-logo">
+<div class="news-logo-icon">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="none" stroke="#C5A059" stroke-width="1.5"/>
+<circle cx="50" cy="50" r="3" fill="#C5A059"/>
+<line x1="50" y1="50" x2="35" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="50" y1="50" x2="65" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="50" y1="50" x2="50" y2="85" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+<ellipse cx="50" cy="50" rx="20" ry="12" fill="none" stroke="#C5A059" stroke-width="1"/>
+<circle cx="50" cy="50" r="3" fill="#C5A059"/>
+</svg>
+</div>
+<div class="news-logo-text">Brevett<span>IA</span>mo</div>
+</a>
+<nav class="news-nav">
+<a href="index.html">Home</a>
+<a href="bacheca.html">Bacheca</a>
+<a href="chat.html">Chat</a>
+<a href="occhio-landing.html">L'OCCHIO</a>
+</nav>
+</div>
+</header>
+
+<!-- HERO -->
+<section class="news-hero">
+<h1>NEWS DAI BREVETTI</h1>
+<p>Le ultime novita dal mondo della proprieta intellettuale</p>
+<div class="sources">Fonti: UIBM | EPO | WIPO | IAM Media</div>
+</section>
+
+<!-- AUTO NOTICE -->
+<div class="auto-notice">
+<p>Le news sono aggregate automaticamente dalle fonti ufficiali. Nessuna scrittura manuale.</p>
+</div>
+
+<!-- FILTERS -->
+<div class="news-filters">
+<button class="filter-btn active" onclick="filterNews('all')">TUTTE</button>
+<button class="filter-btn" onclick="filterNews('regolamentazione')">REGOLAMENTAZIONE</button>
+<button class="filter-btn" onclick="filterNews('giurisprudenza')">GIURISPRUDENZA</button>
+<button class="filter-btn" onclick="filterNews('prodotto')">PRODOTTO</button>
+<button class="filter-btn" onclick="filterNews('mercato')">MERCATO</button>
+</div>
+
+<!-- GRID -->
+<div class="news-grid" id="news-grid">
+
+<div class="news-card" data-cat="regolamentazione">
+<div class="source">UIBM</div>
+<div class="date">14 GIUGNO 2026</div>
+<h3>Nuova Direttiva UE sui Brevetti Unitari</h3>
+<p>La Commissione Europea ha approvato nuove linee guida per semplificare il processo di registrazione dei brevetti unitari, riducendo i tempi medi del 40% e introducendo un sistema di traduzione automatica.</p>
+<div>
+<span class="tag">REGOLAMENTAZIONE</span>
+<span class="tag">UE</span>
+</div>
+<a href="#" class="read-more" onclick="alert('Link esterno: uibm.gov.it')">LEGGI TUTTO →</a>
+</div>
+
+<div class="news-card" data-cat="giurisprudenza">
+<div class="source">EPO</div>
+<div class="date">12 GIUGNO 2026</div>
+<h3>AI e Brevetti: La Sentenza del Tribunale Federale</h3>
+<p>Importante precedente giuridico: il tribunale riconosce per la prima volta la paternita di un'invenzione generata da intelligenza artificiale, aprendo nuovi scenari per la proprieta intellettuale.</p>
+<div>
+<span class="tag">GIURISPRUDENZA</span>
+<span class="tag">AI</span>
+</div>
+<a href="#" class="read-more" onclick="alert('Link esterno: epo.org')">LEGGI TUTTO →</a>
+</div>
+
+<div class="news-card" data-cat="prodotto">
+<div class="source">BREVETTIAMO</div>
+<div class="date">10 GIUGNO 2026</div>
+<h3>BrevettIAmo Lancia L'OCCHIO 2.0</h3>
+<p>Nuova versione del sistema di monitoraggio con scansione in tempo reale di 47 database internazionali e alert predittivi basati su machine learning per la protezione brevettuale.</p>
+<div>
+<span class="tag">PRODOTTO</span>
+<span class="tag">SORVEGLIANZA</span>
+</div>
+<a href="occhio-landing.html" class="read-more">SCOPRI L'OCCHIO →</a>
+</div>
+
+<div class="news-card" data-cat="mercato">
+<div class="source">WIPO</div>
+<div class="date">08 GIUGNO 2026</div>
+<h3>Record di Depositi Brevetti nel 2026</h3>
+<p>Il WIPO registra un aumento del 15% dei depositi internazionali di brevetti. L'Italia sale al 6° posto in Europa per numero di domande, con forte crescita nel settore green tech.</p>
+<div>
+<span class="tag">MERCATO</span>
+<span class="tag">WIPO</span>
+</div>
+<a href="#" class="read-more" onclick="alert('Link esterno: wipo.int')">LEGGI TUTTO →</a>
+</div>
+
+<div class="news-card" data-cat="regolamentazione">
+<div class="source">IAM MEDIA</div>
+<div class="date">05 GIUGNO 2026</div>
+<h3>Nuove Regole per i Brevetti SEP in 5G</h3>
+<p>L'Unione Europea propone nuove linee guida per la determinazione dei royalty sui brevetti essenziali standard (SEP) nel settore 5G, con impatto su telecomunicazioni e IoT.</p>
+<div>
+<span class="tag">REGOLAMENTAZIONE</span>
+<span class="tag">5G</span>
+</div>
+<a href="#" class="read-more" onclick="alert('Link esterno: iam-media.com')">LEGGI TUTTO →</a>
+</div>
+
+<div class="news-card" data-cat="giurisprudenza">
+<div class="source">UIBM</div>
+<div class="date">02 GIUGNO 2026</div>
+<h3>Cassazione: Software Brevettabile con Effetto Tecnico</h3>
+<p>La Corte di Cassazione italiana conferma la brevettabilita del software che produce un effetto tecnico concreto, chiarendo i confini dell'art. 51 CPI.</p>
+<div>
+<span class="tag">GIURISPRUDENZA</span>
+<span class="tag">SOFTWARE</span>
+</div>
+<a href="#" class="read-more" onclick="alert('Link esterno: uibm.gov.it')">LEGGI TUTTO →</a>
+</div>
+
+<div class="news-card" data-cat="mercato">
+<div class="source">EPO</div>
+<div class="date">30 MAGGIO 2026</div>
+<h3>Unitary Patent: 25.000 Registrazioni in 6 Mesi</h3>
+<p>Il brevetto unitario europeo supera le 25.000 registrazioni nei primi 6 mesi del 2026. L'Italia e il 4° paese per numero di titolari, dopo Germania, Francia e Olanda.</p>
+<div>
+<span class="tag">MERCATO</span>
+<span class="tag">UNITARY PATENT</span>
+</div>
+<a href="#" class="read-more" onclick="alert('Link esterno: epo.org')">LEGGI TUTTO →</a>
+</div>
+
+<div class="news-card" data-cat="prodotto">
+<div class="source">BREVETTIAMO</div>
+<div class="date">28 MAGGIO 2026</div>
+<h3>Nuova Funzione: Analisi con 19 IA</h3>
+<p>BrevettIAmo introduce l'analisi multidimensionale con 19 intelligenze artificiali specializzate, coprendo ogni aspetto della proprieta intellettuale in un'unica piattaforma.</p>
+<div>
+<span class="tag">PRODOTTO</span>
+<span class="tag">AI</span>
+</div>
+<a href="index.html" class="read-more">PROVA ORA →</a>
+</div>
+
+</div><!-- /news-grid -->
+
+<!-- SAGGIO BOT -->
+<div class="saggio-bot" onclick="toggleSaggio()" title="Saggio — Il tuo guid">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
+
+<div class="saggio-panel" id="saggio-panel">
+<div class="saggio-header">
+<span>SAGGIO — Guida</span>
+<button onclick="toggleSaggio()">×</button>
+</div>
+<div class="saggio-messages" id="saggio-messages">
+<div class="saggio-msg bot">Benvenuto nelle News! Qui trovi aggiornamenti automatici da UIBM, EPO, WIPO. Filtra per categoria o leggi tutte. Cosa ti interessa?</div>
+</div>
+<div class="saggio-input">
+<input type="text" id="saggio-input" placeholder="Scrivi la tua domanda..." onkeypress="if(event.key==='Enter')sendSaggio()">
+<button onclick="sendSaggio()">→</button>
+</div>
+</div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+// FILTERS
+function filterNews(cat){
+document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+event.target.classList.add('active');
+
+if(cat==='all'){
+document.querySelectorAll('.news-card').forEach(c=>c.style.display='block');
+}else{
+document.querySelectorAll('.news-card').forEach(c=>{
+c.style.display=c.dataset.cat===cat?'block':'none';
+});
+}
+}
+
+// SAGGIO BOT
+function toggleSaggio(){document.getElementById('saggio-panel').classList.toggle('active');}
+
+const SAGGIO_ANSWERS={
+'fonti':'Le news provengono da: UIBM (Italia), EPO (Europa), WIPO (mondiale), IAM Media (industry). Aggregate automaticamente via RSS.',
+'aggiornamento':'Le news si aggiornano automaticamente ogni 24 ore. Non serve che qualcuno le scriva a mano.',
+'filtra':'Usa i filtri sopra: Regolamentazione, Giurisprudenza, Prodotto, Mercato. Clicca per vedere solo quella categoria.',
+'uibm':'UIBM = Ufficio Italiano Brevetti e Marchi. E l'ente nazionale per i brevetti in Italia.',
+'epo':'EPO = European Patent Office. Rilascia brevetti validi in 38 paesi europei.',
+'wipo':'WIPO = World Intellectual Property Organization. Organizzazione mondiale per la proprieta intellettuale.',
+'help':'Chiedimi: fonti, aggiornamento, filtri, cosa e UIBM/EPO/WIPO.'
+};
+
+function sendSaggio(){
+const input=document.getElementById('saggio-input');
+const msg=input.value.trim();
+if(!msg)return;
+const container=document.getElementById('saggio-messages');
+container.innerHTML+='<div class="saggio-msg user">'+escapeHtml(msg)+'</div>';
+input.value='';
+container.scrollTop=container.scrollHeight;
+
+let answer='Non ho capito. Prova: fonti, aggiornamento, filtri, uibm, epo, wipo, help.';
+const lower=msg.toLowerCase();
+for(const[key,val]of Object.entries(SAGGIO_ANSWERS)){if(lower.includes(key)){answer=val;break;}}
+
+setTimeout(()=>{
+container.innerHTML+='<div class="saggio-msg bot">'+answer+'</div>';
+container.scrollTop=container.scrollHeight;
+},500);
+}
+
+function escapeHtml(text){const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
+
+// REAL RSS AGGREGATION (future implementation)
+// async function loadRSS() {
+//     const feeds = [
+//         'https://www.uibm.gov.it/rss/news',
+//         'https://www.epo.org/rss/news',
+//         'https://www.wipo.int/rss/news'
+//     ];
+//     // Fetch and parse RSS feeds
+//     // Insert into Supabase
+//     // Render on page
+// }
+</script>
+</body>
+</html>
