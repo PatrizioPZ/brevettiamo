@@ -56,7 +56,7 @@ const BREVETTIAMO = {
     
     // --- Smart Router IA ---
     router: {
-      budget_mese_euro: 0,  // Beta: 0€
+      budget_mese_euro: 0,
       strategia: "cascata_intelligente",
       
       modelli: {
@@ -290,105 +290,105 @@ const BREVETTIAMO = {
   // ============================================================
   // SERVIZI - Tutti usano L'OCCHIO
   // ============================================================
- // ============================================================
-// SERVIZI OCCHIO - Nomi Accattivanti
-// ============================================================
-occhio_falco: {
-  id: "occhio_falco",
-  nome: "OCCHIO di Falco",
-  sottotitolo: "Sorveglianza 24/7",
-  descrizione: "Vigilanza continua su tutti i canali. Il Falco non dorme mai.",
-  icona: "eye",
-  categoria: "occhio",
-  tipo: "abbonamento",
-  prezzo: 9,
-  periodo: "mese",
-  occhio: {
-    analisi: ["testo", "immagini", "geometrico", "video"],
-    canali: "tutti",
-    router: "cascata",
-    azione_auto: true,
-    sorveglianza: "continua"
-  },
-  pacchetti: { starter: true, pro: true, enterprise: true },
-  limiti: { 
-    starter: { canali: 3, ricerche_giorno: 10 },
-    pro: { canali: 10, ricerche_giorno: 100 },
-    enterprise: { canali: "tutti", ricerche_giorno: "illimitati" }
-  },
-  flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "dashboard_occhio"]
-},
-
-occhio_lince: {
-  id: "occhio_lince",
-  nome: "OCCHIO di Lince",
-  sottotitolo: "Analisi Approfondita",
-  descrizione: "Vede ogni dettaglio. Report completo sullo stato attuale del tuo brevetto.",
-  icona: "search",
-  categoria: "occhio",
-  tipo: "una_tantum",
-  prezzo: 20,
-  periodo: "una_volta",
-  occhio: {
-    analisi: ["testo", "immagini", "geometrico"],
-    canali: ["google_images", "bing_visual", "amazon", "ebay", "aliexpress"],
-    router: "cascata",
-    azione_auto: false,
-    sorveglianza: "no"
-  },
-  pacchetti: { starter: true, pro: true, enterprise: true },
-  limiti: { starter: 1, pro: 3, enterprise: "illimitati" },
-  flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "report_lince"],
-  output: "report_pdf"
-},
-
-occhio_aquila: {
-  id: "occhio_aquila",
-  nome: "OCCHIO di Aquila",
-  sottotitolo: "Analisi + Sorveglianza",
-  descrizione: "Vista panoramica: analisi completa + 1 mese di sorveglianza Falco inclusa.",
-  icona: "binoculars",
-  categoria: "occhio",
-  tipo: "combo",
-  prezzo: 29,
-  periodo: "una_volta",
-  occhio: {
-    analisi: ["testo", "immagini", "geometrico", "video"],
-    canali: "tutti",
-    router: "cascata",
-    azione_auto: true,
-    sorveglianza: "1_mese"
-  },
-  pacchetti: { starter: true, pro: true, enterprise: true },
-  limiti: { starter: 1, pro: 3, enterprise: "illimitati" },
-  flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "report_aquila", "dashboard_occhio"],
-  include: ["occhio_lince", "occhio_falco_1mese"]
-},
-
-occhio_giove: {
-  id: "occhio_giove",
-  nome: "OCCHIO di Giove",
-  sottotitolo: "Onniveggente",
-  descrizione: "Il pacchetto completo. Tutti i servizi, sorveglianza illimitata, priorità massima.",
-  icona: "crown",
-  categoria: "occhio",
-  tipo: "premium",
-  prezzo: 99,
-  periodo: "mese",
-  occhio: {
-    analisi: ["testo", "immagini", "geometrico", "video"],
-    canali: "tutti",
-    router: "cascata",
-    azione_auto: true,
-    sorveglianza: "illimitata",
-    priorità: "massima"
-  },
-  pacchetti: { enterprise: true },
-  limiti: { enterprise: "illimitati" },
-  flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "dashboard_occhio"],
-  include: "tutti"
-}
   servizi: {
+    // --- SERVIZI OCCHIO - Nomi Accattivanti ---
+    occhio_falco: {
+      id: "occhio_falco",
+      nome: "OCCHIO di Falco",
+      sottotitolo: "Sorveglianza 24/7",
+      descrizione: "Vigilanza continua su tutti i canali. Il Falco non dorme mai.",
+      icona: "eye",
+      categoria: "occhio",
+      tipo: "abbonamento",
+      prezzo: 9,
+      periodo: "mese",
+      occhio: {
+        analisi: ["testo", "immagini", "geometrico", "video"],
+        canali: "tutti",
+        router: "cascata",
+        azione_auto: true,
+        sorveglianza: "continua"
+      },
+      pacchetti: { starter: true, pro: true, enterprise: true },
+      limiti: { 
+        starter: { canali: 3, ricerche_giorno: 10 },
+        pro: { canali: 10, ricerche_giorno: 100 },
+        enterprise: { canali: "tutti", ricerche_giorno: "illimitati" }
+      },
+      flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "dashboard_occhio"]
+    },
+    
+    occhio_lince: {
+      id: "occhio_lince",
+      nome: "OCCHIO di Lince",
+      sottotitolo: "Analisi Approfondita",
+      descrizione: "Vede ogni dettaglio. Report completo sullo stato attuale del tuo brevetto.",
+      icona: "search",
+      categoria: "occhio",
+      tipo: "una_tantum",
+      prezzo: 20,
+      periodo: "una_volta",
+      occhio: {
+        analisi: ["testo", "immagini", "geometrico"],
+        canali: ["google_images", "bing_visual", "amazon", "ebay", "aliexpress"],
+        router: "cascata",
+        azione_auto: false,
+        sorveglianza: "no"
+      },
+      pacchetti: { starter: true, pro: true, enterprise: true },
+      limiti: { starter: 1, pro: 3, enterprise: "illimitati" },
+      flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "report_lince"],
+      output: "report_pdf"
+    },
+    
+    occhio_aquila: {
+      id: "occhio_aquila",
+      nome: "OCCHIO di Aquila",
+      sottotitolo: "Analisi + Sorveglianza",
+      descrizione: "Vista panoramica: analisi completa + 1 mese di sorveglianza Falco inclusa.",
+      icona: "binoculars",
+      categoria: "occhio",
+      tipo: "combo",
+      prezzo: 29,
+      periodo: "una_volta",
+      occhio: {
+        analisi: ["testo", "immagini", "geometrico", "video"],
+        canali: "tutti",
+        router: "cascata",
+        azione_auto: true,
+        sorveglianza: "1_mese"
+      },
+      pacchetti: { starter: true, pro: true, enterprise: true },
+      limiti: { starter: 1, pro: 3, enterprise: "illimitati" },
+      flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "report_aquila", "dashboard_occhio"],
+      include: ["occhio_lince", "occhio_falco_1mese"]
+    },
+    
+    occhio_giove: {
+      id: "occhio_giove",
+      nome: "OCCHIO di Giove",
+      sottotitolo: "Onniveggente",
+      descrizione: "Il pacchetto completo. Tutti i servizi, sorveglianza illimitata, priorità massima.",
+      icona: "crown",
+      categoria: "occhio",
+      tipo: "premium",
+      prezzo: 99,
+      periodo: "mese",
+      occhio: {
+        analisi: ["testo", "immagini", "geometrico", "video"],
+        canali: "tutti",
+        router: "cascata",
+        azione_auto: true,
+        sorveglianza: "illimitata",
+        priorità: "massima"
+      },
+      pacchetti: { enterprise: true },
+      limiti: { enterprise: "illimitati" },
+      flusso: ["benvenuto_beta", "privacy_nda", "carica_brevetto", "dashboard_occhio"],
+      include: "tutti"
+    },
+    
+    // --- Vecchi servizi (mantenuti per compatibilità) ---
     ricerca_brevetti: {
       id: "ricerca_brevetti",
       nome: "Ricerca Brevetti",
@@ -602,6 +602,7 @@ occhio_giove: {
       prezzo: 29,
       servizi_inclusi: 3,
       servizi_disponibili: [
+        "occhio_lince", "occhio_falco", "carica_brevetto",
         "ricerca_brevetti", "redazione_rivendicazioni", "verifica_novita",
         "allert_ia", "ebay_vero", "calendario_scadenze", "estensione_epo"
       ],
@@ -615,6 +616,7 @@ occhio_giove: {
       prezzo: 99,
       servizi_inclusi: 10,
       servizi_disponibili: [
+        "occhio_lince", "occhio_falco", "occhio_aquila", "carica_brevetto",
         "ricerca_brevetti", "redazione_rivendicazioni", "verifica_novita",
         "valutazione_tecnica", "traduzione_tecnica", "estensione_epo",
         "estensione_pct", "allert_ia", "monitoraggio_dogane", "ebay_vero",
