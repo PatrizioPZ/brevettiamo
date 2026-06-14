@@ -1,11 +1,12 @@
 // ============================================================
 // BREVETTIAMO - dashboard-occhio.js
-// Flusso: Click Usa -> Benvenuto Beta -> NDA -> Form -> Attiva
+// Flusso: Click Usa -> Benvenuto Beta -> NDA -> Form (con upload) -> Attiva
 // ============================================================
 
 const OCCHIO = {
     pacchetto: '',
     servizioCorrente: null,
+    filesCaricati: [],
     
     init() {
         this.pacchetto = new URLSearchParams(location.search).get('pacchetto') || 'starter';
@@ -56,6 +57,7 @@ const OCCHIO = {
     // STEP 1: BENVENUTO BETA
     apriBenvenuto(id) {
         this.servizioCorrente = id;
+        this.filesCaricati = [];
         const s = BREVETTIAMO.servizi[id];
         const modal = document.getElementById('modal-occhio');
         
@@ -112,7 +114,7 @@ const OCCHIO = {
         this.apriForm();
     },
     
-    // STEP 3: FORM CARICA BREVETTO
+    // STEP 3: FORM CARICA BREVETTO (con upload disegni)
     apriForm() {
         const s = BREVETTIAMO.servizi[this.servizioCorrente];
         const modal = document.getElementById('modal-occhio');
@@ -134,6 +136,15 @@ const OCCHIO = {
                     '<label class="block text-gray-400 mb-2">Abstract (max 150 parole) *</label>' +
                     '<textarea id="abstract" rows="3" class="input" placeholder="Riassunto breve..."></textarea>' +
                     
+                    '<label class="block text-gray-400 mb-2">Disegni / Tavole Tecniche</label>' +
+                    '<div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition mb-2" onclick="document.getElementById(\'file-upload\').click()">' +
+                        '<i class="fas fa-cloud-upload-alt text-3xl text-gray-500 mb-2"></i>' +
+                        '<p class="text-gray-400">Clicca per caricare o trascina i file</p>' +
+                        '<p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG, SVG (max 10MB)</p>' +
+                        '<input type="file" id="file-upload" multiple accept=".pdf,.jpg,.jpeg,.png,.svg" style="display:none" onchange="OCCHIO.handleFileUpload(this)">' +
+                    '</div>' +
+                    '<div id="file-list" class="mb-4"></div>' +
+                    
                     '<label class="block text-gray-400 mb-2">Keywords tecniche</label>' +
                     '<input type="text" id="keywords" class="input" placeholder="meccanica, elettronica, software...">' +
                     
@@ -142,6 +153,21 @@ const OCCHIO = {
                     '</button>' +
                 '</form>' +
             '</div>';
+    },
+    
+    handleFileUpload(input) {
+        const files = Array.from(input.files);
+        this.filesCaricati = files;
+        const list = document.getElementById('file-list');
+        list.innerHTML = '';
+        
+        if (files.length > 0) {
+            list.innerHTML = '<p class="text-green-400 text-sm mb-2"><i class="fas fa-check mr-1"></i>File caricati:</p>';
+            files.forEach(file => {
+                const size = (file.size / 1024).toFixed(1);
+                list.innerHTML += '<p class="text-gray-300 text-sm"><i class="fas fa-file mr-1"></i>' + file.name + ' (' + size + ' KB)</p>';
+            });
+        }
     },
     
     // STEP 4: ATTIVA
@@ -155,14 +181,17 @@ const OCCHIO = {
             return;
         }
         
-        localStorage.setItem('occhio_brevetto', JSON.stringify({
+        const dati = {
             descrizione: desc,
             rivendicazioni: riv,
             abstract: abs,
             keywords: document.getElementById('keywords').value,
+            files: this.filesCaricati.map(f => f.name),
             servizio: this.servizioCorrente,
             data: new Date().toISOString()
-        }));
+        };
+        
+        localStorage.setItem('occhio_brevetto', JSON.stringify(dati));
         
         this.chiudiModal();
         alert('L\'OCCHIO e ATTIVO! Sorveglianza 24/7 avviata.');
