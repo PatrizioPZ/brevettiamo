@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCCHIO - Il Falco che veglia sulle tue idee</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--primary);
+            color: #e2e8f0;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%233b82f6" stroke-width="0.5" opacity="0.1"/></svg>') repeat;
+            background-size: 100px 100px;
+            animation: pulse-bg 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-bg {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.2; }
+        }
+        
+        .occhio-pulse {
+            animation: occhio-pulse 2s infinite;
+        }
+        
+        @keyframes occhio-pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+        
+        .pricing-card {
+            background: var(--secondary);
+            border: 1px solid #334155;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+        }
+        
+        .pricing-card.featured::before {
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+            height: 6px;
+        }
+        
+        .badge-beta {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .step-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+        
+        .footer-link {
+            color: #94a3b8;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="bg-gray-900 border-b border-gray-800 px-6 py-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-eye text-3xl text-blue-500 occhio-pulse"></i>
+                <div>
+                    <h1 class="text-xl font-bold text-white">OCCHIO</h1>
+                    <p class="text-xs text-gray-400">Anti-Contraffazione AI</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#come-funziona" class="text-gray-300 hover:text-white transition">Come funziona</a>
+                <a href="#prezzi" class="text-gray-300 hover:text-white transition">Prezzi</a>
+                <a href="https://patriziopz.github.io/brevettiamo" class="text-blue-400 hover:text-blue-300 transition text-sm">
+                    <i class="fas fa-external-link-alt mr-1"></i> BrevettIAmo
+                </a>
+            </div>
+            <a href="benvenuto-beta.html?servizio=occhio_falco" class="cta-button text-sm py-2 px-4">
+                <i class="fas fa-rocket mr-2"></i> Prova Gratis
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg py-20 md:py-32 relative">
+        <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+            <div class="inline-block mb-6">
+                <span class="badge-beta">
+                    <i class="fas fa-flask mr-1"></i> BETA GRATIS - 60 Giorni
+                </span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                <span class="gradient-text">OCCHIO</span>
+            </h1>
+            
+            <h2 class="text-2xl md:text-4xl font-bold text-white mb-6">
+                Il Falco che veglia sulle tue idee
+            </h2>
+            
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                Sorveglianza anti-contraffazione <span class="text-blue-400 font-bold">24/7</span> powered by AI.
+                <br>
+                <span class="text-green-400">Da €9/mese.</span> Meno di un caffè al giorno.
+            </p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-12">
+                <a href="benvenuto-beta.html?servizio=occhio_falco" class="cta-button text-lg">
+                    <i class="fas fa-eye mr-2"></i> Attiva il tuo OCCHIO
+                </a>
+                <a href="#come-funziona" class="bg-gray-800 hover:bg-gray-700 text-white px-8 py-4 rounded-xl font-bold transition border border-gray-600">
+                    <i class="fas fa-play mr-2"></i> Scopri come funziona
+                </a>
+            </div>
+            
+            <div class="flex items-center justify-center space-x-8 text-sm text-gray-400">
+                <span><i class="fas fa-check-circle text-green-400 mr-1"></i> Setup in 2 minuti</span>
+                <span><i class="fas fa-check-circle text-green-400 mr-1"></i> Nessuna carta di credito</span>
+                <span><i class="fas fa-check-circle text-green-400 mr-1"></i> Cancella quando vuoi</span>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="max-w-7xl mx-auto px-6 mt-16">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-gray-800 bg-opacity-50 rounded-xl p-6 text-center border border-gray-700">
+                    <p class="text-3xl font-bold text-blue-400">3%</p>
+                    <p class="text-sm text-gray-400">Prodotti online sono contraffatti</p>
+                </div>
+                <div class="bg-gray-800 bg-opacity-50 rounded-xl p-6 text-center border border-gray-700">
+                    <p class="text-3xl font-bold text-green-400">€50k</p>
+                    <p class="text-sm text-gray-400">Costo medio avvocati per scoprirlo</p>
+                </div>
+                <div class="bg-gray-800 bg-opacity-50 rounded-xl p-6 text-center border border-gray-700">
+                    <p class="text-3xl font-bold text-yellow-400">14</p>
+                    <p class="text-sm text-gray-400">Canali monitorati 24/7</p>
+                </div>
+                <div class="bg-gray-800 bg-opacity-50 rounded-xl p-6 text-center border border-gray-700">
+                    <p class="text-3xl font-bold text-red-400">0</p>
+                    <p class="text-sm text-gray-400">€ per iniziare (beta)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Il Problema -->
+    <section class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    Il tuo lavoro viene copiato <span class="text-red-400">ogni giorno</span>
+                </h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                    E tu non lo sai nemmeno. Fino a quando è troppo tardi.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 rounded-xl p-8 border border-gray-700">
+                    <div class="w-16 h-16 bg-red-900 bg-opacity-30 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-copy text-2xl text-red-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Copia istantanea</h3>
+                    <p class="text-gray-400">
+                        Un clone del tuo prodotto appare su Amazon, AliExpress, eBay in 48 ore dal lancio. Tu lo scopri dopo mesi.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 rounded-xl p-8 border border-gray-700">
+                    <div class="w-16 h-16 bg-yellow-900 bg-opacity-30 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-dollar-sign text-2xl text-yellow-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Perdite enormi</h3>
+                    <p class="text-gray-400">
+                        Il 30% del fatturato di un brand medio viene perso per contraffazione. Senza contare il danno di immagine.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-800 rounded-xl p-8 border border-gray-700">
+                    <div class="w-16 h-16 bg-blue-900 bg-opacity-30 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-gavel text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Costi legali</h3>
+                    <p class="text-gray-400">
+                        Un avvocato IP costa €300-500/ora. Per scoprire e fermare un contraffattore servono €15.000-50.000.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- I 4 OCCHI -->
+    <section id="prezzi" class="py-20 bg-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    Scegli il tuo <span class="gradient-text">OCCHIO</span>
+                </h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                    4 livelli di protezione. Dal report una tantum alla sorveglianza onniveggente 24/7.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- OCCHIO di Lince -->
+                <div class="pricing-card card-hover p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-900 bg-opacity-50 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-search text-xl text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">OCCHIO di Lince</h3>
+                            <p class="text-xs text-blue-400">Analisi Approfondita</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mb-6">
+                        Vede ogni dettaglio. Report completo sullo stato attuale della tua proprietà intellettuale.
+                    </p>
+                    
+                    <div class="mb-6">
+                        <span class="text-3xl font-bold text-white">€20</span>
+                        <span class="text-gray-400">/una tantum</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-6 text-sm">
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Scan 5 marketplace
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Analisi immagini + testo
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Report PDF dettagliato
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Risultati in 24h
+                        </li>
+                    </ul>
+                    
+                    <a href="benvenuto-beta.html?servizio=occhio_lince" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg font-bold transition">
+                        Prova Gratis
+                    </a>
+                </div>
+                
+                <!-- OCCHIO di Falco -->
+                <div class="pricing-card featured card-hover p-6">
+                    <div class="absolute top-4 right-4">
+                        <span class="badge-beta">POPOLARE</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-green-900 bg-opacity-50 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-eye text-xl text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">OCCHIO di Falco</h3>
+                            <p class="text-xs text-green-400">Sorveglianza 24/7</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mb-6">
+                        Il Falco non dorme mai. Sorveglianza continua su tutti i canali con allert in tempo reale.
+                    </p>
+                    
+                    <div class="mb-6">
+                        <span class="text-3xl font-bold text-white">€9</span>
+                        <span class="text-gray-400">/mese</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-6 text-sm">
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Tutto di Lince +
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Sorveglianza 24/7
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Allert in tempo reale
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> 3 canali monitorati
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> 10 ricerche/giorno
+                        </li>
+                    </ul>
+                    
+                    <a href="benvenuto-beta.html?servizio=occhio_falco" class="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-lg font-bold transition">
+                        Attiva Ora
+                    </a>
+                </div>
+                
+                <!-- OCCHIO di Aquila -->
+                <div class="pricing-card card-hover p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-yellow-900 bg-opacity-50 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-binoculars text-xl text-yellow-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">OCCHIO di Aquila</h3>
+                            <p class="text-xs text-yellow-400">Analisi + Sorveglianza</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mb-6">
+                        Vista panoramica: analisi completa + 1 mese di sorveglianza Falco inclusa.
+                    </p>
+                    
+                    <div class="mb-6">
+                        <span class="text-3xl font-bold text-white">€29</span>
+                        <span class="text-gray-400">/una volta</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-6 text-sm">
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Tutto di Lince +
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> 1 mese Falco incluso
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> 10 canali monitorati
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> 100 ricerche/giorno
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Priorità media
+                        </li>
+                    </ul>
+                    
+                    <a href="benvenuto-beta.html?servizio=occhio_aquila" class="block w-full bg-yellow-600 hover:bg-yellow-700 text-white text-center py-3 rounded-lg font-bold transition">
+                        Prova Gratis
+                    </a>
+                </div>
+                
+                <!-- OCCHIO di Giove -->
+                <div class="pricing-card card-hover p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-purple-900 bg-opacity-50 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-crown text-xl text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">OCCHIO di Giove</h3>
+                            <p class="text-xs text-purple-400">Onniveggente</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mb-6">
+                        Il pacchetto completo. Tutti i servizi, sorveglianza illimitata, priorità massima.
+                    </p>
+                    
+                    <div class="mb-6">
+                        <span class="text-3xl font-bold text-white">€99</span>
+                        <span class="text-gray-400">/mese</span>
+                    </div>
+                    
+                    <ul class="space-y-3 mb-6 text-sm">
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Tutto di Aquila +
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> 14 canali tutti
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Ricerche illimitate
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Priorità massima
+                        </li>
+                        <li class="flex items-center text-gray-300">
+                            <i class="fas fa-check text-green-400 mr-2"></i> Supporto dedicato
+                        </li>
+                    </ul>
+                    
+                    <a href="benvenuto-beta.html?servizio=occhio_giove" class="block w-full bg-purple-600 hover:bg-purple-700 text-white text-center py-3 rounded-lg font-bold transition">
+                        Contattaci
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Come Funziona -->
+    <section id="come-funziona" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+                    Come funziona <span class="gradient-text">OCCHIO</span>
+                </h2>
+                <p class="text-xl text-gray-400">
+                    4 passaggi. 2 minuti di setup. Poi dormi tra tre guanciali.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="step-number mx-auto mb-4">1</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Scegli il tuo OCCHIO</h3>
+                    <p class="text-gray-400">
+                        Lince, Falco, Aquila o Giove. Inizia gratis con la beta.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="step-number mx-auto mb-4">2</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Carichi le tue idee</h3>
+                    <p class="text-gray-400">
+                        Foto, descrizione, link ai tuoi prodotti. L'IA capisce tutto.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="step-number mx-auto mb-4">3</div>
+                    <h3 class="text-xl font-bold text-white mb-2">L'IA scansiona 24/7</h3>
+                    <p class="text-gray-400">
+                        Amazon, eBay, AliExpress, Etsy, Facebook, Instagram, TikTok... 14 canali.
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="step-number mx-auto mb-4">4</div>
+                    <h3 class="text-xl font-bold text-white mb-2">Dormi tranquillo</h3>
+                    <p class="text-gray-400">
+                        Allert in tempo reale. Azioni automatiche. Tu non devi fare nulla.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="benvenuto-beta.html?servizio=occhio_falco" class="cta-button text-lg">
+                    <i class="fas fa-rocket mr-2"></i> Inizia Gratis - 60 Giorni
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Link a BrevettIAmo -->
+    <section class="py-16 bg-gray-800 border-t border-gray-700">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+                Hai già un <span class="text-blue-400">brevetto</span>?
+            </h2>
+            <p class="text-xl text-gray-400 mb-8">
+                Passa a <strong>BrevettIAmo</strong> per la protezione brevettuale completa: ricerca, redazione, estensione internazionale, e OCCHIO incluso.
+            </p>
+            <a href="https://patriziopz.github.io/brevettiamo" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition">
+                <i class="fas fa-external-link-alt mr-2"></i>
+                Scopri BrevettIAmo
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-950 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i class="fas fa-eye text-2xl text-blue-500"></i>
+                        <span class="text-xl font-bold text-white">OCCHIO</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Sorveglianza anti-contraffazione powered by AI. Dormi tra tre guanciali.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Prodotti</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="benvenuto-beta.html?servizio=occhio_lince" class="footer-link">OCCHIO di Lince</a></li>
+                        <li><a href="benvenuto-beta.html?servizio=occhio_falco" class="footer-link">OCCHIO di Falco</a></li>
+                        <li><a href="benvenuto-beta.html?servizio=occhio_aquila" class="footer-link">OCCHIO di Aquila</a></li>
+                        <li><a href="benvenuto-beta.html?servizio=occhio_giove" class="footer-link">OCCHIO di Giove</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Risorse</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="https://patriziopz.github.io/brevettiamo" class="footer-link">BrevettIAmo</a></li>
+                        <li><a href="#" class="footer-link">Blog</a></li>
+                        <li><a href="#" class="footer-link">Guide</a></li>
+                        <li><a href="#" class="footer-link">API</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-white mb-4">Legale</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="footer-link">Privacy</a></li>
+                        <li><a href="#" class="footer-link">NDA</a></li>
+                        <li><a href="#" class="footer-link">Termini</a></li>
+                        <li><a href="#" class="footer-link">Cookie</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between">
+                <p class="text-gray-500 text-sm">
+                     2026 OCCHIO by BrevettIAmo. Tutti i diritti riservati.
+                </p>
+                <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
