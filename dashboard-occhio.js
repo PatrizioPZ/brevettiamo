@@ -1,7 +1,7 @@
 // ============================================================
 // BREVETTIAMO - dashboard-occhio.js
 // Logica dinamica: carica servizi per pacchetto, fair share IA, allert
-// Gestione OCCHIO: form carica brevetto, attivazione sorveglianza
+// Gestione OCCHIO: form carica brevetto SOLO su click "Usa"
 // ============================================================
 
 class BrevettIAmoDashboard {
@@ -14,10 +14,9 @@ class BrevettIAmoDashboard {
     this.analisiLimite = this.calcolaFairShare();
     this.allert = [];
     this.brevettoCaricato = null;
-    
     this.init();
   }
-  
+
   // --- INIZIALIZZAZIONE ---
   init() {
     this.caricaPacchetto();
@@ -29,24 +28,23 @@ class BrevettIAmoDashboard {
     this.aggiornaUI();
     this.startAutoRefresh();
   }
-  
+
   // --- URL PARAMS ---
   getPacchettoFromURL() {
     const params = new URLSearchParams(window.location.search);
     const pacchetto = params.get('pacchetto') || 'starter';
-    
     if (!this.config.pacchetti[pacchetto]) {
       console.warn('Pacchetto non valido, uso starter');
       return 'starter';
     }
     return pacchetto;
   }
-  
+
   getOcchioStatusFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get('occhio') === 'attivo';
   }
-  
+
   // --- PACCHETTO ---
   caricaPacchetto() {
     const p = this.config.pacchetti[this.pacchetto];
@@ -54,121 +52,109 @@ class BrevettIAmoDashboard {
     document.getElementById('canali-monitorati').textContent = 
       p.canali_allert === 'tutti' ? 'tutti' : p.canali_allert;
   }
-  
+
   // --- FAIR SHARE IA ---
   calcolaFairShare() {
     const utentiAttiviOggi = this.simulaUtentiAttivi();
     const limiteTotale = this.config.beta.fair_share.limite_giornaliero_totale;
-    
     let fairShare = Math.floor(limiteTotale / utentiAttiviOggi);
     fairShare = Math.min(fairShare, this.config.beta.fair_share.max_per_utente);
     fairShare = Math.max(fairShare, this.config.beta.fair_share.min_per_utente);
-    
     return fairShare;
   }
-  
+
   simulaUtentiAttivi() {
     return Math.floor(Math.random() * 40) + 10;
   }
-  
+
   // --- SERVIZI ---
   caricaServizi() {
     const p = this.config.pacchetti[this.pacchetto];
     const serviziDisponibili = p.servizi_disponibili;
-    
     this.servizi = serviziDisponibili.map(id => {
       const servizio = this.config.servizi[id];
+      if (!servizio) {
+        console.warn('Servizio ' + id + ' non trovato in config.servizi');
+        return null;
+      }
       return {
         ...servizio,
-        limite: servizio.limiti[this.pacchetto],
+        limite: servizio.limiti ? servizio.limiti[this.pacchetto] : 0,
         usato: 0
       };
-    });
-    
+    }).filter(s => s !== null);
     this.renderServizi();
   }
-  
+
   renderServizi() {
     const grid = document.getElementById('servizi-grid');
     grid.innerHTML = '';
-    
     this.servizi.forEach(servizio => {
       const card = this.creaCardServizio(servizio);
       grid.appendChild(card);
     });
   }
-  
+
   creaCardServizio(servizio) {
     const div = document.createElement('div');
     div.className = 'service-card card-hover';
     
-   const limiteText = servizio.limite === 'illimitati' ? 'Illimitati' : 
-                   servizio.limite === 0 ? 'Non disponibile' : 
-                   typeof servizio.limite === 'object' ? 
-                     (servizio.limite.ricerche_giorno === 'illimitati' ? 'Illimitati' : 
-                      `${servizio.usato}/${servizio.limite.ricerche_giorno}`) :
-                   `${servizio.usato}/${servizio.limite}`;
+    const limiteText = servizio.limite === 'illimitati' ? 'Illimitati' : 
+                       servizio.limite === 0 ? 'Non disponibile' : 
+                       typeof servizio.limite === 'object' ? 
+                         (servizio.limite.ricerche_giorno === 'illimitati' ? 'Illimitati' : 
+                          servizio.usato + '/' + servizio.limite.ricerche_giorno) :
+                       servizio.usato + '/' + servizio.limite;
     
     const statusClass = servizio.limite === 0 ? 'text-gray-500' : 'text-green-400';
     const icona = this.getIconaServizio(servizio.icona);
     
-    // Prezzo e tipo per servizi OCCHIO
-    const prezzoText = servizio.prezzo ? `${servizio.prezzo}€${servizio.periodo === 'mese' ? '/mese' : ''}` : '';
+    const prezzoText = servizio.prezzo ? servizio.prezzo + '€' + (servizio.periodo === 'mese' ? '/mese' : '') : '';
     const tipoText = servizio.tipo === 'abbonamento' ? 'Abbonamento' : 
                      servizio.tipo === 'una_tantum' ? 'Una tantum' : 
                      servizio.tipo === 'combo' ? 'Combo' : 
                      servizio.tipo === 'premium' ? 'Premium' : '';
     
     const occhioBadge = servizio.id.startsWith('occhio_') ? 
-      `<span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded mr-2">${tipoText}</span>
-       <span class="text-sm font-bold text-green-400">${prezzoText}</span>` : '';
+      '<span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded mr-2">' + tipoText + '</span>' +
+      '<span class="text-sm font-bold text-green-400">' + prezzoText + '</span>' : '';
     
-    div.innerHTML = `
-      <div class="flex items-start justify-between mb-3">
-        <div class="flex items-center space-x-3">
-          <div class="w-12 h-12 rounded-xl bg-blue-900 bg-opacity-50 flex items-center justify-center">
-            <i class="${icona} text-xl text-blue-400"></i>
-          </div>
-          <div>
-            <h4 class="font-bold text-white">${servizio.nome}</h4>
-            ${servizio.sottotitolo ? `<p class="text-xs text-blue-400">${servizio.sottotitolo}</p>` : ''}
-            <p class="text-sm text-gray-400">${servizio.descrizione}</p>
-          </div>
-        </div>
-        <span class="${statusClass} text-sm font-bold">${limiteText}</span>
-      </div>
-      
-      ${occhioBadge ? `<div class="flex items-center justify-between mt-2 mb-3">${occhioBadge}</div>` : ''}
-      
-      <div class="flex items-center justify-between mt-4">
-        <div class="flex items-center space-x-2">
-          <span class="status-dot ${servizio.limite === 0 ? 'bg-gray-600' : 'status-active'}"></span>
-          <span class="text-xs text-gray-400">
-            ${servizio.limite === 0 ? 'Non attivo' : 'L\'OCCHIO pronto'}
-          </span>
-        </div>
-        
-        ${servizio.limite !== 0 ? `
-          <button onclick="dashboard.usoServizio('${servizio.id}')" 
-                  class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition">
-            <i class="fas fa-play mr-1"></i> Usa
-          </button>
-        ` : ''}
-      </div>
-      
-      ${servizio.id === 'allert_ia' || servizio.id === 'occhio_falco' ? `
-        <div class="mt-3 p-2 bg-green-900 bg-opacity-30 rounded-lg border border-green-800">
-          <p class="text-xs text-green-400">
-            <i class="fas fa-eye mr-1"></i>
-            Sorveglianza attiva su ${this.config.pacchetti[this.pacchetto].canali_allert} canali
-          </p>
-        </div>
-      ` : ''}
-    `;
+    div.innerHTML = 
+      '<div class="flex items-start justify-between mb-3">' +
+        '<div class="flex items-center space-x-3">' +
+          '<div class="w-12 h-12 rounded-xl bg-blue-900 bg-opacity-50 flex items-center justify-center">' +
+            '<i class="' + icona + ' text-xl text-blue-400"></i>' +
+          '</div>' +
+          '<div>' +
+            '<h4 class="font-bold text-white">' + servizio.nome + '</h4>' +
+            (servizio.sottotitolo ? '<p class="text-xs text-blue-400">' + servizio.sottotitolo + '</p>' : '') +
+            '<p class="text-sm text-gray-400">' + servizio.descrizione + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<span class="' + statusClass + ' text-sm font-bold">' + limiteText + '</span>' +
+      '</div>' +
+      (occhioBadge ? '<div class="flex items-center justify-between mt-2 mb-3">' + occhioBadge + '</div>' : '') +
+      '<div class="flex items-center justify-between mt-4">' +
+        '<div class="flex items-center space-x-2">' +
+          '<span class="status-dot ' + (servizio.limite === 0 ? 'bg-gray-600' : 'status-active') + '"></span>' +
+          '<span class="text-xs text-gray-400">' + (servizio.limite === 0 ? 'Non attivo' : 'L\'OCCHIO pronto') + '</span>' +
+        '</div>' +
+        (servizio.limite !== 0 ? 
+          '<button onclick="dashboard.usoServizio(\'' + servizio.id + '\')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm transition">' +
+            '<i class="fas fa-play mr-1"></i> Usa' +
+          '</button>' : '') +
+      '</div>' +
+      (servizio.id === 'allert_ia' || servizio.id === 'occhio_falco' ? 
+        '<div class="mt-3 p-2 bg-green-900 bg-opacity-30 rounded-lg border border-green-800">' +
+          '<p class="text-xs text-green-400">' +
+            '<i class="fas fa-eye mr-1"></i>' +
+            'Sorveglianza attiva su ' + this.config.pacchetti[this.pacchetto].canali_allert + ' canali' +
+          '</p>' +
+        '</div>' : '');
     
     return div;
   }
-  
+
   getIconaServizio(icona) {
     const map = {
       'search': 'fas fa-search',
@@ -190,124 +176,101 @@ class BrevettIAmoDashboard {
     };
     return map[icona] || 'fas fa-cube';
   }
-  
+
   // --- USO SERVIZIO (con gestione OCCHIO) ---
   async usoServizio(servizioId) {
     const servizio = this.servizi.find(s => s.id === servizioId);
     if (!servizio || servizio.limite === 0) return;
     
-    // Se è un servizio OCCHIO, apri form carica brevetto
     if (servizio.id.startsWith('occhio_')) {
       this.apriFormCaricaBrevetto(servizio);
       return;
     }
     
     if (this.analisiOggi >= this.analisiLimite) {
-      this.mostraMessaggio(
-        'Limite giornaliero raggiunto',
-        this.config.beta.messaggi.limite_raggiunto.replace('{n}', this.analisiLimite),
-        'warning'
-      );
+      this.mostraMessaggio('Limite giornaliero raggiunto', this.config.beta.messaggi.limite_raggiunto.replace('{n}', this.analisiLimite), 'warning');
       return;
     }
     
-    // Simula chiamata IA
     this.analisiOggi++;
     servizio.usato++;
-    
     this.aggiornaAnalisiUI();
     this.renderServizi();
-    
-    this.mostraMessaggio(
-      'Analisi in corso',
-      'L\'OCCHIO sta analizzando...',
-      'info'
-    );
+    this.mostraMessaggio('Analisi in corso', 'L\'OCCHIO sta analizzando...', 'info');
     
     setTimeout(() => {
-      this.mostraMessaggio(
-        'Analisi completata',
-        `Risultato pronto per ${servizio.nome}`,
-        'success'
-      );
+      this.mostraMessaggio('Analisi completata', 'Risultato pronto per ' + servizio.nome, 'success');
     }, 2000);
   }
-  
-  // --- FORM CARICA BREVETTO (OCCHIO) ---
+
+  // --- FORM CARICA BREVETTO (OCCHIO) - SOLO su click ---
   apriFormCaricaBrevetto(servizio) {
+    const esistente = document.getElementById('modal-occhio');
+    if (esistente) esistente.remove();
+    
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center';
     modal.id = 'modal-occhio';
-    modal.innerHTML = `
-      <div class="bg-gray-800 rounded-xl p-8 max-w-2xl w-full mx-4 border border-blue-700 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-          <div>
-            <h2 class="text-2xl font-bold text-white">${servizio.nome}</h2>
-            <p class="text-blue-400">${servizio.sottotitolo || ''}</p>
-          </div>
-          <button onclick="document.getElementById('modal-occhio').remove()" class="text-gray-400 hover:text-white">
-            <i class="fas fa-times text-xl"></i>
-          </button>
-        </div>
-        
-        <p class="text-gray-300 mb-4">${servizio.descrizione}</p>
-        
-        <div class="bg-yellow-900 bg-opacity-30 border border-yellow-700 rounded-lg p-4 mb-6">
-          <p class="text-yellow-400 text-sm">
-            <i class="fas fa-info-circle mr-2"></i>
-            <strong>Flusso:</strong> ${servizio.flusso ? servizio.flusso.join(' → ') : 'Carica brevetto → Analisi IA → Report'}
-          </p>
-        </div>
-        
-        <form id="form-carica-brevetto" class="space-y-4">
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Descrizione Tecnica *</label>
-            <textarea id="desc-tecnica" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" rows="5" placeholder="Inserisci la descrizione tecnica del tuo brevetto..."></textarea>
-          </div>
-          
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Rivendicazioni (una per riga, max 15) *</label>
-            <textarea id="rivendicazioni" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" rows="5" placeholder="1. Rivendicazione principale&#10;2. Rivendicazione secondaria..."></textarea>
-          </div>
-          
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Abstract (max 150 parole) *</label>
-            <textarea id="abstract" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" rows="3" placeholder="Riassunto breve dell'invenzione..."></textarea>
-          </div>
-          
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Disegni/Tavole Tecniche</label>
-            <div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition">
-              <i class="fas fa-cloud-upload-alt text-3xl text-gray-500 mb-2"></i>
-              <p class="text-gray-400">Trascina i file qui o clicca per selezionare</p>
-              <p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG, SVG (max 10MB)</p>
-            </div>
-          </div>
-          
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Keywords tecniche (separate da virgola)</label>
-            <input type="text" id="keywords" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" placeholder="es. meccanica, elettronica, software...">
-          </div>
-        </form>
-        
-        <div class="flex items-center justify-between mt-6">
-          <div class="text-sm text-gray-400">
-            <i class="fas fa-shield-alt text-green-400 mr-1"></i>
-            I tuoi dati sono protetti da NDA
-          </div>
-          <button onclick="dashboard.attivaOcchio('${servizio.id}')" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold text-white">
-            <i class="fas fa-eye mr-2"></i>
-            Attiva ${servizio.nome}
-          </button>
-        </div>
-      </div>
-    `;
+    modal.innerHTML = 
+      '<div class="bg-gray-800 rounded-xl p-8 max-w-2xl w-full mx-4 border border-blue-700 max-h-[90vh] overflow-y-auto">' +
+        '<div class="flex items-center justify-between mb-6">' +
+          '<div>' +
+            '<h2 class="text-2xl font-bold text-white">' + servizio.nome + '</h2>' +
+            '<p class="text-blue-400">' + (servizio.sottotitolo || '') + '</p>' +
+          '</div>' +
+          '<button onclick="document.getElementById(\'modal-occhio\').remove()" class="text-gray-400 hover:text-white">' +
+            '<i class="fas fa-times text-xl"></i>' +
+          '</button>' +
+        '</div>' +
+        '<p class="text-gray-300 mb-4">' + servizio.descrizione + '</p>' +
+        '<div class="bg-yellow-900 bg-opacity-30 border border-yellow-700 rounded-lg p-4 mb-6">' +
+          '<p class="text-yellow-400 text-sm">' +
+            '<i class="fas fa-info-circle mr-2"></i>' +
+            '<strong>Flusso:</strong> ' + (servizio.flusso ? servizio.flusso.join(' -> ') : 'Carica brevetto -> Analisi IA -> Report') +
+          '</p>' +
+        '</div>' +
+        '<form id="form-carica-brevetto" class="space-y-4">' +
+          '<div>' +
+            '<label class="block text-sm text-gray-400 mb-2">Descrizione Tecnica *</label>' +
+            '<textarea id="desc-tecnica" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" rows="5" placeholder="Inserisci la descrizione tecnica del tuo brevetto..."></textarea>' +
+          '</div>' +
+          '<div>' +
+            '<label class="block text-sm text-gray-400 mb-2">Rivendicazioni (una per riga, max 15) *</label>' +
+            '<textarea id="rivendicazioni" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" rows="5" placeholder="1. Rivendicazione principale&#10;2. Rivendicazione secondaria..."></textarea>' +
+          '</div>' +
+          '<div>' +
+            '<label class="block text-sm text-gray-400 mb-2">Abstract (max 150 parole) *</label>' +
+            '<textarea id="abstract" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" rows="3" placeholder="Riassunto breve dell\'invenzione..."></textarea>' +
+          '</div>' +
+          '<div>' +
+            '<label class="block text-sm text-gray-400 mb-2">Disegni/Tavole Tecniche</label>' +
+            '<div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition">' +
+              '<i class="fas fa-cloud-upload-alt text-3xl text-gray-500 mb-2"></i>' +
+              '<p class="text-gray-400">Trascina i file qui o clicca per selezionare</p>' +
+              '<p class="text-xs text-gray-500 mt-1">PDF, JPG, PNG, SVG (max 10MB)</p>' +
+            '</div>' +
+          '</div>' +
+          '<div>' +
+            '<label class="block text-sm text-gray-400 mb-2">Keywords tecniche (separate da virgola)</label>' +
+            '<input type="text" id="keywords" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white" placeholder="es. meccanica, elettronica, software...">' +
+          '</div>' +
+        '</form>' +
+        '<div class="flex items-center justify-between mt-6">' +
+          '<div class="text-sm text-gray-400">' +
+            '<i class="fas fa-shield-alt text-green-400 mr-1"></i>' +
+            'I tuoi dati sono protetti da NDA' +
+          '</div>' +
+          '<button onclick="dashboard.attivaOcchio(\'' + servizio.id + '\')" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold text-white">' +
+            '<i class="fas fa-eye mr-2"></i>' +
+            'Attiva ' + servizio.nome +
+          '</button>' +
+        '</div>' +
+      '</div>';
     
     document.body.appendChild(modal);
   }
-  
+
   attivaOcchio(servizioId) {
-    // Salva dati brevetto
     const brevetto = {
       descrizione: document.getElementById('desc-tecnica')?.value,
       rivendicazioni: document.getElementById('rivendicazioni')?.value,
@@ -318,37 +281,23 @@ class BrevettIAmoDashboard {
     };
     
     this.brevettoCaricato = brevetto;
-    
-    // Salva in localStorage (per demo)
     localStorage.setItem('brevetto_occhio', JSON.stringify(brevetto));
     
-    this.mostraMessaggio(
-      'Attivazione in corso',
-      'L\'OCCHIO sta analizzando il tuo brevetto...',
-      'info'
-    );
+    this.mostraMessaggio('Attivazione in corso', 'L\'OCCHIO sta analizzando il tuo brevetto...', 'info');
     
     setTimeout(() => {
-      this.mostraMessaggio(
-        'L\'OCCHIO è ATTIVO',
-        'Sorveglianza 24/7 avviata. Dormi tra tre guanciali!',
-        'success'
-      );
-      
-      document.getElementById('modal-occhio')?.remove();
-      
-      // Redirect a dashboard con occhio attivo
+      this.mostraMessaggio('L\'OCCHIO e ATTIVO', 'Sorveglianza 24/7 avviata. Dormi tra tre guanciali!', 'success');
+      const modal = document.getElementById('modal-occhio');
+      if (modal) modal.remove();
       window.location.href = 'dashboard-occhio.html?pacchetto=' + this.pacchetto + '&occhio=attivo';
     }, 3000);
   }
-  
+
   // --- BANNER OCCHIO ATTIVO ---
   mostraBannerOcchio() {
     if (this.occhioAttivo || this.brevettoCaricato) {
       const banner = document.getElementById('occhio-attivo-banner');
       if (banner) banner.classList.remove('hidden');
-      
-      // Aggiorna status OCCHIO
       const occhioStatus = document.querySelector('.occhio-pulse');
       if (occhioStatus) {
         occhioStatus.classList.add('text-green-400');
@@ -356,28 +305,25 @@ class BrevettIAmoDashboard {
       }
     }
   }
-  
+
   // --- ALLERT ---
   caricaAllert() {
     this.allert = this.simulaAllert();
     this.renderAllert();
   }
-  
+
   simulaAllert() {
     if (this.occhioAttivo) {
-      // Simula allert se OCCHIO è attivo
-      return [
-        {
-          titolo: 'OCCHIO di Falco - Primo controllo',
-          messaggio: 'Nessuna infrazione rilevata nel primo scan. Tutto pulito!',
-          data: new Date().toLocaleString('it-IT'),
-          livello: 'info'
-        }
-      ];
+      return [{
+        titolo: 'OCCHIO di Falco - Primo controllo',
+        messaggio: 'Nessuna infrazione rilevata nel primo scan. Tutto pulito!',
+        data: new Date().toLocaleString('it-IT'),
+        livello: 'info'
+      }];
     }
     return [];
   }
-  
+
   renderAllert() {
     const list = document.getElementById('allert-list');
     const noAllert = document.getElementById('no-allert');
@@ -396,7 +342,7 @@ class BrevettIAmoDashboard {
     
     this.allert.forEach(allert => {
       const div = document.createElement('div');
-      div.className = `allert-item ${allert.livello === 'critical' ? 'allert-critical' : ''}`;
+      div.className = 'allert-item ' + (allert.livello === 'critical' ? 'allert-critical' : '');
       
       const colori = {
         info: 'text-blue-400',
@@ -404,26 +350,25 @@ class BrevettIAmoDashboard {
         critical: 'text-red-400'
       };
       
-      div.innerHTML = `
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <i class="fas ${allert.livello === 'info' ? 'fa-info-circle' : 'fa-exclamation-triangle'} ${colori[allert.livello]}"></i>
-            <div>
-              <p class="font-bold text-white">${allert.titolo}</p>
-              <p class="text-sm text-gray-400">${allert.messaggio}</p>
-              <p class="text-xs text-gray-500 mt-1">${allert.data}</p>
-            </div>
-          </div>
-          <button class="text-blue-400 hover:text-blue-300">
-            <i class="fas fa-arrow-right"></i>
-          </button>
-        </div>
-      `;
+      div.innerHTML = 
+        '<div class="flex items-center justify-between">' +
+          '<div class="flex items-center space-x-3">' +
+            '<i class="fas ' + (allert.livello === 'info' ? 'fa-info-circle' : 'fa-exclamation-triangle') + ' ' + colori[allert.livello] + '"></i>' +
+            '<div>' +
+              '<p class="font-bold text-white">' + allert.titolo + '</p>' +
+              '<p class="text-sm text-gray-400">' + allert.messaggio + '</p>' +
+              '<p class="text-xs text-gray-500 mt-1">' + allert.data + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<button class="text-blue-400 hover:text-blue-300">' +
+            '<i class="fas fa-arrow-right"></i>' +
+          '</button>' +
+        '</div>';
       
       list.appendChild(div);
     });
   }
-  
+
   // --- STATISTICHE ---
   caricaStatistiche() {
     const stats = {
@@ -438,7 +383,7 @@ class BrevettIAmoDashboard {
     document.getElementById('stat-risparmio').textContent = stats.risparmio;
     document.getElementById('stat-canali').textContent = stats.canali;
   }
-  
+
   // --- SCADENZE ---
   caricaScadenze() {
     const container = document.getElementById('calendario-scadenze');
@@ -456,57 +401,53 @@ class BrevettIAmoDashboard {
         (s.tipo === 'critical' ? 'border-red-500' : 
          s.tipo === 'warning' ? 'border-yellow-500' : 'border-blue-500');
       
-      div.innerHTML = `
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="font-bold text-white">${s.nome}</p>
-            <p class="text-sm text-gray-400">${s.data}</p>
-          </div>
-          <div class="text-right">
-            <span class="${s.tipo === 'critical' ? 'text-red-400' : 'text-yellow-400'} font-bold">
-              ${s.giorni} gg
-            </span>
-            <p class="text-xs text-gray-500">rimanenti</p>
-          </div>
-        </div>
-      `;
+      div.innerHTML = 
+        '<div class="flex items-center justify-between">' +
+          '<div>' +
+            '<p class="font-bold text-white">' + s.nome + '</p>' +
+            '<p class="text-sm text-gray-400">' + s.data + '</p>' +
+          '</div>' +
+          '<div class="text-right">' +
+            '<span class="' + (s.tipo === 'critical' ? 'text-red-400' : 'text-yellow-400') + ' font-bold">' + s.giorni + ' gg</span>' +
+            '<p class="text-xs text-gray-500">rimanenti</p>' +
+          '</div>' +
+        '</div>';
       
       container.appendChild(div);
     });
   }
-  
+
   // --- UI ---
   aggiornaUI() {
     this.aggiornaAnalisiUI();
     document.getElementById('beta-limite').textContent = this.analisiLimite;
     document.getElementById('beta-giorni').textContent = '60';
   }
-  
+
   aggiornaAnalisiUI() {
     document.getElementById('analisi-usate').textContent = this.analisiOggi;
     document.getElementById('analisi-totali').textContent = this.analisiLimite;
   }
-  
+
   mostraMessaggio(titolo, messaggio, tipo) {
     const esistenti = document.querySelectorAll('.toast');
     esistenti.forEach(t => t.remove());
     
     const toast = document.createElement('div');
-    toast.className = `toast ` +
+    toast.className = 'toast ' +
       (tipo === 'success' ? 'bg-green-800 border border-green-600' :
        tipo === 'warning' ? 'bg-yellow-800 border border-yellow-600' :
        tipo === 'error' ? 'bg-red-800 border border-red-600' :
        'bg-blue-800 border border-blue-600');
     
-    toast.innerHTML = `
-      <div class="flex items-center space-x-3">
-        <i class="fas ${tipo === 'success' ? 'fa-check' : tipo === 'warning' ? 'fa-exclamation' : 'fa-info-circle'} text-white"></i>
-        <div>
-          <p class="font-bold text-white">${titolo}</p>
-          <p class="text-sm text-gray-200">${messaggio}</p>
-        </div>
-      </div>
-    `;
+    toast.innerHTML = 
+      '<div class="flex items-center space-x-3">' +
+        '<i class="fas ' + (tipo === 'success' ? 'fa-check' : tipo === 'warning' ? 'fa-exclamation' : 'fa-info-circle') + ' text-white"></i>' +
+        '<div>' +
+          '<p class="font-bold text-white">' + titolo + '</p>' +
+          '<p class="text-sm text-gray-200">' + messaggio + '</p>' +
+        '</div>' +
+      '</div>';
     
     document.body.appendChild(toast);
     
@@ -515,7 +456,7 @@ class BrevettIAmoDashboard {
       setTimeout(() => toast.remove(), 300);
     }, 3000);
   }
-  
+
   // --- AUTO REFRESH ---
   startAutoRefresh() {
     setInterval(() => {
