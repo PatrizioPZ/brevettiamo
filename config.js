@@ -602,7 +602,7 @@ const BREVETTIAMO = {
       prezzo: 29,
       servizi_inclusi: 3,
       servizi_disponibili: [
-        "occhio_lince", "occhio_falco", "carica_brevetto",
+        "occhio_lince", "occhio_falco",
         "ricerca_brevetti", "redazione_rivendicazioni", "verifica_novita",
         "allert_ia", "ebay_vero", "calendario_scadenze", "estensione_epo"
       ],
@@ -616,7 +616,7 @@ const BREVETTIAMO = {
       prezzo: 99,
       servizi_inclusi: 10,
       servizi_disponibili: [
-        "occhio_lince", "occhio_falco", "occhio_aquila", "carica_brevetto",
+        "occhio_lince", "occhio_falco", "occhio_aquila",
         "ricerca_brevetti", "redazione_rivendicazioni", "verifica_novita",
         "valutazione_tecnica", "traduzione_tecnica", "estensione_epo",
         "estensione_pct", "allert_ia", "monitoraggio_dogane", "ebay_vero",
