@@ -3,217 +3,1864 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrevettIAmo - Servizi Brevettuali AI</title>
+    <title>BrevettIAmo v1.0.0-BETA — Il Portale delle Invenzioni</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; color: #333; }
-        .navbar { background: rgba(255,255,255,0.95); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left: 0; right: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
-        .logo { font-size: 1.6em; font-weight: 800; color: #1e3c72; text-decoration: none; }
-        .logo span { color: #764ba2; }
-        .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a { color: #495057; text-decoration: none; font-weight: 500; }
-        .btn-nav { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white !important; padding: 10px 24px; border-radius: 8px; font-weight: 600; }
-        .hero { padding: 140px 40px 80px; text-align: center; color: white; }
-        .hero h1 { font-size: 3.2em; margin-bottom: 20px; }
-        .hero p { font-size: 1.3em; opacity: 0.9; max-width: 700px; margin: 0 auto 40px; }
-        .hero-stats { display: flex; justify-content: center; gap: 60px; margin-top: 40px; }
-        .stat { text-align: center; }
-        .stat-number { font-size: 2.5em; font-weight: 800; color: #ffd700; }
-        .stat-label { font-size: 0.95em; opacity: 0.8; margin-top: 4px; }
-        .tabs-container { text-align: center; padding: 30px 0; background: #f8f9fa; }
-        .tab-btn { padding: 12px 30px; margin: 0 5px; border: none; background: #e0e0e0; color: #333; font-size: 16px; cursor: pointer; border-radius: 5px; }
-        .tab-btn.active { background: #1e3c72; color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .services-section { background: #f8f9fa; padding: 80px 40px; }
-        .section-title { text-align: center; font-size: 2.2em; color: #1e3c72; margin-bottom: 16px; }
-        .section-subtitle { text-align: center; color: #6c757d; font-size: 1.1em; max-width: 600px; margin: 0 auto 60px; }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-        .service-card { background: white; border-radius: 16px; padding: 40px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s; cursor: pointer; border: 2px solid transparent; text-decoration: none; color: inherit; display: block; }
-        .service-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); border-color: #2a5298; }
-        .service-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8em; font-weight: 700; color: white; margin-bottom: 20px; }
-        .icon-b { background: #1976d2; }
-        .icon-m { background: #c2185b; }
-        .icon-r { background: #7b1fa2; }
-        .icon-d { background: #388e3c; }
-        .icon-u { background: #f57c00; }
-        .icon-s { background: #00796b; }
-        .service-card h3 { font-size: 1.3em; color: #1e3c72; margin-bottom: 12px; }
-        .service-card p { color: #6c757d; line-height: 1.6; margin-bottom: 20px; }
-        .service-price { font-size: 1.4em; font-weight: 700; color: #2a5298; }
-        .service-price span { font-size: 0.7em; color: #6c757d; font-weight: 400; }
-        .service-badge { display: inline-block; background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: 600; margin-top: 12px; }
-        .how-it-works { background: white; padding: 80px 40px; }
-        .steps-container { display: flex; justify-content: center; gap: 20px; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; }
-        .step-box { flex: 1; min-width: 200px; text-align: center; padding: 30px 20px; }
-        .step-circle { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.4em; font-weight: 700; margin: 0 auto 16px; }
-        .step-box h4 { color: #1e3c72; margin-bottom: 8px; }
-        .step-box p { color: #6c757d; font-size: 0.95em; }
-        .step-arrow { display: flex; align-items: center; color: #2a5298; font-size: 1.5em; font-weight: 700; }
-        .footer { background: #1e3c72; color: white; padding: 40px; text-align: center; }
-        .footer p { opacity: 0.8; font-size: 0.9em; }
-        @media (max-width: 768px) { .hero h1 { font-size: 2em; } .hero-stats { gap: 30px; flex-wrap: wrap; } .navbar { padding: 12px 20px; } .nav-links { display: none; } .step-arrow { display: none; } }
-    </style>
-<link rel="stylesheet" href="chatbot.css">
-</head>
-<body>
-    <nav class="navbar">
-        <a href="index.html" class="logo">Brevett<span>IAmo</span></a>
-        <div class="nav-links">
-            <a href="index.html">Servizi</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="admin.html">Admin</a>
-            <a href="nuova-pratica.html" class="btn-nav">Inizia Ora</a>
-        </div>
-    </nav>
-
-    <section class="hero">
-        <h1>Proteggi la Tua Invenzione con l'AI</h1>
-        <p>Servizi brevettuali intelligenti: brevetti, marchi, design e ricerche anteriorita. Risultati professionali in 24 ore, a prezzi accessibili.</p>
-        <div class="hero-stats">
-            <div class="stat"><div class="stat-number">19</div><div class="stat-label">Servizi AI</div></div>
-            <div class="stat"><div class="stat-number">24h</div><div class="stat-label">Tempo di risposta</div></div>
-            <div class="stat"><div class="stat-number">10x</div><div class="stat-label">Piu economico</div></div>
-        </div>
-    </section>
-
-    <!-- TABS -->
-    <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchTab('pacchetti')" id="tab-pacchetti">Pacchetti</button>
-        <button class="tab-btn" onclick="switchTab('servizi')" id="tab-servizi">Servizi Singoli</button>
-    </div>
-
-    <!-- PACCHETTI -->
-    <div id="pacchetti" class="tab-content active">
-        <section class="services-section">
-            <h2 class="section-title">Scegli il Tuo Servizio</h2>
-            <p class="section-subtitle">Seleziona il servizio di proprieta intellettuale di cui hai bisogno. Ogni pratica include elaborazione AI e revisione qualita.</p>
-            <div class="services-grid">
-                <a href="nuova-pratica.html?servizio=brevetto" class="service-card">
-                    <div class="service-icon icon-b">B</div>
-                    <h3>Brevetto per Invenzione</h3>
-                    <p>Redazione completa di domanda di brevetto per invenzione industriale, incluse descrizione, rivendicazioni e figure.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                    <span class="service-badge">Piu richiesto</span>
-                </a>
-                <a href="nuova-pratica.html?servizio=marchio" class="service-card">
-                    <div class="service-icon icon-m">M</div>
-                    <h3>Marchio</h3>
-                    <p>Deposito marchio nazionale, comunitario o internazionale. Ricerca anteriorita e classificazione Nice inclusa.</p>
-                    <div class="service-price">EUR 29 <span>/ pratica</span></div>
-                    <span class="service-badge">Starter</span>
-                </a>
-                <a href="nuova-pratica.html?servizio=ricerca" class="service-card">
-                    <div class="service-icon icon-r">R</div>
-                    <h3>Ricerca Anteriorita</h3>
-                    <p>Ricerca completa nelle banche dati brevettuali mondiali. Report dettagliato con analisi di brevettabilita.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                </a>
-                <a href="nuova-pratica.html?servizio=design" class="service-card">
-                    <div class="service-icon icon-d">D</div>
-                    <h3>Design / Modello Estetico</h3>
-                    <p>Redazione domanda di design industriale. Descrizione figure, classificazione Locarno e gestione deposito.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                </a>
-                <a href="nuova-pratica.html?servizio=modello" class="service-card">
-                    <div class="service-icon icon-u">U</div>
-                    <h3>Modello di Utilita</h3>
-                    <p>Domanda di modello di utilita per invenzioni con minor grado di inventiva. Procedura rapida e economica.</p>
-                    <div class="service-price">EUR 99 <span>/ pratica</span></div>
-                </a>
-                <a href="nuova-pratica.html?servizio=software" class="service-card">
-                    <div class="service-icon icon-s">S</div>
-                    <h3>Brevetto Software / Algoritmo</h3>
-                    <p>Specializzato per software, algoritmi, AI e metodi implementati da computer. Conformita normativa europea.</p>
-                    <div class="service-price">EUR 299 <span>/ pratica</span></div>
-                    <span class="service-badge">Enterprise</span>
-                </a>
-            </div>
-        </section>
-    </div>
-
-    <!-- SERVIZI SINGOLI -->
-    <div id="servizi" class="tab-content">
-        <section class="services-section">
-            <h2 class="section-title">Servizi Singoli</h2>
-            <p class="section-subtitle">Scegli il servizio specifico di cui hai bisogno. Prezzi flessibili, pagamento per singolo servizio.</p>
-            <div id="servizi-singoli-lista" class="services-grid">Caricamento...</div>
-        </section>
-    </div>
-
-    <section class="how-it-works">
-        <h2 class="section-title">Come Funziona</h2>
-        <p class="section-subtitle">Processo semplice e trasparente in 5 passaggi</p>
-        <div class="steps-container">
-            <div class="step-box"><div class="step-circle">1</div><h4>Scegli il Servizio</h4><p>Seleziona il tipo di pratica brevettuale</p></div>
-            <div class="step-arrow">&rarr;</div>
-            <div class="step-box"><div class="step-circle">2</div><h4>Compila il Modulo</h4><p>Descrivi la tua invenzione e allega documenti</p></div>
-            <div class="step-arrow">&rarr;</div>
-            <div class="step-box"><div class="step-circle">3</div><h4>Accetta NDA</h4><p>Firma digitalmente la privacy e l'accordo di riservatezza</p></div>
-            <div class="step-arrow">&rarr;</div>
-            <div class="step-box"><div class="step-circle">4</div><h4>Pagamento</h4><p>Paga in modo sicuro con carta o bonifico</p></div>
-            <div class="step-arrow">&rarr;</div>
-            <div class="step-box"><div class="step-circle">5</div><h4>Ricevi il Documento</h4><p>Elaborazione AI in 24h, accetta o richiedi modifiche</p></div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <p>BrevettIAmo - Servizi Brevettuali AI | P.IVA in attesa | Contatto: info@brevettiamo.it</p>
-        <p style="margin-top: 8px; opacity: 0.6;">Tutti i diritti riservati. Le pratiche sono elaborate da AI e revisionate da esperti.</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
-    <script>
-        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('active');
-                b.style.background = '#e0e0e0';
-                b.style.color = '#333';
-            });
-            document.getElementById('tab-' + tab).classList.add('active');
-            document.getElementById('tab-' + tab).style.background = '#1e3c72';
-            document.getElementById('tab-' + tab).style.color = 'white';
-            
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
-            
-            if (tab === 'servizi') caricaServiziSingoli();
+        :root {
+            --pergamena: #F4EBE1;
+            --pergamena-scura: #E8DCC8;
+            --oro: #C5A059;
+            --oro-chiaro: #D4B87A;
+            --oro-scuro: #9A7B3D;
+            --rosso: #A63A2B;
+            --rosso-scuro: #7A2A1F;
+            --ferro: #4A4A4A;
+            --ferro-chiaro: #6A6A6A;
+            --nero: #1A1A1A;
+            --bianco: #FAF8F5;
+            --ombra: rgba(26, 26, 26, 0.15);
+            --verde: #2D6A4F;
+            --verde-chiaro: #40916C;
         }
 
-        async function caricaServiziSingoli() {
-            const container = document.getElementById('servizi-singoli-lista');
-            try {
-                const { data, error } = await supabaseClient
-                    .from('servizi_singoli')
-                    .select('*')
-                    .eq('stato', 'attivo')
-                    .order('ordine');
-                
-                if (error) throw error;
-                
-                let html = '';
-                data.forEach(s => {
-                    html += `
-                        <div class="service-card" onclick="window.location.href='servizio.html?slug=${s.slug}'">
-                            <div class="service-icon" style="background: #2a5298;">${s.nome.charAt(0)}</div>
-                            <h3>${s.nome}</h3>
-                            <p>${s.descrizione_breve || ''}</p>
-                            <div class="service-price">EUR ${s.prezzo} <span>/ ${s.crediti} crediti</span></div>
-                            <p style="font-size: 0.9em; color: #999; margin-top: 8px;">${s.tempo_elaborazione || ''}</p>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-                
-            } catch (err) {
-                container.innerHTML = '<p style="text-align: center; color: #dc3545;">Errore: ' + err.message + '</p>';
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', Georgia, serif;
+            background: var(--pergamena);
+            color: var(--ferro);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--pergamena-scura);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--oro);
+            border-radius: 4px;
+        }
+
+        /* BANNER BETA */
+        .beta-banner {
+            background: linear-gradient(135deg, var(--rosso) 0%, var(--rosso-scuro) 100%);
+            color: var(--bianco);
+            padding: 0.8rem 1rem;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .beta-banner strong {
+            background: var(--oro);
+            color: var(--nero);
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            margin-right: 0.5rem;
+        }
+
+        /* DISCLAIMER LEGALE */
+        .legal-disclaimer {
+            background: var(--nero);
+            color: var(--pergamena);
+            padding: 1.5rem 2rem;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            border-bottom: 2px solid var(--oro);
+        }
+
+        .legal-disclaimer .disclaimer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .legal-disclaimer h4 {
+            font-family: 'Cinzel', serif;
+            color: var(--oro);
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+        }
+
+        .legal-disclaimer p {
+            opacity: 0.8;
+        }
+
+        .legal-disclaimer .version-tag {
+            display: inline-block;
+            background: var(--rosso);
+            color: var(--bianco);
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--pergamena) 0%, var(--pergamena-scura) 100%);
+            border-bottom: 3px solid var(--oro);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px var(--ombra);
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .logo-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo-text {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ferro);
+            letter-spacing: 2px;
+        }
+
+        .logo-text span {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--oro);
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            font-family: 'Cinzel', serif;
+            text-decoration: none;
+            color: var(--ferro);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--oro);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--oro);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--oro);
+            color: var(--bianco) !important;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .nav-cta:hover {
+            background: var(--oro-scuro);
+            color: var(--bianco) !important;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(197, 160, 89, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(166, 58, 43, 0.05) 0%, transparent 50%),
+                var(--pergamena);
+        }
+
+        .hero-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234A4A4A' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--oro);
+            border: 1px solid var(--oro);
+            padding: 0.5rem 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .hero-badge::before,
+        .hero-badge::after {
+            content: '*';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.6rem;
+        }
+
+        .hero-badge::before {
+            left: 0.5rem;
+        }
+
+        .hero-badge::after {
+            right: 0.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--ferro);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero h1 .highlight {
+            color: var(--oro);
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--ferro-chiaro);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-style: italic;
+        }
+
+        .hero-divider {
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--oro), transparent);
+            margin: 2rem auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: 'Cinzel', serif;
+            padding: 1rem 2.5rem;
+            border: 2px solid var(--oro);
+            background: transparent;
+            color: var(--oro);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--oro);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            color: var(--bianco);
+            border-color: var(--oro);
+        }
+
+        .btn-primary {
+            background: var(--oro);
+            color: var(--bianco);
+        }
+
+        .btn-primary:hover {
+            background: var(--oro-scuro);
+            border-color: var(--oro-scuro);
+        }
+
+        .btn-primary::before {
+            display: none;
+        }
+
+        .btn-beta {
+            background: var(--verde);
+            border-color: var(--verde);
+            color: var(--bianco);
+        }
+
+        .btn-beta:hover {
+            background: var(--verde-chiaro);
+            border-color: var(--verde-chiaro);
+        }
+
+        .btn-beta::before {
+            display: none;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            background: linear-gradient(135deg, var(--oro) 0%, var(--oro-scuro) 100%);
+            color: var(--bianco);
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            font-family: 'Cinzel', serif;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        .stat-sublabel {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 0.2rem;
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            color: var(--ferro);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .section-header .section-icon {
+            font-size: 1.5rem;
+            color: var(--oro);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--ferro-chiaro);
+            font-style: italic;
+        }
+
+        .section-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--oro);
+            margin: 1rem auto;
+        }
+
+        /* SERVICES */
+        .services-section {
+            background: var(--bianco);
+            position: relative;
+        }
+
+        .services-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--oro), var(--verde), var(--oro));
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--pergamena);
+            border: 2px solid var(--pergamena-scura);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--oro);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            border-color: var(--oro);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--ombra);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .service-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--ferro);
+            letter-spacing: 1px;
+        }
+
+        .service-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        .status-active {
+            background: var(--verde);
+            color: var(--bianco);
+        }
+
+        .status-suspended {
+            background: var(--rosso);
+            color: var(--bianco);
+        }
+
+        .status-beta {
+            background: var(--oro);
+            color: var(--nero);
+        }
+
+        .service-desc {
+            color: var(--ferro-chiaro);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-reliability {
+            margin-bottom: 1rem;
+        }
+
+        .reliability-label {
+            font-size: 0.75rem;
+            color: var(--ferro-chiaro);
+            margin-bottom: 0.3rem;
+            font-family: 'Cinzel', serif;
+        }
+
+        .reliability-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--pergamena-scura);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .reliability-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .reliability-high {
+            background: var(--verde);
+        }
+
+        .reliability-medium {
+            background: var(--oro);
+        }
+
+        .reliability-low {
+            background: var(--rosso);
+        }
+
+        .reliability-text {
+            font-size: 0.8rem;
+            color: var(--ferro);
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+
+        .service-savings {
+            background: var(--bianco);
+            border: 1px solid var(--pergamena-scura);
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .savings-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            color: var(--oro);
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .savings-value {
+            color: var(--verde);
+            font-weight: 600;
+        }
+
+        .service-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--oro);
+            margin-bottom: 0.5rem;
+        }
+
+        .service-price .price-note {
+            font-size: 0.75rem;
+            color: var(--ferro-chiaro);
+            font-family: 'Lora', serif;
+        }
+
+        .service-cta {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* NEWS */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .news-card {
+            background: var(--bianco);
+            border: 1px solid var(--pergamena-scura);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--oro);
+            transition: width 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--ombra);
+        }
+
+        .news-card:hover::before {
+            width: 100%;
+            opacity: 0.05;
+        }
+
+        .news-date {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            color: var(--oro);
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--ferro);
+            margin-bottom: 1rem;
+        }
+
+        .news-card p {
+            color: var(--ferro-chiaro);
+            font-size: 0.95rem;
+        }
+
+        .news-tag {
+            display: inline-block;
+            background: var(--pergamena-scura);
+            padding: 0.2rem 0.8rem;
+            font-size: 0.75rem;
+            color: var(--oro-scuro);
+            margin-top: 1rem;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        /* BACHECA */
+        .bacheca-section {
+            background: linear-gradient(135deg, var(--pergamena-scura) 0%, var(--pergamena) 100%);
+            position: relative;
+        }
+
+        .bacheca-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--oro), transparent);
+        }
+
+        .bacheca-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .bacheca-card {
+            background: var(--bianco);
+            border: 2px solid var(--pergamena-scura);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .bacheca-card::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--oro);
+            transition: width 0.3s ease;
+        }
+
+        .bacheca-card:hover::after {
+            width: 80%;
+        }
+
+        .bacheca-card:hover {
+            border-color: var(--oro);
+            transform: translateY(-3px);
+        }
+
+        .bacheca-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: var(--pergamena);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--oro);
+        }
+
+        .bacheca-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--oro);
+        }
+
+        .bacheca-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--ferro);
+            margin-bottom: 0.5rem;
+        }
+
+        .bacheca-card .price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--oro);
+            font-weight: 700;
+        }
+
+        .bacheca-card .price span {
+            font-size: 0.9rem;
+            color: var(--ferro-chiaro);
+        }
+
+        .bacheca-card p {
+            color: var(--ferro-chiaro);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .bacheca-beta-note {
+            font-size: 0.75rem;
+            color: var(--rosso);
+            font-family: 'Cinzel', serif;
+            margin-top: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        /* CHAT */
+        .chat-preview {
+            background: var(--bianco);
+            border: 3px solid var(--oro);
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .chat-preview::before {
+            content: 'DIALOGO DEI SAGGI';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--pergamena);
+            padding: 0 1rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: var(--oro);
+            letter-spacing: 3px;
+        }
+
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--oro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel', serif;
+            color: var(--bianco);
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .chat-bubble {
+            background: var(--pergamena);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 12px;
+            max-width: 70%;
+        }
+
+        .chat-bubble.own {
+            background: var(--oro);
+            color: var(--bianco);
+            border-radius: 12px 0 12px 12px;
+            margin-left: auto;
+        }
+
+        .chat-bubble p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .chat-bubble .time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 0.3rem;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* OCCHIO */
+        .occhio-section {
+            background: linear-gradient(135deg, var(--ferro) 0%, var(--nero) 100%);
+            color: var(--pergamena);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .occhio-section .section-header h2,
+        .occhio-section .section-header p {
+            color: var(--pergamena);
+        }
+
+        .occhio-section .section-divider {
+            background: var(--oro);
+        }
+
+        .occhio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .occhio-card {
+            background: rgba(244, 235, 225, 0.05);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .occhio-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--oro);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .occhio-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .occhio-card:hover {
+            background: rgba(244, 235, 225, 0.1);
+            border-color: var(--oro);
+            transform: translateY(-5px);
+        }
+
+        .occhio-symbol {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border: 2px solid var(--oro);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .occhio-symbol::before {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 1px solid var(--oro);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .occhio-symbol svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--oro);
+        }
+
+        .occhio-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--oro);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .occhio-card p {
+            color: var(--pergamena);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .occhio-reliability {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(197, 160, 89, 0.2);
+        }
+
+        .occhio-reliability .rel-label {
+            font-size: 0.7rem;
+            color: var(--oro);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        .occhio-reliability .rel-value {
+            font-size: 1.2rem;
+            color: var(--oro);
+            font-weight: 700;
+        }
+
+        .occhio-detail {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--oro);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+        }
+
+        /* PRICING */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--bianco);
+            border: 2px solid var(--pergamena-scura);
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--oro);
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px var(--ombra);
+        }
+
+        .pricing-card.featured::before {
+            content: 'BETA GRATUITO';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--verde);
+            color: var(--bianco);
+            padding: 0.3rem 1.5rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--oro);
+        }
+
+        .pricing-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--ferro);
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--oro);
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--ferro-chiaro);
+            font-weight: 400;
+        }
+
+        .pricing-beta-note {
+            font-size: 0.75rem;
+            color: var(--verde);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--pergamena-scura);
+            font-size: 0.9rem;
+            color: var(--ferro-chiaro);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .pricing-features li::before {
+            content: '*';
+            position: absolute;
+            left: 0;
+            color: var(--oro);
+            font-weight: bold;
+        }
+
+        .pricing-features li.disabled {
+            opacity: 0.4;
+        }
+
+        .pricing-features li.disabled::before {
+            content: 'x';
+            color: var(--rosso);
+        }
+
+        .pricing-affidability {
+            background: var(--pergamena);
+            padding: 0.8rem;
+            margin: 1rem 0;
+            font-size: 0.8rem;
+        }
+
+        .pricing-affidability .aff-label {
+            font-family: 'Cinzel', serif;
+            color: var(--oro);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        /* FUTURES */
+        .futures-section {
+            background: linear-gradient(135deg, var(--pergamena-scura) 0%, var(--pergamena) 100%);
+            position: relative;
+        }
+
+        .futures-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--rosso), var(--oro), var(--rosso));
+        }
+
+        .futures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .future-card {
+            background: var(--bianco);
+            border: 2px solid var(--pergamena-scura);
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .future-card:hover {
+            opacity: 1;
+            border-color: var(--rosso);
+            transform: translateY(-3px);
+        }
+
+        .future-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--rosso);
+            color: var(--bianco);
+            padding: 0.3rem 1.5rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+
+        .future-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            background: var(--pergamena);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--rosso);
+            opacity: 0.5;
+        }
+
+        .future-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--rosso);
+        }
+
+        .future-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--ferro);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .future-card p {
+            color: var(--ferro-chiaro);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .future-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--rosso);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .future-price span {
+            font-size: 0.9rem;
+            color: var(--ferro-chiaro);
+            font-weight: 400;
+        }
+
+        .future-note {
+            font-size: 0.75rem;
+            color: var(--rosso);
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .future-split {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--pergamena);
+            border: 1px solid var(--pergamena-scura);
+        }
+
+        .split-item {
+            text-align: center;
+        }
+
+        .split-label {
+            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            color: var(--ferro-chiaro);
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .split-value {
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--oro);
+            font-weight: 600;
+        }
+
+        .future-card .btn {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--ferro);
+            color: var(--pergamena);
+            padding: 4rem 2rem 2rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--rosso), var(--oro), var(--rosso));
+        }
+
+        .footer-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-col h4 {
+            font-family: 'Cinzel', serif;
+            color: var(--oro);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--pergamena);
+            text-decoration: none;
+            padding: 0.3rem 0;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .footer-col a:hover {
+            opacity: 1;
+            color: var(--oro);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(244, 235, 225, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--oro);
+        }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        .footer-legal {
+            max-width: 1400px;
+            margin: 2rem auto 0;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(244, 235, 225, 0.1);
+            font-size: 0.75rem;
+            opacity: 0.5;
+            line-height: 1.6;
+        }
+
+        /* OCCHIO PULSE */
+        .occhio-pulse {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--oro);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(197, 160, 89, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .occhio-pulse:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(197, 160, 89, 0.6);
+        }
+
+        .occhio-pulse svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--bianco);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            nav {
+                display: none;
+            }
+            
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+            
+            .header-inner {
+                padding: 0 1rem;
+            }
+            
+            .stats-bar {
+                gap: 2rem;
+                padding: 1.5rem;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            
+            .legal-disclaimer {
+                padding: 1rem;
             }
         }
-    </script>
-    <script src="chatbot.js"></script>
-</body>
-</html>
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .occhio-hero {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            opacity: 0.04;
+            z-index: 1;
+        }
+
+        .occhio-hero svg {
+            width: 100%;
+            height: 100%;
+            animation: rotateSlow 60s linear infinite;
+        }
+
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BANNER BETA -->
+    <div class="beta-banner">
+        <strong>BETA v1.0.0</strong>
+        TUTTI I SERVIZI SONO GRATUITI — I PREZZI SONO INDICATIVI — NESSUN PAGAMENTO ATTIVO
+    </div>
+
+    <!-- DISCLAIMER LEGALE -->
+    <div class="legal-disclaimer">
+        <div class="disclaimer-inner">
+            <span class="version-tag">BREVETTIAMO v1.0.0-BETA</span>
+            <h4>AVVISO LEGALE</h4>
+            <p>
+                Questa piattaforma e in fase BETA sperimentale. Tutti i servizi sono offerti GRATUITAMENTE 
+                e i prezzi visualizzati hanno solo scopo informativo. Nessun pagamento e attualmente attivo. 
+                I risultati generati dall'Intelligenza Artificiale hanno un livello di affidabilita indicato 
+                per ciascun servizio. L'utente e invitato a verificare sempre con un professionista abilitato 
+                (Avvocato, Consulente Proprieta Industriale, Ingegnere). Il gestore declina ogni responsabilita 
+                civile e professionale per i risultati ottenuti. Servizi con assistenza umana sono temporaneamente 
+                SOSPESI in attesa dell'attivazione della P.IVA e del reclutamento delle figure professionali qualificate.
+            </p>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#C5A059" stroke-width="1.5"/>
+                        <circle cx="50" cy="50" r="38" fill="none" stroke="#C5A059" stroke-width="0.5" stroke-dasharray="4 4"/>
+                        <circle cx="50" cy="50" r="3" fill="#C5A059"/>
+                        <line x1="50" y1="50" x2="35" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+                        <line x1="50" y1="50" x2="65" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="35" cy="20" r="2" fill="#4A90E2"/>
+                        <circle cx="65" cy="20" r="2" fill="#4A90E2"/>
+                        <line x1="50" y1="50" x2="50" y2="85" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+                        <rect x="47" y="82" width="6" height="8" fill="#FFD700" rx="1"/>
+                        <ellipse cx="50" cy="50" rx="20" ry="12" fill="none" stroke="#C5A059" stroke-width="1"/>
+                        <circle cx="50" cy="50" r="6" fill="#C5A059" opacity="0.3"/>
+                        <circle cx="50" cy="50" r="3" fill="#C5A059"/>
+                    </svg>
+                </div>
+                <div class="logo-text">Brevett<span>IA</span>mo</div>
+            </a>
+            <nav>
+                <a href="news.html">News</a>
+                <a href="bacheca.html">Bacheca</a>
+                <a href="chat.html">Chat</a>
+                <a href="occhio-landing.html">L'OCCHIO</a>
+                <a href="profilo.html">Profilo</a>
+                <a href="admin.html" id="admin-link" style="display:none;">Admin</a>
+                <a href="occhio-prezzi.html" class="nav-cta">Inizia Ora</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg-pattern"></div>
+        <div class="occhio-hero">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="90" fill="none" stroke="#C5A059" stroke-width="0.5"/>
+                <circle cx="100" cy="100" r="75" fill="none" stroke="#C5A059" stroke-width="0.5" stroke-dasharray="8 8"/>
+                <circle cx="100" cy="100" r="60" fill="none" stroke="#C5A059" stroke-width="0.5"/>
+                <polygon points="100,30 160,140 40,140" fill="none" stroke="#C5A059" stroke-width="0.5"/>
+                <ellipse cx="100" cy="100" rx="35" ry="20" fill="none" stroke="#C5A059" stroke-width="1"/>
+                <circle cx="100" cy="100" r="10" fill="#C5A059" opacity="0.2"/>
+                <circle cx="100" cy="100" r="5" fill="#C5A059"/>
+                <line x1="100" y1="10" x2="100" y2="30" stroke="#C5A059" stroke-width="0.5"/>
+                <line x1="100" y1="170" x2="100" y2="190" stroke="#C5A059" stroke-width="0.5"/>
+                <line x1="10" y1="100" x2="30" y2="100" stroke="#C5A059" stroke-width="0.5"/>
+                <line x1="170" y1="100" x2="190" y2="100" stroke="#C5A059" stroke-width="0.5"/>
+            </svg>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">Portale delle Invenzioni</div>
+            <h1>Proteggi la tua <span class="highlight">Genialita</span></h1>
+            <p class="hero-subtitle">"La semplicita e la massima sofisticazione" — Leonardo da Vinci</p>
+            <div class="hero-divider"></div>
+            <p style="color: var(--ferro-chiaro); margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+                La prima piattaforma al mondo che unisce Intelligenza Artificiale, 
+                blockchain e comunita di inventori per proteggere, valorizzare e 
+                monetizzare le tue idee.
+            </p>
+            <div class="hero-cta">
+                <a href="welcome.html" class="btn btn-beta">Prova Gratis (Beta)</a>
+                <a href="bacheca.html" class="btn">Esplora il Mercato</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-number" id="stat-utenti">0</span>
+            <span class="stat-label">Beta Testers</span>
+            <span class="stat-sublabel">Attivi ora</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="stat-ore">0</span>
+            <span class="stat-label">Ore Risparmiate</span>
+            <span class="stat-sublabel">vs consulenza tradizionale</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="stat-euro">0</span>
+            <span class="stat-label">Euro Risparmiati</span>
+            <span class="stat-sublabel">prezzo di mercato medio</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="stat-affidabilita">0%</span>
+            <span class="stat-label">Affidabilita Media</span>
+            <span class="stat-sublabel">in incremento continuo</span>
+        </div>
+    </div>
+
+    <!-- SERVIZI SINGOLI BREVETTIAMO -->
+    <section class="section services-section" id="servizi">
+        <div class="section-header">
+            <div class="section-icon">*</div>
+            <h2>Servizi BrevettIAmo</h2>
+            <div class="section-divider"></div>
+            <p>Tutti i servizi sono GRATUITI durante la fase beta</p>
+        </div>
+        <div class="services-grid" id="services-grid">
+            <!-- Popolato via JS -->
+        </div>
+    </section>
+
+    <!-- NEWS PREVIEW -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">*</div>
+            <h2>News dai Brevetti</h2>
+            <div class="section-divider"></div>
+            <p>Le ultime novita dal mondo della proprieta intellettuale</p>
+        </div>
+        <div class="news-grid">
+            <div class="news-card">
+                <div class="news-date">14 GIUGNO 2026</div>
+                <h3>Nuova Direttiva UE sui Brevetti Unitari</h3>
+                <p>La Commissione Europea ha approvato nuove linee guida per semplificare il processo di registrazione dei brevetti unitari, riducendo i tempi medi del 40%.</p>
+                <span class="news-tag">REGOLAMENTAZIONE</span>
+            </div>
+            <div class="news-card">
+                <div class="news-date">12 GIUGNO 2026</div>
+                <h3>AI e Brevetti: La Sentenza del Tribunale Federale</h3>
+                <p>Importante precedente giuridico: il tribunale riconosce per la prima volta la paternita di un'invenzione generata da intelligenza artificiale.</p>
+                <span class="news-tag">GIURISPRUDENZA</span>
+            </div>
+            <div class="news-card">
+                <div class="news-date">10 GIUGNO 2026</div>
+                <h3>BrevettIAmo Lancia L'OCCHIO 2.0</h3>
+                <p>Nuova versione del sistema di monitoraggio con scansione in tempo reale di 47 database internazionali e alert predittivi basati su machine learning.</p>
+                <span class="news-tag">PRODOTTO</span>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="news.html" class="btn">Tutte le News</a>
+        </div>
+    </section>
+
+    <!-- BACHECA PREVIEW -->
+    <section class="section bacheca-section">
+        <div class="section-header">
+            <div class="section-icon">*</div>
+            <h2>Mercato delle Invenzioni</h2>
+            <div class="section-divider"></div>
+            <p>Scopri, acquista o licenzia brevetti e tecnologie innovative</p>
+        </div>
+        <div class="bacheca-grid">
+            <div class="bacheca-card">
+                <div class="bacheca-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <h3>Sistema di Ricarica Wireless</h3>
+                <div class="price">€45.000 <span>o royalty 5%</span></div>
+                <p>Tecnologia brevettata per ricarica a distanza fino a 10 metri. Settore: automotive e IoT.</p>
+                <div class="bacheca-beta-note">[BETA — Solo Visualizzazione]</div>
+            </div>
+            <div class="bacheca-card">
+                <div class="bacheca-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                </div>
+                <h3>Algoritmo di Crittografia Post-Quantum</h3>
+                <div class="price">€120.000 <span>licenza esclusiva</span></div>
+                <p>Protocollo di sicurezza resistente agli attacchi dei computer quantistici. Settore: cybersecurity.</p>
+                <div class="bacheca-beta-note">[BETA — Solo Visualizzazione]</div>
+            </div>
+            <div class="bacheca-card">
+                <div class="bacheca-icon">
+                    <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                </div>
+                <h3>Biomateriale per Impianti Dentali</h3>
+                <div class="price">€85.000 <span>trasferimento totale</span></div>
+                <p>Composto organico a base di cellulosa con proprieta osseo-integrative. Settore: medicina.</p>
+                <div class="bacheca-beta-note">[BETA — Solo Visualizzazione]</div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="bacheca.html" class="btn">Vai alla Bacheca</a>
+        </div>
+    </section>
+
+    <!-- CHAT PREVIEW -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">*</div>
+            <h2>Dialogo dei Saggi</h2>
+            <div class="section-divider"></div>
+            <p>Stanze crittografate per inventori, avvocati e investitori</p>
+        </div>
+        <div class="chat-preview">
+            <div class="chat-messages">
+                <div class="chat-message">
+                    <div class="chat-avatar">MV</div>
+                    <div class="chat-bubble">
+                        <p>Ho bisogno di un parere sulla brevettabilita di un algoritmo di ottimizzazione energetica. Qualcuno ha esperienza con l'UIBM?</p>
+                        <div class="time">10:23 — Marco V.</div>
+                    </div>
+                </div>
+                <div class="chat-message">
+                    <div class="chat-bubble own">
+                        <p>Certo! Ho depositato 3 brevetti software con l'UIBM. L'importante e dimostrare l'effetto tecnico. Ti contatto in privato.</p>
+                        <div class="time">10:25 — Tu</div>
+                    </div>
+                    <div class="chat-avatar" style="background: var(--rosso);">DR</div>
+                </div>
+                <div class="chat-message">
+                    <div class="chat-avatar">AL</div>
+                    <div class="chat-bubble">
+                        <p>Attenzione: verificate sempre che l'algoritmo non ricada nell'esclusione delle "scoperte scientifiche" ex art. 51 CPI.</p>
+                        <div class="time">10:28 — Avv. Laura B.</div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="chat.html" class="btn">Entra nella Chat</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVIZI L'OCCHIO -->
+    <section class="section occhio-section">
+        <div class="section-header">
+            <div class="section-icon" style="color: var(--oro);">*</div>
+            <h2>L'OCCHIO — Sorveglianza Totale</h2>
+            <div class="section-divider"></div>
+            <p>Il sistema di intelligence per la protezione del tuo brevetto</p>
+        </div>
+        <div class="occhio-grid" id="occhio-grid">
+            <!-- Popolato via JS -->
+        </div>
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="occhio-servizi.html" class="btn" style="border-color: var(--oro); color: var(--oro);">Scopri Tutti i Servizi</a>
+        </div>
+    </section>
+
+    <!-- PREZZI -->
+    <section class="section">
+        <div class="section-header">
+            <div class="section-icon">*</div>
+            <h2>Pacchetti L'OCCHIO</h2>
+            <div class="section-divider"></div>
+            <p>Prezzi indicativi — Tutto gratuito durante la beta</p>
+        </div>
+        <div class="pricing-grid" id="pricing-grid">
+            <!-- Popolato via JS -->
+        </div>
+    </section>
+
+    <!-- FUTURES SAPIENTIA -->
+    <section class="section futures-section">
+        <div class="section-header">
+            <div class="section-icon" style="color: var(--rosso);">*</div>
+            <h2>Servizi Futuri — SAPIENTIA</h2>
+            <div class="section-divider"></div>
+            <p>Consulenza professionale per ogni fase del brevetto</p>
+        </div>
+        <div class="futures-grid">
+            <div class="future-card">
+                <span class="future-badge">FUTURE</span>
+                <div class="future-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
+                <h3>Revisione Pre-Deposito</h3>
+                <p>Controllo completo del documento prima dell'invio all'UIBM. Formale, sostanziale e strategico.</p>
+                <div class="future-price">€550 <span>fisso</span></div>
+                <div class="future-split">
+                    <div class="split-item">
+                        <span class="split-label">Professionista</span>
+                        <span class="split-value">€450</span>
+                    </div>
+                    <div class="split-item">
+                        <span class="split-label">Piattaforma</span>
+                        <span class="split-value">€100</span>
+                    </div>
+                </div>
+                <div class="future-note">Richiede P.IVA e Consulente abilitato</div>
+                <button class="btn" disabled>Disponibile prossimamente</button>
+            </div>
+            <div class="future-card">
+                <span class="future-badge">FUTURE</span>
+                <div class="future-icon">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4L12 13 4 8V6l8 5 8-5v2z"/></svg>
+                </div>
+                <h3>Risposta UIBM</h3>
+                <p>Gestione modifiche, opposizioni e integrazioni richieste dall'UIBM dopo il deposito.</p>
+                <div class="future-price">€550 <span>fisso</span></div>
+                <div class="future-split">
+                    <div class="split-item">
+                        <span class="split-label">Professionista</span>
+                        <span class="split-value">€450</span>
+                    </div>
+                    <div class="split-item">
+                        <span class="split-label">Piattaforma</span>
+                        <span class="split-value">€100</span>
+                    </div>
+                </div>
+                <div class="future-note">Richiede P.IVA e Avvocato/Consulente</div>
+                <button class="btn" disabled>Disponibile prossimamente</button>
+            </div>
+            <div class="future-card">
+                <span class="future-badge">FUTURE</span>
+                <div class="future-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                </div>
+                <h3>Difesa Brevetto</h3>
+                <p>Contenzioso per invalidazione, contraffazione, azioni legali. Difesa del tuo brevetto in tribunale.</p>
+                <div class="future-price">€550 <span>fisso</span></div>
+                <div class="future-split">
+                    <div class="split-item">
+                        <span class="split-label">Professionista</span>
+                        <span class="split-value">€450</span>
+                    </div>
+                    <div class="split-item">
+                        <span class="split-label">Piattaforma</span>
+                        <span class="split-value">€100</span>
+                    </div>
+                </div>
+                <div class="future-note">Richiede P.IVA, Avvocato e Studio Legale</div>
+                <button class="btn" disabled>Disponibile prossimamente</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Piattaforma</h4>
+                <a href="index.html">Home</a>
+                <a href="news.html">News Brevetti</a>
+                <a href="bacheca.html">Mercato Invenzioni</a>
+                <a href="chat.html">Dialogo dei Saggi</a>
+            </div>
+            <div class="footer-col">
+                <h4>L'OCCHIO</h4>
+                <a href="occhio-landing.html">Panoramica</a>
+                <a href="occhio-servizi.html">Servizi</a>
+                <a href="occhio-prezzi.html">Prezzi</a>
+                <a href="#">API Documentation</a>
+            </div>
+            <div class="footer-col">
+                <h4>Risorse</h4>
+                <a href="#">Guida all'uso</a>
+                <a href="#">Blog Tecnico</a>
+                <a href="#">Stato Sistema</a>
+                <a href="#">Roadmap</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legale</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Termini di Servizio</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">GDPR Compliance</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-logo">BrevettIAmo</div>
+            <div class="footer-copy">
+                2026 BrevettIAmo — Tutti i diritti riservati. 
+                "La conoscenza e il potere, ma la saggezza e la liberta."
+            </div>
+        </div>
+        <div class="footer-legal">
+            BREVETTIAMO v1.0.0-BETA | Piattaforma sperimentale | Nessun pagamento attivo | 
+            Servizi con assistenza umana sospesi | P.IVA in fase di attivazione | 
+            L'utente e responsabile della verifica dei risultati con professionisti abilitati.
+        </div>
+    </footer>
+
+    <!-- OCCHIO PULSE -->
+    <div class="occhio-pulse" onclick="window.location.href='chat.html'" title="Dialogo dei Saggi">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+        </svg>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const DEFAULT_SERVICES = [
+            { id: 'wizard', name: 'Wizard Brevetto', status: 'active', desc: 'Guida interattiva in 3 passaggi per definire il tuo brevetto. Dall\'idea alla prima bozza.', reliability: 85, market_price: 2500, save_time: '15 ore', save_money: '€2.500', cta: 'Inizia Ora' },
+            { id: 'analisi', name: 'Analisi con 19 IA', status: 'active', desc: '19 intelligenze artificiali analizzano la tua invenzione da prospettive diverse. Valutazione multidimensionale.', reliability: 78, market_price: 1800, save_time: '20 ore', save_money: '€1.800', cta: 'Analizza' },
+            { id: 'tavole', name: 'Tavole SVG', status: 'active', desc: 'Generazione automatica di tavole illustrative in formato SVG vettoriale per il deposito.', reliability: 82, market_price: 1200, save_time: '10 ore', save_money: '€1.200', cta: 'Crea Tavole' },
+            { id: 'priorart', name: 'Ricerca Prior Art', status: 'active', desc: 'Ricerca nelle banche dati brevettuali internazionali per verificare la novita dell\'invenzione.', reliability: 75, market_price: 3000, save_time: '25 ore', save_money: '€3.000', cta: 'Cerca' },
+            { id: 'rivendicazioni', name: 'Redazione Rivendicazioni', status: 'active', desc: 'Generazione assistita delle rivendicazioni brevettuali secondo le normative UIBM/EPO.', reliability: 72, market_price: 3500, save_time: '30 ore', save_money: '€3.500', cta: 'Genera' },
+            { id: 'report', name: 'Report Completo', status: 'active', desc: 'Documento finale pronto per la revisione di un Consulente Proprieta Industriale.', reliability: 80, market_price: 2000, save_time: '18 ore', save_money: '€2.000', cta: 'Crea Report' }
+        ];
+
+        const DEFAULT_OCCHIO = [
+            { id: 'falco', name: 'FALCO', desc: 'Ricerca infrazioni in tempo reale attraverso 47 database internazionali. Identifica prodotti che violano il tuo brevetto.', reliability: 82, detail: 'Scansione: 24/7' },
+            { id: 'lince', name: 'LINCE', desc: 'Monitoraggio continuo dei prodotti concorrenti. Alert automatici quando emergono tecnologie simili alla tua.', reliability: 75, detail: 'Alert: Istantanei' },
+            { id: '
