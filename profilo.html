@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profilo — BrevettIAmo v1.0.0-BETA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--bl:#4A90E2;--om:rgba(26,26,26,0.15);}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;min-height:100vh}
+
+/* HEADER */
+.prof-header{background:linear-gradient(135deg,var(--p) 0%,var(--ps) 100%);border-bottom:3px solid var(--o);padding:1rem 0;position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px var(--om)}
+.prof-header-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.prof-logo{display:flex;align-items:center;gap:1rem;text-decoration:none}
+.prof-logo-icon{width:50px;height:50px}
+.prof-logo-icon svg{width:100%;height:100%}
+.prof-logo-text{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:var(--f);letter-spacing:2px}
+.prof-logo-text span{font-style:italic;font-weight:400;color:var(--o)}
+.prof-nav{display:flex;gap:2rem;align-items:center}
+.prof-nav a{font-family:'Cinzel',serif;text-decoration:none;color:var(--f);font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s}
+.prof-nav a:hover{color:var(--o)}
+
+/* LAYOUT */
+.prof-layout{max-width:1200px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:280px 1fr;gap:2rem}
+
+/* SIDEBAR */
+.prof-sidebar{background:var(--b);border:2px solid var(--ps);padding:2rem}
+.prof-avatar{width:120px;height:120px;margin:0 auto 1.5rem;background:var(--p);border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid var(--o);position:relative}
+.prof-avatar svg{width:60px;height:60px;fill:var(--o)}
+.prof-avatar .edit{position:absolute;bottom:0;right:0;width:32px;height:32px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.prof-avatar .edit svg{width:16px;height:16px;fill:var(--b)}
+.prof-name{text-align:center;font-family:'Cinzel',serif;font-size:1.2rem;color:var(--f);margin-bottom:0.5rem}
+.prof-email{text-align:center;font-size:0.85rem;color:var(--fc);margin-bottom:1.5rem}
+.prof-menu{list-style:none}
+.prof-menu li{padding:0.8rem;border-bottom:1px solid var(--ps);cursor:pointer;transition:all 0.3s;font-size:0.9rem;display:flex;align-items:center;gap:0.8rem}
+.prof-menu li:hover{background:var(--p);color:var(--o)}
+.prof-menu li.active{background:var(--p);border-left:3px solid var(--o);color:var(--o)}
+.prof-menu li svg{width:20px;height:20px;fill:currentColor}
+
+/* MAIN */
+.prof-main{background:var(--b);border:2px solid var(--ps);padding:2rem}
+.prof-main h2{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--f);margin-bottom:1.5rem;letter-spacing:2px}
+
+/* DASHBOARD CARDS */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem}
+.dash-card{background:var(--p);border:2px solid var(--ps);padding:1.5rem;text-align:center;transition:all 0.3s}
+.dash-card:hover{border-color:var(--o);transform:translateY(-3px)}
+.dash-card .num{font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--o);font-weight:700}
+.dash-card .lab{font-family:'Cinzel',serif;font-size:0.75rem;color:var(--fc);letter-spacing:2px;text-transform:uppercase;margin-top:0.5rem}
+
+/* TABLE */
+.prof-table{width:100%;border-collapse:collapse;margin-bottom:2rem}
+.prof-table th{font-family:'Cinzel',serif;font-size:0.8rem;color:var(--o);letter-spacing:1px;padding:1rem;text-align:left;border-bottom:2px solid var(--o);background:var(--p)}
+.prof-table td{padding:1rem;border-bottom:1px solid var(--ps);font-size:0.9rem}
+.prof-table tr:hover{background:var(--p)}
+.prof-table .status{font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:3px;font-family:'Cinzel',serif;letter-spacing:1px}
+.st-completed{background:var(--v);color:var(--b)}
+.st-progress{background:var(--o);color:var(--n)}
+.st-pending{background:var(--ps);color:var(--f)}
+
+/* FORM */
+.prof-form .field{margin-bottom:1.5rem}
+.prof-form .field label{display:block;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--o);letter-spacing:1px;margin-bottom:0.5rem}
+.prof-form .field input,.prof-form .field textarea,.prof-form .field select{width:100%;padding:1rem;border:2px solid var(--ps);background:var(--b);font-family:'Lora',serif;font-size:0.95rem}
+.prof-form .field input:focus,.prof-form .field textarea:focus,.prof-form .field select:focus{outline:none;border-color:var(--o)}
+.prof-form .actions{display:flex;gap:1rem}
+.prof-form .actions .btn{padding:1rem 2rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;border:2px solid var(--o);cursor:pointer;transition:all 0.3s}
+.prof-form .actions .btn.save{background:var(--v);border-color:var(--v);color:var(--b)}.prof-form .actions .btn.save:hover{background:var(--vc)}
+.prof-form .actions .btn.cancel{background:transparent;color:var(--o)}.prof-form .actions .btn.cancel:hover{background:var(--o);color:var(--b)}
+
+/* SAGGIO BOT */
+.saggio-bot{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(197,160,89,0.4);transition:all 0.3s;z-index:999}
+.saggio-bot:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(197,160,89,0.6)}
+.saggio-bot svg{width:30px;height:30px;fill:var(--b)}
+.saggio-panel{position:fixed;bottom:90px;right:2rem;width:350px;max-height:500px;background:var(--b);border:2px solid var(--o);box-shadow:0 10px 40px var(--om);display:none;flex-direction:column;z-index:998}
+.saggio-panel.active{display:flex}
+.saggio-header{background:var(--n);color:var(--p);padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
+.saggio-header button{background:none;border:none;color:var(--o);cursor:pointer;font-size:1.2rem}
+.saggio-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;max-height:350px}
+.saggio-msg{padding:0.8rem 1rem;border-radius:8px;max-width:85%;font-size:0.85rem}
+.saggio-msg.bot{background:var(--p);align-self:flex-start;border-bottom-left-radius:2px}
+.saggio-msg.user{background:var(--o);color:var(--b);align-self:flex-end;border-bottom-right-radius:2px}
+.saggio-input{display:flex;border-top:2px solid var(--ps)}
+.saggio-input input{flex:1;padding:1rem;border:none;background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
+.saggio-input input:focus{outline:none}
+.saggio-input button{padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;cursor:pointer}
+
+/* HIDDEN */
+.hidden{display:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){.prof-layout{grid-template-columns:1fr}.prof-sidebar{display:none}.prof-header-inner{padding:0 1rem}.saggio-panel{width:calc(100% - 2rem);right:1rem;bottom:80px}}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="prof-header">
+<div class="prof-header-inner">
+<a href="index.html" class="prof-logo">
+<div class="prof-logo-icon">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="45" fill="none" stroke="#C5A059" stroke-width="1.5"/>
+<circle cx="50" cy="50" r="3" fill="#C5A059"/>
+<line x1="50" y1="50" x2="35" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="50" y1="50" x2="65" y2="20" stroke="#4A90E2" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="50" y1="50" x2="50" y2="85" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+<ellipse cx="50" cy="50" rx="20" ry="12" fill="none" stroke="#C5A059" stroke-width="1"/>
+<circle cx="50" cy="50" r="3" fill="#C5A059"/>
+</svg>
+</div>
+<div class="prof-logo-text">Brevett<span>IA</span>mo</div>
+</a>
+<nav class="prof-nav">
+<a href="index.html">Home</a>
+<a href="bacheca.html">Bacheca</a>
+<a href="chat.html">Chat</a>
+<a href="occhio-landing.html">L'OCCHIO</a>
+</nav>
+</div>
+</header>
+
+<!-- LAYOUT -->
+<div class="prof-layout">
+
+<!-- SIDEBAR -->
+<aside class="prof-sidebar">
+<div class="prof-avatar">
+<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+<div class="edit">
+<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+</div>
+</div>
+<div class="prof-name" id="prof-name">Utente Beta</div>
+<div class="prof-email" id="prof-email">utente@brevettiamo.com</div>
+<ul class="prof-menu">
+<li class="active" onclick="showTab('dashboard')">
+<svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+Dashboard
+</li>
+<li onclick="showTab('analisi')">
+<svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm-3-5V3.5L18.5 9H13z"/></svg>
+Le Mie Analisi
+</li>
+<li onclick="showTab('documenti')">
+<svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+Documenti
+</li>
+<li onclick="showTab('impostazioni')">
+<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.488.488 0 0 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+Impostazioni
+</li>
+<li onclick="logout()">
+<svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+Esci
+</li>
+</ul>
+</aside>
+
+<!-- MAIN -->
+<main class="prof-main">
+
+<!-- DASHBOARD -->
+<div id="tab-dashboard">
+<h2>Dashboard</h2>
+<div class="dash-grid">
+<div class="dash-card">
+<div class="num" id="dash-analisi">3</div>
+<div class="lab">Analisi Completate</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-documenti">7</div>
+<div class="lab">Documenti Caricati</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-chat">12</div>
+<div class="lab">Messaggi Chat</div>
+</div>
+<div class="dash-card">
+<div class="num" id="dash-bacheca">0</div>
+<div class="lab">Annunci Pubblicati</div>
+</div>
+</div>
+
+<h2 style="margin-top:2rem">Attivita Recenti</h2>
+<table class="prof-table">
+<tr><th>Data</th><th>Azione</th><th>Stato</th></tr>
+<tr><td>14/06/2026</td><td>Analisi IA: Sistema Bloccaggio Casco</td><td><span class="status st-completed">COMPLETATA</span></td></tr>
+<tr><td>12/06/2026</td><td>Upload documenti: 3 file</td><td><span class="status st-completed">COMPLETATA</span></td></tr>
+<tr><td>10/06/2026</td><td>Chat: Brevetti Software</td><td><span class="status st-completed">COMPLETATA</span></td></tr>
+<tr><td>08/06/2026</td><td>Analisi IA: Algoritmo Ottimizzazione</td><td><span class="status st-progress">IN CORSO</span></td></tr>
+<tr><td>05/06/2026</td><td>Registrazione account</td><td><span class="status st-completed">COMPLETATA</span></td></tr>
+</table>
+</div>
+
+<!-- ANALISI -->
+<div id="tab-analisi" class="hidden">
+<h2>Le Mie Analisi</h2>
+<table class="prof-table">
+<tr><th>Titolo</th><th>Tipo</th><th>Data</th><th>Affidabilita</th><th>Azioni</th></tr>
+<tr>
+<td>Sistema Bloccaggio Casco</td>
+<td>Brevetto</td>
+<td>14/06/2026</td>
+<td>78%</td>
+<td><button class="btn" onclick="viewAnalysis('casco')">Vedi</button></td>
+</tr>
+<tr>
+<td>Algoritmo Ottimizzazione Energetica</td>
+<td>Brevetto</td>
+<td>08/06/2026</td>
+<td>72%</td>
+<td><button class="btn" onclick="viewAnalysis('algo')">Vedi</button></td>
+</tr>
+<tr>
+<td>Marchio "EcoTech"</td>
+<td>Marchio</td>
+<td>01/06/2026</td>
+<td>85%</td>
+<td><button class="btn" onclick="viewAnalysis('ecotech')">Vedi</button></td>
+</tr>
+</table>
+</div>
+
+<!-- DOCUMENTI -->
+<div id="tab-documenti" class="hidden">
+<h2>Documenti</h2>
+<table class="prof-table">
+<tr><th>Nome</th><th>Tipo</th><th>Data</th><th>Dimensione</th><th>Azioni</th></tr>
+<tr><td>schizzo_casco_v1.jpg</td><td>Schizzo</td><td>14/06/2026</td><td>2.4 MB</td><td><button class="btn" onclick="downloadDoc('casco')">Scarica</button></td></tr>
+<tr><td>descrizione_casco.txt</td><td>Descrizione</td><td>14/06/2026</td><td>12 KB</td><td><button class="btn" onclick="downloadDoc('desc')">Scarica</button></td></tr>
+<tr><td>prior_art_ricerca.pdf</td><td>Prior Art</td><td>10/06/2026</td><td>1.8 MB</td><td><button class="btn" onclick="downloadDoc('prior')">Scarica</button></td></tr>
+<tr><td>logo_ecotech.svg</td><td>Logo</td><td>01/06/2026</td><td>45 KB</td><td><button class="btn" onclick="downloadDoc('logo')">Scarica</button></td></tr>
+</table>
+</div>
+
+<!-- IMPOSTAZIONI -->
+<div id="tab-impostazioni" class="hidden">
+<h2>Impostazioni</h2>
+<form class="prof-form" onsubmit="return false">
+<div class="field">
+<label>Nome</label>
+<input type="text" id="sett-nome" value="Utente Beta">
+</div>
+<div class="field">
+<label>Email</label>
+<input type="email" id="sett-email" value="utente@brevettiamo.com">
+</div>
+<div class="field">
+<label>Bio / Professione</label>
+<textarea id="sett-bio" placeholder="Descrivi la tua professione, interessi, settore..."></textarea>
+</div>
+<div class="field">
+<label>Notifiche</label>
+<select id="sett-notifiche">
+<option value="all">Tutte le notifiche</option>
+<option value="email">Solo email</option>
+<option value="none">Nessuna notifica</option>
+</select>
+</div>
+<div class="field">
+<label>Privacy</label>
+<select id="sett-privacy">
+<option value="public">Profilo pubblico</option>
+<option value="partial">Parzialmente visibile</option>
+<option value="private">Privato</option>
+</select>
+</div>
+<div class="actions">
+<button class="btn save" onclick="saveSettings()">SALVA</button>
+<button class="btn cancel" onclick="resetSettings()">ANNULLA</button>
+</div>
+</form>
+</div>
+
+</main>
+
+</div><!-- /prof-layout -->
+
+<!-- SAGGIO BOT -->
+<div class="saggio-bot" onclick="toggleSaggio()" title="Saggio — Il tuo guid">
+<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+</div>
+
+<div class="saggio-panel" id="saggio-panel">
+<div class="saggio-header">
+<span>SAGGIO — Guida</span>
+<button onclick="toggleSaggio()">×</button>
+</div>
+<div class="saggio-messages" id="saggio-messages">
+<div class="saggio-msg bot">Benvenuto nel tuo profilo! Qui trovi: dashboard con statistiche, le tue analisi, i documenti caricati, e le impostazioni. Cosa vuoi fare?</div>
+</div>
+<div class="saggio-input">
+<input type="text" id="saggio-input" placeholder="Scrivi la tua domanda..." onkeypress="if(event.key==='Enter')sendSaggio()">
+<button onclick="sendSaggio()">→</button>
+</div>
+</div>
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+// TAB SWITCHING
+function showTab(tab){
+document.querySelectorAll('[id^="tab-"]').forEach(el=>el.classList.add('hidden'));
+document.getElementById('tab-'+tab).classList.remove('hidden');
+document.querySelectorAll('.prof-menu li').forEach(li=>li.classList.remove('active'));
+event.currentTarget.classList.add('active');
+}
+
+// VIEW ANALYSIS
+function viewAnalysis(id){
+alert('Visualizzazione analisi: '+id+'. Pagina dettaglio in sviluppo.');
+}
+
+// DOWNLOAD DOC
+function downloadDoc(id){
+alert('Download documento: '+id+'. Funzione in sviluppo.');
+}
+
+// SAVE SETTINGS
+async function saveSettings(){
+const nome=document.getElementById('sett-nome').value;
+const email=document.getElementById('sett-email').value;
+const bio=document.getElementById('sett-bio').value;
+const notifiche=document.getElementById('sett-notifiche').value;
+const privacy=document.getElementById('sett-privacy').value;
+
+try{
+const {data:{session}}=await supabase.auth.getSession();
+const userId=session?.user?.id;
+
+await supabase.from('profiles').update({
+full_name:nome,
+email,
+bio,
+notifications:notifiche,
+privacy_level:privacy,
+updated_at:new Date().toISOString()
+}).eq('id',userId);
+
+alert('Impostazioni salvate!');
+
+}catch(e){
+console.error(e);
+alert('Errore salvataggio. Riprova.');
+}
+}
+
+function resetSettings(){
+document.getElementById('sett-nome').value='Utente Beta';
+document.getElementById('sett-email').value='utente@brevettiamo.com';
+document.getElementById('sett-bio').value='';
+document.getElementById('sett-notifiche').value='all';
+document.getElementById('sett-privacy').value='public';
+}
+
+// LOGOUT
+function logout(){
+supabase.auth.signOut().then(()=>{
+window.location.href='index.html';
+});
+}
+
+// SAGGIO BOT
+function toggleSaggio(){document.getElementById('saggio-panel').classList.toggle('active');}
+
+const SAGGIO_ANSWERS={
+'dashboard':'Il dashboard mostra: analisi completate, documenti caricati, messaggi chat, annunci pubblicati. E il riepilogo della tua attivita.',
+'analisi':'Qui trovi tutte le analisi IA che hai fatto. Puoi rivederle, scaricarle, o rifarle. Ogni analisi mostra la sua affidabilita.',
+'documenti':'Tutti i file che hai caricato: schizzi, descrizioni, prior art, logo. Puoi scaricarli o eliminarli.',
+'impostazioni':'Modifica nome, email, bio, notifiche, privacy. Salva per applicare le modifiche.',
+'privacy':'Scegli: pubblico (tutti ti vedono), parziale (solo nome), privato (solo tu).',
+'notifiche':'Scegli: tutte (email + in-app), solo email, o nessuna.',
+'esci':'Clicca "Esci" per disconnetterti. I tuoi dati restano salvati.',
+'help':'Chiedimi: dashboard, analisi, documenti, impostazioni, privacy, notifiche, esci.'
+};
+
+function sendSaggio(){
+const input=document.getElementById('saggio-input');
+const msg=input.value.trim();
+if(!msg)return;
+const container=document.getElementById('saggio-messages');
+container.innerHTML+='<div class="saggio-msg user">'+escapeHtml(msg)+'</div>';
+input.value='';
+container.scrollTop=container.scrollHeight;
+
+let answer='Non ho capito. Prova: dashboard, analisi, documenti, impostazioni, privacy, notifiche, esci, help.';
+const lower=msg.toLowerCase();
+for(const[key,val]of Object.entries(SAGGIO_ANSWERS)){if(lower.includes(key)){answer=val;break;}}
+
+setTimeout(()=>{
+container.innerHTML+='<div class="saggio-msg bot">'+answer+'</div>';
+container.scrollTop=container.scrollHeight;
+},500);
+}
+
+function escapeHtml(text){const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
+
+// INIT
+document.addEventListener('DOMContentLoaded',async()=>{
+try{
+const {data:{session}}=await supabase.auth.getSession();
+if(session?.user){
+document.getElementById('prof-name').textContent=session.user.user_metadata?.full_name||'Utente';
+document.getElementById('prof-email').textContent=session.user.email;
+}
+}catch(e){console.error(e);}
+});
+</script>
+</body>
+</html>
