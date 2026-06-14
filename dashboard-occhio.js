@@ -1,9 +1,4 @@
-// ============================================================
 // BREVETTIAMO - dashboard-occhio.js
-// Logica dinamica: carica servizi per pacchetto, fair share IA, allert
-// Gestione OCCHIO: form carica brevetto SOLO su click "Usa"
-// ============================================================
-
 class BrevettIAmoDashboard {
   constructor() {
     this.config = BREVETTIAMO;
@@ -17,7 +12,6 @@ class BrevettIAmoDashboard {
     this.init();
   }
 
-  // --- INIZIALIZZAZIONE ---
   init() {
     this.caricaPacchetto();
     this.caricaServizi();
@@ -29,7 +23,6 @@ class BrevettIAmoDashboard {
     this.startAutoRefresh();
   }
 
-  // --- URL PARAMS ---
   getPacchettoFromURL() {
     const params = new URLSearchParams(window.location.search);
     const pacchetto = params.get('pacchetto') || 'starter';
@@ -45,7 +38,6 @@ class BrevettIAmoDashboard {
     return params.get('occhio') === 'attivo';
   }
 
-  // --- PACCHETTO ---
   caricaPacchetto() {
     const p = this.config.pacchetti[this.pacchetto];
     document.getElementById('pacchetto-nome').textContent = p.nome;
@@ -53,7 +45,6 @@ class BrevettIAmoDashboard {
       p.canali_allert === 'tutti' ? 'tutti' : p.canali_allert;
   }
 
-  // --- FAIR SHARE IA ---
   calcolaFairShare() {
     const utentiAttiviOggi = this.simulaUtentiAttivi();
     const limiteTotale = this.config.beta.fair_share.limite_giornaliero_totale;
@@ -67,14 +58,13 @@ class BrevettIAmoDashboard {
     return Math.floor(Math.random() * 40) + 10;
   }
 
-  // --- SERVIZI ---
   caricaServizi() {
     const p = this.config.pacchetti[this.pacchetto];
     const serviziDisponibili = p.servizi_disponibili;
     this.servizi = serviziDisponibili.map(id => {
       const servizio = this.config.servizi[id];
       if (!servizio) {
-        console.warn('Servizio ' + id + ' non trovato in config.servizi');
+        console.warn('Servizio ' + id + ' non trovato');
         return null;
       }
       return {
@@ -109,7 +99,7 @@ class BrevettIAmoDashboard {
     const statusClass = servizio.limite === 0 ? 'text-gray-500' : 'text-green-400';
     const icona = this.getIconaServizio(servizio.icona);
     
-    const prezzoText = servizio.prezzo ? servizio.prezzo + '€' + (servizio.periodo === 'mese' ? '/mese' : '') : '';
+    const prezzoText = servizio.prezzo ? servizio.prezzo + 'euro' + (servizio.periodo === 'mese' ? '/mese' : '') : '';
     const tipoText = servizio.tipo === 'abbonamento' ? 'Abbonamento' : 
                      servizio.tipo === 'una_tantum' ? 'Una tantum' : 
                      servizio.tipo === 'combo' ? 'Combo' : 
@@ -177,7 +167,6 @@ class BrevettIAmoDashboard {
     return map[icona] || 'fas fa-cube';
   }
 
-  // --- USO SERVIZIO (con gestione OCCHIO) ---
   async usoServizio(servizioId) {
     const servizio = this.servizi.find(s => s.id === servizioId);
     if (!servizio || servizio.limite === 0) return;
@@ -203,7 +192,6 @@ class BrevettIAmoDashboard {
     }, 2000);
   }
 
-  // --- FORM CARICA BREVETTO (OCCHIO) - SOLO su click ---
   apriFormCaricaBrevetto(servizio) {
     const esistente = document.getElementById('modal-occhio');
     if (esistente) esistente.remove();
@@ -293,20 +281,13 @@ class BrevettIAmoDashboard {
     }, 3000);
   }
 
-  // --- BANNER OCCHIO ATTIVO ---
   mostraBannerOcchio() {
     if (this.occhioAttivo || this.brevettoCaricato) {
       const banner = document.getElementById('occhio-attivo-banner');
       if (banner) banner.classList.remove('hidden');
-      const occhioStatus = document.querySelector('.occhio-pulse');
-      if (occhioStatus) {
-        occhioStatus.classList.add('text-green-400');
-        occhioStatus.classList.remove('text-blue-400');
-      }
     }
   }
 
-  // --- ALLERT ---
   caricaAllert() {
     this.allert = this.simulaAllert();
     this.renderAllert();
@@ -369,7 +350,6 @@ class BrevettIAmoDashboard {
     });
   }
 
-  // --- STATISTICHE ---
   caricaStatistiche() {
     const stats = {
       infrazioni: this.occhioAttivo ? 0 : 0,
@@ -384,7 +364,6 @@ class BrevettIAmoDashboard {
     document.getElementById('stat-canali').textContent = stats.canali;
   }
 
-  // --- SCADENZE ---
   caricaScadenze() {
     const container = document.getElementById('calendario-scadenze');
     const scadenze = [
@@ -417,7 +396,6 @@ class BrevettIAmoDashboard {
     });
   }
 
-  // --- UI ---
   aggiornaUI() {
     this.aggiornaAnalisiUI();
     document.getElementById('beta-limite').textContent = this.analisiLimite;
@@ -457,7 +435,6 @@ class BrevettIAmoDashboard {
     }, 3000);
   }
 
-  // --- AUTO REFRESH ---
   startAutoRefresh() {
     setInterval(() => {
       this.caricaAllert();
@@ -466,7 +443,6 @@ class BrevettIAmoDashboard {
   }
 }
 
-// --- INIZIALIZZAZIONE ---
 let dashboard;
 
 document.addEventListener('DOMContentLoaded', () => {
