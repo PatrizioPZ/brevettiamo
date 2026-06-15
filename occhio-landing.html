@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'OCCHIO - Sorveglianza Brevettuale 24/7 | BrevettIAmo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #F4EBE1;
+            --ps: #E8DCC8;
+            --o: #C5A059;
+            --oc: #D4B87A;
+            --os: #9A7B3D;
+            --r: #A63A2B;
+            --rs: #7A2A1F;
+            --f: #4A4A4A;
+            --fc: #6A6A6A;
+            --n: #1A1A1A;
+            --b: #FAF8F5;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Lora', Georgia, serif;
+            background: var(--n);
+            color: var(--p);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .occhio-main {
+            font-size: 8rem;
+            color: var(--o);
+            animation: pulse-occhio 2s infinite ease-in-out;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes pulse-occhio {
+            0%, 100% { transform: scale(1); opacity: 1; text-shadow: 0 0 20px rgba(197, 160, 89, 0.3); }
+            50% { transform: scale(1.05); opacity: 0.9; text-shadow: 0 0 40px rgba(197, 160, 89, 0.6); }
+        }
+        
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--o), var(--oc));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: var(--oc);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+        
+        .hero .tagline {
+            font-size: 1rem;
+            color: var(--fc);
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+        
+        /* SERVIZI OCCHIO */
+        .servizi-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .servizi-section h2 {
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            font-size: 2rem;
+            color: var(--o);
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+        }
+        
+        .servizi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .servizio-card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--o);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .servizio-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--o), var(--r));
+        }
+        
+        .servizio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.2);
+        }
+        
+        .servizio-icon {
+            font-size: 3rem;
+            color: var(--o);
+            margin-bottom: 1rem;
+        }
+        
+        .servizio-card h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--p);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .servizio-card p {
+            color: var(--fc);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .servizio-card .prezzo {
+            color: var(--o);
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* CTA */
+        .cta-section {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+        
+        .cta-section h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--o);
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            color: var(--fc);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn-gold {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--o), var(--os));
+            color: var(--n);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+            border: 2px solid var(--o);
+        }
+        
+        .btn-gold:hover {
+            background: transparent;
+            color: var(--o);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: var(--o);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            border: 2px solid var(--o);
+            border-radius: 8px;
+            margin-left: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--o);
+            color: var(--n);
+        }
+        
+        /* FEATURES */
+        .features-section {
+            padding: 4rem 2rem;
+            background: var(--n);
+        }
+        
+        .features-section h2 {
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            font-size: 2rem;
+            color: var(--o);
+            margin-bottom: 3rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .feature-item i {
+            color: var(--o);
+            font-size: 1.5rem;
+            margin-top: 0.3rem;
+        }
+        
+        .feature-item h4 {
+            color: var(--p);
+            font-family: 'Cinzel', serif;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-item p {
+            color: var(--fc);
+            font-size: 0.9rem;
+        }
+        
+        /* FOOTER */
+        .footer {
+            padding: 2rem;
+            text-align: center;
+            background: var(--n);
+            border-top: 1px solid var(--f);
+        }
+        
+        .footer a {
+            color: var(--o);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+        }
+        
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--o);
+        }
+        
+        .navbar .logo {
+            font-family: 'Cinzel', serif;
+            color: var(--o);
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        
+        .navbar .links a {
+            color: var(--p);
+            text-decoration: none;
+            margin-left: 2rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .navbar .links a:hover {
+            color: var(--o);
+        }
+        
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-in {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .occhio-main { font-size: 5rem; }
+            .navbar .links { display: none; }
+            .btn-secondary { margin-left: 0; margin-top: 1rem; display: block; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">BrevettIAmo</a>
+        <div class="links">
+            <a href="index.html">Home</a>
+            <a href="chat.html">Dialogo dei Saggi</a>
+            <a href="prezzi.html">Prezzi</a>
+            <a href="dashboard-occhio.html?pacchetto=starter">Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="occhio-main">
+            <i class="fas fa-eye"></i>
+        </div>
+        <h1 class="animate-in">L'OCCHIO</h1>
+        <p class="subtitle animate-in delay-1">Sorveglianza Brevettuale 24/7</p>
+        <p class="tagline animate-in delay-2">
+            Dormi tra tre guanciali. L'OCCHIO veglia per te. 
+            Monitoriamo infrazioni, prodotti contraffatti e violazioni 
+            di proprieta intellettuale su tutti i canali.
+        </p>
+        <div class="animate-in delay-3">
+            <a href="dashboard-occhio.html?pacchetto=starter" class="btn-gold">
+                <i class="fas fa-rocket"></i> Inizia Beta Gratuita (60 giorni)
+            </a>
+            <a href="prezzi.html" class="btn-secondary">Vedi Prezzi</a>
+        </div>
+    </section>
+
+    <!-- SERVIZI -->
+    <section class="servizi-section">
+        <h2>I Nostri Guardiani</h2>
+        <div class="servizi-grid">
+            <div class="servizio-card">
+                <div class="servizio-icon">
+                    <i class="fas fa-binoculars"></i>
+                </div>
+                <h3>OCCHIO di Falco</h3>
+                <p>Ricerca infrazioni su tutti i canali. Il Falco non dorme mai. Scansiona marketplace, social media e siti web per trovare copie non autorizzate.</p>
+                <div class="prezzo">€29/mese</div>
+            </div>
+            
+            <div class="servizio-card">
+                <div class="servizio-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3>OCCHIO di Lince</h3>
+                <p>Vede ogni dettaglio. Report completo sullo stato attuale del tuo brevetto. Analisi approfondita con IA multi-modale.</p>
+                <div class="prezzo">€29/mese</div>
+            </div>
+            
+            <div class="servizio-card">
+                <div class="servizio-icon">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <h3>OCCHIO di Aquila</h3>
+                <p>Azioni legali automatiche. Preparazione documenti per difesa brevetto, risposte UIBM e procedimenti legali.</p>
+                <div class="prezzo">€99/mese</div>
+            </div>
+            
+            <div class="servizio-card">
+                <div class="servizio-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h3>OCCHIO di Giove</h3>
+                <p>Sorveglianza totale. Tutti i servizi combinati con priorita assoluta e supporto dedicato 24/7.</p>
+                <div class="prezzo">€299/mese</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features-section">
+        <h2>Perché Scegliere L'OCCHIO</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h4>Protezione Totale</h4>
+                    <p>Monitoraggio su Amazon, eBay, AliExpress, Etsy e centinaia di marketplace.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-brain"></i>
+                <div>
+                    <h4>Intelligenza Artificiale</h4>
+                    <p>19 modelli AI lavorano insieme per analizzare la tua invenzione da ogni angolazione.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-bolt"></i>
+                <div>
+                    <h4>Allert Istantanei</h4>
+                    <p>Notifiche in tempo reale quando viene rilevata un'infrazione o una copia.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-file-contract"></i>
+                <div>
+                    <h4>Documenti Automatici</h4>
+                    <p>Generazione automatica di documenti legali per difesa e procedimenti.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-globe"></i>
+                <div>
+                    <h4>Copertura Internazionale</h4>
+                    <p>Monitoraggio in Italia, Europa (EPO), Francia, UK e USA.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-lock"></i>
+                <div>
+                    <h4>Privacy Garantita</h4>
+                    <p>I tuoi dati sono protetti da NDA e crittografia. Non condividiamo con terzi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2>Inizia Oggi</h2>
+        <p>60 giorni di prova gratuita. Nessuna carta di credito richiesta. 
+           Prova tutti i servizi L'OCCHIO senza limiti.</p>
+        <a href="dashboard-occhio.html?pacchetto=starter" class="btn-gold">
+            <i class="fas fa-eye"></i> Attiva L'OCCHIO
+        </a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>
+            <a href="index.html">BrevettIAmo</a> | 
+            <a href="chat.html">Dialogo dei Saggi</a> | 
+            <a href="prezzi.html">Prezzi</a> | 
+            <a href="dashboard-occhio.html?pacchetto=starter">Dashboard</a>
+        </p>
+        <p style="color: var(--fc); font-size: 0.8rem; margin-top: 1rem;">
+            "Dormi tra tre guanciali. L'OCCHIO veglia per te."
+        </p>
+    </footer>
+
+</body>
+</html>
