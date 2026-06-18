@@ -1,0 +1,27 @@
+{
+  "it": {
+    "servizio-deposito": "DEPOSITO BREVETTO: Un brevetto è un 'bollino' dello Stato che protegge la tua invenzione per 20 anni. Noi prepariamo tutta la documentazione tecnica, verifichiamo che non ci siano errori, e inviamo tutto online all'UIBM al posto tuo. Tu ricevi un numero di deposito ufficiale. Tempo: 5-7 giorni. Prezzo: da €299",
+    
+    "servizio-priorart": "RICERCA PRIOR ART: 'Arte precedente' = tutto ciò che è già stato inventato prima di te. Cerchiamo in banche dati mondiali (Europa, USA, Cina, Giappone) per verificare che la tua idea sia davvero nuova. Report completo con analisi di novità e brevabilità. Tempo: 48 ore. Prezzo: da €199",
+    
+    "servizio-rivendicazioni": "RIVENDICAZIONI: Sono le frasi tecniche più importanti del brevetto. Definiscono ESATTAMENTE cosa proteggi. Troppo stretto = aggirabile. Troppo largo = rifiutato. Noi troviamo l'equilibrio perfetto. Revisioni illimitate. Tempo: 3-5 giorni. Prezzo: da €149",
+    
+    "servizio-tavole": "TAVOLE TECNICHE: Disegni professionali che mostrano l'invenzione da ogni angolo. Formato SVG vettoriale: ingrandisci all'infinito senza perdita di qualità. Pronti per UIBM e pubblicazioni. Tempo: 2-4 giorni. Prezzo: incluso in L'OCCHIO",
+    
+    "servizio-monitoraggio": "MONITORAGGIO: Un brevetto non è 'depositi e dimentichi'. Tasse annuali, opposizioni, rinnovi. Se perdi una scadenza, il brevetto cade. Noi controlliamo tutto, ti avvisiamo via email/SMS, e monitoriamo i concorrenti. Tempo: servizio annuale. Prezzo: da €99/anno",
+    
+    "occhio-wizard": "L'OCCHIO: Il nostro wizard AI in 3 passaggi. 1) Descrivi l'invenzione come a un amico. 2) Carica schizzi o foto. 3) In 24 ore ricevi tavole tecniche SVG, rivendicazioni strutturate, report di brevabilità. L'80% del lavoro di un avvocato brevettuale, a prezzi accessibili. Prezzo: da €29",
+    
+    "occhio-step1": "STEP 1 — DESCRIVI: Non devi essere un ingegnere. Parla come a un amico: 'Ho inventato un apriscatole che funziona con una mano sola, per anziani e disabili'. L'AI capisce il contesto tecnico e prepara lo schema per l'analisi.",
+    
+    "occhio-step2": "STEP 2 — CARICA: Fai una foto allo schizzo sul tovagliolo. Llama Vision analizza l'immagine, riconosce le parti meccaniche, e genera tavole tecniche SVG. Accetta: JPG, PNG, PDF. Max 10MB.",
+    
+    "occhio-step3": "STEP 3 — ANALIZZA: In 24 ore ricevi: tavole tecniche SVG, rivendicazioni strutturate, report di brevabilità (novità, attività inventiva, rischi), suggerimenti strategici per migliorare e proteggere.",
+    
+    "pacchetto-starter": "STARTER PACK €599 — Per chi deposita il primo brevetto. Include: Ricerca prior art completa, Deposito UIBM con documentazione, 1 anno monitoraggio scadenze. Risparmio: 20%. Ideale per: inventori individuali, startup in fase seed.",
+    
+    "pacchetto-pro": "PRO PACK €999 — Per chi ha una strategia IP seria. Include tutto lo Starter PLUS: Redazione professionale rivendicazioni, Assistenza legale 12 mesi, Priorità UIBM. Risparmio: 30%. Ideale per: startup in crescita, PMI con R&S.",
+    
+    "pacchetto-enterprise": "ENTERPRISE — Su preventivo. Per chi fa brevetti in serie. Include tutto il Pro PLUS: Team dedicato (avvocato + ingegnere fissi), Gestione multi-brevetti, Internazionalizzazione PCT (150+ paesi), Strategia IP aziendale. Risparmio: 40%."
+  }
+}
