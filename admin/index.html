@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — BrevettIAmo</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-login">
+    <div class="admin-login-container">
+        <div class="admin-login-card">
+            <div class="admin-logo">
+                <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="#00C853"/>
+                    <path d="M8 16h16M16 8v16" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>Brevett<span class="accent">I</span>Amo <span class="admin-label">Admin</span></span>
+            </div>
+
+            <h1>Accesso Riservato</h1>
+            <p>Area amministrativa. Accesso consentito solo al personale autorizzato.</p>
+
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-user">Username</label>
+                    <input type="text" id="admin-user" placeholder="admin" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <input type="password" id="admin-password" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label for="admin-2fa">Codice 2FA (opzionale)</label>
+                    <input type="text" id="admin-2fa" placeholder="123456" maxlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">
+                    🔐 Accedi al Pannello
+                </button>
+            </form>
+
+            <div class="admin-login-footer">
+                <p>IP rilevato: <span id="admin-ip">--.--.--.--</span></p>
+                <p>Accesso tracciato per sicurezza</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/core.js"></script>
+    <script src="../js/admin/auth.js"></script>
+</body>
+</html>
