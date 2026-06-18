@@ -1,0 +1,344 @@
+/* ============================================
+   BREVETTIAMO — Admin Theme (Dark)
+   ============================================ */
+
+:root {
+    --admin-bg: #0f0f1a;
+    --admin-card: #1a1a2e;
+    --admin-border: #2a2a3e;
+    --admin-text: #e0e0e0;
+    --admin-text-muted: #8888a0;
+    --admin-primary: #00C853;
+    --admin-primary-dark: #00a344;
+    --admin-danger: #F44336;
+    --admin-warning: #FF9800;
+    --admin-info: #2196F3;
+}
+
+/* Admin Login */
+.admin-login {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--admin-bg) 0%, #16213e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    color: var(--admin-text);
+}
+
+.admin-login-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+}
+
+.admin-login-card {
+    background: var(--admin-card);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    border: 1px solid var(--admin-border);
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.admin-logo .accent {
+    color: var(--admin-primary);
+}
+
+.admin-logo .admin-label {
+    background: var(--admin-primary);
+    color: var(--admin-bg);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-login-card h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: var(--admin-text);
+}
+
+.admin-login-card > p {
+    text-align: center;
+    color: var(--admin-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.admin-login .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.admin-login .form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--admin-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-login .form-group input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: var(--admin-bg);
+    border: 2px solid var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text);
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.admin-login .form-group input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 3px rgba(0,200,83,0.1);
+}
+
+.admin-login .form-group input::placeholder {
+    color: var(--admin-text-muted);
+    opacity: 0.5;
+}
+
+.admin-login .btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: var(--admin-primary);
+    color: var(--admin-bg);
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-login .btn-primary:hover {
+    background: var(--admin-primary-dark);
+    transform: translateY(-1px);
+}
+
+.admin-login-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.admin-login-footer p {
+    margin-bottom: 0.25rem;
+}
+
+/* Admin Dashboard */
+.admin-dashboard {
+    min-height: 100vh;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-family: 'Inter', sans-serif;
+}
+
+.admin-nav {
+    background: var(--admin-card);
+    border-bottom: 1px solid var(--admin-border);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.admin-nav .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    color: var(--admin-text);
+}
+
+.admin-nav .nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.admin-nav .nav-links a {
+    color: var(--admin-text-muted);
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.admin-nav .nav-links a:hover {
+    color: var(--admin-primary);
+}
+
+.admin-nav .nav-links a.active {
+    color: var(--admin-primary);
+}
+
+.admin-main {
+    padding: 6rem 2rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.admin-card {
+    background: var(--admin-card);
+    border-radius: 12px;
+    border: 1px solid var(--admin-border);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--admin-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* KPI Cards */
+.admin-kpi {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.admin-kpi .kpi-item {
+    background: var(--admin-card);
+    border-radius: 12px;
+    border: 1px solid var(--admin-border);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.admin-kpi .kpi-item .value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--admin-primary);
+    margin-bottom: 0.5rem;
+}
+
+.admin-kpi .kpi-item .label {
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+}
+
+.admin-kpi .kpi-item .change {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.admin-kpi .kpi-item .change.positive {
+    color: var(--admin-primary);
+}
+
+.admin-kpi .kpi-item .change.negative {
+    color: var(--admin-danger);
+}
+
+/* Tables */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--admin-border);
+    font-size: 0.9rem;
+}
+
+.admin-table th {
+    color: var(--admin-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+}
+
+.admin-table td {
+    color: var(--admin-text);
+}
+
+.admin-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+}
+
+/* Status badges */
+.status-pill {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-pill.success {
+    background: rgba(0,200,83,0.15);
+    color: var(--admin-primary);
+}
+
+.status-pill.warning {
+    background: rgba(255,152,0,0.15);
+    color: var(--admin-warning);
+}
+
+.status-pill.danger {
+    background: rgba(244,67,54,0.15);
+    color: var(--admin-danger);
+}
+
+.status-pill.info {
+    background: rgba(33,150,243,0.15);
+    color: var(--admin-info);
+}
+
+/* Charts placeholder */
+.chart-container {
+    background: var(--admin-bg);
+    border-radius: 8px;
+    padding: 1rem;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--admin-text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-kpi {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-nav {
+        padding: 1rem;
+    }
+
+    .admin-main {
+        padding: 5rem 1rem 1rem;
+    }
+}
