@@ -4,391 +4,869 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servizi Singoli - BrevettIAmo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1e3a5f;
-            --accent: #e85d04;
-            --bg: #f8f9fa;
-            --card: #ffffff;
-            --text: #2d3748;
-            --text-light: #718096;
-            --border: #e2e8f0;
+            --pergamena: #F4EBE1;
+            --pergamena-scura: #E8DCC8;
+            --oro: #C5A059;
+            --oro-chiaro: #D4B87A;
+            --oro-scuro: #9A7B3D;
+            --rosso: #A63A2B;
+            --rosso-scuro: #7A2A1F;
+            --ferro: #4A4A4A;
+            --ferro-chiaro: #6A6A6A;
+            --nero: #1A1A1A;
+            --bianco: #FAF8F5;
+            --ombra: rgba(26, 26, 26, 0.15);
+            --verde: #2D6A4F;
+            --verde-chiaro: #40916C;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
+            font-family: 'Lora', Georgia, serif;
+            background: var(--pergamena);
+            color: var(--ferro);
+            line-height: 1.7;
         }
-        
+
         /* HEADER */
         header {
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--pergamena) 0%, var(--pergamena-scura) 100%);
+            border-bottom: 3px solid var(--oro);
+            padding: 1rem 0;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
-        .header-content {
-            max-width: 1200px;
+
+        .header-inner {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .logo {
-            font-family: 'Playfair Display', serif;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            font-family: 'Cinzel', serif;
             font-size: 1.8rem;
-            color: var(--primary);
-            text-decoration: none;
             font-weight: 700;
+            color: var(--ferro);
+            letter-spacing: 2px;
         }
-        .logo span { color: var(--accent); font-style: italic; }
+
+        .logo-text span {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--oro);
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
         nav a {
-            color: var(--text-light);
+            font-family: 'Cinzel', serif;
             text-decoration: none;
-            margin-left: 2rem;
-            font-weight: 600;
+            color: var(--ferro);
             font-size: 0.9rem;
-            transition: color 0.3s;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
         }
-        nav a:hover { color: var(--accent); }
-        
+
+        nav a:hover {
+            color: var(--oro);
+        }
+
         /* HERO */
         .hero {
             text-align: center;
             padding: 3rem 2rem;
-            background: linear-gradient(135deg, var(--primary) 0%, #2d5a87 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--pergamena-scura) 0%, var(--pergamena) 100%);
+            border-bottom: 3px solid var(--oro);
         }
+
         .hero h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cinzel', serif;
             font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            color: var(--ferro);
+            margin-bottom: 1rem;
         }
+
         .hero p {
+            color: var(--ferro-chiaro);
             font-size: 1.1rem;
-            opacity: 0.9;
             max-width: 600px;
             margin: 0 auto;
         }
-        
-        /* SERVIZI GRID */
-        .section-title {
-            text-align: center;
-            padding: 3rem 2rem 1rem;
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: var(--primary);
-        }
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-        }
-        
-        .servizi-grid {
-            max-width: 1200px;
+
+        /* SERVICES SECTION */
+        .services-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--ferro);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--ferro-chiaro);
+            font-style: italic;
+        }
+
+        .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
         }
-        .servizio-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-            cursor: pointer;
+
+        .service-card {
+            background: var(--bianco);
+            border: 2px solid var(--pergamena-scura);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
         }
-        .servizio-card:hover {
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--oro);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            border-color: var(--oro);
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-color: var(--accent);
+            box-shadow: 0 10px 30px var(--ombra);
         }
-        .servizio-card .nome {
-            font-weight: 700;
-            color: var(--primary);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
         }
-        .badge {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
+
+        .service-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--ferro);
+            letter-spacing: 1px;
+        }
+
+        .service-status {
             font-size: 0.7rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
         }
-        .prezzo {
-            font-size: 1.8rem;
-            color: var(--accent);
-            font-weight: 700;
-            margin: 0.5rem 0;
+
+        .status-beta {
+            background: var(--oro);
+            color: var(--nero);
         }
-        .descrizione {
-            color: var(--text-light);
+
+        .status-suspended {
+            background: var(--rosso);
+            color: var(--bianco);
+        }
+
+        .service-desc {
+            color: var(--ferro-chiaro);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-reliability {
+            margin-bottom: 1rem;
+        }
+
+        .reliability-label {
+            font-size: 0.75rem;
+            color: var(--ferro-chiaro);
+            margin-bottom: 0.3rem;
+            font-family: 'Cinzel', serif;
+        }
+
+        .reliability-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--pergamena-scura);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .reliability-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .reliability-high {
+            background: var(--verde);
+        }
+
+        .reliability-medium {
+            background: var(--oro);
+        }
+
+        .reliability-text {
+            font-size: 0.8rem;
+            color: var(--ferro);
+            margin-top: 0.3rem;
+            font-weight: 600;
+        }
+
+        .service-savings {
+            background: var(--bianco);
+            border: 1px solid var(--pergamena-scura);
+            padding: 0.8rem;
+            margin-bottom: 1rem;
             font-size: 0.85rem;
         }
-        
+
+        .savings-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            color: var(--oro);
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .savings-value {
+            color: var(--verde);
+            font-weight: 600;
+        }
+
+        .service-price {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--oro);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-note {
+            font-size: 0.75rem;
+            color: var(--ferro-chiaro);
+            font-family: 'Lora', serif;
+        }
+
+        .service-cta {
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn {
+            font-family: 'Cinzel', serif;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--oro);
+            background: transparent;
+            color: var(--oro);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--oro);
+            color: var(--bianco);
+        }
+
+        .btn-primary {
+            background: var(--oro);
+            color: var(--bianco);
+        }
+
+        .btn-primary:hover {
+            background: var(--oro-scuro);
+        }
+
+        /* TOOLTIP */
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--pergamena);
+            color: var(--ferro);
+            border: 2px solid var(--oro);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 300px;
+            max-width: 400px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            text-align: left;
+            white-space: normal;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        [data-tooltip]::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid transparent;
+            border-top-color: var(--oro);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        [data-tooltip]:hover::before,
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 768px) {
+            [data-tooltip]::after {
+                left: 10px;
+                right: 10px;
+                transform: none;
+                min-width: auto;
+                max-width: none;
+                bottom: calc(100% + 10px);
+            }
+            [data-tooltip]::before {
+                display: none;
+            }
+        }
+
         /* FOOTER */
         footer {
-            background: var(--primary);
-            color: white;
-            text-align: center;
+            background: var(--ferro);
+            color: var(--pergamena);
             padding: 2rem;
+            text-align: center;
             margin-top: 3rem;
         }
-        footer p { opacity: 0.8; font-size: 0.9rem; }
-    
-/* TOOLTIP ESTESI */
-[data-tooltip] {
-    position: relative;
-    cursor: help;
-}
 
-[data-tooltip]::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: calc(100% + 15px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #f4e8e1;
-    color: #4a4a4a;
-    border: 2px solid #c5a059;
-    border-radius: 12px;
-    padding: 20px;
-    min-width: 300px;
-    max-width: 400px;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    text-align: left;
-    white-space: normal;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 1000;
-}
-
-[data-tooltip]::before {
-    content: '';
-    position: absolute;
-    bottom: calc(100% + 5px);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 10px solid transparent;
-    border-top-color: #c5a059;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-[data-tooltip]:hover::before,
-[data-tooltip]:hover::after {
-    opacity: 1;
-    visibility: visible;
-}
-
-@media (max-width: 768px) {
-    [data-tooltip]::after {
-        left: 10px;
-        right: 10px;
-        transform: none;
-        min-width: auto;
-        max-width: none;
-        bottom: calc(100% + 10px);
-    }
-    [data-tooltip]::before {
-        display: none;
-    }
-}
-</style>
+        footer p {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+    </style>
 <base target="_blank">
 </head>
 <body>
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-text">Brevett<span>IA</span>mo</div>
+            </a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="pacchetti.html">Pacchetti</a>
+                <a href="servizi.html">Servizi</a>
+                <a href="abbonamenti.html">Abbonamenti</a>
+            </nav>
+        </div>
+    </header>
 
-<<header>
-    <div class="header-content">
-        <a href="index.html" class="logo">BREVETT<span>I</span>AMO</a>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="prezzi.html">Pacchetti</a>
-            <a href="servizi.html">Servizi</a>
-            <a href="abbonamenti.html">Abbonamenti</a>
-        </nav>
+    <div class="hero">
+        <h1>Servizi Singoli</h1>
+        <p>Ogni servizio per ogni esigenza. Scegli quello che ti serve, quando ti serve. Tutti i servizi sono GRATUITI durante la fase beta.</p>
     </div>
-</header>
 
-<section class="hero">
-    <h1>Servizi Singoli</h1>
-    <p>Ogni servizio per ogni esigenza. Scegli quello che ti serve, quando ti serve.</p>
-</section>
+    <section class="services-section">
+        <div class="section-header">
+            <h2>Tutti i Servizi</h2>
+            <p>20 servizi professionali per proteggere la tua invenzione</p>
+        </div>
+        <div class="services-grid" id="services-grid">
+            <!-- I 20 servizi verranno generati qui -->
+        </div>
+    </section>
 
-<h2 class="section-title">Servizi Singoli (+20%)</h2>
-<p class="section-subtitle">Prezzi gia inclusivi del 20% di margine</p>
+    <footer>
+        <p>2026 BrevettIAmo - Tutti i diritti riservati</p>
+    </footer>
 
-<section class="servizi-grid">
-    
-    <!-- Riga 1 -->
-    <div class="servizio-card" data-tooltip-id="servizio-priorart-base" onclick="alert('Aggiunto al carrello: Ricerca Prior Art Base')">
-        <div class="nome">Ricerca Prior Art Base</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 15</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-priorart-avanzata" onclick="alert('Aggiunto al carrello: Ricerca Prior Art Avanzata')">
-        <div class="nome">Ricerca Prior Art Avanzata</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 23</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-analisi-brevettabilita" onclick="alert('Aggiunto al carrello: Analisi Brevettabilita')">
-        <div class="nome">Analisi Brevettabilita</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 18</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-claims-base" onclick="alert('Aggiunto al carrello: Redazione Claims Base')">
-        <div class="nome">Redazione Claims Base</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 23</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <!-- Riga 2 -->
-    <div class="servizio-card" data-tooltip-id="servizio-claims-pro" onclick="alert('Aggiunto al carrello: Redazione Claims Pro')">
-        <div class="nome">Redazione Claims Pro</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 47</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-traduzione-claims" onclick="alert('Aggiunto al carrello: Traduzione Claims')">
-        <div class="nome">Traduzione Claims</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 14</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-monitoraggio-concorrenza" onclick="alert('Aggiunto al carrello: Monitoraggio Concorrenza')">
-        <div class="nome">Monitoraggio Concorrenza</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 35</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-consulenza" onclick="alert('Aggiunto al carrello: Consulenza 1:1')">
-        <div class="nome">Consulenza 1:1</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 59</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <!-- Riga 3 -->
-    <div class="servizio-card" data-tooltip-id="servizio-analisi-tecnica" onclick="alert('Aggiunto al carrello: Analisi Tecnica')">
-        <div class="nome">Analisi Tecnica</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 29</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-ricerca-figurativa" onclick="alert('Aggiunto al carrello: Ricerca Figurativa')">
-        <div class="nome">Ricerca Figurativa</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 23</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-analisi-nullita" onclick="alert('Aggiunto al carrello: Analisi Nullita')">
-        <div class="nome">Analisi Nullita</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 35</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-opposizione" onclick="alert('Aggiunto al carrello: Preparazione Opposizione')">
-        <div class="nome">Preparazione Opposizione</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 47</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <!-- Riga 4 -->
-    <div class="servizio-card" data-tooltip-id="servizio-licensing" onclick="alert('Aggiunto al carrello: Strategia Licensing')">
-        <div class="nome">Strategia Licensing</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 59</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-valorizzazione" onclick="alert('Aggiunto al carrello: Valorizzazione Brevetto')">
-        <div class="nome">Valorizzazione Brevetto</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 99</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-due-diligence" onclick="alert('Aggiunto al carrello: Due Diligence IP')">
-        <div class="nome">Due Diligence IP</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 149</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-freedom-to-operate" onclick="alert('Aggiunto al carrello: Freedom to Operate')">
-        <div class="nome">Freedom to Operate</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 79</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <!-- Riga 5 -->
-    <div class="servizio-card" data-tooltip-id="servizio-patentability" onclick="alert('Aggiunto al carrello: Patentability Search')">
-        <div class="nome">Patentability Search</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 18</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-landscape" onclick="alert('Aggiunto al carrello: Landscape Analysis')">
-        <div class="nome">Landscape Analysis</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 59</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-cad" onclick="alert('Aggiunto al carrello: Disegno CAD Professionale')">
-        <div class="nome">Disegno CAD Professionale</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 99</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-    <div class="servizio-card" data-tooltip-id="servizio-legale-base" onclick="alert('Aggiunto al carrello: Supporto Legale Base')">
-        <div class="nome">Supporto Legale Base</div>
-        <div class="badge">PREMIUM</div>
-        <div class="prezzo">EUR 39</div>
-        <div class="descrizione">Servizio AI professionale</div>
-    </div>
-    
-</section>
+    <script src="js/tooltip.js"></script>
+    <script>
+        // Genera tutti i 20 servizi
+        const SERVIZI = [
+            {
+                id: 'servizio-deposito',
+                nome: 'Deposito Brevetto',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: "Preparazione e deposito completo presso l'UIBM. Documentazione tecnica, rivendicazioni e tavole incluse.",
+                affidabilita: 85,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '85% - Alta',
+                risparmio: '-70% (mercato: €1.000-3.000)',
+                prezzo: '€299',
+                prezzoNote: '/primo deposito',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-priorart',
+                nome: 'Ricerca Prior Art',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Ricerca completa in database mondiali per verificare la novita della tua invenzione prima del deposito.',
+                affidabilita: 80,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '80% - Alta',
+                risparmio: '-60% (mercato: €500-1.500)',
+                prezzo: '€199',
+                prezzoNote: '/ricerca',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-rivendicazioni',
+                nome: 'Rivendicazioni',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Redazione professionale delle rivendicazioni brevettuali. La parte piu importante del tuo brevetto.',
+                affidabilita: 75,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '75% - Media-Alta',
+                risparmio: '-65% (mercato: €400-1.200)',
+                prezzo: '€149',
+                prezzoNote: '/set rivendicazioni',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-tavole',
+                nome: 'Tavole Tecniche',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Disegni tecnici professionali in formato SVG. Pronti per UIBM, pubblicazioni e presentazioni.',
+                affidabilita: 70,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '70% - Media',
+                risparmio: '-75% (mercato: €300-800)',
+                prezzo: 'Incluso',
+                prezzoNote: "in L'OCCHIO",
+                cta: "Scopri L'OCCHIO",
+                ctaLink: 'occhio-landing.html'
+            },
+            {
+                id: 'servizio-monitoraggio',
+                nome: 'Monitoraggio',
+                status: 'SOSPESO',
+                statusClass: 'status-suspended',
+                desc: 'Monitoraggio scadenze, rinnovi, opposizioni e concorrenti. Alert automatici via email e SMS.',
+                affidabilita: 65,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '65% - Media',
+                risparmio: '-50% (mercato: €200-500/anno)',
+                prezzo: '€99',
+                prezzoNote: '/anno',
+                cta: 'Prossimamente',
+                ctaLink: '#'
+            },
+            {
+                id: 'servizio-priorart-base',
+                nome: 'Ricerca Prior Art Base',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Ricerca essenziale nelle banche dati principali (EP, US, WO) per verificare la novita della tua invenzione.',
+                affidabilita: 75,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '75% - Media-Alta',
+                risparmio: '-80% (mercato: €75-150)',
+                prezzo: '€15',
+                prezzoNote: '/ricerca',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-priorart-avanzata',
+                nome: 'Ricerca Prior Art Avanzata',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Ricerca approfondita in 15+ banche dati globali. Include analisi di famiglie brevettuali e mappa concorrenti.',
+                affidabilita: 80,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '80% - Alta',
+                risparmio: '-75% (mercato: €90-300)',
+                prezzo: '€23',
+                prezzoNote: '/ricerca',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-analisi-brevettabilita',
+                nome: 'Analisi Brevettabilita',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Valutazione completa sui 3 criteri legali: novita, attivita inventiva, applicabilita industriale.',
+                affidabilita: 78,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '78% - Media-Alta',
+                risparmio: '-70% (mercato: €60-200)',
+                prezzo: '€18',
+                prezzoNote: '/analisi',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-claims-base',
+                nome: 'Redazione Claims Base',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Redazione delle rivendicazioni principali (indipendenti) per definire il campo di protezione del tuo brevetto.',
+                affidabilita: 72,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '72% - Media',
+                risparmio: '-75% (mercato: €90-300)',
+                prezzo: '€23',
+                prezzoNote: '/claims',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-claims-pro',
+                nome: 'Redazione Claims Pro',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Redazione completa di rivendicazioni indipendenti + dipendenti. Strategia di protezione gerarchica.',
+                affidabilita: 82,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '82% - Alta',
+                risparmio: '-70% (mercato: €150-500)',
+                prezzo: '€47',
+                prezzoNote: '/claims',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-traduzione-claims',
+                nome: 'Traduzione Claims',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Traduzione professionale delle rivendicazioni in inglese, francese, tedesco o spagnolo. Certificata per depositi internazionali.',
+                affidabilita: 88,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '88% - Alta',
+                risparmio: '-80% (mercato: €70-250)',
+                prezzo: '€14',
+                prezzoNote: '/traduzione',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-monitoraggio-concorrenza',
+                nome: 'Monitoraggio Concorrenza',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Sorveglianza attiva dei brevetti dei concorrenti in 5 settori tecnologici. Alert automatici via email.',
+                affidabilita: 70,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '70% - Media',
+                risparmio: '-65% (mercato: €100-350)',
+                prezzo: '€35',
+                prezzoNote: '/mese',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-consulenza',
+                nome: 'Consulenza 1:1',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Sessione video 30 min con un esperto brevettuale. Domande, strategia, dubbi, next steps.',
+                affidabilita: 90,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '90% - Alta',
+                risparmio: '-60% (mercato: €150-400)',
+                prezzo: '€59',
+                prezzoNote: '/sessione',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-analisi-tecnica',
+                nome: 'Analisi Tecnica',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Valutazione tecnica approfondita della tua invenzione. Analisi di fattibilita e benchmark tecnologico.',
+                affidabilita: 76,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '76% - Media-Alta',
+                risparmio: '-70% (mercato: €100-300)',
+                prezzo: '€29',
+                prezzoNote: '/analisi',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-ricerca-figurativa',
+                nome: 'Ricerca Figurativa',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Ricerca di design e marchi simili alla tua invenzione. Include banche dati figurative EUIPO, USPTO, WIPO.',
+                affidabilita: 74,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '74% - Media',
+                risparmio: '-75% (mercato: €90-300)',
+                prezzo: '€23',
+                prezzoNote: '/ricerca',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-analisi-nullita',
+                nome: 'Analisi Nullita',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Valutazione della validita di un brevetto esistente. Ricerca di elementi che potrebbero invalidare un brevetto concorrente.',
+                affidabilita: 73,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '73% - Media',
+                risparmio: '-65% (mercato: €100-350)',
+                prezzo: '€35',
+                prezzoNote: '/analisi',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-opposizione',
+                nome: 'Preparazione Opposizione',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Preparazione completa di un opposizione a brevetto. Raccolta prove, redazione argomentazioni, e presentazione all UIBM.',
+                affidabilita: 79,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '79% - Media-Alta',
+                risparmio: '-70% (mercato: €150-500)',
+                prezzo: '€47',
+                prezzoNote: '/opposizione',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-licensing',
+                nome: 'Strategia Licensing',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Analisi delle opportunita di licenza per il tuo brevetto. Mappa dei potenziali licensee e bozza contratto.',
+                affidabilita: 77,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '77% - Media-Alta',
+                risparmio: '-60% (mercato: €150-400)',
+                prezzo: '€59',
+                prezzoNote: '/strategia',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-valorizzazione',
+                nome: 'Valorizzazione Brevetto',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Valutazione economica del tuo brevetto. Metodi: costo, mercato, reddito. Report per investitori o cessione.',
+                affidabilita: 81,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '81% - Alta',
+                risparmio: '-65% (mercato: €300-1.000)',
+                prezzo: '€99',
+                prezzoNote: '/valutazione',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-due-diligence',
+                nome: 'Due Diligence IP',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Analisi completa del portfolio IP di un azienda target. Per M&A, investimenti, o partnership.',
+                affidabilita: 83,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '83% - Alta',
+                risparmio: '-70% (mercato: €500-1.500)',
+                prezzo: '€149',
+                prezzoNote: '/due-diligence',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-freedom-to-operate',
+                nome: 'Freedom to Operate',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Verifica che il tuo prodotto non violi brevetti esistenti. Ricerca in banche dati mondiali + analisi legale.',
+                affidabilita: 78,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '78% - Media-Alta',
+                risparmio: '-60% (mercato: €200-600)',
+                prezzo: '€79',
+                prezzoNote: '/analisi',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-patentability',
+                nome: 'Patentability Search',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Ricerca brevettuale in stile americano. Focus su prior art in inglese. Include analisi di citazioni e famiglie brevettuali.',
+                affidabilita: 76,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '76% - Media-Alta',
+                risparmio: '-75% (mercato: €70-250)',
+                prezzo: '€18',
+                prezzoNote: '/ricerca',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-landscape',
+                nome: 'Landscape Analysis',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Mappa tecnologica completa di un settore. Trend, concorrenti, white spaces, e opportunita. Report strategico 50+ pagine.',
+                affidabilita: 80,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '80% - Alta',
+                risparmio: '-65% (mercato: €150-500)',
+                prezzo: '€59',
+                prezzoNote: '/analisi',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-cad',
+                nome: 'Disegno CAD Professionale',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Creazione di disegni tecnici CAD 2D/3D per brevetti. Formati: DWG, STEP, IGES. Pronti per UIBM e produzione.',
+                affidabilita: 85,
+                affidabilitaClass: 'reliability-high',
+                affidabilitaText: '85% - Alta',
+                risparmio: '-60% (mercato: €250-750)',
+                prezzo: '€99',
+                prezzoNote: '/disegno',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            },
+            {
+                id: 'servizio-legale-base',
+                nome: 'Supporto Legale Base',
+                status: 'BETA',
+                statusClass: 'status-beta',
+                desc: 'Consulenza legale su contratti IP (NDA, licenze, cessioni). Revisione di 1 contratto. Note e raccomandazioni.',
+                affidabilita: 75,
+                affidabilitaClass: 'reliability-medium',
+                affidabilitaText: '75% - Media-Alta',
+                risparmio: '-70% (mercato: €130-450)',
+                prezzo: '€39',
+                prezzoNote: '/consulenza',
+                cta: 'Inizia Ora',
+                ctaLink: 'welcome.html'
+            }
+        ];
 
-<<footer>
-    <p>BrevettIAmo 2026 - Protetti da Brevetto UBIM</p>
-    <p style="margin-top: 0.5rem; font-size: 0.8rem;">Tutti i diritti riservati</p>
-</footer>
+        function generaServizi() {
+            const container = document.getElementById('services-grid');
+            if (!container) return;
 
-<script src="js/tooltip.js"></script>
+            let html = '';
+
+            SERVIZI.forEach(servizio => {
+                const btnClass = servizio.cta === 'Prossimamente' ? 'btn' : 'btn btn-primary';
+                const btnAttr = servizio.cta === 'Prossimamente' ? 'disabled' : '';
+
+                html += `
+                    <div class="service-card" data-tooltip-id="${servizio.id}">
+                        <div class="service-header">
+                            <div class="service-name">${servizio.nome}</div>
+                            <span class="service-status ${servizio.statusClass}">${servizio.status}</span>
+                        </div>
+                        <p class="service-desc">${servizio.desc}</p>
+                        <div class="service-reliability">
+                            <div class="reliability-label">Affidabilita AI</div>
+                            <div class="reliability-bar"><div class="reliability-fill ${servizio.affidabilitaClass}" style="width: ${servizio.affidabilita}%"></div></div>
+                            <div class="reliability-text">${servizio.affidabilitaText}</div>
+                        </div>
+                        <div class="service-savings">
+                            <div class="savings-label">Risparmio vs Mercato</div>
+                            <div class="savings-value">${servizio.risparmio}</div>
+                        </div>
+                        <div class="service-price">
+                            ${servizio.prezzo} <span class="price-note">${servizio.prezzoNote}</span>
+                        </div>
+                        <div class="service-cta">
+                            ${servizio.cta === 'Prossimamente' 
+                                ? `<button class="${btnClass}" ${btnAttr}>${servizio.cta}</button>`
+                                : `<a href="${servizio.ctaLink}" class="${btnClass}">${servizio.cta}</a>`
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            console.log('Servizi generati:', SERVIZI.length);
+
+            // Reinizializza tooltip
+            if (typeof inizializzaTooltip === 'function') {
+                inizializzaTooltip();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', generaServizi);
+    </script>
 </body>
 </html>
