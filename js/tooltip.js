@@ -202,9 +202,9 @@ function iniettaTooltipCSS() {
         [data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
-            top: 50%;
-            left: calc(100% + 12px);
-            transform: translateY(-50%) scale(0.95);
+            bottom: calc(100% + 20px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
             background: #f5f0e6;
             color: #3d2b1f;
             padding: 14px 18px;
@@ -226,11 +226,11 @@ function iniettaTooltipCSS() {
         [data-tooltip]::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: calc(100% + 12px);
+            bottom: calc(100% + 14px);
+            left: 50%;
             transform: translateX(-50%);
             border: 6px solid transparent;
-            border-right-color: #c9a96e;
+            border-top-color: #c9a96e;
             opacity: 0;
             visibility: hidden;
             transition: all 0.25s ease;
@@ -257,8 +257,8 @@ function iniettaTooltipCSS() {
         }
         .tooltip-modal {
             position: fixed;
-            top: 50%;
-            left: calc(100% + 12px);
+            bottom: calc(100% + 20px);
+            left: 50%;
             transform: translate(-50%, -50%) scale(0.9);
             background: #f5f0e6;
             border: 2px solid #c9a96e;
