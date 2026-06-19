@@ -54,74 +54,49 @@ function inizializzaTooltip() {
 }
 
 // ============================================================
-// MODALE TOOLTIP ESPANSO
+// PANNELLO ESPANDIBILE (toggle semplice)
 // ============================================================
 
 function apriTooltipModale(id, testo) {
-    chiudiTooltipModale();
+    // Trova la card
+    const card = document.querySelector('[data-tooltip-id="' + id + '"]');
+    if (!card) return;
 
-    const overlay = document.createElement('div');
-    overlay.id = 'tooltip-modal-overlay';
-    overlay.className = 'tooltip-modal-overlay';
-    overlay.addEventListener('click', chiudiTooltipModale);
+    // Cerca un pannello esistente nella card
+    let pannello = card.querySelector('.tooltip-pannello');
 
-    const modal = document.createElement('div');
-    modal.id = 'tooltip-modal';
-    modal.className = 'tooltip-modal';
+    // Se il pannello esiste, chiudilo (toggle)
+    if (pannello) {
+        pannello.remove();
+        return;
+    }
 
-    const htmlContent = formattaTooltipTesto(testo);
+    // Altrimenti, crea il pannello
+    pannello = document.createElement('div');
+    pannello.className = 'tooltip-pannello';
+    pannello.innerHTML = formattaTooltipTesto(testo) + 
+        '<div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">' +
+        '<button onclick="this.parentElement.parentElement.remove()" style="padding:6px 14px; border:1px solid #c9a96e; border-radius:4px; background:#f5f0e6; color:#3d2b1f; font-family:Cinzel,serif; font-size:12px; cursor:pointer;">Chiudi</button>' +
+        '<a href="welcome.html" style="padding:6px 14px; border:1px solid #8b6914; border-radius:4px; background:#8b6914; color:#f5f0e6; font-family:Cinzel,serif; font-size:12px; text-decoration:none;">Inizia Ora</a>' +
+        '</div>';
 
-    modal.innerHTML = `
-        <div class="tooltip-modal-header">
-            <span class="tooltip-modal-title">Dettaglio Servizio</span>
-            <button class="tooltip-modal-close" id="tooltip-modal-close-btn">&times;</button>
-        </div>
-        <div class="tooltip-modal-body">
-            ${htmlContent}
-        </div>
-        <div class="tooltip-modal-footer">
-            <button class="tooltip-modal-btn" id="tooltip-modal-chiudi-btn">Chiudi</button>
-            <a href="welcome.html" class="tooltip-modal-btn tooltip-modal-btn-primary">Inizia Ora</a>
-        </div>
-    `;
+    card.appendChild(pannello);
 
-    document.body.appendChild(overlay);
-    document.body.appendChild(modal);
-    tooltipAttivo = { overlay, modal };
-
-    // Event listener per chiusura (non onclick inline)
-    modal.querySelector('#tooltip-modal-close-btn').addEventListener('click', chiudiTooltipModale);
-    modal.querySelector('#tooltip-modal-chiudi-btn').addEventListener('click', chiudiTooltipModale);
-
+    // Animazione
     requestAnimationFrame(() => {
-        overlay.classList.add('tooltip-modal-active');
-        modal.classList.add('tooltip-modal-active');
+        pannello.style.maxHeight = '500px';
+        pannello.style.opacity = '1';
     });
-
-    document.addEventListener('keydown', chiudiTooltipEsc);
 }
 
+// Funzioni vuote per compatibilita
 function chiudiTooltipModale() {
-    if (!tooltipAttivo) return;
-    const { overlay, modal } = tooltipAttivo;
-
-    overlay.classList.remove('tooltip-modal-active');
-    modal.classList.remove('tooltip-modal-active');
-
-    setTimeout(() => {
-        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        if (modal.parentNode) modal.parentNode.removeChild(modal);
-        tooltipAttivo = null;
-    }, 250);
-
-    document.removeEventListener('keydown', chiudiTooltipEsc);
+    document.querySelectorAll('.tooltip-pannello').forEach(p => p.remove());
 }
 
 function chiudiTooltipEsc(e) {
     if (e.key === 'Escape') chiudiTooltipModale();
-}
-
-// ============================================================
+}// ============================================================
 // FORMATTAZIONE TESTO MARKDOWN -> HTML
 // ============================================================
 
@@ -488,6 +463,16 @@ function assegnaTooltipServizi() {
 document.addEventListener('DOMContentLoaded', () => {
     iniettaTooltipCSS();
     caricaTooltipTesti('it');
+
+    // Chiudi modale quando si clicca OVUNQUE
+    document.addEventListener('click', function(e) {
+        if (tooltipAttivo) {
+            const modal = document.getElementById('tooltip-modal');
+            if (modal && !modal.contains(e.target)) {
+                chiudiTooltipModale();
+            }
+        }
+    });
 
     setTimeout(assegnaTooltipServizi, 1000);
 
