@@ -424,6 +424,58 @@ function iniettaTooltipCSS() {
             font-style: italic;
             letter-spacing: 0.3px;
         }
+        .tooltip-pannello {
+            margin-top: 12px;
+            padding: 16px;
+            background: #ebe3d5;
+            border: 1px solid #c9a96e;
+            border-radius: 8px;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #3d2b1f;
+        }
+        .tooltip-pannello-attivo {
+            max-height: 500px;
+            opacity: 1;
+        }
+        .tooltip-pannello h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            color: #8b6914;
+            margin: 0 0 8px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #c9a96e;
+        }
+        .tooltip-pannello p {
+            margin: 0 0 8px 0;
+        }
+        .tooltip-pannello ol,
+        .tooltip-pannello ul {
+            margin: 6px 0;
+            padding-left: 18px;
+        }
+        .tooltip-pannello li {
+            margin: 3px 0;
+        }
+        .tooltip-pannello table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 12px;
+        }
+        .tooltip-pannello td {
+            padding: 4px 8px;
+            border: 1px solid #c9a96e;
+        }
+        .tooltip-pannello td:first-child {
+            background: #f5f0e6;
+            font-weight: 600;
+            width: 45%;
+        }
     `;
     document.head.appendChild(css);
 }
