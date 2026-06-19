@@ -24,11 +24,11 @@ async function caricaTooltipTesti(lingua = 'it') {
 
 function caricaTooltipFallback() {
     TOOLTIP_TESTI = {
-        'servizio-deposito': { light: 'Deposito Brevetto: da €299 — Risparmio -70%', full: 'Deposito completo presso l\'UIBM.' },
-        'servizio-priorart': { light: 'Ricerca Prior Art: da €199 — Risparmio -60%', full: 'Ricerca in database mondiali.' },
-        'servizio-rivendicazioni': { light: 'Rivendicazioni: da €149 — Risparmio -65%', full: 'Redazione rivendicazioni brevettuali.' },
-        'servizio-tavole': { light: 'Tavole Tecniche: Incluso in L\'OCCHIO — Risparmio -75%', full: 'Disegni tecnici SVG professionali.' },
-        'servizio-monitoraggio': { light: 'Monitoraggio: €99/anno — Risparmio -50%', full: 'Alert scadenze e concorrenti.' }
+        'servizio-deposito': { light: 'Deposito Brevetto: da 299 EUR -- Risparmio -70%', full: 'Deposito completo presso UIBM.' },
+        'servizio-priorart': { light: 'Ricerca Prior Art: da 199 EUR -- Risparmio -60%', full: 'Ricerca in database mondiali.' },
+        'servizio-rivendicazioni': { light: 'Rivendicazioni: da 149 EUR -- Risparmio -65%', full: 'Redazione rivendicazioni brevettuali.' },
+        'servizio-tavole': { light: 'Tavole Tecniche: Incluso in OCCHIO -- Risparmio -75%', full: 'Disegni tecnici SVG professionali.' },
+        'servizio-monitoraggio': { light: 'Monitoraggio: 99 EUR/anno -- Risparmio -50%', full: 'Alert scadenze e concorrenti.' }
     };
     inizializzaTooltip();
 }
@@ -42,11 +42,8 @@ function inizializzaTooltip() {
         const id = element.getAttribute('data-tooltip-id');
         const dati = TOOLTIP_TESTI[id];
         if (dati) {
-            // Usa la versione light per il tooltip hover
             element.setAttribute('data-tooltip', dati.light || dati);
-            // Aggiungi handler per espansione al click
             element.addEventListener('click', (e) => {
-                // Se il click e su un link o button, non aprire il modale
                 if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.closest('a') || e.target.closest('button')) {
                     return;
                 }
@@ -61,21 +58,17 @@ function inizializzaTooltip() {
 // ============================================================
 
 function apriTooltipModale(id, testo) {
-    // Chiudi modale esistente
     chiudiTooltipModale();
 
-    // Crea overlay
     const overlay = document.createElement('div');
     overlay.id = 'tooltip-modal-overlay';
     overlay.className = 'tooltip-modal-overlay';
     overlay.addEventListener('click', chiudiTooltipModale);
 
-    // Crea contenuto modale
     const modal = document.createElement('div');
     modal.id = 'tooltip-modal';
     modal.className = 'tooltip-modal';
 
-    // Formatta il testo (converte markdown tabella in HTML)
     const htmlContent = formattaTooltipTesto(testo);
 
     modal.innerHTML = `
@@ -96,13 +89,11 @@ function apriTooltipModale(id, testo) {
     document.body.appendChild(modal);
     tooltipAttivo = { overlay, modal };
 
-    // Animazione apertura
     requestAnimationFrame(() => {
         overlay.classList.add('tooltip-modal-active');
         modal.classList.add('tooltip-modal-active');
     });
 
-    // Chiudi con ESC
     document.addEventListener('keydown', chiudiTooltipEsc);
 }
 
@@ -134,40 +125,62 @@ function formattaTooltipTesto(testo) {
     let html = testo;
 
     // Titolo (prima riga)
-    html = html.replace(/^([^
-]+)/, '<h3 class="tooltip-modal-h3">$1</h3>');
+    const primoInvio = html.indexOf('\\n');
+    if (primoInvio > 0) {
+        const titolo = html.substring(0, primoInvio);
+        const resto = html.substring(primoInvio + 2);
+        html = '<h3 class="tooltip-modal-h3">' + titolo + '</h3><p>' + resto + '</p>';
+    } else {
+        html = '<h3 class="tooltip-modal-h3">' + html + '</h3>';
+    }
 
-    // Paragrafi vuoti -> <br>
-    html = html.replace(/
+    // Liste numerate e puntate
+    const lines = html.split('\\n');
+    let inOl = false;
+    let inUl = false;
+    let result = [];
 
-/g, '</p><p>');
-    html = html.replace(/
-/g, '<br>');
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
 
-    // Liste numerate
-    html = html.replace(/(\d+)\.\s+([^<]+)/g, '<li>$2</li>');
-    html = html.replace(/(<li>.*<\/li>)/s, '<ol class="tooltip-modal-ol">$1</ol>');
+        if (/^\d+\.\s/.test(line)) {
+            if (!inOl) {
+                if (inUl) { result.push('</ul>'); inUl = false; }
+                result.push('<ol class="tooltip-modal-ol">');
+                inOl = true;
+            }
+            result.push('<li>' + line.replace(/^\d+\.\s*/, '') + '</li>');
+        } else if (/^[-]\s/.test(line)) {
+            if (!inUl) {
+                if (inOl) { result.push('</ol>'); inOl = false; }
+                result.push('<ul class="tooltip-modal-ul">');
+                inUl = true;
+            }
+            result.push('<li>' + line.replace(/^[-]\s*/, '') + '</li>');
+        } else if (/^\|?[-\s|]+\|?$/.test(line)) {
+            if (inOl) { result.push('</ol>'); inOl = false; }
+            if (inUl) { result.push('</ul>'); inUl = false; }
+        } else if (/^\|[^|]+\|[^|]+\|$/.test(line)) {
+            if (inOl) { result.push('</ol>'); inOl = false; }
+            if (inUl) { result.push('</ul>'); inUl = false; }
+            const cells = line.split('|').filter(c => c.trim() !== '');
+            if (cells.length >= 2) {
+                result.push('<table class="tooltip-modal-table"><tr><td>' + cells[0].trim() + '</td><td>' + cells[1].trim() + '</td></tr></table>');
+            }
+        } else {
+            if (inOl) { result.push('</ol>'); inOl = false; }
+            if (inUl) { result.push('</ul>'); inUl = false; }
+            result.push(line);
+        }
+    }
 
-    // Liste puntate
-    html = html.replace(/-\s+([^<]+)/g, '<li>$1</li>');
-    html = html.replace(/(<li>[^<]+<\/li>)/s, '<ul class="tooltip-modal-ul">$1</ul>');
+    if (inOl) result.push('</ol>');
+    if (inUl) result.push('</ul>');
 
-    // Tabelle markdown
-    html = html.replace(/\|([^|]+)\|([^|]+)\|/g, (match, c1, c2) => {
-        return `<tr><td>${c1.trim()}</td><td>${c2.trim()}</td></tr>`;
-    });
-    html = html.replace(/(<tr>.*<\/tr>)/s, '<table class="tooltip-modal-table">$1</table>');
-
-    // Riga separatore tabella
-    html = html.replace(/<tr><td>[-\s]+<\/td><td>[-\s]+<\/td><\/tr>/g, '');
+    html = result.join('<br>');
 
     // Bold
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-
-    // Avvolgi in paragrafo se non gia fatto
-    if (!html.startsWith('<')) {
-        html = '<p>' + html + '</p>';
-    }
 
     return html;
 }
@@ -182,12 +195,10 @@ function iniettaTooltipCSS() {
     const css = document.createElement('style');
     css.id = 'tooltip-css-v2';
     css.textContent = `
-        /* ========== TOOLTIP HOVER (light) ========== */
         [data-tooltip] {
             position: relative;
             cursor: help;
         }
-
         [data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
@@ -211,7 +222,6 @@ function iniettaTooltipCSS() {
             z-index: 1000;
             pointer-events: none;
         }
-
         [data-tooltip]::before {
             content: '';
             position: absolute;
@@ -226,15 +236,12 @@ function iniettaTooltipCSS() {
             z-index: 1000;
             pointer-events: none;
         }
-
         [data-tooltip]:hover::after,
         [data-tooltip]:hover::before {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) scale(1);
         }
-
-        /* ========== MODALE TOOLTIP ESPANSO ========== */
         .tooltip-modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -244,11 +251,9 @@ function iniettaTooltipCSS() {
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-
         .tooltip-modal-overlay.tooltip-modal-active {
             opacity: 1;
         }
-
         .tooltip-modal {
             position: fixed;
             top: 50%;
@@ -267,12 +272,10 @@ function iniettaTooltipCSS() {
             flex-direction: column;
             box-shadow: 0 20px 60px rgba(61, 43, 31, 0.4);
         }
-
         .tooltip-modal.tooltip-modal-active {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
         }
-
         .tooltip-modal-header {
             display: flex;
             justify-content: space-between;
@@ -282,14 +285,12 @@ function iniettaTooltipCSS() {
             background: #ebe3d5;
             border-radius: 10px 10px 0 0;
         }
-
         .tooltip-modal-title {
             font-family: 'Cinzel', serif;
             font-size: 16px;
             color: #3d2b1f;
             font-weight: 600;
         }
-
         .tooltip-modal-close {
             background: none;
             border: none;
@@ -306,12 +307,10 @@ function iniettaTooltipCSS() {
             border-radius: 4px;
             transition: all 0.2s;
         }
-
         .tooltip-modal-close:hover {
             background: #c9a96e;
             color: #f5f0e6;
         }
-
         .tooltip-modal-body {
             padding: 20px;
             overflow-y: auto;
@@ -320,7 +319,6 @@ function iniettaTooltipCSS() {
             line-height: 1.7;
             color: #3d2b1f;
         }
-
         .tooltip-modal-body h3 {
             font-family: 'Cinzel', serif;
             font-size: 15px;
@@ -329,39 +327,32 @@ function iniettaTooltipCSS() {
             padding-bottom: 8px;
             border-bottom: 1px solid #c9a96e;
         }
-
         .tooltip-modal-body p {
             margin: 0 0 10px 0;
         }
-
         .tooltip-modal-body ol,
         .tooltip-modal-body ul {
             margin: 8px 0;
             padding-left: 20px;
         }
-
         .tooltip-modal-body li {
             margin: 4px 0;
         }
-
         .tooltip-modal-body table {
             width: 100%;
             border-collapse: collapse;
             margin: 12px 0;
             font-size: 13px;
         }
-
         .tooltip-modal-body td {
             padding: 6px 10px;
             border: 1px solid #c9a96e;
         }
-
         .tooltip-modal-body td:first-child {
             background: #ebe3d5;
             font-weight: 600;
             width: 45%;
         }
-
         .tooltip-modal-footer {
             display: flex;
             justify-content: flex-end;
@@ -371,7 +362,6 @@ function iniettaTooltipCSS() {
             background: #ebe3d5;
             border-radius: 0 0 10px 10px;
         }
-
         .tooltip-modal-btn {
             padding: 8px 18px;
             border: 1px solid #c9a96e;
@@ -384,23 +374,18 @@ function iniettaTooltipCSS() {
             text-decoration: none;
             transition: all 0.2s;
         }
-
         .tooltip-modal-btn:hover {
             background: #c9a96e;
             color: #f5f0e6;
         }
-
         .tooltip-modal-btn-primary {
             background: #8b6914;
             color: #f5f0e6;
             border-color: #8b6914;
         }
-
         .tooltip-modal-btn-primary:hover {
             background: #6b510f;
         }
-
-        /* Scrollbar personalizzata */
         .tooltip-modal-body::-webkit-scrollbar {
             width: 6px;
         }
@@ -411,8 +396,6 @@ function iniettaTooltipCSS() {
             background: #c9a96e;
             border-radius: 3px;
         }
-
-        /* Mobile */
         @media (max-width: 600px) {
             .tooltip-modal {
                 max-width: 95vw;
@@ -423,8 +406,6 @@ function iniettaTooltipCSS() {
                 font-size: 12px;
             }
         }
-
-        /* ========== INDICATORE "Clicca per dettagli" ========== */
         .service-hint {
             display: flex;
             align-items: center;
@@ -439,12 +420,10 @@ function iniettaTooltipCSS() {
             transition: all 0.2s ease;
             opacity: 0.7;
         }
-
         .service-hint:hover {
             opacity: 1;
             color: #8b6914;
         }
-
         .hint-icon {
             display: inline-flex;
             align-items: center;
@@ -458,13 +437,11 @@ function iniettaTooltipCSS() {
             font-family: serif;
             line-height: 1;
         }
-
         .service-hint:hover .hint-icon {
             border-color: #8b6914;
             background: #8b6914;
             color: #f5f0e6;
         }
-
         .hint-text {
             font-style: italic;
             letter-spacing: 0.3px;
@@ -509,10 +486,8 @@ document.addEventListener('DOMContentLoaded', () => {
     iniettaTooltipCSS();
     caricaTooltipTesti('it');
 
-    // Prima assegnazione dopo 1 secondo
     setTimeout(assegnaTooltipServizi, 1000);
 
-    // Osserva cambiamenti nel DOM
     const observer = new MutationObserver((mutations) => {
         let serviziAggiunti = false;
         mutations.forEach(mutation => {
