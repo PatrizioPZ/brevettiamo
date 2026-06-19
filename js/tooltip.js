@@ -202,7 +202,7 @@ function iniettaTooltipCSS() {
         [data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: calc(100% + 10px);
+            top: calc(100% + 10px);
             left: 50%;
             transform: translateX(-50%) scale(0.95);
             background: #f5f0e6;
@@ -226,11 +226,11 @@ function iniettaTooltipCSS() {
         [data-tooltip]::before {
             content: '';
             position: absolute;
-            bottom: calc(100% + 4px);
+            top: calc(100% + 4px);
             left: 50%;
             transform: translateX(-50%);
             border: 6px solid transparent;
-            border-top-color: #c9a96e;
+            border-bottom-color: #c9a96e;
             opacity: 0;
             visibility: hidden;
             transition: all 0.25s ease;
