@@ -3,7 +3,8 @@
 
 const CONFIG = {
     // Inserisci qui la tua chiave API Groq (senza virgolette interne)
-    GROQ_API_KEY: 'https://sheetdb.io/api/v1/t8unus6h6n4cj',
+    GROQ_API_KEY: '
+      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  ',
     
     // Endpoint Groq (compatibile OpenAI)
     GROQ_API_URL: 'https://api.groq.com/openai/v1/chat/completions',
