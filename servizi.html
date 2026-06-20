@@ -324,7 +324,7 @@
             background: var(--oro-scuro);
         }
 
-        /* TOOLTIP */
+        /* TOOLTIP HOVER */
         [data-tooltip] {
             position: relative;
             cursor: help;
@@ -335,7 +335,7 @@
             position: absolute;
             bottom: calc(100% + 15px);
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scale(0.95);
             background: var(--pergamena);
             color: var(--ferro);
             border: 2px solid var(--oro);
@@ -371,6 +371,75 @@
         [data-tooltip]:hover::after {
             opacity: 1;
             visibility: visible;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* PANNELLO ESPANDIBILE */
+        .tooltip-pannello {
+            margin-top: 12px;
+            padding: 16px;
+            background: var(--pergamena-scura);
+            border: 1px solid var(--oro);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--ferro);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tooltip-pannello h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--oro-scuro);
+            margin: 0 0 8px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--oro);
+        }
+
+        .tooltip-pannello p { margin: 0 0 8px 0; }
+        .tooltip-pannello ol, .tooltip-pannello ul { margin: 6px 0; padding-left: 18px; }
+        .tooltip-pannello li { margin: 3px 0; }
+        .tooltip-pannello table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 0.8rem; }
+        .tooltip-pannello td { padding: 4px 8px; border: 1px solid var(--oro); }
+        .tooltip-pannello td:first-child { background: var(--bianco); font-weight: 600; width: 45%; }
+
+        .btn-chiudi {
+            padding: 6px 14px;
+            border: 1px solid var(--oro);
+            border-radius: 4px;
+            background: var(--bianco);
+            color: var(--ferro);
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-chiudi:hover {
+            background: var(--oro);
+            color: var(--bianco);
+        }
+
+        .btn-inizia {
+            padding: 6px 14px;
+            border: 1px solid var(--oro-scuro);
+            border-radius: 4px;
+            background: var(--oro-scuro);
+            color: var(--bianco);
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .btn-inizia:hover {
+            background: var(--oro);
         }
 
         @media (max-width: 768px) {
@@ -401,6 +470,7 @@
             opacity: 0.7;
         }
     </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
@@ -437,8 +507,68 @@
         <p>2026 BrevettIAmo - Tutti i diritti riservati</p>
     </footer>
 
-    <script src="js/tooltip.js"></script>
     <script src="js/services.js"></script>
+
+    <script>
+    // TOOLTIP INLINE - BrevettIAmo
+    let TOOLTIP_TESTI = {};
+
+    async function caricaTooltipTesti() {
+        try {
+            const response = await fetch('data/tooltip-testi.json?v=' + Date.now());
+            const data = await response.json();
+            TOOLTIP_TESTI = data['it'];
+            inizializzaTooltip();
+        } catch (e) {
+            console.error('Errore tooltip:', e);
+        }
+    }
+
+    function inizializzaTooltip() {
+        document.querySelectorAll('[data-tooltip-id]').forEach(card => {
+            const id = card.getAttribute('data-tooltip-id');
+            const dati = TOOLTIP_TESTI[id];
+            if (!dati) return;
+
+            // Tooltip hover
+            card.setAttribute('data-tooltip', dati.light);
+
+            // Click per espandere
+            card.addEventListener('click', function(e) {
+                // Se clicco su link/bottone, non fare niente
+                if (e.target.closest('a') || e.target.closest('button')) return;
+
+                // Toggle pannello
+                let pannello = this.querySelector('.tooltip-pannello');
+                if (pannello) {
+                    pannello.remove();
+                    return;
+                }
+
+                // Crea pannello
+                pannello = document.createElement('div');
+                pannello.className = 'tooltip-pannello';
+                pannello.innerHTML = formattaTesto(dati.full) + 
+                    '<div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">' +
+                    '<button class="btn-chiudi" onclick="this.closest('.tooltip-pannello').remove()">Chiudi</button>' +
+                    '<a href="welcome.html" class="btn-inizia">Inizia Ora</a>' +
+                    '</div>';
+
+                this.appendChild(pannello);
+            });
+        });
+    }
+
+    function formattaTesto(testo) {
+        let html = testo.replace(/
+/g, '<br>');
+        html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        return html;
+    }
+
+    // Avvio
+    caricaTooltipTesti();
+    </script>
 
 </body>
 </html>
