@@ -81,8 +81,6 @@ function apriTooltipModale(id, testo) {
         '</div>';
 
     card.appendChild(pannello);
-
-    // Pannello visibile grazie alla classe tooltip-pannello-attivo
 }
 
 // Funzioni vuote per compatibilita
