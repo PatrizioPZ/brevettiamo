@@ -231,6 +231,62 @@
         .template-fallback.visible {
             display: block;
         }
+        
+        /* Stili per sezione SVG */
+        .svg-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .svg-section h2 {
+            color: #1e3a5f;
+            margin-bottom: 15px;
+        }
+        
+        .svg-container {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 10px;
+            overflow: auto;
+            max-width: 100%;
+        }
+        
+        /* Stili per sezione immagine */
+        .image-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .image-section h2 {
+            color: #1e3a5f;
+            margin-bottom: 15px;
+        }
+        
+        .image-container {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            min-height: 200px;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .image-error {
+            color: #dc2626;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -297,6 +353,10 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
+    <script src="js/svg-generator.js"></script>
+    <script src="js/image-generator.js"></script>
+    
     <script>
         // Recupera dati
         const servizioId = localStorage.getItem('brevettiamo_servizio_id');
@@ -333,14 +393,14 @@
             const risultato = recuperaRisultato();
             
             if (risultato && risultato.contenuto) {
-                mostraOutputIA(risultato);
+                await mostraOutputIA(risultato);
             } else {
                 console.warn('Nessun risultato IA trovato, uso fallback');
                 mostraFallback();
             }
         }
         
-        function mostraOutputIA(risultato) {
+        async function mostraOutputIA(risultato) {
             badgeTipo.textContent = 'IA Generata';
             badgeTipo.className = 'badge-ia';
             
@@ -358,6 +418,82 @@
             }
             
             localStorage.removeItem('brevettiamo_use_fallback');
+            
+            // === SEZIONE SPECIALE: TAVOLE TECNICHE (SVG + IMMAGINE) ===
+            if (servizioId === 'servizio-tavole' || servizioId === 'servizio-cad') {
+                await generaTavoleDisegni(risultato.contenuto);
+            }
+        }
+        
+        async function generaTavoleDisegni(testoIA) {
+            // 1. Genera SVG UIBM
+            try {
+                const specs = SVGGenerator.estraiSpecifiche(testoIA);
+                const generator = new SVGGenerator();
+                const svg = generator.generaTavola(specs);
+                
+                const svgSection = document.createElement('div');
+                svgSection.className = 'svg-section';
+                svgSection.innerHTML = `
+                    <h2>TAVOLA SVG UIBM</h2>
+                    <div class="svg-container" id="svgContainer">
+                        ${svg}
+                    </div>
+                    <button onclick="downloadSVG()" style="margin-top: 15px; padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">
+                        Scarica SVG
+                    </button>
+                `;
+                contentIA.appendChild(svgSection);
+            } catch (e) {
+                console.error('Errore generazione SVG:', e);
+            }
+            
+            // 2. Genera immagine DALL-E
+            const promptImg = ImageGenerator.estraiPrompt(testoIA);
+            
+            if (promptImg) {
+                const imageSection = document.createElement('div');
+                imageSection.className = 'image-section';
+                imageSection.innerHTML = `
+                    <h2>RENDER 3D FOTOREALISTICO</h2>
+                    <div class="image-container" id="imageContainer">
+                        <div class="loading-placeholder">
+                            <div class="spinner"></div>
+                            <p>Generazione immagine in corso...<br><em>(circa 10-20 secondi)</em></p>
+                            <p style="font-size: 12px; color: #999; margin-top: 10px;">Prompt: ${promptImg.substring(0, 100)}...</p>
+                        </div>
+                    </div>
+                `;
+                contentIA.appendChild(imageSection);
+                
+                // Chiama generazione immagine
+                const imgGen = new ImageGenerator();
+                const imgResult = await imgGen.genera(promptImg, '1024x1024', 'vivid');
+                
+                const container = document.getElementById('imageContainer');
+                
+                if (imgResult.success) {
+                    container.innerHTML = `
+                        <img src="${imgResult.url}" alt="Render 3D">
+                        <p style="margin-top: 15px; font-size: 13px; color: #666;">
+                            <strong>Prompt ottimizzato:</strong> ${imgResult.revisedPrompt || promptImg}
+                        </p>
+                        <a href="${imgResult.url}" target="_blank" download="render_3d.png" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #10b981; color: white; text-decoration: none; border-radius: 6px; font-size: 14px;">
+                            Scarica PNG
+                        </a>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="image-error">
+                            <p>Errore generazione immagine: ${imgResult.errore}</p>
+                            <p style="font-size: 13px; color: #666; margin-top: 10px;">
+                                Puoi usare questo prompt manualmente su DALL-E o Midjourney:<br>
+                                <code style="background: #f3f4f6; padding: 10px; display: block; margin-top: 8px; border-radius: 4px; word-break: break-all;">${promptImg}</code>
+                            </p>
+                        </div>
+                    `;
+                }
+            }
         }
         
         function mostraFallback() {
@@ -420,6 +556,26 @@
             URL.revokeObjectURL(url);
             
             alert('Documento scaricato!');
+        }
+        
+        function downloadSVG() {
+            const svg = document.querySelector('svg');
+            if (!svg) {
+                alert('Nessun SVG trovato');
+                return;
+            }
+            
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tavola_uibm_' + servizioId + '_' + new Date().toISOString().slice(0,10) + '.svg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
         
         function richiediRevisione() {
