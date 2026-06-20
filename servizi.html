@@ -550,11 +550,16 @@
                 pannello.className = 'tooltip-pannello';
                 pannello.innerHTML = formattaTesto(dati.full) + 
                     '<div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">' +
-                    '<button class="btn-chiudi" onclick="this.closest('.tooltip-pannello').remove()">Chiudi</button>' +
+                    '<button class="btn-chiudi" id="btn-chiudi-' + id + '">Chiudi</button>' +
                     '<a href="welcome.html" class="btn-inizia">Inizia Ora</a>' +
                     '</div>';
 
                 this.appendChild(pannello);
+
+                // Aggiungiamo event listener al bottone Chiudi
+                pannello.querySelector('.btn-chiudi').addEventListener('click', function() {
+                    pannello.remove();
+                });
             });
         });
     }
