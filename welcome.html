@@ -1,414 +1,408 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Benvenuto — BrevettIAmo v1.0.0-BETA</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-<style>
-:root{--p:#F4EBE1;--ps:#E8DCC8;--o:#C5A059;--oc:#D4B87A;--os:#9A7B3D;--r:#A63A2B;--rs:#7A2A1F;--f:#4A4A4A;--fc:#6A6A6A;--n:#1A1A1A;--b:#FAF8F5;--v:#2D6A4F;--vc:#40916C;--om:rgba(26,26,26,0.15);}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-height:1.7;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benvenuto - BrevettIAmo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
-.welcome-container{background:var(--b);border:3px solid var(--o);max-width:800px;width:100%;padding:3rem;position:relative;box-shadow:0 20px 60px var(--om)}
-.welcome-container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--r),var(--o),var(--r))}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.welcome-header{text-align:center;margin-bottom:2rem}
-.welcome-header .version{display:inline-block;background:var(--r);color:var(--b);padding:0.3rem 1rem;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;margin-bottom:1rem}
-.welcome-header h1{font-family:'Cinzel',serif;font-size:2rem;color:var(--f);letter-spacing:3px;margin-bottom:0.5rem}
-.welcome-header .subtitle{font-family:'Playfair Display',serif;font-style:italic;color:var(--fc);font-size:1.1rem}
+        body {
+            font-family: 'Libre Baskerville', Georgia, serif;
+            background: #f5f0e8;
+            min-height: 100vh;
+            color: #3d2b1f;
+        }
 
-.welcome-div{width:80px;height:2px;background:var(--o);margin:1.5rem auto}
+        .pergamena {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #faf6f0;
+            border: 2px solid #c9a96e;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(61,43,31,0.15), inset 0 0 60px rgba(201,169,110,0.1);
+            padding: 50px;
+            position: relative;
+        }
 
-.beta-notice{background:linear-gradient(135deg,var(--r) 0%,var(--rs) 100%);color:var(--b);padding:1.5rem;margin-bottom:2rem;text-align:center}
-.beta-notice h3{font-family:'Cinzel',serif;font-size:1rem;letter-spacing:2px;margin-bottom:0.5rem}
-.beta-notice p{font-size:0.9rem;opacity:0.9}
-.beta-notice .price-tag{font-family:'Playfair Display',serif;font-size:1.5rem;margin-top:0.5rem;display:block}
+        .pergamena::before, .pergamena::after {
+            content: '';
+            position: absolute;
+            left: 10px; right: 10px;
+            height: 2px;
+            background: #c9a96e;
+            opacity: 0.3;
+        }
+        .pergamena::before { top: 15px; }
+        .pergamena::after { bottom: 15px; }
 
-.legal-section{margin-bottom:2rem;border:2px solid var(--ps);padding:1.5rem;background:var(--p)}
-.legal-section h4{font-family:'Cinzel',serif;color:var(--o);font-size:0.9rem;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
-.legal-section h4 .num{width:28px;height:28px;background:var(--o);color:var(--b);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:0.8rem;border-radius:50%}
-.legal-text{font-size:0.85rem;color:var(--fc);line-height:1.8;max-height:200px;overflow-y:auto;padding:1rem;background:var(--b);border:1px solid var(--ps);margin-bottom:1rem}
-.legal-text::-webkit-scrollbar{width:6px}
-.legal-text::-webkit-scrollbar-track{background:var(--ps)}
-.legal-text::-webkit-scrollbar-thumb{background:var(--o)}
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #8b0000;
+            letter-spacing: 3px;
+        }
+        .logo p {
+            font-style: italic;
+            color: #8b7355;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
 
-.download-row{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
-.download-btn{font-family:'Cinzel',serif;padding:0.8rem 1.5rem;border:2px solid var(--o);background:transparent;color:var(--o);font-size:0.8rem;letter-spacing:1px;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem}
-.download-btn:hover{background:var(--o);color:var(--b)}
-.download-btn svg{width:18px;height:18px;fill:currentColor}
+        .sezione {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(201,169,110,0.08);
+            border: 1px solid #d4c4a8;
+            border-radius: 4px;
+        }
 
-.checkbox-row{display:flex;align-items:flex-start;gap:0.8rem;margin-bottom:1rem;padding:1rem;background:var(--b);border:2px solid var(--ps);transition:all 0.3s;cursor:pointer}
-.checkbox-row:hover{border-color:var(--o)}
-.checkbox-row.accepted{border-color:var(--v);background:rgba(45,106,79,0.05)}
-.checkbox-row input[type="checkbox"]{width:20px;height:20px;accent-color:var(--o);cursor:pointer;margin-top:2px;flex-shrink:0}
-.checkbox-row label{font-size:0.9rem;color:var(--f);cursor:pointer}
-.checkbox-row label strong{color:var(--o)}
+        .sezione-titolo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: #8b0000;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sezione-titolo .numero {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #c9a96e;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
 
-.disclaimer-box{background:var(--n);color:var(--p);padding:1.5rem;margin-bottom:2rem;font-size:0.8rem;line-height:1.8}
-.disclaimer-box h4{font-family:'Cinzel',serif;color:var(--o);margin-bottom:0.5rem;font-size:0.85rem;letter-spacing:2px}
-.disclaimer-box p{opacity:0.8}
+        .testo-scroll {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fffef8;
+            border: 1px solid #e8dcc8;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #5a4a3a;
+        }
+        .testo-scroll::-webkit-scrollbar { width: 6px; }
+        .testo-scroll::-webkit-scrollbar-track { background: #f0ebe0; }
+        .testo-scroll::-webkit-scrollbar-thumb { background: #c9a96e; border-radius: 3px; }
 
-.action-area{text-align:center;margin-top:2rem}
-.action-area .btn{font-family:'Cinzel',serif;padding:1.2rem 3rem;border:2px solid var(--o);background:var(--o);color:var(--b);font-size:1rem;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block}
-.action-area .btn:hover{background:var(--os);border-color:var(--os)}
-.action-area .btn:disabled{background:var(--ps);border-color:var(--ps);color:var(--fc);cursor:not-allowed}
-.action-area .btn-note{font-size:0.8rem;color:var(--fc);margin-top:1rem;font-style:italic}
+        .checkbox-row {
+            margin-top: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            background: #fffef8;
+            border: 1px solid #e8dcc8;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checkbox-row:hover { border-color: #c9a96e; background: #faf6f0; }
+        .checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #8b0000;
+            margin-top: 2px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .checkbox-row label {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            cursor: pointer;
+            color: #5a4a3a;
+        }
+        .checkbox-row label strong { color: #8b0000; }
 
-.progress-bar{display:flex;justify-content:center;gap:0.5rem;margin-bottom:2rem}
-.progress-step{width:40px;height:4px;background:var(--ps);border-radius:2px;transition:all 0.3s}
-.progress-step.active{background:var(--o)}
-.progress-step.done{background:var(--v)}
+        .bottone-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .btn-entra {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            padding: 16px 50px;
+            background: #c9a96e;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(201,169,110,0.3);
+        }
+        .btn-entra:hover:not(:disabled) {
+            background: #b8985a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201,169,110,0.4);
+        }
+        .btn-entra:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
 
-.step-indicator{text-align:center;margin-bottom:1.5rem;font-family:'Cinzel',serif;font-size:0.8rem;color:var(--fc);letter-spacing:2px}
+        .hint {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #8b7355;
+            font-style: italic;
+        }
 
-/* SAGGIO BOT */
-.saggio-bot{position:fixed;bottom:2rem;right:2rem;width:60px;height:60px;background:var(--o);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(197,160,89,0.4);transition:all 0.3s;z-index:999}
-.saggio-bot:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(197,160,89,0.6)}
-.saggio-bot svg{width:30px;height:30px;fill:var(--b)}
+        .banner-beta {
+            background: #8b0000;
+            color: #fff;
+            text-align: center;
+            padding: 12px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin: -50px -50px 30px -50px;
+            border-radius: 4px 4px 0 0;
+        }
 
-.saggio-panel{position:fixed;bottom:90px;right:2rem;width:350px;max-height:500px;background:var(--b);border:2px solid var(--o);box-shadow:0 10px 40px var(--om);display:none;flex-direction:column;z-index:998}
-.saggio-panel.active{display:flex}
-.saggio-header{background:var(--n);color:var(--p);padding:1rem;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:2px;display:flex;justify-content:space-between;align-items:center}
-.saggio-header button{background:none;border:none;color:var(--o);cursor:pointer;font-size:1.2rem}
-.saggio-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:1rem;max-height:350px}
-.saggio-msg{padding:0.8rem 1rem;border-radius:8px;max-width:85%;font-size:0.85rem}
-.saggio-msg.bot{background:var(--p);align-self:flex-start;border-bottom-left-radius:2px}
-.saggio-msg.user{background:var(--o);color:var(--b);align-self:flex-end;border-bottom-right-radius:2px}
-.saggio-input{display:flex;border-top:2px solid var(--ps)}
-.saggio-input input{flex:1;padding:1rem;border:none;background:var(--b);font-family:'Lora',serif;font-size:0.9rem}
-.saggio-input input:focus{outline:none}
-.saggio-input button{padding:1rem;background:var(--o);color:var(--b);border:none;font-family:'Cinzel',serif;cursor:pointer}
+        .servizio-selezionato {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(139,0,0,0.05);
+            border: 1px dashed #8b0000;
+            border-radius: 4px;
+        }
+        .servizio-selezionato h3 {
+            font-family: 'Cinzel', serif;
+            color: #8b0000;
+            font-size: 1rem;
+        }
+        .servizio-selezionato p {
+            font-size: 0.85rem;
+            color: #8b7355;
+            margin-top: 5px;
+        }
 
-/* RESPONSIVE */
-@media(max-width:768px){.welcome-container{padding:2rem 1.5rem}.saggio-panel{width:calc(100% - 2rem);right:1rem;bottom:80px}}
-</style>
+        .btn-download {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid #8b0000;
+            color: #8b0000;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-download:hover {
+            background: #8b0000;
+            color: #fff;
+        }
+    </style>
 <base target="_blank">
 </head>
 <body>
+    <div class="pergamena">
+        <div class="banner-beta">BETA CHIUSA - ACCESSO RISERVATO</div>
 
-<!-- WELCOME CONTAINER -->
-<div class="welcome-container">
+        <div class="logo">
+            <h1>BENVENUTO IN BREVETTIAMO</h1>
+            <p>Il Portale delle Invenzioni</p>
+        </div>
 
-<!-- HEADER -->
-<div class="welcome-header">
-<span class="version">BETA v1.0.0</span>
-<h1>BENVENUTO IN BREVETTIAMO</h1>
-<p class="subtitle">Il Portale delle Invenzioni</p>
-<div class="welcome-div"></div>
-</div>
+        <div class="servizio-selezionato" id="servizio-info">
+            <h3>Servizio selezionato</h3>
+            <p id="nome-servizio">Caricamento...</p>
+        </div>
 
-<!-- PROGRESS -->
-<div class="progress-bar">
-<div class="progress-step active"></div>
-<div class="progress-step"></div>
-<div class="progress-step"></div>
-<div class="progress-step"></div>
-</div>
-<div class="step-indicator">PASSO 1 DI 4 — ACCETTAZIONE LEGALE</div>
+        <!-- SEZIONE 1: AVVERTENZA SUPREMA -->
+        <div class="sezione">
+            <div class="sezione-titolo">
+                <span class="numero">1</span>
+                L'AVVERTENZA SUPREMO (Formula Miranda di BrevettIAmo)
+            </div>
+            <div class="testo-scroll">
+                <p>Gentile Inventore, prima di aprire il tuo scrigno e inserire i dettagli della tua opera nell'officina, ascolta questo avvertimento: il presente servizio ha valore puramente informativo, di orientamento concettuale e di supporto allo sviluppo.</p>
+                <p><strong>NON costituisce un deposito di brevetto ufficiale</strong> presso le autorita competenti (es. UIBM, EPO, WIPO) ne una consulenza legale formale. Il Gestore non si assume alcuna responsabilita per l'eventuale perdita del requisito di "novita" della tua invenzione qualora tu decida autonomamente di divulgarla al di fuori dei canali protetti del nostro Ordine.</p>
+                <p>Ogni dato inserito prima del deposito ufficiale viene comunicato a tuo rischio e pericolo; pertanto, ti esortiamo a mantenere il piu stretto riserbo fino al sigillo definitivo.</p>
+            </div>
+        </div>
 
-<!-- BETA NOTICE -->
-<div class="beta-notice">
-<h3>TUTTI I SERVIZI SONO GRATUITI</h3>
-<p>Stai accedendo alla versione beta sperimentale di BrevettIAmo.<br>Nessun pagamento e richiesto. I prezzi mostrati sono solo indicativi.</p>
-<span class="price-tag">GRATIS</span>
-</div>
+        <!-- SEZIONE 2: NDA + DOWNLOAD -->
+        <div class="sezione">
+            <div class="sezione-titolo">
+                <span class="numero">2</span>
+                ACCORDO DI RISERVATEZZA (NDA) PER I SERVIZI AUTOMATIZZATI
+            </div>
+            <div class="testo-scroll">
+                <p>Il Gestore della piattaforma si impegna solennemente a non utilizzare, non riprodurre, non copiare e non divulgare a terzi le informazioni descrittive e i progetti da te inviati.</p>
+                <p>Nella modalita di erogazione standard digitale (Grado Apprendista e Maestro Pro), l'analisi del progetto avviene esclusivamente tramite processi informatici e algoritmi crittografati protetti. Nessun operatore umano o collaboratore del Gestore ha accesso alla descrizione dell'idea, garantendo la totale riservatezza tecnologica e strutturale del dato all'interno del database sicuro.</p>
+                <p><strong>Il Concilio Segreto (Terzieta dei Consulenti):</strong> Qualora tu decida di attivare il servizio integrativo o di richiedere il consulto a seguito di un allarme dell'Occhio (Grado Massimo Attivo), la revisione sara delegata a un professionista indipendente terzo e autonomo. Il professionista rispondera direttamente, in via esclusiva e sotto la propria responsabilita professionale, della riservatezza dei dati.</p>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <a href="data/NDA_BrevettIAmo.pdf" class="btn-download" download>Scarica NDA in PDF</a>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="check-nda" onchange="verificaCheckbox()">
+                <label for="check-nda">Ho letto e <strong>accetto l'Accordo di Riservatezza (NDA)</strong>. Acconsento al trattamento riservato delle informazioni tecniche da me fornite ai sensi dell'art. 1218 c.c.</label>
+            </div>
+        </div>
 
-<!-- DISCLAIMER -->
-<div class="disclaimer-box">
-<h4>AVVISO LEGALE</h4>
-<p>Questa piattaforma e in fase BETA sperimentale. I risultati generati dall'Intelligenza Artificiale hanno un livello di affidabilita indicato per ciascun servizio. L'utente e invitato a verificare sempre con un professionista abilitato (Avvocato, Consulente Proprieta Industriale, Ingegnere). Il gestore declina ogni responsabilita civile e professionale per i risultati ottenuti. Servizi con assistenza umana sono temporaneamente SOSPESI in attesa dell'attivazione della P.IVA e del reclutamento delle figure professionali qualificate.</p>
-</div>
+        <!-- SEZIONE 3: PRIVACY POLICY -->
+        <div class="sezione">
+            <div class="sezione-titolo">
+                <span class="numero">3</span>
+                TRATTAMENTO DEI DATI PERSONALI (Privacy Policy GDPR)
+            </div>
+            <div class="testo-scroll">
+                <p><strong>Titolare del trattamento:</strong> BrevettIAmo (in fase di costituzione)</p>
+                <p><strong>Finalita:</strong> Erogazione servizi beta per protezione proprieta intellettuale, gestione accesso dashboard, comunicazioni allarmi sistema L'Occhio.</p>
+                <p><strong>Dati raccolti:</strong> Email, nome (opzionale), documenti tecnici caricati, dati tecnici inseriti.</p>
+                <p><strong>Base giuridica:</strong> Consenso esplicito (art. 6 GDPR).</p>
+                <p><strong>Conservazione:</strong> I dati sono conservati su server Supabase (UE). Documenti tecnici: fino a revoca consenso.</p>
+                <p><strong>Diritti dell'interessato:</strong> Accesso, rettifica, cancellazione, limitazione, portabilita, opposizione. Email: privacy@brevettiamo.com (attiva in futuro).</p>
+                <p>I dati tecnici della tua invenzione <strong>non vengono venduti, scambiati o ceduti</strong> a terze parti per scopi pubblicitari. Fanno fede legale del tuo consenso informatico i log di sistema e le marche temporali registrate nel database al momento della spunta digitale.</p>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="check-privacy" onchange="verificaCheckbox()">
+                <label for="check-privacy">Ho letto e <strong>accetto la Privacy Policy</strong>. Acconsento al trattamento dei miei dati personali ai sensi del GDPR.</label>
+            </div>
+        </div>
 
-<!-- PRIVACY -->
-<div class="legal-section" id="privacy-section">
-<h4><div class="num">1</div> PRIVACY POLICY</h4>
-<div class="legal-text" id="privacy-text">
-<strong>PRIVACY POLICY — BREVETTIAMO v1.0.0-BETA</strong><br><br>
+        <!-- SEZIONE 4: DICHIARAZIONE TITOLARITA -->
+        <div class="sezione">
+            <div class="sezione-titolo">
+                <span class="numero">4</span>
+                DICHIARAZIONE DI TITOLARITA E MANLEVA TOTALE SUI DATI
+            </div>
+            <div class="testo-scroll">
+                <p>Tu dichiari e garantisci, sotto la tua esclusiva responsabilita civile e penale, di essere il legittimo titolare, inventore o avente diritto dell'idea che stai per inserire.</p>
+                <p>Nel caso in cui tu fornisca generalita false, email fittizie o immetta nella piattaforma progetti di proprieta di terzi senza formale consenso, ti assumi ogni responsabilita di legge.</p>
+                <p><strong>Esoneri e manlevi interamente il Gestore di "BrevettIAmo"</strong> e i suoi collaboratori da qualsiasi richiesta di risarcimento, contestazione o azione legale promossa da terzi.</p>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="check-titolarita" onchange="verificaCheckbox()">
+                <label for="check-titolarita">Dichiaro di essere il <strong>legittimo titolare</strong> dell'idea/progetto che inseriro. Esonero il Gestore da qualsiasi responsabilita sui dati da me caricati.</label>
+            </div>
+        </div>
 
-<strong>Titolare del trattamento:</strong> BrevettIAmo (in fase di costituzione)<br>
-<strong>Finalita:</strong> Fornitura servizi beta per protezione proprieta intellettuale<br>
-<strong>Dati raccolti:</strong> Email, documenti caricati, dati tecnici inseriti<br>
-<strong>Base giuridica:</strong> Consenso esplicito (art. 6 GDPR)<br><br>
+        <!-- SEZIONE 5: DISCLAIMER BETA -->
+        <div class="sezione">
+            <div class="sezione-titolo">
+                <span class="numero">5</span>
+                DISCLAIMER SERVIZI BETA
+            </div>
+            <div class="testo-scroll">
+                <p>Questa e una piattaforma <strong>BETA sperimentale</strong>. I risultati AI hanno limiti di affidabilita. Devi verificare con professionisti abilitati. Il gestore non ha responsabilita civile/professionale. Servizi umani sono sospesi (attesa P.IVA).</p>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="check-beta" onchange="verificaCheckbox()">
+                <label for="check-beta">Ho letto e <strong>compreso il disclaimer legale</strong>. Sono consapevole che questa e una piattaforma BETA sperimentale e accetto i limiti di affidabilita dei risultati AI.</label>
+            </div>
+        </div>
 
-<strong>1. DATI PERSONALI</strong><br>
-Raccogliamo: indirizzo email, nome (opzionale), documenti tecnici caricati dall'utente.<br><br>
+        <div class="bottone-container">
+            <button class="btn-entra" id="btn-entra" disabled onclick="entraNelServizio()">ENTRA NEL SERVIZIO</button>
+        </div>
+        <p class="hint" id="hint-text">Devi accettare tutti i documenti per procedere</p>
+    </div>
 
-<strong>2. FINALITA DEL TRATTAMENTO</strong><br>
-- Erogazione servizi beta<br>
-- Analisi AI di documenti tecnici<br>
-- Comunicazioni relative al servizio<br>
-- Miglioramento piattaforma<br><br>
+    <script>
+        // Leggi il servizio selezionato dall'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const servizioId = urlParams.get('servizio') || '';
 
-<strong>3. CONSERVAZIONE</strong><br>
-I dati sono conservati su server Supabase (UE). Documenti tecnici: fino a revoca consenso.<br><br>
+        // Mappa ID servizio -> nome
+        const nomiServizi = {
+            'servizio-deposito': 'Deposito Brevetto',
+            'servizio-priorart': 'Ricerca Prior Art',
+            'servizio-rivendicazioni': 'Rivendicazioni',
+            'servizio-tavole': 'Tavole Tecniche',
+            'servizio-monitoraggio': 'Monitoraggio',
+            'servizio-priorart-base': 'Ricerca Prior Art Base',
+            'servizio-priorart-avanzata': 'Ricerca Prior Art Avanzata',
+            'servizio-analisi-brevettabilita': 'Analisi Brevettabilita',
+            'servizio-claims-base': 'Redazione Claims Base',
+            'servizio-claims-pro': 'Redazione Claims Pro',
+            'servizio-traduzione-claims': 'Traduzione Claims',
+            'servizio-monitoraggio-concorrenza': 'Monitoraggio Concorrenza',
+            'servizio-consulenza': 'Consulenza 1:1',
+            'servizio-analisi-tecnica': 'Analisi Tecnica',
+            'servizio-ricerca-figurativa': 'Ricerca Figurativa',
+            'servizio-analisi-nullita': 'Analisi Nullita',
+            'servizio-opposizione': 'Preparazione Opposizione',
+            'servizio-licensing': 'Strategia Licensing',
+            'servizio-valorizzazione': 'Valorizzazione Brevetto',
+            'servizio-due-diligence': 'Due Diligence IP',
+            'servizio-freedom-to-operate': 'Freedom to Operate',
+            'servizio-patentability': 'Patentability Search',
+            'servizio-landscape': 'Landscape Analysis',
+            'servizio-cad': 'Disegno CAD Professionale',
+            'servizio-legale-base': 'Supporto Legale Base'
+        };
 
-<strong>4. DIRITTI DELL'INTERESSATO</strong><br>
-Accesso, rettifica, cancellazione, limitazione, portabilita, opposizione.<br>
-Email: privacy@brevettiamo.com (attiva in futuro)<br><br>
+        // Mostra il servizio selezionato
+        if (servizioId && nomiServizi[servizioId]) {
+            document.getElementById('nome-servizio').textContent = nomiServizi[servizioId];
+        } else {
+            document.getElementById('servizio-info').style.display = 'none';
+        }
 
-<strong>5. COOKIE</strong><br>
-Utilizziamo solo cookie tecnici necessari al funzionamento.<br><br>
+        function verificaCheckbox() {
+            const check1 = document.getElementById('check-nda').checked;
+            const check2 = document.getElementById('check-privacy').checked;
+            const check3 = document.getElementById('check-titolarita').checked;
+            const check4 = document.getElementById('check-beta').checked;
 
-<strong>6. MODIFICHE</strong><br>
-La presente policy puo essere modificata. L'utente sara informato.<br><br>
+            const btn = document.getElementById('btn-entra');
+            const hint = document.getElementById('hint-text');
 
-Data ultimo aggiornamento: 14 giugno 2026
-</div>
-<div class="download-row">
-<a href="#" class="download-btn" onclick="downloadPDF('privacy')">
-<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-Scarica PDF Privacy
-</a>
-</div>
-<div class="checkbox-row" onclick="toggleCheck(this,'privacy')">
-<input type="checkbox" id="privacy-check">
-<label for="privacy-check">Ho letto e <strong>accetto la Privacy Policy</strong>. Acconsento al trattamento dei miei dati personali ai sensi del GDPR.</label>
-</div>
-</div>
+            if (check1 && check2 && check3 && check4) {
+                btn.disabled = false;
+                hint.textContent = 'Tutto pronto! Clicca per procedere.';
+                hint.style.color = '#2d5a27';
+            } else {
+                btn.disabled = true;
+                hint.textContent = 'Devi accettare tutti i documenti per procedere';
+                hint.style.color = '#8b7355';
+            }
+        }
 
-<!-- NDA -->
-<div class="legal-section" id="nda-section">
-<h4><div class="num">2</div> ACCORDO DI RISERVATEZZA (NDA)</h4>
-<div class="legal-text" id="nda-text">
-<strong>ACCORDO DI NON DIVULGAZIONE — BREVETTIAMO v1.0.0-BETA</strong><br><br>
+        function entraNelServizio() {
+            // Salva il consenso in localStorage
+            localStorage.setItem('brevettiamo_consenso', JSON.stringify({
+                nda: true,
+                privacy: true,
+                titolarita: true,
+                beta: true,
+                timestamp: new Date().toISOString(),
+                servizio: servizioId
+            }));
 
-<strong>Parti:</strong> BrevettIAmo ("Disclosee") e l'utente ("Discloser")<br>
-<strong>Data:</strong> 14 giugno 2026<br><br>
-
-<strong>1. OGGETTO</strong><br>
-L'utente (Discloser) potra caricare documenti, schizzi, descrizioni tecniche ("Informazioni Riservate") sulla piattaforma BrevettIAmo.<br><br>
-
-<strong>2. OBBLIGHI DI RISERVATEZZA</strong><br>
-BrevettIAmo si impegna a:<br>
-- Non divulgare Informazioni Riservate a terzi<br>
-- Utilizzarle solo per erogazione servizi<br>
-- Proteggere con misure di sicurezza adeguate<br>
-- Restituire/cancellare su richiesta dell'utente<br><br>
-
-<strong>3. ECCEZIONI</strong><br>
-Non si applica a informazioni:<br>
-- Gia di pubblico dominio<br>
-- Legittimamente acquisite da terzi<br>
-- Richieste da autorita competenti<br><br>
-
-<strong>4. DURATA</strong><br>
-5 anni dalla data di caricamento dell'informazione.<br><br>
-
-<strong>5. LEGGE APPLICABILE</strong><br>
-Foro di Roma. Legge italiana.<br><br>
-
-<strong>6. ACCETTAZIONE</strong><br>
-L'utente accetta cliccando la checkbox sottostante.
-</div>
-<div class="download-row">
-<a href="#" class="download-btn" onclick="downloadPDF('nda')">
-<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-Scarica PDF NDA
-</a>
-</div>
-<div class="checkbox-row" onclick="toggleCheck(this,'nda')">
-<input type="checkbox" id="nda-check">
-<label for="nda-check">Ho letto e <strong>accetto l'Accordo di Riservatezza (NDA)</strong>. Confermo che le informazioni caricate sono mie e/o ho diritto di condividerle.</label>
-</div>
-</div>
-
-<!-- DISCLAIMER CHECK -->
-<div class="legal-section" id="disclaimer-section">
-<h4><div class="num">3</div> DISCLAIMER SERVIZI BETA</h4>
-<div class="checkbox-row" onclick="toggleCheck(this,'disclaimer')">
-<input type="checkbox" id="disclaimer-check">
-<label for="disclaimer-check">Ho letto e <strong>compreso il disclaimer legale</strong>. Sono consapevole che:<br>
-- Questa e una piattaforma BETA sperimentale<br>
-- I risultati AI hanno limiti di affidabilita<br>
-- Devo verificare con professionisti abilitati<br>
-- Il gestore non ha responsabilita civile/professionale<br>
-- Servizi umani sono sospesi (attesa P.IVA)</label>
-</div>
-</div>
-
-<!-- ACTION -->
-<div class="action-area">
-<button class="btn" id="enter-btn" disabled onclick="enterService()">ENTRA NEL SERVIZIO</button>
-<p class="btn-note" id="btn-note">Devi accettare tutti i documenti per procedere</p>
-</div>
-
-</div><!-- /welcome-container -->
-
-<!-- SAGGIO BOT -->
-<div class="saggio-bot" onclick="toggleSaggio()" title="Saggio — Il tuo guid">
-<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
-</div>
-
-<div class="saggio-panel" id="saggio-panel">
-<div class="saggio-header">
-<span>SAGGIO — Guida</span>
-<button onclick="toggleSaggio()">×</button>
-</div>
-<div class="saggio-messages" id="saggio-messages">
-<div class="saggio-msg bot">Ciao! Sono il Saggio di BrevettIAmo. Sono qui per aiutarti in ogni passaggio. Cosa vuoi sapere?</div>
-</div>
-<div class="saggio-input">
-<input type="text" id="saggio-input" placeholder="Scrivi la tua domanda..." onkeypress="if(event.key==='Enter')sendSaggio()">
-<button onclick="sendSaggio()">→</button>
-</div>
-</div>
-
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
-const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-
-// STATO
-let accepted={privacy:false,nda:false,disclaimer:false};
-
-// TOGGLE CHECKBOX
-function toggleCheck(row,type){
-const cb=row.querySelector('input[type="checkbox"]');
-cb.checked=!cb.checked;
-accepted[type]=cb.checked;
-if(cb.checked){row.classList.add('accepted');}else{row.classList.remove('accepted');}
-checkAllAccepted();
-}
-
-// CHECK ALL
-function checkAllAccepted(){
-const btn=document.getElementById('enter-btn');
-const note=document.getElementById('btn-note');
-if(accepted.privacy&&accepted.nda&&accepted.disclaimer){
-btn.disabled=false;
-btn.textContent='ENTRA NEL SERVIZIO →';
-note.textContent='Tutto pronto! Clicca per iniziare.';
-updateProgress(4);
-}else{
-btn.disabled=true;
-btn.textContent='ENTRA NEL SERVIZIO';
-let missing=[];
-if(!accepted.privacy)missing.push('Privacy');
-if(!accepted.nda)missing.push('NDA');
-if(!accepted.disclaimer)missing.push('Disclaimer');
-note.textContent='Mancano: '+missing.join(', ');
-}
-}
-
-// PROGRESS
-function updateProgress(step){
-const steps=document.querySelectorAll('.progress-step');
-steps.forEach((s,i)=>{
-s.classList.remove('active','done');
-if(i<step-1)s.classList.add('done');
-if(i===step-1)s.classList.add('active');
-});
-}
-
-// ENTER SERVICE
-async function enterService(){
-try{
-// Salva su Supabase
-const {data:{session}}=await supabase.auth.getSession();
-const userId=session?.user?.id||null;
-
-await supabase.from('flusso_utente').insert({
-user_id:userId,
-step:2,
-privacy_accettata:true,
-privacy_timestamp:new Date().toISOString(),
-nda_accettato:true,
-nda_timestamp:new Date().toISOString(),
-documenti_caricati:[],
-servizio_scelto:null,
-revisione_accettata:false,
-output_generato:false
-});
-
-// Redirect a wizard
-window.location.href='wizard.html';
-
-}catch(e){
-console.error('Errore salvataggio:',e);
-// Fallback: redirect comunque
-window.location.href='wizard.html';
-}
-}
-
-// DOWNLOAD PDF
-function downloadPDF(type){
-const texts={
-privacy:document.getElementById('privacy-text').innerText,
-nda:document.getElementById('nda-text').innerText
-};
-const content=texts[type];
-const blob=new Blob([content],{type:'text/plain'});
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-a.href=url;
-a.download='BrevettIAmo_'+type.toUpperCase()+'_14-06-2026.txt';
-a.click();
-URL.revokeObjectURL(url);
-
-// Log
-console.log('Download '+type);
-}
-
-// SAGGIO BOT
-function toggleSaggio(){
-document.getElementById('saggio-panel').classList.toggle('active');
-}
-
-const SAGGIO_ANSWERS={
-'privacy':'La Privacy Policy spiega come trattiamo i tuoi dati. Devi accettarla per procedere. I tuoi documenti sono protetti e non condivisi con terzi.',
-'nda':'L'NDA (Accordo di Riservatezza) protegge le tue invenzioni. BrevettIAmo si impegna a non divulgare le informazioni che carichi.',
-'disclaimer':'Il disclaimer ti informa che questa e una piattaforma beta. I risultati AI sono utili ma non perfetti. Verifica sempre con un professionista.',
-'gratis':'Tutti i servizi sono GRATUITI durante la beta. I prezzi mostrati sono indicativi per il futuro. Nessun pagamento e richiesto.',
-'brevetto':'Un brevetto protegge un'invenzione tecnica. Dura 20 anni. Deve essere nuova, inventiva e industriale.',
-'marchio':'Un marchio protegge un nome, logo o segno distintivo. Dura 10 anni, rinnovabile.',
-'disegno':'Un disegno/modello protegge l'aspetto estetico di un prodotto. Dura 25 anni.',
-'ai':'L'Intelligenza Artificiale analizza la tua invenzione da molte prospettive. Ogni servizio mostra la sua affidabilita. Non e perfetta, ma e un ottimo punto di partenza.',
-'affidabilita':'L'affidabilita indica quanto l'IA e confidente nel risultato. 80%+ = buono, 70-79% = medio, sotto 70% = verifica attentamente.',
-'umano':'I servizi con assistenza umana sono SOSPESI perche non abbiamo ancora la P.IVA. Quando sara attiva, potrai richiedere revisione da professionisti a €550 (€450 al legale, €100 piattaforma).',
-'piva':'La P.IVA non e ancora attiva. Stiamo valutando se il mercato richiede i servizi a pagamento. Se ci sono abbastanza richieste, apriremo la partita IVA.',
-'futures':'I servizi futuri (SAPIENTIA) includono: revisione pre-deposito, risposta UIBM, difesa brevetto. Costo fisso €550: €450 al professionista, €100 alla piattaforma.',
-'help':'Posso aiutarti con: privacy, NDA, disclaimer, cosa e un brevetto/marchio/disegno, come funziona l'IA, affidabilita, servizi umani, prezzi, futures. Cosa vuoi sapere?'
-};
-
-function sendSaggio(){
-const input=document.getElementById('saggio-input');
-const msg=input.value.trim();
-if(!msg)return;
-
-// Add user msg
-const container=document.getElementById('saggio-messages');
-container.innerHTML+='<div class="saggio-msg user">'+escapeHtml(msg)+'</div>';
-input.value='';
-container.scrollTop=container.scrollHeight;
-
-// Find answer
-let answer='Non ho capito. Prova a chiedere: privacy, NDA, brevetto, marchio, disegno, AI, affidabilita, gratis, umano, P.IVA, futures, help.';
-const lower=msg.toLowerCase();
-for(const[key,val]of Object.entries(SAGGIO_ANSWERS)){
-if(lower.includes(key)){answer=val;break;}
-}
-
-// Add bot answer with delay
-setTimeout(()=>{
-container.innerHTML+='<div class="saggio-msg bot">'+answer+'</div>';
-container.scrollTop=container.scrollHeight;
-},500);
-}
-
-function escapeHtml(text){
-const div=document.createElement('div');
-div.textContent=text;
-return div.innerHTML;
-}
-
-// INIT
-document.addEventListener('DOMContentLoaded',()=>{
-updateProgress(1);
-});
-</script>
+            // Reindirizza alla pagina descrizione con il servizio
+            if (servizioId) {
+                window.location.href = 'descrizione.html?servizio=' + encodeURIComponent(servizioId);
+            } else {
+                alert('Errore: nessun servizio selezionato. Torna alla pagina servizi.');
+                window.location.href = 'servizi.html';
+            }
+        }
+    </script>
 </body>
 </html>
