@@ -436,17 +436,17 @@
                 return;
             }
 
-            // Salva i dati in localStorage per la pagina di elaborazione
-            const datiPratica = {
-                servizioId: servizioId,
-                servizioNome: nomiServizi[servizioId] || '',
-                descrizione: descrizione,
-                note: document.getElementById('note').value.trim(),
-                files: filesCaricati.map(f => ({ name: f.name, size: f.size, type: f.type })),
-                timestamp: new Date().toISOString()
-            };
+            // Salva in formato compatibile con elaborazione.html
+            localStorage.setItem('brevettiamo_servizio_id', servizioId);
+            localStorage.setItem('brevettiamo_servizio_nome', nomiServizi[servizioId] || '');
+            localStorage.setItem('brevettiamo_descrizione', descrizione);
+            localStorage.setItem('brevettiamo_note', document.getElementById('note').value.trim());
+            localStorage.setItem('brevettiamo_files', JSON.stringify(filesCaricati.map(f => ({ name: f.name, size: f.size, type: f.type }))));
 
-            localStorage.setItem('brevettiamo_pratica', JSON.stringify(datiPratica));
+            // Pulisci risultato precedente per forzare nuova chiamata IA
+            localStorage.removeItem('brevettiamo_risultato_ia');
+            localStorage.removeItem('brevettiamo_ia_meta');
+            localStorage.removeItem('brevettiamo_use_fallback');
 
             // Vai alla pagina di elaborazione
             window.location.href = 'elaborazione.html?servizio=' + encodeURIComponent(servizioId);
