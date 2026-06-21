@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Risultato — BrevettIAmo</title>
     <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+    <script src="js/uibm-direttive.js"></script>
+    <script src="js/uibm-verificatore.js"></script>
+    <script src="js/svg-generator.js"></script>
+    <script src="js/image-generator.js"></script>
     <style>
         .risultato-container {
             max-width: 900px;
@@ -232,7 +237,6 @@
             display: block;
         }
         
-        /* Stili per sezione SVG */
         .svg-section {
             margin-top: 30px;
             padding: 20px;
@@ -255,7 +259,6 @@
             max-width: 100%;
         }
         
-        /* Stili per sezione immagine */
         .image-section {
             margin-top: 30px;
             padding: 20px;
@@ -291,7 +294,6 @@
 </head>
 <body>
     <div class="risultato-container">
-        <!-- Header -->
         <div class="header-risultato">
             <h1 id="titoloServizio">Risultato Analisi</h1>
             <div class="meta">
@@ -305,7 +307,6 @@
             </div>
         </div>
         
-        <!-- Contenuto IA -->
         <div id="contentIA" class="content-ia">
             <div class="loading-placeholder">
                 <div class="spinner"></div>
@@ -313,11 +314,9 @@
             </div>
         </div>
         
-        <!-- Fallback Template -->
         <div id="templateFallback" class="template-fallback content-ia">
         </div>
         
-        <!-- Azioni -->
         <div class="azioni-container">
             <button class="btn btn-success" onclick="accettaRisultato()">
                 Accetta e scarica
@@ -330,7 +329,6 @@
             </a>
         </div>
         
-        <!-- Box Revisione -->
         <div id="revisioneBox" class="revisione-box" style="display: none;">
             <h3>Richiedi una revisione</h3>
             <p>Descrivi cosa vuoi modificare o migliorare:</p>
@@ -345,7 +343,6 @@
             </div>
         </div>
         
-        <!-- Disclaimer -->
         <div class="disclaimer">
             <strong>Disclaimer:</strong> Questo documento e generato da intelligenza artificale e ha scopo puramente informativo. 
             Non sostituisce la consulenza di un professionista abilitato (Consulente in Proprieta Industriale o Avvocato). 
@@ -353,12 +350,7 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
-    <script src="js/svg-generator.js"></script>
-    <script src="js/image-generator.js"></script>
-    
     <script>
-        // Recupera dati
         const servizioId = localStorage.getItem('brevettiamo_servizio_id');
         const servizioNome = localStorage.getItem('brevettiamo_servizio_nome');
         const useFallback = localStorage.getItem('brevettiamo_use_fallback') === 'true';
@@ -369,11 +361,9 @@
         const nomeServizio = document.getElementById('nomeServizio');
         const titoloServizio = document.getElementById('titoloServizio');
         
-        // Imposta titolo
         nomeServizio.textContent = servizioNome || 'Servizio';
         titoloServizio.textContent = 'Risultato: ' + (servizioNome || 'Analisi');
         
-        // Funzione per recuperare risultato da localStorage
         function recuperaRisultato() {
             try {
                 const dati = localStorage.getItem('brevettiamo_risultato_ia');
@@ -383,7 +373,6 @@
             }
         }
         
-        // Carica risultato
         async function caricaRisultato() {
             if (useFallback) {
                 mostraFallback();
@@ -419,14 +408,16 @@
             
             localStorage.removeItem('brevettiamo_use_fallback');
             
-            // === SEZIONE SPECIALE: TAVOLE TECNICHE (SVG + IMMAGINE) ===
             if (servizioId === 'servizio-tavole' || servizioId === 'servizio-cad') {
                 await generaTavoleDisegni(risultato.contenuto);
             }
+            
+            const verificatore = new UIBMVerificatore();
+            const report = verificatore.verifica(risultato.contenuto, servizioId);
+            contentIA.innerHTML += report.generaHTML();
         }
         
         async function generaTavoleDisegni(testoIA) {
-            // 1. Genera SVG UIBM
             try {
                 const specs = SVGGenerator.estraiSpecifiche(testoIA);
                 const generator = new SVGGenerator();
@@ -448,7 +439,6 @@
                 console.error('Errore generazione SVG:', e);
             }
             
-            // 2. Genera immagine DALL-E
             const promptImg = ImageGenerator.estraiPrompt(testoIA);
             
             if (promptImg) {
@@ -466,7 +456,6 @@
                 `;
                 contentIA.appendChild(imageSection);
                 
-                // Chiama generazione immagine
                 const imgGen = new ImageGenerator();
                 const imgResult = await imgGen.genera(promptImg, '1024x1024', 'vivid');
                 
