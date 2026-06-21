@@ -2,7 +2,6 @@
 
 class UIBMVerificatore {
     constructor() {
-        this.direttive = UIBM_DIRETTIVE;
         this.errori = [];
         this.warning = [];
         this.info = [];
@@ -39,7 +38,8 @@ class UIBMVerificatore {
             errori: this.errori,
             warning: this.warning,
             info: this.info,
-            riepilogo: this.generaRiepilogo()
+            riepilogo: this.generaRiepilogo(),
+            generaHTML: this.generaHTML.bind(this)
         };
     }
     
