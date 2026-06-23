@@ -183,14 +183,20 @@ tr:nth-child(even) { background: rgba(30, 58, 95, 0.3); }
 <div id="panel-step3" class="hidden">
   <div class="panel">
     <h2>3.1 Upload Schizzi - L'OCCHIO Analizza</h2>
-    <div style="border: 2px dashed #1e3a5f; border-radius: 12px; padding: 30px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; position: relative;" id="drop-zone" onclick="clickDropZone()" ondragover="event.preventDefault(); this.classList.add('drag-over');" ondragleave="event.preventDefault(); this.classList.remove('drag-over');" ondrop="gestisciDrop(event); this.classList.remove('drag-over');">
+    <div style="border: 2px dashed #1e3a5f; border-radius: 12px; padding: 30px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: all 0.3s; position: relative;" id="drop-zone" onclick="document.getElementById('file-schizzo').click()" ondragover="event.preventDefault(); this.classList.add('drag-over');" ondragleave="event.preventDefault(); this.classList.remove('drag-over');" ondrop="gestisciDrop(event); this.classList.remove('drag-over');">
       <div style="font-size: 40px; color: #1e3a5f; margin-bottom: 10px;">[DRAG]</div>
       <p style="color: #8899aa; font-size: 14px;">Trascina qui uno schizzo o clicca per selezionare</p>
       <p style="color: #556677; font-size: 11px; margin-top: 8px;">Formati supportati: JPG, PNG, WEBP, SVG, PDF (max 5MB)</p>
       <input type="file" id="file-schizzo" accept="image/*,.pdf" style="display: none;" onchange="gestisciFile(this)">
     </div>
-    <div id="preview-schizzo" style="display: none; margin-bottom: 15px; text-align: center;">
-      <img id="img-preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #1e3a5f; background: #ffffff; min-width: 200px; min-height: 150px; object-fit: contain;" />
+    <div id="preview-schizzo" style="display: none; margin-bottom: 15px; text-align: center; background: #1a1a2e; border-radius: 8px; padding: 15px;">
+      <div id="preview-container" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #1e3a5f; background: #ffffff; min-width: 200px; min-height: 150px; overflow: auto; display: flex; align-items: center; justify-content: center;">
+        <img id="img-preview" style="max-width: 100%; max-height: 300px; object-fit: contain; display: none;" />
+        <div id="pdf-preview" style="display: none; color: #666; font-family: Arial; text-align: center; padding: 20px;">
+          <div style="font-size: 48px; margin-bottom: 10px;">PDF</div>
+          <div id="pdf-filename" style="font-size: 14px;"></div>
+        </div>
+      </div>
       <div style="margin-top: 10px;">
         <button class="btn" onclick="analizzaSchizzo()">L'OCCHIO Analizza Schizzo</button>
         <button class="btn secondary small" onclick="rimuoviSchizzo()">Rimuovi</button>
@@ -1791,7 +1797,11 @@ function gestisciDrop(e) {
 
 function gestisciFile(input) {
   var file = input.files[0];
-  if (!file) return;
+  if (!file) {
+    log("Nessun file selezionato", "warn");
+    return;
+  }
+  log("File selezionato: " + file.name + " tipo:" + file.type + " size:" + Math.round(file.size/1024) + "KB", "info");
   processFile(file);
 }
 
@@ -1800,24 +1810,6 @@ function processFile(file) {
   var validTypes = ['image/jpeg','image/jpg','image/png','image/webp','image/svg+xml','application/pdf'];
   var maxSize = 5 * 1024 * 1024;
 
-  // GESTIONE PDF - mostra placeholder invece di anteprima
-  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-    log("PDF rilevato, preparo placeholder...", "info");
-    var img = document.getElementById("img-preview");
-    // SVG placeholder per PDF
-    var pdfPlaceholder = 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="#f0f0f0" stroke="#ccc" stroke-width="2"/><text x="100" y="80" text-anchor="middle" font-family="Arial" font-size="16" fill="#666">PDF Document</text><text x="100" y="110" text-anchor="middle" font-family="Arial" font-size="12" fill="#999">' + file.name + '</text><text x="100" y="140" text-anchor="middle" font-family="Arial" font-size="10" fill="#999">' + Math.round(file.size/1024) + ' KB</text></svg>');
-    img.src = pdfPlaceholder;
-    img.onload = function() {
-      var preview = document.getElementById("preview-schizzo");
-      var dropzone = document.getElementById("drop-zone");
-      if (preview) preview.style.display = "block";
-      if (dropzone) dropzone.style.display = "none";
-      log("PDF caricato (placeholder)", "success");
-    };
-    return;
-  }
-
-  // Check estensione se type e vuoto o non valido
   var ext = file.name.split('.').pop().toLowerCase();
   var validExts = ['jpg','jpeg','png','webp','svg','pdf'];
   var isValidExt = validExts.indexOf(ext) >= 0;
@@ -1832,6 +1824,29 @@ function processFile(file) {
     return;
   }
 
+  // GESTIONE PDF
+  if (file.type === 'application/pdf' || ext === 'pdf') {
+    log("PDF rilevato, mostro placeholder...", "info");
+    var pdfPreview = document.getElementById("pdf-preview");
+    var pdfFilename = document.getElementById("pdf-filename");
+    var imgPreview = document.getElementById("img-preview");
+
+    if (pdfPreview) {
+      pdfPreview.style.display = "block";
+      if (pdfFilename) pdfFilename.textContent = file.name + " (" + Math.round(file.size/1024) + " KB)";
+    }
+    if (imgPreview) imgPreview.style.display = "none";
+
+    var preview = document.getElementById("preview-schizzo");
+    var dropzone = document.getElementById("drop-zone");
+    if (preview) preview.style.display = "block";
+    if (dropzone) dropzone.style.display = "none";
+
+    log("PDF caricato (placeholder)", "success");
+    return;
+  }
+
+  // GESTIONE IMMAGINE
   var reader = new FileReader();
   reader.onerror = function(e) {
     log("Errore lettura file: " + (e.target.error ? e.target.error.message : "sconosciuto"), "error");
@@ -1844,13 +1859,20 @@ function processFile(file) {
   };
   reader.onload = function(e) {
     log("File letto, length: " + e.target.result.length, "info");
+
     var img = document.getElementById("img-preview");
+    var pdfPreview = document.getElementById("pdf-preview");
+
     if (!img) {
       log("ERRORE: img-preview non trovato nel DOM", "error");
       return;
     }
 
-    // Rimuovi eventuali handler precedenti
+    // Nascondi PDF preview, mostra immagine
+    if (pdfPreview) pdfPreview.style.display = "none";
+    img.style.display = "block";
+
+    // Rimuovi handler precedenti
     img.onload = null;
     img.onerror = null;
 
@@ -1863,8 +1885,12 @@ function processFile(file) {
     };
 
     img.onerror = function() {
-      log("Errore renderizzazione immagine", "error");
-      // Prova a mostrare comunque
+      log("Errore renderizzazione immagine, mostro placeholder", "error");
+      img.style.display = "none";
+      var container = document.getElementById("preview-container");
+      if (container) {
+        container.innerHTML = '<div style="color:#ff4444;padding:20px;">Errore caricamento immagine<br>File: ' + file.name + '<br>Tipo: ' + file.type + '</div>';
+      }
       var preview = document.getElementById("preview-schizzo");
       var dropzone = document.getElementById("drop-zone");
       if (preview) preview.style.display = "block";
@@ -1873,20 +1899,24 @@ function processFile(file) {
 
     img.src = e.target.result;
 
-    // Fallback: se onload non si attiva entro 3 secondi, mostra comunque
+    // Fallback timeout
     setTimeout(function() {
-      if (img.naturalWidth === 0) {
-        log("Timeout caricamento immagine, mostro comunque", "warn");
+      if (img.naturalWidth === 0 && img.style.display !== "none") {
+        log("Timeout caricamento, mostro placeholder", "warn");
+        img.style.display = "none";
+        var container = document.getElementById("preview-container");
+        if (container) {
+          container.innerHTML = '<div style="color:#ffaa00;padding:20px;">Caricamento lento...<br>File: ' + file.name + '<br>Clicca Rimuovi e riprova</div>';
+        }
         var preview = document.getElementById("preview-schizzo");
         var dropzone = document.getElementById("drop-zone");
         if (preview) preview.style.display = "block";
         if (dropzone) dropzone.style.display = "none";
       }
-    }, 3000);
+    }, 5000);
   };
   reader.readAsDataURL(file);
 }
-
 function rimuoviSchizzo() {
   document.getElementById("preview-schizzo").style.display = "none";
   document.getElementById("drop-zone").style.display = "block";
@@ -1897,14 +1927,88 @@ function rimuoviSchizzo() {
 
 function analizzaSchizzo() {
   var img = document.getElementById("img-preview");
-  if (!img.src) { log("Nessuno schizzo", "error"); return; }
-  log("Analisi schizzo...", "info");
-  var a = "Analisi completata. Sistema modulare con: Corpo cilindrico (101), Batteria (102), Microchip (103), Flangia magnetica (104), 3 pogo-pins (105), Moduli (300-600). Suggerimenti: 1. Vista esplosa 2. Sezione A-A 3. Dettaglio contatti";
-  document.getElementById("testo-analisi").textContent = a;
-  document.getElementById("risultato-analisi").style.display = "block";
-  log("Analisi OK", "success");
-}
+  var pdfPreview = document.getElementById("pdf-preview");
 
+  // Se e PDF, non analizzare con AI
+  if (pdfPreview && pdfPreview.style.display === "block") {
+    log("PDF caricato. L'analisi AI richiede un'immagine (JPG/PNG/WEBP).", "warn");
+    document.getElementById("testo-analisi").textContent = "PDF rilevato.\n\nPer l'analisi AI automatica, carica un'immagine (JPG, PNG, WEBP).\n\nPer i PDF, fornisci il file direttamente all'UIBM o convertilo in immagine.";
+    document.getElementById("risultato-analisi").style.display = "block";
+    return;
+  }
+
+  if (!img || !img.src || img.style.display === "none") {
+    log("Nessuno schizzo caricato", "error");
+    return;
+  }
+
+  log("L'OCCHIO analizza lo schizzo con AI Vision...", "info");
+  document.getElementById("testo-analisi").textContent = "Analisi in corso... attendere 10-20 secondi...";
+  document.getElementById("risultato-analisi").style.display = "block";
+
+  var imageData = img.src;
+
+  var prompt = "Analizza questo disegno tecnico/schizzo di brevetto. Descrivi:
+" +
+    "1. Gli oggetti principali e le loro forme
+" +
+    "2. I numeri di riferimento visibili
+" +
+    "3. Le parti e i componenti identificati
+" +
+    "4. Le viste presenti (esplosa, assieme, sezione, dettaglio)
+" +
+    "5. Suggerimenti per migliorare il disegno per deposito UIBM
+
+" +
+    "Rispondi in italiano, formato strutturato.";
+
+  fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + OPENROUTER_KEY,
+      "Content-Type": "application/json",
+      "HTTP-Referer": window.location.href,
+      "X-Title": "BrevettIAmo"
+    },
+    body: JSON.stringify({
+      model: "meta-llama/llama-4-maverick:free",
+      max_tokens: 2000,
+      messages: [{
+        role: "user",
+        content: [
+          { type: "text", text: prompt },
+          { type: "image_url", image_url: { url: imageData } }
+        ]
+      }]
+    })
+  })
+  .then(function(r) {
+    if (!r.ok) return r.json().then(function(e){ throw new Error("HTTP " + r.status + ": " + (e.error&&e.error.message?e.error.message:"Errore")); });
+    return r.json();
+  })
+  .then(function(data) {
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      var analisi = data.choices[0].message.content;
+      document.getElementById("testo-analisi").textContent = analisi;
+      log("Analisi AI completata", "success");
+    } else {
+      throw new Error("Risposta AI vuota");
+    }
+  })
+  .catch(function(err) {
+    log("Errore analisi AI: " + err.message, "error");
+    var fallback = "Analisi automatica non disponibile (errore: " + err.message + ").\n\n" +
+      "Suggerimenti manuali:
+" +
+      "1. Verifica che l'immagine sia chiara e leggibile\n" +
+      "2. Controlla i numeri di riferimento (101, 102, etc.)\n" +
+      "3. Aggiungi vista esplosa se manca\n" +
+      "4. Inserisci sezione A-A per mostrare l'interno\n" +
+      "5. Dettaglia i contatti elettrici e magnetici";
+    document.getElementById("testo-analisi").textContent = fallback;
+  });
+}
 function applicaAnalisiCorrezione() {
   var a = document.getElementById("testo-analisi").textContent;
   document.getElementById("corr-aggiungi").value = a;
