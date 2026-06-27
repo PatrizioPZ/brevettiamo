@@ -430,5 +430,12 @@ container.scrollTop=container.scrollHeight;
 
 function escapeHtml(text){const div=document.createElement('div');div.textContent=text;return div.innerHTML;}
 </script>
+  <!-- BREVETTIAMO E2E -->
+<script src="e2e-module.js"></script>
+<script>
+  if (typeof BrevettIAmoE2E !== 'undefined') {
+    BrevettIAmoE2E.init();
+  }
+</script>
 </body>
 </html>
