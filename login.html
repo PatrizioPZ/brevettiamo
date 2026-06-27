@@ -164,11 +164,7 @@ function showRegister(){
 showAlert('Registrazione: usa il form sopra inserendo email e password, poi clicca "Accedi". Se l\'account non esiste, verrà creato automaticamente.','info');
 }
 
-// Auto-redirect se gia loggato
-document.addEventListener('DOMContentLoaded',async()=>{
-  const{data:{session}}=await sbClient.auth.getSession();
-  if(session)await redirectAfterLogin(session.user.id);
-});
+
 </script>
 </body>
 </html>
