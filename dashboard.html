@@ -463,5 +463,12 @@ const { data: { session } } = await supabaseClient.auth.getSession();
 }
 </script>
 <script src="chatbot.js"></script>
+  <!-- BREVETTIAMO E2E -->
+<script src="e2e-module.js"></script>
+<script>
+  if (typeof BrevettIAmoE2E !== 'undefined') {
+    BrevettIAmoE2E.init();
+  }
+</script>
 </body>
 </html>
