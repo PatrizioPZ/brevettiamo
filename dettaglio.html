@@ -360,5 +360,12 @@ alert.classList.add('show');
 setTimeout(function() { alert.classList.remove('show'); }, 5000);
 }
 </script>
+  <!-- BREVETTIAMO E2E -->
+<script src="e2e-module.js"></script>
+<script>
+  if (typeof BrevettIAmoE2E !== 'undefined') {
+    BrevettIAmoE2E.init();
+  }
+</script>
 </body>
 </html>
