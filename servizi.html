@@ -558,6 +558,12 @@
 
     caricaTooltipTesti();
     </script>
+<!-- BREVETTIAMO LOGIN CONTROL -->
+<script>
+  if (!localStorage.getItem('brevettiamo_user')) {
+    window.location.href = 'login.html';
+  }
+</script>
 <!-- BREVETTIAMO E2E -->
 <script src="e2e-module.js"></script>
 <script>
