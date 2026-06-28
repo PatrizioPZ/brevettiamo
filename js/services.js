@@ -382,7 +382,7 @@ const SERVIZI = [
         prezzo: '99',
         prezzoNote: '/disegno',
         cta: 'Inizia Ora',
-        ctaLink: 'welcome.html',
+        ctaLink: 'welcome.html?servizio=servizio-cad',
         ctaDisabled: false
     },
     {
