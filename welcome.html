@@ -383,7 +383,38 @@
                 hint.style.color = '#8b7355';
             }
         }
-
+{
+    id: 'tavole-tecniche',
+    nome: 'Tavole Tecniche UIBM',
+    status: 'BETA',
+    statusClass: 'status-beta',
+    desc: 'Disegni tecnici automatici generati da AI. Figure 1-10 in base alla complessita. Pronti per deposito UIBM, pubblicazioni e presentazioni.',
+    affidabilita: 85,
+    affidabilitaClass: 'reliability-high',
+    affidabilitaText: '85% - Alta',
+    risparmio: '-91% (mercato: 300€)',
+    prezzo: '29',
+    prezzoNote: '/pacchetto',
+    cta: 'Genera Disegni',
+    ctaLink: 'welcome.html?servizio=tavole-tecniche',
+    ctaDisabled: false
+},
+{
+    id: 'disegni-cad',
+    nome: 'Disegni CAD Professionali',
+    status: 'BETA',
+    statusClass: 'status-beta',
+    desc: 'Disegni CAD 2D/3D con revisione umana da esperto. Formati: DWG, DXF, STEP. Tempo 24-48h.',
+    affidabilita: 95,
+    affidabilitaClass: 'reliability-high',
+    affidabilitaText: '95% - Alta',
+    risparmio: '-67% (mercato: 300€)',
+    prezzo: '99',
+    prezzoNote: '/disegno',
+    cta: 'Richiedi CAD',
+    ctaLink: 'welcome.html?servizio=disegni-cad',
+    ctaDisabled: false
+},
         function entraNelServizio() {
             // Salva il consenso in localStorage
             localStorage.setItem('brevettiamo_consenso', JSON.stringify({
