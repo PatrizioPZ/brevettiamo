@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tavole Tecniche UIBM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root {
+  --primary: #c9a84c;
+  --primary-dark: #a08030;
+  --secondary: #2c1810;
+  --bg: #f5f0e1;
+  --bg-panel: #faf6ed;
+  --text: #2c1810;
+  --text-secondary: #5a4a3a;
+  --text-muted: #8b7355;
+  --success: #27ae60;
+  --warning: #e67e22;
+  --danger: #c0392b;
+  --border: #c9a84c;
+  --radius: 8px;
+  --font: 'Georgia', 'Times New Roman', serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* SERVICE HEADER */
+.service-header { text-align: center; padding: 20px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+.service-header h2 { color: var(--secondary); font-size: 1.8em; }
+.service-header h2 span { color: var(--primary); font-style: italic; }
+.service-header .subtitle { color: var(--text-muted); font-size: 0.9em; font-style: italic; }
+
+/* STEPS */
+.step-indicator { display: flex; justify-content: center; gap: 15px; margin: 20px 0; padding: 15px; background: var(--bg-panel); border-radius: var(--radius); border: 1px solid var(--border); flex-wrap: wrap; }
+.step-item { text-align: center; padding: 12px 20px; border-radius: var(--radius); background: #fffef8; border: 2px solid var(--border); min-width: 100px; transition: all 0.3s; cursor: pointer; }
+.step-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--secondary); border-color: var(--primary); font-weight: bold; }
+.step-item.done { background: var(--success); color: #fff; border-color: var(--success); }
+.step-item .step-num { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+.step-item .step-label { font-size: 11px; }
+
+/* PANEL */
+.panel { background: var(--bg-panel); border: 2px solid var(--border); border-radius: var(--radius); padding: 25px; margin: 15px 0; box-shadow: 0 4px 20px rgba(44, 24, 16, 0.1); }
+.panel h3 { color: var(--secondary); font-size: 1.2em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+
+input, textarea, select { width: 100%; padding: 12px; background: #fffef8; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 14px; transition: all 0.3s; margin-bottom: 10px; outline: none; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary-dark); box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2); }
+textarea { min-height: 100px; resize: vertical; }
+
+.btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--secondary); border: 2px solid var(--primary); padding: 12px 24px; border-radius: var(--radius); cursor: pointer; font-weight: bold; font-size: 13px; font-family: var(--font); transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px; margin: 6px 6px 6px 0; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201, 168, 76, 0.4); }
+.btn.secondary { background: transparent; color: var(--text-muted); border-color: var(--border); }
+.btn.secondary:hover { background: rgba(201, 168, 76, 0.1); }
+.btn.small { padding: 6px 12px; font-size: 11px; }
+.btn.success { background: linear-gradient(135deg, var(--success), #1e8449); border-color: var(--success); color: #fff; }
+.btn.warning { background: linear-gradient(135deg, var(--warning), #d35400); border-color: var(--warning); color: #fff; }
+.btn.danger { background: linear-gradient(135deg, var(--danger), #922b21); border-color: var(--danger); color: #fff; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+.progress-bar { width: 100%; max-width: 400px; height: 8px; background: #e0d5c0; border-radius: 4px; margin: 15px auto; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); border-radius: 4px; transition: width 0.5s ease; width: 0%; }
+
+.figure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-top: 20px; }
+.figure-box { background: var(--bg-panel); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px; position: relative; transition: all 0.3s; cursor: pointer; }
+.figure-box:hover { border-color: var(--primary-dark); box-shadow: 0 4px 20px rgba(201, 168, 76, 0.2); }
+.figure-box .fig-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.figure-box h4 { color: var(--secondary); font-size: 13px; font-weight: bold; margin: 0; }
+.fig-badge { background: var(--bg); color: var(--primary-dark); padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; border: 1px solid var(--border); }
+.svg-container { background: #ffffff; border-radius: var(--radius); padding: 12px; min-height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ddd; }
+.svg-container svg { max-width: 100%; height: auto; }
+
+.table-container { margin-top: 10px; overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { background: var(--secondary); color: var(--primary); padding: 10px; text-align: left; font-weight: bold; font-size: 11px; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 11px; }
+tr:nth-child(even) { background: rgba(201, 168, 76, 0.05); }
+
+.correction-panel { background: rgba(230, 126, 34, 0.05); border: 1px solid var(--warning); border-radius: var(--radius); padding: 15px; margin-top: 15px; }
+.correction-item { display: flex; gap: 10px; align-items: center; margin: 8px 0; padding: 8px; background: #fffef8; border-radius: var(--radius); border: 1px solid var(--border); }
+.correction-item label { color: var(--text-muted); font-size: 11px; min-width: 120px; font-weight: bold; }
+.correction-item input, .correction-item textarea { margin-bottom: 0; flex: 1; }
+
+.editor-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(245, 240, 225, 0.98); z-index: 1000; display: none; flex-direction: column; padding: 15px; }
+.editor-canvas { flex: 1; background: #ffffff; border-radius: var(--radius); position: relative; overflow: hidden; cursor: crosshair; border: 2px solid var(--border); }
+.editor-toolbar { display: flex; gap: 8px; padding: 12px; background: var(--bg-panel); border-radius: var(--radius); margin-bottom: 12px; flex-wrap: wrap; border: 1px solid var(--border); }
+.editor-info { color: var(--text-muted); font-size: 11px; padding: 8px; background: #fffef8; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); }
+
+.hidden { display: none !important; }
+
+#drop-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 15px; cursor: pointer; transition: all 0.3s; background: var(--bg-panel); }
+#drop-zone:hover { border-color: var(--primary-dark); background: rgba(201, 168, 76, 0.05); }
+
+.model-badge { display: inline-block; background: rgba(201, 168, 76, 0.2); color: var(--primary-dark); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; margin-top: 8px; border: 1px solid var(--border); }
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.spinner { width: 50px; height: 50px; border: 3px solid #e0d5c0; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+
+.info-box { background: rgba(39, 174, 96, 0.05); border: 1px solid var(--success); border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; color: var(--success); }
+.warning-box { background: rgba(230, 126, 34, 0.05); border: 1px solid var(--warning); border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; color: var(--warning); }
+
+.result-actions { display: flex; justify-content: center; gap: 12px; margin: 25px 0; flex-wrap: wrap; }
+
+.ai-support-box { background: rgba(201, 168, 76, 0.1); border: 1px solid var(--primary); border-radius: var(--radius); padding: 15px; margin: 15px 0; }
+.ai-support-box h4 { color: var(--primary-dark); margin-bottom: 10px; font-size: 14px; }
+
+.log { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; max-height: 200px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 10px; }
+
+@media (max-width: 768px) {
+  .figure-grid { grid-template-columns: 1fr; }
+  .step-indicator { flex-direction: column; align-items: center; }
+  .step-item { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- SERVICE HEADER -->
+<div class="service-header">
+  <h2>Tavole <span>Tecniche</span> UIBM</h2>
+  <p class="subtitle">Servizio Automatico - Generazione AI istantanea</p>
+</div>
+
+<!-- STEPS -->
+<div class="step-indicator" id="step-indicator">
+  <div class="step-item active" id="step-desc" onclick="goToStep('descrizione')">
+    <div class="step-num">1</div>
+    <div class="step-label">Descrizione</div>
+  </div>
+  <div class="step-item" id="step-elab" onclick="goToStep('elaborazione')">
+    <div class="step-num">2</div>
+    <div class="step-label">Elaborazione</div>
+  </div>
+  <div class="step-item" id="step-ris" onclick="goToStep('risultato')">
+    <div class="step-num">3</div>
+    <div class="step-label">Risultato</div>
+  </div>
+  <div class="step-item" id="step-corr" onclick="goToStep('correzione')">
+    <div class="step-num">4</div>
+    <div class="step-label">Correzione</div>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 1: DESCRIZIONE ==================== -->
+<div id="screen-descrizione">
+  <div class="panel">
+    <h3>1. Configurazione AI</h3>
+    <div class="info-box"><strong>SICURO:</strong> La chiave Groq e protetta nel proxy Supabase.</div>
+    <div style="margin-bottom: 10px;">
+      <label style="color: var(--text-muted); font-size: 12px; display: block; margin-bottom: 4px;">Modello AI</label>
+      <select id="modello-ai">
+        <option value="llama-3.3-70b-versatile">Llama 3.3 70B (Analisi complesse)</option>
+        <option value="llava-v1.5-7b-4096-preview">Llava 1.5 7B (Vision - schizzi)</option>
+        <option value="mixtral-8x7b-32768">Mixtral 8x7B (Task veloci)</option>
+        <option value="llama-3.1-8b-instant">Llama 3.1 8B (Bilanciato)</option>
+      </select>
+    </div>
+    <button class="btn" onclick="verificaGroq()">Verifica Connessione</button>
+    <span id="api-status" style="color: var(--text-muted); margin-left: 10px; font-size: 12px;"></span>
+  </div>
+
+  <div class="panel">
+    <h3>2. Descrizione Tecnica</h3>
+    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px;">Descrivi la tua invenzione. L'AI determinera automaticamente il numero di figure (1-10).</p>
+    <textarea id="descrizione" placeholder="Descrivi la tua invenzione...">Sistema modulare universale (100) con corpo principale cilindrico (131) con base tonda, ellittica (132) o rettangolare con angolo arrotondato (133). Accoppiamento magnetico (104) + pogo-pins elettrici (105). Microchip trasformazione/stabilizzazione energia (103). Moduli intercambiabili: 300 interruttore/pulsante, 400 LED illuminazione, 500 punta operativa/stilo, 600 terminale cieco. Applicazioni: ufficio, sicurezza ciclistica, didattica.</textarea>
+  </div>
+
+  <div class="panel">
+    <h3>3. Rivendicazioni</h3>
+    <textarea id="rivendicazioni" placeholder="Inserisci le rivendicazioni...">1. Un sistema modulare di utensili elettronici (100) comprendente: un corpo alimentato riutilizzabile (101); un'interfaccia adattatrice modulare (120); strutture di ritenzione magnetica (104); terminali di contatto elettrico (105); e almeno un modulo funzionale intercambiabile (300).
+2. Il sistema secondo la rivendicazione 1, in cui il corpo alimentato riutilizzabile (101) comprende un gruppo batteria ricaricabile (102) e un microchip di trasformazione e stabilizzazione energia (103).
+14. Il sistema secondo una qualsiasi delle rivendicazioni precedenti, in cui il corpo alimentato riutilizzabile (101) comprende un alloggiamento cilindrico con base tonda (131), ellittica (132) o rettangolare con angolo arrotondato (133).
+15. Il sistema secondo una qualsiasi delle rivendicazioni precedenti, in cui il modulo funzionale intercambiabile (300) e rimovibile tramite aggancio magnetico.</textarea>
+  </div>
+
+  <div class="panel">
+    <h3>4. Carica Schizzi (Opzionale)</h3>
+    <div id="drop-zone" onclick="document.getElementById('file-schizzo').click()">
+      <div style="font-size: 32px; color: var(--primary); margin-bottom: 8px;">[TRASCINA]</div>
+      <p style="color: var(--text-muted); font-size: 13px;">Trascina uno schizzo o clicca per selezionare</p>
+      <p style="color: var(--text-muted); font-size: 10px; margin-top: 6px;">JPG, PNG, WEBP (max 5MB)</p>
+      <input type="file" id="file-schizzo" accept="image/*" style="display: none;" onchange="gestisciFile(this)">
+    </div>
+    <div id="preview-schizzo" style="display: none; margin-bottom: 10px; text-align: center;">
+      <div style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid var(--border); background: #ffffff; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 12px;">
+        <img id="img-preview" style="max-width: 100%; max-height: 250px; object-fit: contain; display: none;" />
+      </div>
+      <div style="margin-top: 8px;">
+        <button class="btn" onclick="analizzaSchizzo()">Analizza con AI Vision</button>
+        <button class="btn secondary small" onclick="rimuoviSchizzo()">Rimuovi</button>
+      </div>
+    </div>
+    <div id="risultato-analisi" style="display: none; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-top: 10px;">
+      <h4 style="color: var(--primary-dark); font-size: 12px; margin-bottom: 8px;">Analisi AI Vision</h4>
+      <div id="testo-analisi" style="color: var(--text); font-size: 11px; line-height: 1.5;"></div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin: 25px 0;">
+    <button class="btn" style="font-size: 16px; padding: 16px 35px;" onclick="vaiAElaborazione()">Inizia Elaborazione AI</button>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 2: ELABORAZIONE ==================== -->
+<div id="screen-elaborazione" class="hidden">
+  <div class="panel" style="text-align: center; padding: 50px 25px;">
+    <div class="spinner"></div>
+    <div style="color: var(--primary-dark); font-size: 20px; margin-bottom: 12px;">Elaborazione in corso...</div>
+    <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">L'AI sta analizzando la tua invenzione e generando le figure tecniche</div>
+    <div class="progress-bar" style="margin: 15px auto;"><div id="elab-progress" class="progress-fill"></div></div>
+    <div id="elab-status" style="color: var(--text-muted); font-size: 12px; margin-top: 10px;">Inizializzazione...</div>
+    <div id="elab-detail" style="color: var(--text-secondary); font-size: 11px; margin-top: 8px;"></div>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 3: RISULTATO ==================== -->
+<div id="screen-risultato" class="hidden">
+  <div class="panel">
+    <h3>Risultato - Figure Generate</h3>
+    <div class="info-box" id="risultato-info">
+      <strong>Figure:</strong> <span id="numero-figure">0</span> | 
+      <strong>UIBM:</strong> <span id="uibm-perc">0%</span>
+      <div id="modello-usato" class="model-badge" style="display: none;"></div>
+    </div>
+    <div class="figure-grid" id="figure-grid"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Verifica Conformita UIBM</h3>
+    <div id="verifica-box"></div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn success" style="font-size: 15px; padding: 14px 30px;" onclick="accettaEFinalizza()">Accetta e Scarica</button>
+    <button class="btn warning" style="font-size: 15px; padding: 14px 30px;" onclick="vaiACorrezione()">Revisione / Correzione</button>
+    <button class="btn secondary" onclick="tornaADescrizione()">Torna a Descrizione</button>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 4: CORREZIONE ==================== -->
+<div id="screen-correzione" class="hidden">
+  <div class="panel">
+    <h3>Correzione con Supporto AI</h3>
+    <div class="ai-support-box">
+      <h4>Modifica Testuale Intelligente</h4>
+      <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 8px;">Descrivi le modifiche in linguaggio naturale. Esempi: "aggiungi sezione A-A", "modifica cilindro in cono"</p>
+      <input type="text" id="modifica-testuale" placeholder="Descrivi le modifiche..." onkeypress="if(event.key==='Enter')applicaModificaAI()">
+      <button class="btn" onclick="applicaModificaAI()">Analizza e Applica</button>
+      <div id="modifica-risultato" style="margin-top: 8px; font-size: 11px;"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Correzione Manuale</h3>
+    <div class="correction-panel">
+      <div class="correction-item" style="align-items: flex-start;">
+        <label style="margin-top: 8px;">Elementi:</label>
+        <textarea id="corr-aggiungi" placeholder="Aggiungi/rimuovi elementi..." style="min-height: 60px; resize: vertical;"></textarea>
+      </div>
+      <div class="correction-item">
+        <label>Forme:</label>
+        <input type="text" id="corr-forma" placeholder="es: 131 tonda, 132 ellittica...">
+      </div>
+      <div class="correction-item">
+        <label>Tipi figura:</label>
+        <input type="text" id="corr-tipi" placeholder="es: aggiungi sezione...">
+      </div>
+    </div>
+    <div style="margin-top: 10px;">
+      <button class="btn small secondary" onclick="applicaCorrezione('microchip')">+ Microchip</button>
+      <button class="btn small secondary" onclick="applicaCorrezione('forme')">3 Forme</button>
+      <button class="btn small secondary" onclick="applicaCorrezione('sezione')">+ Sezione</button>
+      <button class="btn small secondary" onclick="applicaCorrezione('pogo')">+ Pogo-pins</button>
+      <button class="btn small secondary" onclick="applicaCorrezione('led')">+ LED</button>
+      <button class="btn small secondary" onclick="applicaCorrezione('stilo')">+ Stilo</button>
+      <button class="btn small secondary" onclick="applicaCorrezione('cieco')">+ Cieco</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Editor Visivo</h3>
+    <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 10px;">Clicca su una figura per modificarla</p>
+    <div class="figure-grid" id="correzione-grid"></div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn" style="font-size: 15px; padding: 14px 30px;" onclick="applicaCorrezioniERigenera()">Applica e Rigenera</button>
+    <button class="btn secondary" onclick="tornaARisultato()">Torna al Risultato</button>
+    <button class="btn secondary" onclick="tornaADescrizione()">Torna a Descrizione</button>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 5: OUTPUT ==================== -->
+<div id="screen-output" class="hidden">
+  <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(39,174,96,0.05), rgba(39,174,96,0.02)); border: 2px solid var(--success);">
+    <h3 style="color: var(--success); font-size: 1.3em;">Pacchetto UIBM-Ready</h3>
+    <p style="color: var(--text-secondary); margin: 10px 0;">Le tue figure tecniche sono pronte.</p>
+    <div class="figure-grid" id="output-grid"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Download</h3>
+    <div style="text-align: center;">
+      <button class="btn" onclick="downloadSVG()" style="font-size: 15px; padding: 14px 25px;">Scarica SVG</button>
+      <button class="btn success" onclick="downloadPDF()" style="font-size: 15px; padding: 14px 25px;">Scarica PDF UIBM</button>
+      <button class="btn secondary" onclick="downloadZIP()" style="font-size: 15px; padding: 14px 25px;">Scarica ZIP</button>
+    </div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn secondary" onclick="tornaADescrizione()">Nuova Invenzione</button>
+    <button class="btn secondary" onclick="location.href='dashboard.html'">Dashboard</button>
+  </div>
+</div>
+
+<!-- EDITOR OVERLAY -->
+<div id="editor-overlay" class="editor-overlay">
+  <div class="editor-toolbar">
+    <button class="btn small secondary" onclick="editorSetModo('seleziona')">Seleziona</button>
+    <button class="btn small secondary" onclick="editorSetModo('trascina')">Trascina</button>
+    <button class="btn small secondary" onclick="editorAggiungi('linea')">+Linea</button>
+    <button class="btn small secondary" onclick="editorAggiungi('rettangolo')">+Rett</button>
+    <button class="btn small secondary" onclick="editorAggiungi('cerchio')">+Cerchio</button>
+    <button class="btn small secondary" onclick="editorAggiungi('testo')">+Testo</button>
+    <button class="btn small danger" onclick="editorElimina()">Elimina</button>
+    <button class="btn small" onclick="editorSalva()">Salva</button>
+    <button class="btn small secondary" onclick="editorChiudi()">Chiudi</button>
+  </div>
+  <div class="editor-info" id="editor-info">Clicca per selezionare, trascina per spostare</div>
+  <div class="editor-canvas" id="editor-canvas"></div>
+</div>
+
+<div class="log" id="log"></div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURAZIONE GROQ
+// ============================================================
+const CONFIG = {
+  PROXY_URL: 'https://jtekrvlmqnluvaiapmwb.supabase.co/functions/v1/groq-proxy',
+  MODELLI: {
+    testo: 'llama-3.3-70b-versatile',
+    visione: 'llava-v1.5-7b-4096-preview',
+    rapido: 'mixtral-8x7b-32768',
+    bilanciato: 'llama-3.1-8b-instant'
+  },
+  DEFAULT_TEMPERATURE: 0.7,
+  DEFAULT_MAX_TOKENS: 4000,
+  TIMEOUT_MS: 30000,
+  MAX_RETRY: 2
+};
+
+// ============================================================
+// STATO GLOBALE
+// ============================================================
+var currentScreen = 'descrizione';
+var figureData = [];
+var editorStato = { figuraIdx: null, elementoSelezionato: null, modo: 'seleziona', isDragging: false };
+var schizzoData = null;
+var correzioniAttive = { aggiungi: '', forma: '', tipi: '', testuale: '' };
+
+// ============================================================
+// LOG
+// ============================================================
+function log(msg, type) {
+  type = type || "info";
+  var panel = document.getElementById("log");
+  if (!panel) return;
+  var time = new Date().toLocaleTimeString("it-IT");
+  var colors = { info: "#c9a84c", success: "#27ae60", error: "#c0392b", warn: "#e67e22" };
+  panel.innerHTML += "<div style='color:" + colors[type] + ";padding:3px 0;border-bottom:1px solid #e0d5c0;font-size:11px;'>[" + time + "] " + msg + "</div>";
+  panel.scrollTop = panel.scrollHeight;
+}
+
+// ============================================================
+// NAVIGAZIONE SCHERMI
+// ============================================================
+function showScreen(name) {
+  var screens = ['descrizione', 'elaborazione', 'risultato', 'correzione', 'output'];
+  for (var i = 0; i < screens.length; i++) {
+    var el = document.getElementById('screen-' + screens[i]);
+    if (el) el.classList.add('hidden');
+  }
+  var target = document.getElementById('screen-' + name);
+  if (target) target.classList.remove('hidden');
+  currentScreen = name;
+  updateStepIndicator(name);
+  log("Schermo: " + name, "info");
+}
+
+function updateStepIndicator(screen) {
+  var steps = {
+    'descrizione': { desc: 'active', elab: '', ris: '', corr: '' },
+    'elaborazione': { desc: 'done', elab: 'active', ris: '', corr: '' },
+    'risultato': { desc: 'done', elab: 'done', ris: 'active', corr: '' },
+    'correzione': { desc: 'done', elab: 'done', ris: 'done', corr: 'active' },
+    'output': { desc: 'done', elab: 'done', ris: 'done', corr: 'done' }
+  };
+  var s = steps[screen] || steps['descrizione'];
+  setStepClass('step-desc', s.desc);
+  setStepClass('step-elab', s.elab);
+  setStepClass('step-ris', s.ris);
+  setStepClass('step-corr', s.corr);
+}
+
+function setStepClass(id, status) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('active', 'done');
+  if (status) el.classList.add(status);
+}
+
+function vaiAElaborazione() {
+  var descrizione = document.getElementById("descrizione").value;
+  var rivendicazioni = document.getElementById("rivendicazioni").value;
+  if (!descrizione || !rivendicazioni) {
+    alert("Inserisci descrizione e rivendicazioni");
+    return;
+  }
+  showScreen('elaborazione');
+  generaFigure();
+}
+
+function tornaADescrizione() {
+  showScreen('descrizione');
+  document.getElementById("elab-progress").style.width = "0%";
+  document.getElementById("elab-status").textContent = "Inizializzazione...";
+  document.getElementById("elab-detail").textContent = "";
+}
+
+function vaiACorrezione() {
+  showScreen('correzione');
+  renderCorrezioneGrid();
+}
+
+function tornaARisultato() {
+  showScreen('risultato');
+  renderFigureGrid();
+  renderVerificaUIBM();
+}
+
+function accettaEFinalizza() {
+  var og = document.getElementById("output-grid");
+  og.innerHTML = "";
+  for (var i = 0; i < figureData.length; i++) {
+    var fig = figureData[i];
+    var box = document.createElement("div");
+    box.className = "figure-box";
+    var hd = document.createElement("div");
+    hd.className = "fig-header";
+    var h3 = document.createElement("h3");
+    h3.textContent = fig.titolo;
+    hd.appendChild(h3);
+    var bd = document.createElement("span");
+    bd.className = "fig-badge";
+    bd.textContent = (fig.tipo || "FIG").toUpperCase();
+    hd.appendChild(bd);
+    box.appendChild(hd);
+    var c = document.createElement("div");
+    c.className = "svg-container";
+    if (fig.svgCode && fig.svgCode.indexOf("<svg") === 0) {
+      c.innerHTML = fig.svgCode;
+    } else {
+      c.appendChild(generaSVG(fig));
+    }
+    box.appendChild(c);
+    if (fig.elementi && fig.elementi.length > 0) {
+      var t = document.createElement("div");
+      t.innerHTML = generaTabella(fig.elementi);
+      box.appendChild(t);
+    }
+    og.appendChild(box);
+  }
+  showScreen('output');
+  log("Output finalizzato", "success");
+}
+
+// ============================================================
+// GROQ
+// ============================================================
+async function verificaGroq() {
+  var status = document.getElementById("api-status");
+  status.textContent = "Verifica in corso...";
+  status.style.color = "#c9a84c";
+  log("Verifica connessione Groq...", "info");
+  try {
+    var response = await fetch(CONFIG.PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: CONFIG.MODELLI.testo,
+        messages: [{ role: "user", content: "Ciao" }],
+        temperature: 0.7,
+        max_tokens: 50
+      })
+    });
+    if (response.ok) {
+      status.textContent = "OK - Groq connesso";
+      status.style.color = "#27ae60";
+      log("Groq connesso con successo", "success");
+    } else {
+      var err = await response.json().catch(() => ({}));
+      status.textContent = "Errore: " + (err.error?.message || response.status);
+      status.style.color = "#c0392b";
+      log("Errore Groq: " + response.status, "error");
+    }
+  } catch (e) {
+    status.textContent = "Errore connessione: " + e.message;
+    status.style.color = "#c0392b";
+    log("Errore connessione: " + e.message, "error");
+  }
+}
+
+function getModelloSelezionato() {
+  return document.getElementById("modello-ai").value;
+}
+
+async function chiamaGroq(messages, modello, maxTokens) {
+  modello = modello || CONFIG.MODELLI.testo;
+  maxTokens = maxTokens || CONFIG.DEFAULT_MAX_TOKENS;
+  var tentativi = 0;
+  var maxTentativi = CONFIG.MAX_RETRY + 1;
+  while (tentativi < maxTentativi) {
+    try {
+      log("Chiamata Groq (tentativo " + (tentativi + 1) + "/" + maxTentativi + ")...", "info");
+      var controller = new AbortController();
+      var timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT_MS);
+      var response = await fetch(CONFIG.PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: modello,
+          messages: messages,
+          temperature: CONFIG.DEFAULT_TEMPERATURE,
+          max_tokens: maxTokens
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (!response.ok) {
+        var errData = await response.json().catch(() => ({}));
+        throw new Error("Proxy errore " + response.status + ": " + (errData.error?.message || response.statusText));
+      }
+      var data = await response.json();
+      log("Groq risposta OK", "success");
+      return data;
+    } catch (errore) {
+      tentativi++;
+      log("Tentativo " + tentativi + " fallito: " + errore.message, "warn");
+      if (tentativi < maxTentativi) {
+        var attesa = Math.pow(2, tentativi - 1) * 1000;
+        log("Attesa " + attesa + "ms prima del retry...", "info");
+        await new Promise(r => setTimeout(r, attesa));
+      } else {
+        throw errore;
+      }
+    }
+  }
+}
+
+// ============================================================
+// ANALISI AI - DETERMINA NUMERO FIGURE DINAMICO
+// ============================================================
+async function analizzaInvenzioneAI(descrizione, rivendicazioni) {
+  log("Analisi AI in corso...", "info");
+  var prompt = `Analizza questa invenzione e determina:
+1. Quante figure tecniche servono (da 1 a 10) per rappresentare completamente l'invenzione secondo gli standard UIBM
+2. Per ogni figura, specifica: tipo (esplosa/assieme/sezione/dettaglio/applicazione/generalizzazione), titolo, elementi principali, motivazione
+3. Estrai tutti i numeri di riferimento menzionati
+
+DESCRIZIONE: ${descrizione.substring(0, 2000)}
+
+RIVENDICAZIONI: ${rivendicazioni.substring(0, 2000)}
+
+Rispondi in formato JSON strutturato:
+{
+  "numeroFigure": N,
+  "figure": [
+    {
+      "num": 1,
+      "tipo": "esplosa|assieme|sezione|dettaglio|applicazione|generalizzazione",
+      "titolo": "titolo figura",
+      "motivazione": "perche questa figura",
+      "elementi": [{"num": "101", "nome": "descrizione"}]
+    }
+  ],
+  "elementiTrovati": ["101", "102", ...]
+}
+
+IMPORTANTE: Il numero di figure deve essere proporzionato alla complessita. Invenzioni semplici = 1-3 figure. Invenzioni complesse con molti componenti = 6-10 figure. MAX 10 figure.`;
+
+  try {
+    var data = await chiamaGroq([
+      { role: "system", content: "Sei un esperto di disegni tecnici per brevetti UIBM. Rispondi solo in JSON valido." },
+      { role: "user", content: prompt }
+    ], CONFIG.MODELLI.testo, 4000);
+
+    var contenuto = data.choices[0].message.content;
+    log("Risposta AI ricevuta, parsing JSON...", "info");
+    var jsonMatch = contenuto.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      log("JSON non trovato nella risposta, uso fallback", "warn");
+      return analizzaInvenzioneFallback(descrizione, rivendicazioni);
+    }
+    var analisi = JSON.parse(jsonMatch[0]);
+    log("Analisi AI completata: " + analisi.numeroFigure + " figure", "success");
+    return analisi;
+  } catch (e) {
+    log("Errore analisi AI: " + e.message + ", uso fallback", "error");
+    return analizzaInvenzioneFallback(descrizione, rivendicazioni);
+  }
+}
+
+function analizzaInvenzioneFallback(descrizione, rivendicazioni) {
+  log("Analisi fallback programmatica...", "info");
+  var desc = descrizione.toLowerCase();
+  var rivs = rivendicazioni.toLowerCase();
+  var figure = [];
+  var numFig = 0;
+
+  var complessita = 0;
+  if (desc.indexOf("modul") >= 0) complessita += 2;
+  if (desc.indexOf("intercambiab") >= 0) complessita += 2;
+  if (rivs.indexOf("claim") >= 0 || rivs.indexOf("rivendicazione") >= 0) complessita += 1;
+  if (desc.indexOf("microchip") >= 0 || desc.indexOf("batteria") >= 0) complessita += 1;
+  if (desc.indexOf("sezione") >= 0 || desc.indexOf("sezion") >= 0) complessita += 1;
+  if (desc.indexOf("applicazione") >= 0 || desc.indexOf("uso") >= 0) complessita += 1;
+  if (desc.indexOf("forma") >= 0 || desc.indexOf("variante") >= 0) complessita += 1;
+
+  var numFigure = Math.min(Math.max(complessita, 2), 10);
+  log("Complessita: " + complessita + " -> " + numFigure + " figure", "info");
+
+  if (desc.indexOf("modul") >= 0 || desc.indexOf("intercambiab") >= 0) {
+    numFig++;
+    figure.push({
+      num: numFig, tipo: "esplosa",
+      titolo: "FIG. " + numFig + " - Vista esplosa dell'assieme",
+      motivazione: "Parti separabili",
+      elementi: [
+        {num: "100", nome: "Sistema modulare universale"},
+        {num: "101", nome: "Corpo alimentato riutilizzabile"},
+        {num: "102", nome: "Gruppo batteria ricaricabile"},
+        {num: "103", nome: "Microchip stabilizzazione energia"},
+        {num: "104", nome: "Strutture ritenzione magnetica"},
+        {num: "105", nome: "Terminali contatto elettrico"},
+        {num: "300", nome: "Modulo funzionale intercambiabile"}
+      ]
+    });
+  }
+
+  numFig++;
+  figure.push({
+    num: numFig, tipo: "assieme",
+    titolo: "FIG. " + numFig + " - Vista assieme montato",
+    motivazione: "Sistema completo",
+    elementi: [
+      {num: "100", nome: "Sistema modulare"},
+      {num: "101", nome: "Corpo principale"},
+      {num: "131a", nome: "Estremita superiore connessione"}
+    ]
+  });
+
+  var moduli = [];
+  if (rivs.indexOf("led") >= 0 || desc.indexOf("led") >= 0) moduli.push({num: "400", nome: "Modulo LED", claim: 6, forma: "cilindro"});
+  if (rivs.indexOf("stilo") >= 0 || desc.indexOf("stilo") >= 0) moduli.push({num: "500", nome: "Modulo stilo", claim: 7, forma: "cono"});
+  if (rivs.indexOf("interruttore") >= 0 || desc.indexOf("interruttore") >= 0) moduli.push({num: "300", nome: "Modulo interruttore", claim: 1, forma: "rettangolo"});
+  if (rivs.indexOf("terminale cieco") >= 0 || desc.indexOf("cieco") >= 0) moduli.push({num: "600", nome: "Modulo cieco", claim: 1, forma: "sfera"});
+  if (rivs.indexOf("pulsante") >= 0 || desc.indexOf("pulsante") >= 0) moduli.push({num: "300", nome: "Modulo pulsante", claim: 1, forma: "rettangolo"});
+
+  if (moduli.length > 0 && numFigure >= 3) {
+    numFig++;
+    figure.push({
+      num: numFig, tipo: "dettaglio",
+      titolo: "FIG. " + numFig + " - Dettaglio moduli intercambiabili",
+      motivazione: "Moduli funzionali",
+      elementi: moduli.map(m => ({num: m.num, nome: m.nome})),
+      forme: moduli.map(m => m.forma)
+    });
+  }
+
+  var forme = [];
+  if (desc.indexOf("tond") >= 0) forme.push({num: "131", nome: "Base tonda", tipo: "tonda"});
+  if (desc.indexOf("ellittic") >= 0) forme.push({num: "132", nome: "Base ellittica", tipo: "ellittica"});
+  if (desc.indexOf("rettangol") >= 0 || desc.indexOf("angolo") >= 0) forme.push({num: "133", nome: "Base rettangolare", tipo: "rettangolare"});
+
+  if (forme.length > 1 && numFigure >= 4) {
+    numFig++;
+    figure.push({
+      num: numFig, tipo: "generalizzazione",
+      titolo: "FIG. " + numFig + " - Generalizzazione forme",
+      motivazione: "Varianti geometriche",
+      elementi: forme
+    });
+  }
+
+  if ((desc.indexOf("microchip") >= 0 || desc.indexOf("batteria") >= 0 || desc.indexOf("sezione") >= 0) && numFigure >= 5) {
+    numFig++;
+    figure.push({
+      num: numFig, tipo: "sezione",
+      titolo: "FIG. " + numFig + " - Sezione longitudinale A-A",
+      motivazione: "Interno dispositivo",
+      elementi: [
+        {num: "101", nome: "Corpo principale"},
+        {num: "102", nome: "Gruppo batteria"},
+        {num: "103", nome: "Microchip stabilizzazione"},
+        {num: "123", nome: "Contatti ponte elettrico"}
+      ]
+    });
+  }
+
+  if ((desc.indexOf("microchip") >= 0 || desc.indexOf("chip") >= 0) && numFigure >= 6) {
+    numFig++;
+    figure.push({
+      num: numFig, tipo: "dettaglio",
+      titolo: "FIG. " + numFig + " - Dettaglio microchip",
+      motivazione: "Componente elettronico",
+      elementi: [
+        {num: "103", nome: "Microchip stabilizzazione"},
+        {num: "123", nome: "Contatti ponte"}
+      ]
+    });
+  }
+
+  if ((desc.indexOf("pogo") >= 0 || desc.indexOf("pin") >= 0) && numFigure >= 7) {
+    numFig++;
+    figure.push({
+      num: numFig, tipo: "dettaglio",
+      titolo: "FIG. " + numFig + " - Dettaglio contatti elettrici",
+      motivazione: "Connessione elettrica",
+      elementi: [
+        {num: "105", nome: "Terminali contatto elettrico"},
+        {num: "123", nome: "Contatti ponte"}
+      ]
+    });
+  }
+
+  var apps = [];
+  if (desc.indexOf("sicurezz") >= 0 || desc.indexOf("ciclist") >= 0) apps.push({num: "APP2", nome: "Sicurezza ciclistica"});
+  if (desc.indexOf("ufficio") >= 0 || desc.indexOf("office") >= 0) apps.push({num: "APP1", nome: "Ufficio"});
+  if (desc.indexOf("didattic") >= 0 || desc.indexOf("scuola") >= 0) apps.push({num: "APP3", nome: "Didattica"});
+  if (desc.indexOf("e-cigarette") >= 0 || desc.indexOf("vape") >= 0) apps.push({num: "APP4", nome: "E-cigarette"});
+
+  for (var j = 0; j < apps.length && numFig < numFigure; j++) {
+    numFig++;
+    figure.push({
+      num: numFig, tipo: "applicazione",
+      titolo: "FIG. " + numFig + " - Applicazione: " + apps[j].nome,
+      motivazione: "Uso pratico",
+      elementi: [
+        {num: "100", nome: "Sistema UBIM"},
+        {num: apps[j].num, nome: apps[j].nome}
+      ]
+    });
+  }
+
+  var dettagliExtra = [
+    {tipo: "dettaglio", titolo: "Dettaglio aggancio magnetico", elementi: [{num: "104", nome: "Strutture magnetiche"}]},
+    {tipo: "dettaglio", titolo: "Dettaglio interfaccia modulare", elementi: [{num: "120", nome: "Interfaccia adattatrice"}]},
+    {tipo: "sezione", titolo: "Sezione trasversale B-B", elementi: [{num: "101", nome: "Corpo"}, {num: "102", nome: "Batteria"}]}
+  ];
+
+  for (var k = 0; k < dettagliExtra.length && numFig < numFigure; k++) {
+    numFig++;
+    figure.push({
+      num: numFig,
+      tipo: dettagliExtra[k].tipo,
+      titolo: "FIG. " + numFig + " - " + dettagliExtra[k].titolo,
+      motivazione: "Dettaglio tecnico",
+      elementi: dettagliExtra[k].elementi
+    });
+  }
+
+  log("Fallback: generate " + figure.length + " figure", "success");
+  return { numeroFigure: figure.length, figure: figure };
+}
+
+// ============================================================
+// GENERAZIONE FIGURE
+// ============================================================
+async function generaFigure() {
+  var descrizione = document.getElementById("descrizione").value;
+  var rivendicazioni = document.getElementById("rivendicazioni").value;
+  var progress = document.getElementById("elab-progress");
+  var status = document.getElementById("elab-status");
+  var detail = document.getElementById("elab-detail");
+
+  progress.style.width = "10%";
+  status.textContent = "Analisi invenzione con AI...";
+  detail.textContent = "Determinazione numero figure e tipologie...";
+  log("Inizio generazione figure...", "info");
+
+  try {
+    progress.style.width = "30%";
+    status.textContent = "Analisi AI in corso...";
+    var analisi = await analizzaInvenzioneAI(descrizione, rivendicazioni);
+
+    progress.style.width = "60%";
+    status.textContent = "Generazione " + analisi.numeroFigure + " figure SVG...";
+    figureData = [];
+
+    for (var i = 0; i < analisi.figure.length; i++) {
+      var fig = analisi.figure[i];
+      fig.svgCode = "";
+      figureData.push(fig);
+      progress.style.width = (60 + (i + 1) / analisi.figure.length * 30) + "%";
+      status.textContent = "Generata figura " + (i + 1) + "/" + analisi.numeroFigure;
+      detail.textContent = fig.titolo;
+    }
+
+    progress.style.width = "100%";
+    status.textContent = "Completato!";
+    detail.textContent = "Tutte le figure generate con successo";
+
+    setTimeout(function() {
+      showScreen('risultato');
+      renderFigureGrid();
+      renderVerificaUIBM();
+      document.getElementById("numero-figure").textContent = figureData.length;
+      var modelBadge = document.getElementById("modello-usato");
+      modelBadge.textContent = "Modello: " + getModelloSelezionato();
+      modelBadge.style.display = "inline-block";
+      log("Generate " + figureData.length + " figure", "success");
+    }, 800);
+
+  } catch (e) {
+    status.textContent = "Errore durante la generazione";
+    detail.textContent = e.message;
+    log("Errore generazione: " + e.message, "error");
+    alert("Errore durante la generazione. Riprova.");
+    showScreen('descrizione');
+  }
+}
+
+// ============================================================
+// SVG GENERATOR
+// ============================================================
+function generaSVG(fig) {
+  var ns = "http://www.w3.org/2000/svg";
+  var svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 600 450");
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", "350");
+  svg.style.background = "#ffffff";
+
+  var title = document.createElementNS(ns, "text");
+  title.setAttribute("x", "300"); title.setAttribute("y", "25");
+  title.setAttribute("text-anchor", "middle");
+  title.setAttribute("font-family", "Arial, sans-serif");
+  title.setAttribute("font-size", "14");
+  title.setAttribute("font-weight", "bold");
+  title.setAttribute("fill", "#000");
+  title.textContent = fig.titolo;
+  svg.appendChild(title);
+
+  var cx = 300, cy = 220;
+
+  switch(fig.tipo) {
+    case "esplosa": return disegnaEsplosa(svg, ns, fig, cx, cy);
+    case "assieme": return disegnaAssieme(svg, ns, fig, cx, cy);
+    case "dettaglio": return disegnaDettaglio(svg, ns, fig, cx, cy);
+    case "generalizzazione": return disegnaGeneralizzazione(svg, ns, fig, cx, cy);
+    case "sezione": return disegnaSezione(svg, ns, fig, cx, cy);
+    case "applicazione": return disegnaApplicazione(svg, ns, fig, cx, cy);
+    default: return disegnaDefault(svg, ns, cx, cy);
+  }
+}
+
+function disegnaNumero(svg, ns, x, y, num, offset) {
+  offset = offset || {dx: -50, dy: 0};
+  var nx = x + offset.dx, ny = y + offset.dy;
+  var path = document.createElementNS(ns, "path");
+  var cx1 = offset.dx < 0 ? nx + Math.abs(offset.dx) * 0.6 : nx - Math.abs(offset.dx) * 0.6;
+  var cy1 = ny;
+  var cx2 = x + (offset.dx < 0 ? 8 : -8);
+  var cy2 = y;
+  path.setAttribute("d", "M " + nx + " " + ny + " C " + cx1 + " " + cy1 + ", " + cx2 + " " + cy2 + ", " + x + " " + y);
+  path.setAttribute("stroke", "#000"); path.setAttribute("stroke-width", "0.5"); path.setAttribute("fill", "none");
+  svg.appendChild(path);
+  var txt = document.createElementNS(ns, "text");
+  txt.setAttribute("x", nx); txt.setAttribute("y", ny);
+  txt.setAttribute("font-family", "Arial, sans-serif"); txt.setAttribute("font-size", "11"); txt.setAttribute("fill", "#000");
+  if (offset.dx < 0) {
+    txt.setAttribute("text-anchor", "middle");
+    txt.setAttribute("transform", "rotate(-90, " + nx + ", " + ny + ")");
+    txt.textContent = num;
+  } else {
+    txt.setAttribute("text-anchor", "start");
+    txt.textContent = num;
+  }
+  svg.appendChild(txt);
+}
+
+function disegnaCilindro3D(svg, ns, cx, cy, larghezza, altezza, profondita) {
+  var rx = larghezza / 2;
+  var ry = profondita || rx * 0.3;
+  var topY = cy - altezza / 2 + ry;
+  var bottomY = cy + altezza / 2;
+
+  var corpo = document.createElementNS(ns, "rect");
+  corpo.setAttribute("x", cx - rx); corpo.setAttribute("y", topY);
+  corpo.setAttribute("width", larghezza); corpo.setAttribute("height", altezza - ry);
+  corpo.setAttribute("fill", "none"); corpo.setAttribute("stroke", "#000");
+  corpo.setAttribute("stroke-width", "1.5");
+  svg.appendChild(corpo);
+
+  var top = document.createElementNS(ns, "ellipse");
+  top.setAttribute("cx", cx); top.setAttribute("cy", topY);
+  top.setAttribute("rx", rx); top.setAttribute("ry", ry);
+  top.setAttribute("fill", "none"); top.setAttribute("stroke", "#000");
+  top.setAttribute("stroke-width", "1.5");
+  svg.appendChild(top);
+
+  var bottom = document.createElementNS(ns, "ellipse");
+  bottom.setAttribute("cx", cx); bottom.setAttribute("cy", bottomY);
+  bottom.setAttribute("rx", rx); bottom.setAttribute("ry", ry);
+  bottom.setAttribute("fill", "none"); bottom.setAttribute("stroke", "#000");
+  bottom.setAttribute("stroke-width", "1");
+  bottom.setAttribute("stroke-dasharray", "4,3");
+  svg.appendChild(bottom);
+
+  var lineaD = document.createElementNS(ns, "line");
+  lineaD.setAttribute("x1", cx + rx); lineaD.setAttribute("y1", topY);
+  lineaD.setAttribute("x2", cx + rx); lineaD.setAttribute("y2", bottomY);
+  lineaD.setAttribute("stroke", "#000"); lineaD.setAttribute("stroke-width", "1");
+  svg.appendChild(lineaD);
+
+  var lineaS = document.createElementNS(ns, "line");
+  lineaS.setAttribute("x1", cx - rx); lineaS.setAttribute("y1", topY);
+  lineaS.setAttribute("x2", cx - rx); lineaS.setAttribute("y2", bottomY);
+  lineaS.setAttribute("stroke", "#000"); lineaS.setAttribute("stroke-width", "0.5");
+  lineaS.setAttribute("stroke-dasharray", "3,3");
+  svg.appendChild(lineaS);
+
+  return {top: top, bottom: bottom, corpo: corpo};
+}
+
+function disegnaMicrochip(svg, ns, cx, cy, w, h) {
+  var corpo = document.createElementNS(ns, "rect");
+  corpo.setAttribute("x", cx - w/2); corpo.setAttribute("y", cy - h/2);
+  corpo.setAttribute("width", w); corpo.setAttribute("height", h);
+  corpo.setAttribute("fill", "none"); corpo.setAttribute("stroke", "#000");
+  corpo.setAttribute("stroke-width", "1.5");
+  svg.appendChild(corpo);
+
+  var pins = 4;
+  var spacing = w / (pins + 1);
+  for (var i = 1; i <= pins; i++) {
+    var pin = document.createElementNS(ns, "line");
+    pin.setAttribute("x1", cx - w/2 + i * spacing); pin.setAttribute("y1", cy - h/2);
+    pin.setAttribute("x2", cx - w/2 + i * spacing); pin.setAttribute("y2", cy - h/2 - 6);
+    pin.setAttribute("stroke", "#000"); pin.setAttribute("stroke-width", "0.8");
+    svg.appendChild(pin);
+    var pin2 = document.createElementNS(ns, "line");
+    pin2.setAttribute("x1", cx - w/2 + i * spacing); pin2.setAttribute("y1", cy + h/2);
+    pin2.setAttribute("x2", cx - w/2 + i * spacing); pin2.setAttribute("y2", cy + h/2 + 6);
+    pin2.setAttribute("stroke", "#000"); pin2.setAttribute("stroke-width", "0.8");
+    svg.appendChild(pin2);
+  }
+
+  var circuito = document.createElementNS(ns, "path");
+  circuito.setAttribute("d",
+    "M " + (cx - w/4) + " " + (cy - h/4) + " L " + (cx + w/4) + " " + (cy - h/4) +
+    " M " + (cx - w/4) + " " + cy + " L " + (cx + w/4) + " " + cy +
+    " M " + (cx - w/4) + " " + (cy + h/4) + " L " + (cx + w/4) + " " + (cy + h/4)
+  );
+  circuito.setAttribute("stroke", "#000"); circuito.setAttribute("stroke-width", "0.5");
+  circuito.setAttribute("stroke-dasharray", "2,2");
+  svg.appendChild(circuito);
+  return {corpo: corpo};
+}
+
+function disegnaPogoPin(svg, ns, cx, cy, h) {
+  var r = 3;
+  var cyl = document.createElementNS(ns, "rect");
+  cyl.setAttribute("x", cx - r); cyl.setAttribute("y", cy - h/2);
+  cyl.setAttribute("width", r*2); cyl.setAttribute("height", h);
+  cyl.setAttribute("fill", "none"); cyl.setAttribute("stroke", "#000");
+  cyl.setAttribute("stroke-width", "1");
+  svg.appendChild(cyl);
+
+  var spring = document.createElementNS(ns, "path");
+  var d = "M " + (cx - 1) + " " + (cy - h/2 + 4);
+  for (var i = 0; i < 4; i++) {
+    d += " L " + (cx + 1) + " " + (cy - h/2 + 6 + i * 5);
+    d += " L " + (cx - 1) + " " + (cy - h/2 + 8 + i * 5);
+  }
+  spring.setAttribute("d", d);
+  spring.setAttribute("fill", "none"); spring.setAttribute("stroke", "#000");
+  spring.setAttribute("stroke-width", "0.5");
+  svg.appendChild(spring);
+
+  var tip = document.createElementNS(ns, "circle");
+  tip.setAttribute("cx", cx); tip.setAttribute("cy", cy - h/2);
+  tip.setAttribute("r", "2"); tip.setAttribute("fill", "none");
+  tip.setAttribute("stroke", "#000");
+  svg.appendChild(tip);
+}
+
+function disegnaModuloLED(svg, ns, cx, cy, larghezza, altezza) {
+  var corpo = document.createElementNS(ns, "rect");
+  corpo.setAttribute("x", cx - larghezza/2); corpo.setAttribute("y", cy - altezza/2);
+  corpo.setAttribute("width", larghezza); corpo.setAttribute("height", altezza);
+  corpo.setAttribute("rx", "4"); corpo.setAttribute("fill", "none");
+  corpo.setAttribute("stroke", "#000"); corpo.setAttribute("stroke-width", "1.5");
+  svg.appendChild(corpo);
+
+  var lente = document.createElementNS(ns, "circle");
+  lente.setAttribute("cx", cx); lente.setAttribute("cy", cy - altezza/4);
+  lente.setAttribute("r", larghezza/4); lente.setAttribute("fill", "none");
+  lente.setAttribute("stroke", "#000"); lente.setAttribute("stroke-width", "1");
+  svg.appendChild(lente);
+
+  var riflesso = document.createElementNS(ns, "path");
+  var r = larghezza/4;
+  riflesso.setAttribute("d", "M " + (cx - r*0.5) + " " + (cy - altezza/4 - r*0.3) + " Q " + cx + " " + (cy - altezza/4 - r*0.8) + " " + (cx + r*0.3) + " " + (cy - altezza/4 - r*0.5));
+  riflesso.setAttribute("fill", "none"); riflesso.setAttribute("stroke", "#000");
+  riflesso.setAttribute("stroke-width", "0.5");
+  svg.appendChild(riflesso);
+
+  var base = document.createElementNS(ns, "rect");
+  base.setAttribute("x", cx - larghezza/2 + 5); base.setAttribute("y", cy + altezza/2 - 10);
+  base.setAttribute("width", larghezza - 10); base.setAttribute("height", "10");
+  base.setAttribute("fill", "none"); base.setAttribute("stroke", "#000");
+  base.setAttribute("stroke-width", "1");
+  svg.appendChild(base);
+}
+
+function disegnaEsplosa(svg, ns, fig, cx, cy) {
+  disegnaCilindro3D(svg, ns, cx - 180, cy, 70, 160, 20);
+  disegnaNumero(svg, ns, cx - 180, cy - 80, "101", {dx: -60, dy: 0});
+
+  var batt = document.createElementNS(ns, "rect");
+  batt.setAttribute("x", cx - 200); batt.setAttribute("y", cy + 20);
+  batt.setAttribute("width", "40"); batt.setAttribute("height", "60");
+  batt.setAttribute("fill", "none"); batt.setAttribute("stroke", "#000");
+  batt.setAttribute("stroke-width", "1");
+  svg.appendChild(batt);
+  disegnaNumero(svg, ns, cx - 180, cy + 50, "102", {dx: -60, dy: 0});
+
+  disegnaMicrochip(svg, ns, cx - 180, cy - 20, 30, 20);
+  disegnaNumero(svg, ns, cx - 180, cy - 20, "103", {dx: -60, dy: 0});
+
+  var flangia = document.createElementNS(ns, "ellipse");
+  flangia.setAttribute("cx", cx - 110); flangia.setAttribute("cy", cy - 85);
+  flangia.setAttribute("rx", "44"); flangia.setAttribute("ry", "12");
+  flangia.setAttribute("fill", "none"); flangia.setAttribute("stroke", "#000");
+  flangia.setAttribute("stroke-width", "0.5");
+  flangia.setAttribute("stroke-dasharray", "6,4");
+  svg.appendChild(flangia);
+  disegnaNumero(svg, ns, cx - 110, cy - 85, "104", {dx: 0, dy: -50});
+
+  for (var i = 0; i < 3; i++) {
+    disegnaPogoPin(svg, ns, cx - 130 + i * 15, cy - 75, 20);
+  }
+  disegnaNumero(svg, ns, cx - 115, cy - 75, "105", {dx: 0, dy: -35});
+
+  var moduli = [
+    {num: "300", nome: "Interruttore", y: cy - 60},
+    {num: "400", nome: "LED", y: cy - 20},
+    {num: "500", nome: "Stilo", y: cy + 20},
+    {num: "600", nome: "Cieco", y: cy + 60}
+  ];
+
+  for (var i = 0; i < moduli.length; i++) {
+    var m = moduli[i];
+    var fantasma = document.createElementNS(ns, "rect");
+    fantasma.setAttribute("x", cx - 48); fantasma.setAttribute("y", m.y - 23);
+    fantasma.setAttribute("width", "66"); fantasma.setAttribute("height", "46");
+    fantasma.setAttribute("rx", "6"); fantasma.setAttribute("fill", "none");
+    fantasma.setAttribute("stroke", "#000"); fantasma.setAttribute("stroke-width", "0.5");
+    fantasma.setAttribute("stroke-dasharray", "6,4");
+    svg.appendChild(fantasma);
+
+    if (m.num === "400") {
+      disegnaModuloLED(svg, ns, cx + 30, m.y, 50, 40);
+    } else {
+      var mod = document.createElementNS(ns, "rect");
+      mod.setAttribute("x", cx + 5); mod.setAttribute("y", m.y - 15);
+      mod.setAttribute("width", "50"); mod.setAttribute("height", "30");
+      mod.setAttribute("rx", "3"); mod.setAttribute("fill", "none");
+      mod.setAttribute("stroke", "#000"); mod.setAttribute("stroke-width", "1.5");
+      svg.appendChild(mod);
+    }
+    disegnaNumero(svg, ns, cx + 30, m.y, m.num, {dx: 0, dy: -30});
+
+    var linea = document.createElementNS(ns, "line");
+    linea.setAttribute("x1", cx - 110); linea.setAttribute("y1", m.y);
+    linea.setAttribute("x2", cx + 5); linea.setAttribute("y2", m.y);
+    linea.setAttribute("stroke", "#000"); linea.setAttribute("stroke-width", "0.5");
+    linea.setAttribute("stroke-dasharray", "5,5");
+    svg.appendChild(linea);
+  }
+  return svg;
+}
+
+function disegnaAssieme(svg, ns, fig, cx, cy) {
+  disegnaCilindro3D(svg, ns, cx, cy, 80, 200, 24);
+  disegnaNumero(svg, ns, cx, cy - 100, "101", {dx: -60, dy: 0});
+
+  var mod = document.createElementNS(ns, "rect");
+  mod.setAttribute("x", cx - 25); mod.setAttribute("y", cy - 140);
+  mod.setAttribute("width", "50"); mod.setAttribute("height", "40");
+  mod.setAttribute("rx", "4"); mod.setAttribute("fill", "none");
+  mod.setAttribute("stroke", "#000"); mod.setAttribute("stroke-width", "1.5");
+  svg.appendChild(mod);
+  disegnaNumero(svg, ns, cx, cy - 140, "300", {dx: -55, dy: 0});
+
+  for (var i = 0; i < 3; i++) {
+    disegnaPogoPin(svg, ns, cx - 15 + i * 15, cy - 105, 15);
+  }
+  disegnaNumero(svg, ns, cx, cy - 105, "105", {dx: 0, dy: -40});
+
+  var base = document.createElementNS(ns, "ellipse");
+  base.setAttribute("cx", cx); base.setAttribute("cy", cy + 100);
+  base.setAttribute("rx", "40"); base.setAttribute("ry", "12");
+  base.setAttribute("fill", "none"); base.setAttribute("stroke", "#000");
+  svg.appendChild(base);
+  disegnaNumero(svg, ns, cx, cy + 100, "131", {dx: 0, dy: 35});
+
+  var fantasma = document.createElementNS(ns, "rect");
+  fantasma.setAttribute("x", cx - 48); fantasma.setAttribute("y", cy - 148);
+  fantasma.setAttribute("width", "96"); fantasma.setAttribute("height", "58");
+  fantasma.setAttribute("rx", "8"); fantasma.setAttribute("fill", "none");
+  fantasma.setAttribute("stroke", "#000"); fantasma.setAttribute("stroke-width", "0.5");
+  fantasma.setAttribute("stroke-dasharray", "6,4");
+  svg.appendChild(fantasma);
+  return svg;
+}
+
+function disegnaDettaglio(svg, ns, fig, cx, cy) {
+  var forma = fig.forma || "rettangolo";
+  if (forma === "cilindro") {
+    disegnaCilindro3D(svg, ns, cx, cy, 60, 100, 16);
+  } else if (forma === "cono") {
+    var path = document.createElementNS(ns, "path");
+    path.setAttribute("d", "M " + (cx - 20) + " " + (cy + 40) + " L " + cx + " " + (cy - 40) + " L " + (cx + 20) + " " + (cy + 40) + " Z");
+    path.setAttribute("fill", "none"); path.setAttribute("stroke", "#000");
+    path.setAttribute("stroke-width", "2");
+    svg.appendChild(path);
+    var base = document.createElementNS(ns, "ellipse");
+    base.setAttribute("cx", cx); base.setAttribute("cy", cy + 40);
+    base.setAttribute("rx", "20"); base.setAttribute("ry", "6");
+    base.setAttribute("fill", "none"); base.setAttribute("stroke", "#000");
+    svg.appendChild(base);
+  } else if (forma === "sfera") {
+    var c = document.createElementNS(ns, "circle");
+    c.setAttribute("cx", cx); c.setAttribute("cy", cy);
+    c.setAttribute("r", "40"); c.setAttribute("fill", "none");
+    c.setAttribute("stroke", "#000"); c.setAttribute("stroke-width", "2");
+    svg.appendChild(c);
+    var arc1 = document.createElementNS(ns, "ellipse");
+    arc1.setAttribute("cx", cx); arc1.setAttribute("cy", cy);
+    arc1.setAttribute("rx", "40"); arc1.setAttribute("ry", "10");
+    arc1.setAttribute("fill", "none"); arc1.setAttribute("stroke", "#000");
+    arc1.setAttribute("stroke-width", "0.5");
+    arc1.setAttribute("stroke-dasharray", "3,3");
+    svg.appendChild(arc1);
+  } else {
+    var r = document.createElementNS(ns, "rect");
+    r.setAttribute("x", cx - 35); r.setAttribute("y", cy - 25);
+    r.setAttribute("width", "70"); r.setAttribute("height", "50");
+    r.setAttribute("rx", "4"); r.setAttribute("fill", "none");
+    r.setAttribute("stroke", "#000"); r.setAttribute("stroke-width", "2");
+    svg.appendChild(r);
+  }
+
+  var base = document.createElementNS(ns, "rect");
+  base.setAttribute("x", cx - 25); base.setAttribute("y", cy + 55);
+  base.setAttribute("width", "50"); base.setAttribute("height", "15");
+  base.setAttribute("fill", "none"); base.setAttribute("stroke", "#000");
+  base.setAttribute("stroke-width", "1");
+  svg.appendChild(base);
+
+  if (fig.elementi && fig.elementi[0]) {
+    disegnaNumero(svg, ns, cx, cy - 50, fig.elementi[0].num, {dx: -50, dy: 0});
+  }
+  disegnaNumero(svg, ns, cx, cy + 55, "301", {dx: 0, dy: 30});
+  return svg;
+}
+
+function disegnaGeneralizzazione(svg, ns, fig, cx, cy) {
+  var forme = fig.elementi || [{num: "131", nome: "Tonda", tipo: "tonda"}, {num: "132", nome: "Ellittica", tipo: "ellittica"}, {num: "133", nome: "Rettangolare", tipo: "rettangolare"}];
+  var pos = [cx - 150, cx, cx + 150];
+
+  for (var i = 0; i < forme.length && i < 3; i++) {
+    var f = forme[i], px = pos[i];
+    if (f.tipo === "tonda") {
+      var c = document.createElementNS(ns, "circle");
+      c.setAttribute("cx", px); c.setAttribute("cy", cy - 30);
+      c.setAttribute("r", "35"); c.setAttribute("fill", "none");
+      c.setAttribute("stroke", "#000"); c.setAttribute("stroke-width", "2");
+      svg.appendChild(c);
+    } else if (f.tipo === "ellittica") {
+      var el = document.createElementNS(ns, "ellipse");
+      el.setAttribute("cx", px); el.setAttribute("cy", cy - 30);
+      el.setAttribute("rx", "40"); el.setAttribute("ry", "25");
+      el.setAttribute("fill", "none"); el.setAttribute("stroke", "#000");
+      el.setAttribute("stroke-width", "2");
+      svg.appendChild(el);
+    } else {
+      var r = document.createElementNS(ns, "rect");
+      r.setAttribute("x", px - 35); r.setAttribute("y", cy - 55);
+      r.setAttribute("width", "70"); r.setAttribute("height", "50");
+      r.setAttribute("rx", "8"); r.setAttribute("fill", "none");
+      r.setAttribute("stroke", "#000"); r.setAttribute("stroke-width", "2");
+      svg.appendChild(r);
+    }
+
+    var prof = document.createElementNS(ns, "rect");
+    prof.setAttribute("x", px - 20); prof.setAttribute("y", cy + 20);
+    prof.setAttribute("width", "40"); prof.setAttribute("height", "80");
+    prof.setAttribute("fill", "none"); prof.setAttribute("stroke", "#000");
+    prof.setAttribute("stroke-width", "1.5");
+    svg.appendChild(prof);
+
+    var elProf = document.createElementNS(ns, "ellipse");
+    elProf.setAttribute("cx", px); elProf.setAttribute("cy", cy + 20);
+    elProf.setAttribute("rx", "20"); elProf.setAttribute("ry", "6");
+    elProf.setAttribute("fill", "none"); elProf.setAttribute("stroke", "#000");
+    svg.appendChild(elProf);
+
+    disegnaNumero(svg, ns, px, cy - 30, f.num, {dx: 0, dy: -50});
+
+    var lbl = document.createElementNS(ns, "text");
+    lbl.setAttribute("x", px); lbl.setAttribute("y", cy + 120);
+    lbl.setAttribute("text-anchor", "middle");
+    lbl.setAttribute("font-family", "Arial, sans-serif");
+    lbl.setAttribute("font-size", "9"); lbl.setAttribute("fill", "#000");
+    lbl.textContent = f.nome;
+    svg.appendChild(lbl);
+  }
+  return svg;
+}
+
+function disegnaSezione(svg, ns, fig, cx, cy) {
+  var r = document.createElementNS(ns, "rect");
+  r.setAttribute("x", cx - 80); r.setAttribute("y", cy - 80);
+  r.setAttribute("width", "80"); r.setAttribute("height", "160");
+  r.setAttribute("fill", "none"); r.setAttribute("stroke", "#000");
+  r.setAttribute("stroke-width", "2");
+  svg.appendChild(r);
+
+  var ln = document.createElementNS(ns, "line");
+  ln.setAttribute("x1", cx - 80); ln.setAttribute("y1", cy - 80);
+  ln.setAttribute("x2", cx); ln.setAttribute("y2", cy + 80);
+  ln.setAttribute("stroke", "#000"); ln.setAttribute("stroke-width", "1");
+  ln.setAttribute("stroke-dasharray", "3,3");
+  svg.appendChild(ln);
+
+  var batt = document.createElementNS(ns, "rect");
+  batt.setAttribute("x", cx - 70); batt.setAttribute("y", cy - 40);
+  batt.setAttribute("width", "60"); batt.setAttribute("height", "50");
+  batt.setAttribute("fill", "none"); batt.setAttribute("stroke", "#000");
+  batt.setAttribute("stroke-width", "1");
+  svg.appendChild(batt);
+  disegnaNumero(svg, ns, cx - 40, cy - 15, "102", {dx: -45, dy: 0});
+
+  disegnaMicrochip(svg, ns, cx - 40, cy + 25, 40, 18);
+  disegnaNumero(svg, ns, cx - 40, cy + 25, "103", {dx: -45, dy: 0});
+
+  for (var i = 0; i < 3; i++) {
+    var pin = document.createElementNS(ns, "line");
+    pin.setAttribute("x1", cx - 55 + i * 15); pin.setAttribute("y1", cy - 70);
+    pin.setAttribute("x2", cx - 55 + i * 15); pin.setAttribute("y2", cy - 60);
+    pin.setAttribute("stroke", "#000"); pin.setAttribute("stroke-width", "2");
+    svg.appendChild(pin);
+  }
+  disegnaNumero(svg, ns, cx - 40, cy - 65, "123", {dx: -45, dy: 0});
+
+  var circ = document.createElementNS(ns, "path");
+  circ.setAttribute("d", "M " + (cx - 40) + " " + (cy - 10) + " L " + (cx - 40) + " " + (cy + 15) + " M " + (cx - 40) + " " + (cy + 35) + " L " + (cx - 40) + " " + (cy + 60));
+  circ.setAttribute("stroke", "#000"); circ.setAttribute("stroke-width", "0.5");
+  circ.setAttribute("stroke-dasharray", "2,2");
+  svg.appendChild(circ);
+
+  var lbl = document.createElementNS(ns, "text");
+  lbl.setAttribute("x", cx + 20); lbl.setAttribute("y", cy);
+  lbl.setAttribute("font-family", "Arial, sans-serif");
+  lbl.setAttribute("font-size", "10"); lbl.setAttribute("fill", "#000");
+  lbl.textContent = "Sezione A-A";
+  svg.appendChild(lbl);
+  return svg;
+}
+
+function disegnaApplicazione(svg, ns, fig, cx, cy) {
+  var app = fig.elementi[1] || {nome: "Generica"};
+  var r = document.createElementNS(ns, "rect");
+  r.setAttribute("x", cx - 30); r.setAttribute("y", cy - 60);
+  r.setAttribute("width", "60"); r.setAttribute("height", "120");
+  r.setAttribute("fill", "none"); r.setAttribute("stroke", "#000");
+  r.setAttribute("stroke-width", "2");
+  svg.appendChild(r);
+
+  if (app.nome.indexOf("sicurezza") >= 0) {
+    var led = document.createElementNS(ns, "circle");
+    led.setAttribute("cx", cx); led.setAttribute("cy", cy - 90);
+    led.setAttribute("r", "8"); led.setAttribute("fill", "none");
+    led.setAttribute("stroke", "#000");
+    svg.appendChild(led);
+
+    var raggi = document.createElementNS(ns, "path");
+    raggi.setAttribute("d", "M " + (cx - 15) + " " + (cy - 90) + " L " + (cx - 25) + " " + (cy - 90) + " M " + (cx + 15) + " " + (cy - 90) + " L " + (cx + 25) + " " + (cy - 90) + " M " + cx + " " + (cy - 105) + " L " + cx + " " + (cy - 115) + " M " + cx + " " + (cy - 75) + " L " + cx + " " + (cy - 65));
+    raggi.setAttribute("stroke", "#000"); raggi.setAttribute("stroke-width", "1");
+    svg.appendChild(raggi);
+
+    var sup = document.createElementNS(ns, "rect");
+    sup.setAttribute("x", cx - 40); sup.setAttribute("y", cy + 60);
+    sup.setAttribute("width", "80"); sup.setAttribute("height", "15");
+    sup.setAttribute("fill", "none"); sup.setAttribute("stroke", "#000");
+    svg.appendChild(sup);
+    disegnaNumero(svg, ns, cx, cy + 60, "APP2", {dx: 0, dy: 30});
+  }
+
+  disegnaNumero(svg, ns, cx, cy - 60, "100", {dx: -55, dy: 0});
+
+  var cornice = document.createElementNS(ns, "rect");
+  cornice.setAttribute("x", cx - 100); cornice.setAttribute("y", cy - 130);
+  cornice.setAttribute("width", "200"); cornice.setAttribute("height", "260");
+  cornice.setAttribute("fill", "none"); cornice.setAttribute("stroke", "#000");
+  cornice.setAttribute("stroke-width", "0.5");
+  cornice.setAttribute("stroke-dasharray", "10,6");
+  svg.appendChild(cornice);
+
+  var lbl = document.createElementNS(ns, "text");
+  lbl.setAttribute("x", cx); lbl.setAttribute("y", cy + 100);
+  lbl.setAttribute("text-anchor", "middle");
+  lbl.setAttribute("font-family", "Arial, sans-serif");
+  lbl.setAttribute("font-size", "9"); lbl.setAttribute("fill", "#000");
+  lbl.textContent = app.nome;
+  svg.appendChild(lbl);
+  return svg;
+}
+
+function disegnaDefault(svg, ns, cx, cy) {
+  var r = document.createElementNS(ns, "rect");
+  r.setAttribute("x", cx - 40); r.setAttribute("y", cy - 40);
+  r.setAttribute("width", "80"); r.setAttribute("height", "80");
+  r.setAttribute("fill", "none"); r.setAttribute("stroke", "#000");
+  r.setAttribute("stroke-width", "2");
+  svg.appendChild(r);
+  return svg;
+}
+
+function generaTabella(elementi) {
+  var html = '<div class="table-container"><table>';
+  html += '<thead><tr><th style="width:70px">Numero</th><th>Descrizione</th></tr></thead><tbody>';
+  for (var i = 0; i < elementi.length; i++) {
+    var el = elementi[i];
+    html += '<tr><td><strong style="color:#c9a84c">' + el.num + '</strong></td><td>' + el.nome + '</td></tr>';
+  }
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function renderFigureGrid() {
+  var grid = document.getElementById("figure-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  for (var i = 0; i < figureData.length; i++) {
+    var fig = figureData[i];
+    var box = document.createElement("div");
+    box.className = "figure-box";
+    box.onclick = (function(idx){return function(){apriEditorVisivo(idx);};})(i);
+
+    var header = document.createElement("div");
+    header.className = "fig-header";
+    var h3 = document.createElement("h3");
+    h3.textContent = fig.titolo;
+    header.appendChild(h3);
+    var badge = document.createElement("span");
+    badge.className = "fig-badge";
+    badge.textContent = (fig.tipo || "FIGURA").toUpperCase();
+    header.appendChild(badge);
+    box.appendChild(header);
+
+    var container = document.createElement("div");
+    container.className = "svg-container";
+    if (fig.svgCode && fig.svgCode.indexOf("<svg") === 0 && fig.svgCode.indexOf("</svg>") > 0) {
+      container.innerHTML = fig.svgCode;
+    } else {
+      container.appendChild(generaSVG(fig));
+    }
+    box.appendChild(container);
+
+    if (fig.elementi && fig.elementi.length > 0) {
+      var tabDiv = document.createElement("div");
+      tabDiv.innerHTML = generaTabella(fig.elementi);
+      box.appendChild(tabDiv);
+    }
+
+    var info = document.createElement("div");
+    info.style.cssText = "color:#8b7355;font-size:11px;margin-top:10px;";
+    info.textContent = "Motivazione: " + fig.motivazione;
+    box.appendChild(info);
+
+    grid.appendChild(box);
+  }
+}
+
+function renderCorrezioneGrid() {
+  var grid = document.getElementById("correzione-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  for (var i = 0; i < figureData.length; i++) {
+    var fig = figureData[i];
+    var box = document.createElement("div");
+    box.className = "figure-box";
+    box.onclick = (function(idx){return function(){apriEditorVisivo(idx);};})(i);
+
+    var header = document.createElement("div");
+    header.className = "fig-header";
+    var h3 = document.createElement("h3");
+    h3.textContent = fig.titolo + " (clicca per modificare)";
+    header.appendChild(h3);
+    var badge = document.createElement("span");
+    badge.className = "fig-badge";
+    badge.textContent = (fig.tipo || "FIGURA").toUpperCase();
+    header.appendChild(badge);
+    box.appendChild(header);
+
+    var container = document.createElement("div");
+    container.className = "svg-container";
+    if (fig.svgCode && fig.svgCode.indexOf("<svg") === 0) {
+      container.innerHTML = fig.svgCode;
+    } else {
+      container.appendChild(generaSVG(fig));
+    }
+    box.appendChild(container);
+    grid.appendChild(box);
+  }
+}
+
+// ============================================================
+// CORREZIONE CON AI SUPPORT
+// ============================================================
+async function applicaModificaAI() {
+  var input = document.getElementById("modifica-testuale");
+  var output = document.getElementById("modifica-risultato");
+  if (!input || !input.value) {
+    if (output) output.innerHTML = '<span style="color:#e67e22;">Inserisci una modifica</span>';
+    return;
+  }
+  var text = input.value;
+  log("Analisi modifica AI: " + text, "info");
+
+  var prompt = `L'utente vuole modificare i disegni tecnici di un brevetto. Analizza la richiesta e traducila in istruzioni precise per il generatore SVG.
+
+RICHIESTA: "${text}"
+
+Rispondi in JSON:
+{
+  "azioni": [
+    {
+      "azione": "aggiungi|rimuovi|modifica",
+      "elemento": "nome elemento",
+      "dettaglio": "descrizione dettagliata"
+    }
+  ],
+  "descrizioneModificata": "nuova descrizione tecnica con modifiche",
+  "rivendicazioniModificate": "nuove rivendicazioni con modifiche"
+}`;
+
+  try {
+    var data = await chiamaGroq([
+      { role: "system", content: "Sei un esperto di disegni tecnici UIBM. Traduci richieste in linguaggio naturale in istruzioni precise per il generatore SVG." },
+      { role: "user", content: prompt }
+    ], CONFIG.MODELLI.testo, 2000);
+
+    var contenuto = data.choices[0].message.content;
+    var jsonMatch = contenuto.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("JSON non trovato");
+    var analisi = JSON.parse(jsonMatch[0]);
+
+    var html = '<div style="margin-top:10px;">';
+    html += '<span style="color:#27ae60;">Azioni AI (' + analisi.azioni.length + '):</span><br>';
+    for (var i = 0; i < analisi.azioni.length; i++) {
+      var a = analisi.azioni[i];
+      html += '<div style="color:#c9a84c;font-size:12px;margin:4px 0;padding-left:12px;border-left:2px solid #c9a84c;">';
+      html += '<strong>' + a.azione + '</strong>: ' + a.elemento + '<br>';
+      html += '<em>' + a.dettaglio + '</em></div>';
+    }
+    html += '</div>';
+    if (output) output.innerHTML = html;
+
+    // Applica modifiche alle textarea
+    if (analisi.descrizioneModificata) {
+      document.getElementById("descrizione").value = analisi.descrizioneModificata;
+    }
+    if (analisi.rivendicazioniModificate) {
+      document.getElementById("rivendicazioni").value = analisi.rivendicazioniModificate;
+    }
+
+    log("Modifica AI applicata: " + analisi.azioni.length + " azioni", "success");
+  } catch (e) {
+    log("Errore modifica AI: " + e.message, "error");
+    // Fallback: analisi locale
+    var azioni = [];
+    var t = text.toLowerCase();
+    if (t.indexOf("sezione") >= 0) azioni.push("Aggiunta sezione A-A");
+    if (t.indexOf("microchip") >= 0) azioni.push("Aggiunto microchip 103");
+    if (t.indexOf("pogo") >= 0) azioni.push("Aggiunti pogo-pins 105");
+    if (t.indexOf("led") >= 0) azioni.push("Aggiunto modulo LED 400");
+    if (t.indexOf("cono") >= 0) azioni.push("Modificata forma in cono");
+    if (t.indexOf("cilindro") >= 0) azioni.push("Modificata forma in cilindro");
+    if (t.indexOf("tonda") >= 0) azioni.push("Base modificata in tonda");
+    if (t.indexOf("ellittica") >= 0) azioni.push("Base modificata in ellittica");
+    if (azioni.length === 0) azioni.push("Nessuna azione riconosciuta - modifica manuale consigliata");
+
+    var html = '<div style="margin-top:10px;">';
+    html += '<span style="color:#e67e22;">Analisi locale (AI non disponibile):</span><br>';
+    for (var i = 0; i < azioni.length; i++) {
+      html += '<div style="color:#c9a84c;font-size:12px;margin:4px 0;padding-left:12px;border-left:2px solid #c9a84c;">' + azioni[i] + '</div>';
+    }
+    html += '</div>';
+    if (output) output.innerHTML = html;
+  }
+}
+
+function applicaCorrezione(tipo) {
+  var corr = document.getElementById("corr-aggiungi");
+  var forma = document.getElementById("corr-forma");
+  if (tipo === "microchip") {
+    corr.value += (corr.value ? "\n" : "") + "Aggiungi microchip 103 con contatti ponte elettrico 123";
+    log("+ Microchip", "info");
+  } else if (tipo === "forme") {
+    forma.value += (forma.value ? ", " : "") + "131 tonda, 132 ellittica, 133 rettangolare con angolo arrotondato";
+    log("+ Forme", "info");
+  } else if (tipo === "sezione") {
+    corr.value += (corr.value ? "\n" : "") + "Aggiungi sezione longitudinale A-A con piano di taglio";
+    log("+ Sezione", "info");
+  } else if (tipo === "pogo") {
+    corr.value += (corr.value ? "\n" : "") + "Aggiungi pogo-pins 105 con molla interna";
+    log("+ Pogo-pins", "info");
+  } else if (tipo === "led") {
+    corr.value += (corr.value ? "\n" : "") + "Aggiungi modulo LED 400 con lente rotonda";
+    log("+ LED", "info");
+  } else if (tipo === "stilo") {
+    corr.value += (corr.value ? "\n" : "") + "Aggiungi modulo stilo 500 con punta conica";
+    log("+ Stilo", "info");
+  } else if (tipo === "cieco") {
+    corr.value += (corr.value ? "\n" : "") + "Aggiungi terminale cieco 600 con superficie sferica";
+    log("+ Cieco", "info");
+  }
+}
+
+function applicaCorrezioniERigenera() {
+  var descrizione = document.getElementById("descrizione").value;
+  var rivendicazioni = document.getElementById("rivendicazioni").value;
+  var correzioniAggiungi = document.getElementById("corr-aggiungi").value;
+  var correzioniForma = document.getElementById("corr-forma").value;
+  var correzioniTipi = document.getElementById("corr-tipi").value;
+
+  if (!correzioniAggiungi && !correzioniForma && !correzioniTipi) {
+    log("Nessuna correzione, rigenero originale", "warn");
+    showScreen('elaborazione');
+    generaFigure();
+    return;
+  }
+
+  log("Applicazione correzioni...", "info");
+  if (correzioniAggiungi) {
+    document.getElementById("descrizione").value = descrizione + "\n\n[correzioni]\n" + correzioniAggiungi;
+  }
+  if (correzioniForma) {
+    document.getElementById("rivendicazioni").value = rivendicazioni + "\n\n[forme]\n" + correzioniForma;
+  }
+  if (correzioniTipi) {
+    document.getElementById("descrizione").value = document.getElementById("descrizione").value + "\n\n[tipi figure]\n" + correzioniTipi;
+  }
+
+  // Reset campi correzione
+  document.getElementById("corr-aggiungi").value = "";
+  document.getElementById("corr-forma").value = "";
+  document.getElementById("corr-tipi").value = "";
+  document.getElementById("modifica-testuale").value = "";
+  if (document.getElementById("modifica-risultato")) document.getElementById("modifica-risultato").innerHTML = "";
+
+  showScreen('elaborazione');
+  generaFigure();
+}
+
+// ============================================================
+// EDITOR VISIVO
+// ============================================================
+function apriEditorVisivo(idx) {
+  if (!figureData[idx]) return;
+  var fig = figureData[idx];
+  editorStato.figuraIdx = idx;
+  editorStato.elementoSelezionato = null;
+  editorStato.modo = 'seleziona';
+
+  var overlay = document.getElementById("editor-overlay");
+  var canvas = document.getElementById("editor-canvas");
+  if (!overlay || !canvas) return;
+
+  canvas.innerHTML = "";
+  var svg;
+  if (fig.svgCode && fig.svgCode.indexOf("<svg") === 0) {
+    canvas.innerHTML = fig.svgCode;
+    svg = canvas.querySelector("svg");
+  } else {
+    svg = generaSVG(fig);
+    canvas.appendChild(svg);
+  }
+
+  if (svg) {
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "100%");
+    svg.id = "editor-svg-active";
+    svg.style.cursor = "crosshair";
+    rendiElementiTrascinabili(svg);
+  }
+
+  var info = document.getElementById("editor-info");
+  if (info) info.textContent = "Figura: " + fig.titolo + " | Clicca per selezionare, trascina per spostare";
+
+  overlay.style.display = "flex";
+  log("Editor aperto per figura " + (idx + 1), "success");
+}
+
+function rendiElementiTrascinabili(svg) {
+  var elementi = svg.querySelectorAll("rect, circle, ellipse, line, path, text, polygon");
+  var dragEl = null;
+  var dragOffset = {x: 0, y: 0};
+
+  for (var i = 0; i < elementi.length; i++) {
+    var el = elementi[i];
+    el.style.cursor = "move";
+    el.addEventListener("mousedown", function(e) {
+      e.stopPropagation();
+      if (editorStato.modo === 'seleziona' || editorStato.modo === 'trascina') {
+        dragEl = this;
+        selezionaElementoEditor(this);
+        var pt = svg.createSVGPoint();
+        pt.x = e.clientX; pt.y = e.clientY;
+        var svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+        dragOffset.x = svgP.x;
+        dragOffset.y = svgP.y;
+        editorStato.isDragging = true;
+      }
+    });
+  }
+
+  svg.addEventListener("mousemove", function(e) {
+    if (editorStato.isDragging && dragEl) {
+      e.preventDefault();
+      var pt = svg.createSVGPoint();
+      pt.x = e.clientX; pt.y = e.clientY;
+      var svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+      var dx = svgP.x - dragOffset.x;
+      var dy = svgP.y - dragOffset.y;
+      var tag = dragEl.tagName.toLowerCase();
+      if (tag === "rect") {
+        var x = parseFloat(dragEl.getAttribute("x") || 0) + dx;
+        var y = parseFloat(dragEl.getAttribute("y") || 0) + dy;
+        dragEl.setAttribute("x", x);
+        dragEl.setAttribute("y", y);
+      } else if (tag === "circle") {
+        var cx = parseFloat(dragEl.getAttribute("cx") || 0) + dx;
+        var cy = parseFloat(dragEl.getAttribute("cy") || 0) + dy;
+        dragEl.setAttribute("cx", cx);
+        dragEl.setAttribute("cy", cy);
+      } else if (tag === "ellipse") {
+        var cx = parseFloat(dragEl.getAttribute("cx") || 0) + dx;
+        var cy = parseFloat(dragEl.getAttribute("cy") || 0) + dy;
+        dragEl.setAttribute("cx", cx);
+        dragEl.setAttribute("cy", cy);
+      } else if (tag === "text") {
+        var x = parseFloat(dragEl.getAttribute("x") || 0) + dx;
+        var y = parseFloat(dragEl.getAttribute("y") || 0) + dy;
+        dragEl.setAttribute("x", x);
+        dragEl.setAttribute("y", y);
+      } else if (tag === "line") {
+        var x1 = parseFloat(dragEl.getAttribute("x1") || 0) + dx;
+        var y1 = parseFloat(dragEl.getAttribute("y1") || 0) + dy;
+        var x2 = parseFloat(dragEl.getAttribute("x2") || 0) + dx;
+        var y2 = parseFloat(dragEl.getAttribute("y2") || 0) + dy;
+        dragEl.setAttribute("x1", x1); dragEl.setAttribute("y1", y1);
+        dragEl.setAttribute("x2", x2); dragEl.setAttribute("y2", y2);
+      }
+      dragOffset.x = svgP.x;
+      dragOffset.y = svgP.y;
+    }
+  });
+
+  svg.addEventListener("mouseup", function() {
+    editorStato.isDragging = false;
+    dragEl = null;
+  });
+  svg.addEventListener("mouseleave", function() {
+    editorStato.isDragging = false;
+    dragEl = null;
+  });
+}
+
+function selezionaElementoEditor(el) {
+  if (editorStato.elementoSelezionato) {
+    editorStato.elementoSelezionato.style.stroke = editorStato.elementoSelezionato.getAttribute("data-old-stroke") || "";
+    editorStato.elementoSelezionato.style.strokeWidth = editorStato.elementoSelezionato.getAttribute("data-old-width") || "";
+  }
+  editorStato.elementoSelezionato = el;
+  el.setAttribute("data-old-stroke", el.getAttribute("stroke") || "");
+  el.setAttribute("data-old-width", el.getAttribute("stroke-width") || "");
+  el.style.stroke = "#c0392b";
+  el.style.strokeWidth = "3";
+  log("Selezionato: " + el.tagName, "info");
+}
+
+function editorSetModo(modo) {
+  editorStato.modo = modo;
+  var info = document.getElementById("editor-info");
+  if (info) info.textContent = "Modo: " + modo;
+  log("Modo: " + modo, "info");
+}
+
+function editorAggiungi(tipo) {
+  var svg = document.getElementById("editor-svg-active");
+  if (!svg) return;
+  var ns = "http://www.w3.org/2000/svg";
+  var el;
+  switch(tipo) {
+    case 'linea':
+      el = document.createElementNS(ns, "line");
+      el.setAttribute("x1","200"); el.setAttribute("y1","200");
+      el.setAttribute("x2","300"); el.setAttribute("y2","200");
+      el.setAttribute("stroke","#000"); el.setAttribute("stroke-width","1");
+      break;
+    case 'rettangolo':
+      el = document.createElementNS(ns, "rect");
+      el.setAttribute("x","200"); el.setAttribute("y","150");
+      el.setAttribute("width","80"); el.setAttribute("height","60");
+      el.setAttribute("fill","none"); el.setAttribute("stroke","#000");
+      break;
+    case 'cerchio':
+      el = document.createElementNS(ns, "circle");
+      el.setAttribute("cx","250"); el.setAttribute("cy","200");
+      el.setAttribute("r","30"); el.setAttribute("fill","none");
+      el.setAttribute("stroke","#000");
+      break;
+    case 'testo':
+      el = document.createElementNS(ns, "text");
+      el.setAttribute("x","250"); el.setAttribute("y","200");
+      el.setAttribute("font-family","Arial,sans-serif");
+      el.setAttribute("font-size","11"); el.setAttribute("fill","#000");
+      el.textContent = "Nuovo";
+      break;
+  }
+  if (el) {
+    svg.appendChild(el);
+    rendiElementiTrascinabili(svg);
+    selezionaElementoEditor(el);
+    log("Aggiunto " + tipo, "success");
+  }
+}
+
+function editorElimina() {
+  if (editorStato.elementoSelezionato) {
+    editorStato.elementoSelezionato.remove();
+    editorStato.elementoSelezionato = null;
+    log("Elemento eliminato", "warn");
+  }
+}
+
+function editorSalva() {
+  var svg = document.getElementById("editor-svg-active");
+  if (!svg || editorStato.figuraIdx === null) return;
+  var serializer = new XMLSerializer();
+  var code = serializer.serializeToString(svg);
+  figureData[editorStato.figuraIdx].svgCode = code;
+  figureData[editorStato.figuraIdx].motivazione += " (modificato editor)";
+  log("Modifiche salvate", "success");
+  renderFigureGrid();
+  renderCorrezioneGrid();
+  editorChiudi();
+}
+
+function editorChiudi() {
+  var overlay = document.getElementById("editor-overlay");
+  if (overlay) overlay.style.display = "none";
+  editorStato.figuraIdx = null;
+  editorStato.elementoSelezionato = null;
+  log("Editor chiuso", "info");
+}
+
+// ============================================================
+// UPLOAD FILE / ANALISI SCHIZZO
+// ============================================================
+function gestisciFile(input) {
+  var file = input.files[0];
+  if (!file) {
+    log("Nessun file selezionato", "warn");
+    return;
+  }
+  log("File selezionato: " + file.name + " (" + Math.round(file.size / 1024) + "KB)", "info");
+
+  var validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+  var maxSize = 5 * 1024 * 1024;
+
+  if (validTypes.indexOf(file.type) === -1) {
+    log("Formato non supportato: " + file.type, "error");
+    return;
+  }
+  if (file.size > maxSize) {
+    log("File troppo grande: " + Math.round(file.size / 1024) + "KB (max 5MB)", "error");
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = document.getElementById("img-preview");
+    img.src = e.target.result;
+    img.style.display = "block";
+    schizzoData = e.target.result;
+    document.getElementById("preview-schizzo").style.display = "block";
+    document.getElementById("drop-zone").style.display = "none";
+    log("Immagine caricata", "success");
+  };
+  reader.readAsDataURL(file);
+}
+
+function rimuoviSchizzo() {
+  document.getElementById("preview-schizzo").style.display = "none";
+  document.getElementById("drop-zone").style.display = "block";
+  document.getElementById("file-schizzo").value = "";
+  document.getElementById("img-preview").src = "";
+  schizzoData = null;
+  log("Schizzo rimosso", "info");
+}
+
+async function analizzaSchizzo() {
+  if (!schizzoData) {
+    log("Nessuno schizzo caricato", "error");
+    return;
+  }
+  log("Analisi schizzo con Groq Vision...", "info");
+  document.getElementById("testo-analisi").textContent = "Analisi in corso... attendere...";
+  document.getElementById("risultato-analisi").style.display = "block";
+
+  var prompt = "Analizza questo disegno tecnico/schizzo di brevetto. Descrivi:
+1. Gli oggetti principali e le loro forme
+2. I numeri di riferimento visibili
+3. Le parti e i componenti identificati
+4. Le viste presenti (esplosa, assieme, sezione, dettaglio)
+5. Suggerimenti per migliorare il disegno per deposito UIBM
+
+Rispondi in italiano, formato strutturato.";
+
+  try {
+    var data = await chiamaGroq([
+      { role: "user", content: [
+        { type: "text", text: prompt },
+        { type: "image_url", image_url: { url: schizzoData } }
+      ]}
+    ], CONFIG.MODELLI.visione, 2000);
+
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+      var analisi = data.choices[0].message.content;
+      document.getElementById("testo-analisi").textContent = analisi;
+      log("Analisi Vision completata", "success");
+    } else {
+      throw new Error("Risposta AI vuota");
+    }
+  } catch (err) {
+    log("Errore analisi Vision: " + err.message, "error");
+    var fallback = "Analisi automatica non disponibile (errore: " + err.message + ").\n\nSuggerimenti manuali:
+1. Verifica che l'immagine sia chiara e leggibile
+2. Controlla i numeri di riferimento (101, 102, etc.)
+3. Aggiungi vista esplosa se manca
+4. Inserisci sezione A-A per mostrare l'interno
+5. Dettaglia i contatti elettrici e magnetici";
+    document.getElementById("testo-analisi").textContent = fallback;
+  }
+}
+
+// ============================================================
+// VERIFICA UIBM
+// ============================================================
+function verificaUIBM() {
+  var risultati = [];
+  var score = 0;
+  var maxScore = 100;
+
+  var haArial = true;
+  for (var i = 0; i < figureData.length; i++) {
+    if (figureData[i].svgCode) {
+      var tmp = document.createElement("div");
+      tmp.innerHTML = figureData[i].svgCode;
+      var texts = tmp.querySelectorAll("text");
+      for (var t = 0; t < texts.length; t++) {
+        var font = texts[t].getAttribute("font-family") || "";
+        if (font.toLowerCase().indexOf("arial") === -1) haArial = false;
+      }
+    }
+  }
+  risultati.push({test: "Font Arial", ok: haArial, p: haArial ? 10 : 0});
+  score += haArial ? 10 : 0;
+
+  var bn = true;
+  for (var i = 0; i < figureData.length; i++) {
+    if (figureData[i].svgCode) {
+      var fills = figureData[i].svgCode.match(/fill="([^"]+)"/g);
+      if (fills) {
+        for (var f = 0; f < fills.length; f++) {
+          var col = fills[f].replace(/fill="/, "").replace(/"/, "");
+          if (col !== "none" && col !== "#000" && col !== "#000000" && col !== "black" && col !== "white" && col !== "#fff" && col !== "#ffffff") bn = false;
+        }
+      }
+    }
+  }
+  risultati.push({test: "Bianco e nero", ok: bn, p: bn ? 10 : 0});
+  score += bn ? 10 : 0;
+
+  var haNum = figureData.length > 0;
+  for (var i = 0; i < figureData.length; i++) {
+    if (!figureData[i].elementi || figureData[i].elementi.length === 0) haNum = false;
+  }
+  risultati.push({test: "Numeri riferimento", ok: haNum, p: haNum ? 10 : 0});
+  score += haNum ? 10 : 0;
+
+  var tabOK = figureData.length > 0;
+  for (var i = 0; i < figureData.length; i++) {
+    if (!figureData[i].elementi || figureData[i].elementi.length < 2) tabOK = false;
+  }
+  risultati.push({test: "Tabelle elementi", ok: tabOK, p: tabOK ? 10 : 0});
+  score += tabOK ? 10 : 0;
+
+  var haEsp = false;
+  for (var i = 0; i < figureData.length; i++) if (figureData[i].tipo === "esplosa") haEsp = true;
+  risultati.push({test: "Vista esplosa", ok: haEsp, p: haEsp ? 10 : 0});
+  score += haEsp ? 10 : 0;
+
+  var haAss = false;
+  for (var i = 0; i < figureData.length; i++) if (figureData[i].tipo === "assieme") haAss = true;
+  risultati.push({test: "Vista assieme", ok: haAss, p: haAss ? 10 : 0});
+  score += haAss ? 10 : 0;
+
+  var haSec = false;
+  for (var i = 0; i < figureData.length; i++) if (figureData[i].tipo === "sezione") haSec = true;
+  risultati.push({test: "Sezione A-A", ok: haSec, p: haSec ? 10 : 0});
+  score += haSec ? 10 : 0;
+
+  var haDet = false;
+  for (var i = 0; i < figureData.length; i++) if (figureData[i].tipo === "dettaglio") haDet = true;
+  risultati.push({test: "Dettaglio", ok: haDet, p: haDet ? 10 : 0});
+  score += haDet ? 10 : 0;
+
+  var svgVal = true;
+  for (var i = 0; i < figureData.length; i++) {
+    if (figureData[i].svgCode && (figureData[i].svgCode.indexOf("<svg") !== 0 || figureData[i].svgCode.indexOf("</svg>") < 0)) svgVal = false;
+  }
+  risultati.push({test: "SVG validi", ok: svgVal, p: svgVal ? 10 : 0});
+  score += svgVal ? 10 : 0;
+
+  var haForme = false;
+  for (var i = 0; i < figureData.length; i++) if (figureData[i].tipo === "generalizzazione") haForme = true;
+  risultati.push({test: "Generalizzazione forme", ok: haForme, p: haForme ? 10 : 0});
+  score += haForme ? 10 : 0;
+
+  var haApp = false;
+  for (var i = 0; i < figureData.length; i++) if (figureData[i].tipo === "applicazione") haApp = true;
+  risultati.push({test: "Applicazione", ok: haApp, p: haApp ? 10 : 0});
+  score += haApp ? 10 : 0;
+
+  return {risultati: risultati, score: score, maxScore: maxScore, perc: Math.round((score / maxScore) * 100)};
+}
+
+function renderVerificaUIBM() {
+  var v = verificaUIBM();
+  var box = document.getElementById("verifica-box");
+  if (!box) return;
+
+  var html = '<div style="text-align:center;margin-bottom:15px;">';
+  html += '<div style="font-size:32px;color:' + (v.perc >= 80 ? '#27ae60' : (v.perc >= 50 ? '#e67e22' : '#c0392b')) + ';">' + v.perc + '%</div>';
+  html += '<div style="font-size:12px;color:#8b7355;">Conformita UIBM</div>';
+  html += '<div style="width:100%;height:6px;background:#e0d5c0;border-radius:3px;margin-top:8px;">';
+  html += '<div style="width:' + v.perc + '%;height:100%;background:' + (v.perc >= 80 ? '#27ae60' : (v.perc >= 50 ? '#e67e22' : '#c0392b')) + ';border-radius:3px;transition:width 0.5s;"></div>';
+  html += '</div></div>';
+
+  for (var i = 0; i < v.risultati.length; i++) {
+    var r = v.risultati[i];
+    var col = r.ok ? '#27ae60' : '#c0392b';
+    var bg = r.ok ? 'rgba(39,174,96,0.05)' : 'rgba(192,57,39,0.05)';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:6px;margin:4px 0;background:' + bg + ';">';
+    html += '<span style="color:' + col + '">' + r.test + '</span>';
+    html += '<span style="font-weight:bold;font-size:12px;padding:4px 10px;border-radius:12px;background:rgba(201,168,76,0.1);color:' + col + ';">' + (r.ok ? 'OK' : 'KO') + '</span>';
+    html += '</div>';
+  }
+
+  box.innerHTML = html;
+  document.getElementById("uibm-perc").textContent = v.perc + "%";
+  log("Verifica UIBM: " + v.perc + "%", v.perc >= 80 ? "success" : (v.perc >= 50 ? "warn" : "error"));
+}
+
+// ============================================================
+// EXPORT / DOWNLOAD
+// ============================================================
+function downloadSVG() {
+  var sc = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  for (var i = 0; i < figureData.length; i++) {
+    var fig = figureData[i];
+    if (fig.svgCode && fig.svgCode.indexOf("<svg") === 0) {
+      sc += fig.svgCode + "\n\n";
+    } else {
+      var svg = generaSVG(fig);
+      sc += new XMLSerializer().serializeToString(svg) + "\n\n";
+    }
+  }
+  var blob = new Blob([sc], {type: "image/svg+xml"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "brevettiamo_figure.svg";
+  a.click(); URL.revokeObjectURL(url);
+  log("SVG scaricato", "success");
+}
+
+function svgToPng(svgCode) {
+  return new Promise(function(resolve) {
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
+    var img = new Image();
+    var svgBlob = new Blob([svgCode], {type: "image/svg+xml;charset=utf-8"});
+    var url = URL.createObjectURL(svgBlob);
+    img.onload = function() {
+      canvas.width = 400;
+      canvas.height = 300;
+      ctx.drawImage(img, 0, 0, 400, 300);
+      var pngData = canvas.toDataURL("image/png");
+      URL.revokeObjectURL(url);
+      resolve(pngData);
+    };
+    img.onerror = function() {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    };
+    img.src = url;
+  });
+}
+
+async function downloadPDF() {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF();
+  doc.setFont("helvetica"); doc.setFontSize(16);
+  doc.text("BrevettIAmo - Figure Tecniche UIBM", 105, 20, {align: "center"});
+  var y = 40;
+
+  for (var i = 0; i < figureData.length; i++) {
+    var fig = figureData[i];
+    doc.setFontSize(12); doc.text(fig.titolo, 20, y); y += 10;
+
+    var svgCode = "";
+    if (fig.svgCode && fig.svgCode.indexOf("<svg") === 0) {
+      svgCode = fig.svgCode;
+    } else {
+      var svg = generaSVG(fig);
+      svgCode = new XMLSerializer().serializeToString(svg);
+    }
+
+    if (svgCode) {
+      try {
+        var pngData = await svgToPng(svgCode);
+        if (pngData) {
+          doc.addImage(pngData, "PNG", 20, y, 170, 127);
+          y += 140;
+        }
+      } catch (e) {
+        log("Errore conversione SVG: " + e.message, "error");
+      }
+    }
+
+    if (fig.elementi && fig.elementi.length > 0) {
+      var h = [["Numero", "Descrizione"]];
+      var d = [];
+      for (var j = 0; j < fig.elementi.length; j++) d.push([fig.elementi[j].num, fig.elementi[j].nome]);
+      doc.autoTable({head: h, body: d, startY: y, margin: {left: 20}});
+      y = doc.lastAutoTable.finalY + 20;
+    }
+    if (y > 250) { doc.addPage(); y = 20; }
+  }
+
+  doc.save("brevettiamo_UIBM.pdf");
+  log("PDF scaricato", "success");
+}
+
+function downloadZIP() {
+  log("ZIP richiede JSZip. Usa SVG o PDF.", "warn");
+  downloadSVG();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+log("BrevettIAmo Disegni pronto. Groq + SVG Intelligente.", "success");
+log("Flusso: Descrizione -> Elaborazione -> Risultato -> Accetta/Revisione -> Correzione -> Output", "info");
+</script>
+</body>
+</html>
