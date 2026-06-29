@@ -62,7 +62,7 @@ const SERVIZI = [
         prezzo: 'Incluso',
         prezzoNote: "in L'OCCHIO",
         cta: 'Inizia Ora',
-        ctaLink: 'welcome.html?servizio=servizio-tavole',
+        ctaLink: 'regista/index.html?servizio=servizio-tavole',
         ctaDisabled: false
     },
     {
@@ -382,7 +382,7 @@ const SERVIZI = [
         prezzo: '99',
         prezzoNote: '/disegno',
         cta: 'Inizia Ora',
-        ctaLink: 'welcome.html?servizio=servizio-cad',
+        ctaLink: 'regista/index.html?servizio=servizio-cad',
         ctaDisabled: false
     },
     {
