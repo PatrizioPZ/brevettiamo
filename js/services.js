@@ -14,7 +14,7 @@ const SERVIZI = [
         prezzo: '299',
         prezzoNote: '/primo deposito',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-deposito',
         ctaDisabled: false
     },
     {
@@ -30,7 +30,7 @@ const SERVIZI = [
         prezzo: '199',
         prezzoNote: '/ricerca',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+       ctaLink: 'REGISTA/index.html?servizio=servizio-priorart',
         ctaDisabled: false
     },
     {
@@ -46,7 +46,7 @@ const SERVIZI = [
         prezzo: '149',
         prezzoNote: '/set rivendicazioni',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-rivendicazioni',
         ctaDisabled: false
     },
     {
@@ -94,7 +94,7 @@ const SERVIZI = [
         prezzo: '15',
         prezzoNote: '/ricerca',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-priorart-base',
         ctaDisabled: false
     },
     {
@@ -110,7 +110,7 @@ const SERVIZI = [
         prezzo: '23',
         prezzoNote: '/ricerca',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-priorart-avanzata',
         ctaDisabled: false
     },
     {
@@ -126,7 +126,7 @@ const SERVIZI = [
         prezzo: '18',
         prezzoNote: '/analisi',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-analisi-brevettabilita',
         ctaDisabled: false
     },
     {
@@ -158,11 +158,11 @@ const SERVIZI = [
         prezzo: '47',
         prezzoNote: '/claims',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+       ctaLink: 'REGISTA/index.html?servizio=servizio-claims-pro',
         ctaDisabled: false
     },
     {
-        id: 'servizio-traduzione-claims',
+        id: 'Traduzione Claims',
         nome: 'Traduzione Claims',
         status: 'BETA',
         statusClass: 'status-beta',
@@ -174,7 +174,7 @@ const SERVIZI = [
         prezzo: '14',
         prezzoNote: '/traduzione',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=Traduzione Claims',
         ctaDisabled: false
     },
     {
@@ -190,7 +190,7 @@ const SERVIZI = [
         prezzo: '35',
         prezzoNote: '/mese',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-monitoraggio-concorrenza',
         ctaDisabled: false
     },
     {
@@ -206,7 +206,7 @@ const SERVIZI = [
         prezzo: '59',
         prezzoNote: '/sessione',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-consulenza',
         ctaDisabled: false
     },
     {
@@ -222,7 +222,7 @@ const SERVIZI = [
         prezzo: '29',
         prezzoNote: '/analisi',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-analisi-tecnica',
         ctaDisabled: false
     },
     {
@@ -238,11 +238,11 @@ const SERVIZI = [
         prezzo: '23',
         prezzoNote: '/ricerca',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-ricerca-figurativa',
         ctaDisabled: false
     },
     {
-        id: 'servizio-analisi-nullita',
+       id: 'Analisi Nullita',
         nome: 'Analisi Nullita',
         status: 'BETA',
         statusClass: 'status-beta',
@@ -254,7 +254,7 @@ const SERVIZI = [
         prezzo: '35',
         prezzoNote: '/analisi',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=Analisi Nullita',
         ctaDisabled: false
     },
     {
@@ -270,11 +270,11 @@ const SERVIZI = [
         prezzo: '47',
         prezzoNote: '/opposizione',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-opposizione',
         ctaDisabled: false
     },
     {
-        id: 'servizio-licensing',
+        id: 'Servizio-Licensing',
         nome: 'Strategia Licensing',
         status: 'BETA',
         statusClass: 'status-beta',
@@ -286,7 +286,7 @@ const SERVIZI = [
         prezzo: '59',
         prezzoNote: '/strategia',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=Servizio-Licensing',
         ctaDisabled: false
     },
     {
@@ -302,7 +302,7 @@ const SERVIZI = [
         prezzo: '99',
         prezzoNote: '/valutazione',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-valorizzazione',
         ctaDisabled: false
     },
     {
@@ -318,7 +318,7 @@ const SERVIZI = [
         prezzo: '149',
         prezzoNote: '/due-diligence',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-due-diligence',
         ctaDisabled: false
     },
     {
@@ -334,7 +334,7 @@ const SERVIZI = [
         prezzo: '79',
         prezzoNote: '/analisi',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-freedom-to-operate',
         ctaDisabled: false
     },
     {
@@ -350,7 +350,7 @@ const SERVIZI = [
         prezzo: '18',
         prezzoNote: '/ricerca',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-patentability',
         ctaDisabled: false
     },
     {
@@ -366,7 +366,7 @@ const SERVIZI = [
         prezzo: '59',
         prezzoNote: '/analisi',
         cta: 'Inizia Ora',
-        ctaLink: 'REGISTA/index.html?servizio=
+        ctaLink: 'REGISTA/index.html?servizio=servizio-landscape',
         ctaDisabled: false
     },
     {
