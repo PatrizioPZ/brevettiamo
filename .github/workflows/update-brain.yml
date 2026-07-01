@@ -53,7 +53,7 @@ jobs:
 
           def cerca_brevetti_it(token, anno_inizio, anno_fine, range_inizio=1):
               headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
-              query = f"pn=IT and pd within {anno_inizio}0101 {anno_fine}1231"
+              query = f"pa=IT and pd within {anno_inizio}0101 {anno_fine}1231"
               params = {"q": query, "Range": f"{range_inizio}-{range_inizio + 24}"}
               try:
                   r = requests.get(EPO_API_URL, headers=headers, params=params, timeout=60)
