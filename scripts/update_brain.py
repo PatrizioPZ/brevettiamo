@@ -265,9 +265,8 @@ def main():
 
         range_inizio += 25
         time.sleep(1)  # Rispetta rate limit EPO
-
-    print(f"
-Totale brevetti estratti: {len(tutti_brevetti)}")
+        
+print(f"Totale brevetti estratti: {len(tutti_brevetti)}")
 
     # Aggiorna database
     if tutti_brevetti:
