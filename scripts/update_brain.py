@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 BREVETTIAMO - Update Brain
@@ -267,7 +266,7 @@ def main():
         range_inizio += 25
         time.sleep(1)  # Rispetta rate limit EPO
 
-    print(f")
+    print(f"
 Totale brevetti estratti: {len(tutti_brevetti)}")
 
     # Aggiorna database
