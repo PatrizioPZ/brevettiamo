@@ -6,6 +6,7 @@
 <title>Tavole Tecniche UIBM</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+<script src="js/contesto-ai.js"></script>
 <style>
 :root {
   --primary: #c9a84c;
@@ -358,6 +359,32 @@ tr:nth-child(even) { background: rgba(201, 168, 76, 0.05); }
 
 <script>
 // ============================================================
+// NAVIGAZIONE STEPS (fix funzione mancante)
+// ============================================================
+function goToStep(stepName) {
+    var steps = {
+        'descrizione': 'screen-descrizione',
+        'elaborazione': 'screen-elaborazione',
+        'risultato': 'screen-risultato',
+        'correzione': 'screen-correzione'
+    };
+
+    // Nascondi tutti gli schermi
+    for (var key in steps) {
+        var el = document.getElementById(steps[key]);
+        if (el) el.classList.add('hidden');
+    }
+
+    // Mostra lo schermo richiesto
+    var target = document.getElementById(steps[stepName]);
+    if (target) {
+        target.classList.remove('hidden');
+        currentScreen = stepName;
+        updateStepIndicator(stepName);
+    }
+}
+
+// ============================================================
 // CONFIGURAZIONE GROQ
 // ============================================================
 const CONFIG = {
@@ -621,7 +648,24 @@ async function chiamaGroq(messages, modello, maxTokens) {
 // ============================================================
 async function analizzaInvenzioneAI(descrizione, rivendicazioni) {
   log("Analisi AI in corso...", "info");
-  var prompt = `Analizza questa invenzione e determina:
+
+  // Genera prompt con contesto AI se disponibile
+  var promptContesto = "";
+  try {
+    if (typeof ContestoAI !== 'undefined' && ContestoAI.database) {
+      var categoria = ContestoAI.trovaCategoria(descrizione + ' ' + rivendicazioni);
+      if (categoria) {
+        promptContesto = ContestoAI.generaPromptSistema(categoria);
+        log("Prompt arricchito con contesto UIBM", "success");
+      }
+    }
+  } catch (e) {
+    log("Contesto AI non disponibile, uso prompt base", "warn");
+  }
+
+  var prompt = promptContesto + `
+
+Analizza questa invenzione e determina:
 1. Quante figure tecniche servono (da 1 a 10) per rappresentare completamente l'invenzione secondo gli standard UIBM
 2. Per ogni figura, specifica: tipo (esplosa/assieme/sezione/dettaglio/applicazione/generalizzazione), titolo, elementi principali, motivazione
 3. Estrai tutti i numeri di riferimento menzionati
@@ -2144,8 +2188,43 @@ function downloadZIP() {
 }
 
 // ============================================================
+// CARICAMENTO DATI DA DESCRIZIONE
+// ============================================================
+function caricaDatiDescrizione() {
+    var descrizione = localStorage.getItem('brevettiamo_descrizione') || '';
+    var note = localStorage.getItem('brevettiamo_note') || '';
+
+    if (descrizione) {
+        document.getElementById('descrizione').value = descrizione;
+        log('Descrizione caricata da localStorage', 'info');
+    }
+    if (note) {
+        // Aggiungi note alla descrizione o gestiscile separatamente
+        log('Note caricate: ' + note.substring(0, 50) + '...', 'info');
+    }
+
+    return { descrizione: descrizione, note: note };
+}
+
+// ============================================================
 // INIT
 // ============================================================
+// Carica dati all'avvio
+var datiDescrizione = caricaDatiDescrizione();
+
+// Inizializza contesto AI se disponibile
+if (typeof ContestoAI !== 'undefined') {
+    ContestoAI.init().then(function() {
+        log('Contesto AI inizializzato', 'success');
+        var categoria = ContestoAI.trovaCategoria(datiDescrizione.descrizione + ' ' + datiDescrizione.note);
+        if (categoria) {
+            log('Categoria rilevata: ' + categoria, 'info');
+        }
+    }).catch(function(e) {
+        log('Contesto AI non disponibile: ' + e.message, 'warn');
+    });
+}
+
 log("BrevettIAmo Disegni pronto. Groq + SVG Intelligente.", "success");
 log("Flusso: Descrizione -> Elaborazione -> Risultato -> Accetta/Revisione -> Correzione -> Output", "info");
 </script>
