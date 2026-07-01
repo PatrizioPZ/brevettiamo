@@ -162,6 +162,7 @@
     <!-- Script di configurazione e motore IA -->
     <script src="config.js"></script>
     <script src="js/prompts.js"></script>
+    <script src="js/contesto-ai.js"></script>
     <script src="js/ia-engine.js"></script>
     
     <script>
@@ -238,7 +239,22 @@
             const engine = new IAEngine();
             
             try {
-                const risultato = await engine.chiama(servizioId, descrizione, files, 'testo');
+                // Genera prompt con contesto AI se disponibile
+                let promptRichiesta = descrizione;
+                let promptSistema = null;
+
+                try {
+                    const categoria = ContestoAI.trovaCategoria(descrizione + ' ' + (note || ''));
+                    if (categoria) {
+                        promptSistema = ContestoAI.generaPromptSistema(categoria);
+                        statusDetail.textContent = 'Prompt arricchito con contesto UIBM';
+                        console.log('[ContestoAI] Prompt generato con contesto');
+                    }
+                } catch (e) {
+                    console.warn('[ContestoAI] Errore generazione prompt:', e);
+                }
+
+                const risultato = await engine.chiama(servizioId, descrizione, files, 'testo', promptSistema);
                 
                 clearInterval(progressInterval);
                 
