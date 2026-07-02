@@ -20,7 +20,7 @@ class IAEngine {
         
         for (let tentativo = 0; tentativo <= this.maxRetry; tentativo++) {
             try {
-                console.log('Chiamata IA - Tentativo ' + (tentativo + 1) + '/' + (this.maxRetry + 1));
+                console.log('Chiamata IA - Tentativo \' + (tentativo + 1) + '/' + (this.maxRetry + 1));
                 
                 const risultato = await this._eseguiChiamata(servizioId, descrizione, files, tipoModello);
                 
@@ -43,11 +43,11 @@ class IAEngine {
                     timestamp: new Date().toISOString()
                 });
                 
-                console.warn('Tentativo ' + (tentativo + 1) + ' fallito:', errore.message);
+                console.warn('Tentativo \' + (tentativo + 1) + ' fallito:', errore.message);
                 
                 if (tentativo < this.maxRetry) {
                     const attesa = Math.pow(2, tentativo) * 1000;
-                    console.log('Attesa ' + attesa + 'ms prima del retry...');
+                    console.log('Attesa \' + attesa + 'ms prima del retry...');
                     await this._sleep(attesa);
                     
                     if (tentativo === 1) tipoModello = 'bilanciato';
@@ -72,11 +72,11 @@ class IAEngine {
         
         // Mappa servizio -> contesto per l'IA
         const CONTESTO_SERVIZIO = {
-            'servizio-priorart': 'Esegui una ricerca Prior Art completa. Analizza la descrizione dell'invenzione, identifica parole chiave tecniche, e cerca nella banca dati EPO/USPTO/WIPO documenti simili precedenti. Reporta: titolo invenzione, classificazioni IPC/CPC, parole chiave, documenti rilevanti trovati (titolo, numero brevetto, data, rilevanza), e analisi della novita.',
-            'servizio-priorart-base': 'Esegui una ricerca Prior Art base nelle principali banche dati (EP, US, WO). Identifica documenti simili e valuta la novita dell'invenzione.',
+            'servizio-priorart': 'Esegui una ricerca Prior Art completa. Analizza la descrizione dell\'invenzione, identifica parole chiave tecniche, e cerca nella banca dati EPO/USPTO/WIPO documenti simili precedenti. Reporta: titolo invenzione, classificazioni IPC/CPC, parole chiave, documenti rilevanti trovati (titolo, numero brevetto, data, rilevanza), e analisi della novita.',
+            'servizio-priorart-base': 'Esegui una ricerca Prior Art base nelle principali banche dati (EP, US, WO). Identifica documenti simili e valuta la novita dell\'invenzione.',
             'servizio-priorart-avanzata': 'Esegui una ricerca Prior Art avanzata approfondita in 15+ banche dati globali. Analisi famiglie brevettuali, mappa concorrenti, citazioni, e white spaces. Report strategico completo.',
             'servizio-rivendicazioni': 'Redigi rivendicazioni brevettuali professionali. Dalla descrizione tecnica estrai le caratteristiche essenziali e redigi rivendicazioni indipendenti e dipendenti in formato legale italiano, conformi UIBM.',
-            'servizio-claims-base': 'Redigi rivendicazioni principali indipendenti. Definisci il campo di protezione essenziale dell'invenzione.',
+            'servizio-claims-base': 'Redigi rivendicazioni principali indipendenti. Definisci il campo di protezione essenziale dell\'invenzione.',
             'servizio-claims-pro': 'Redigi rivendicazioni complete: indipendenti + dipendenti. Strategia di protezione gerarchica con claims di fallback.',
             'servizio-traduzione-claims': 'Traduci le rivendicazioni brevettuali in inglese tecnico-legale per depositi internazionali (PCT, EPO).',
             'servizio-deposito': 'Prepara documentazione completa per deposito UIBM: descrizione tecnica, rivendicazioni, tavole, abstract. Verifica conformita formale.',
@@ -105,7 +105,7 @@ class IAEngine {
         const messages = [
             {
                 role: 'system',
-                content: 'Sei un assistente esperto in proprieta intellettuale. ' + contestoServizio + ' Rispondi sempre in italiano. Genera output in formato HTML strutturato con sezioni chiare, titoli, elenchi puntati. Non usare markdown, solo HTML. Se il servizio richiede ricerca in banche dati, simula la ricerca e presenta risultati realistici basati sulla descrizione fornita.'
+                content: 'Sei un assistente esperto in proprieta intellettuale. \' + contestoServizio + ' Rispondi sempre in italiano. Genera output in formato HTML strutturato con sezioni chiare, titoli, elenchi puntati. Non usare markdown, solo HTML. Se il servizio richiede ricerca in banche dati, simula la ricerca e presenta risultati realistici basati sulla descrizione fornita.'
             },
             {
                 role: 'user',
@@ -114,7 +114,7 @@ class IAEngine {
         ];
         
         if (files && files.length > 0) {
-            const filesDesc = files.map(f => '[File: ' + f.nome + ', tipo: ' + f.tipo + ']').join('\n');
+            const filesDesc = files.map(f => '[File: \' + f.nome + ', tipo: ' + f.tipo + \']').join('\n');
             messages[1].content += '\n\nFile allegati:\n' + filesDesc;
         }
         
@@ -128,7 +128,7 @@ class IAEngine {
             const response = await fetch(this.proxyUrl, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type\': 'application/json'
                 },
                 body: JSON.stringify({
                     model: modello,
@@ -143,7 +143,7 @@ class IAEngine {
             
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error('Proxy errore ' + response.status + ': ' + (errorData.error?.message || response.statusText));
+                throw new Error('Proxy errore \' + response.status + ': ' + (errorData.error?.message || response.statusText));
             }
             
             const data = await response.json();
