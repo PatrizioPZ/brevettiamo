@@ -177,6 +177,7 @@ body {
     .servizi-grid { grid-template-columns: 1fr; }
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -221,35 +222,155 @@ body {
 
 <script>
 const SERVIZI = {
-    'servizio-tavole': {
-        nome: 'Tavole Tecniche',
-        descrizione: 'Generazione tavole tecniche in formato SVG',
-        icona: 'T',
+    'servizio-deposito': {
+        nome: 'Deposito Brevetto',
+        descrizione: 'Preparazione e deposito completo presso l'UIBM. Documentazione tecnica, rivendicazioni e tavole incluse.',
+        icona: 'D',
         colore: '#8b0000'
     },
-    'servizio-cad': {
-        nome: 'Disegni CAD Pro',
-        descrizione: 'Disegni professionali in formato CAD',
-        icona: 'D',
-        colore: '#2c5f2d'
-    },
-    'servizio-ricerca': {
+    'servizio-priorart': {
         nome: 'Ricerca Prior Art',
-        descrizione: 'Analisi stato dell\'arte',
+        descrizione: 'Ricerca completa in database mondiali per verificare la novita della tua invenzione prima del deposito.',
         icona: 'R',
         colore: '#1a5276'
     },
     'servizio-rivendicazioni': {
         nome: 'Rivendicazioni',
-        descrizione: 'Stesura rivendicazioni brevettuali',
+        descrizione: 'Redazione professionale delle rivendicazioni brevettuali. La parte piu importante del tuo brevetto.',
         icona: 'V',
         colore: '#6c3483'
     },
-    'servizio-report': {
-        nome: 'Report Completo',
-        descrizione: 'Report tecnico-brevettuale',
-        icona: 'P',
+    'servizio-tavole': {
+        nome: 'Tavole Tecniche',
+        descrizione: 'Generazione tavole tecniche in formato SVG. Pronti per UIBM, pubblicazioni e presentazioni.',
+        icona: 'T',
+        colore: '#8b0000'
+    },
+    'servizio-monitoraggio': {
+        nome: 'Monitoraggio',
+        descrizione: 'Monitoraggio scadenze, rinnovi, opposizioni e concorrenti. Alert automatici via email e SMS.',
+        icona: 'M',
         colore: '#7d6608'
+    },
+    'servizio-priorart-base': {
+        nome: 'Ricerca Prior Art Base',
+        descrizione: 'Ricerca essenziale nelle banche dati principali (EP, US, WO) per verificare la novita della tua invenzione.',
+        icona: 'R',
+        colore: '#1a5276'
+    },
+    'servizio-priorart-avanzata': {
+        nome: 'Ricerca Prior Art Avanzata',
+        descrizione: 'Ricerca approfondita in 15+ banche dati globali. Include analisi di famiglie brevettuali e mappa concorrenti.',
+        icona: 'R+',
+        colore: '#1a5276'
+    },
+    'servizio-analisi-brevettabilita': {
+        nome: 'Analisi Brevettabilita',
+        descrizione: 'Valutazione completa sui 3 criteri legali: novita, attivita inventiva, applicabilita industriale.',
+        icona: 'A',
+        colore: '#2c5f2d'
+    },
+    'servizio-claims-base': {
+        nome: 'Redazione Claims Base',
+        descrizione: 'Redazione delle rivendicazioni principali (indipendenti) per definire il campo di protezione del tuo brevetto.',
+        icona: 'C',
+        colore: '#6c3483'
+    },
+    'servizio-claims-pro': {
+        nome: 'Redazione Claims Pro',
+        descrizione: 'Redazione completa di rivendicazioni indipendenti + dipendenti. Strategia di protezione gerarchica.',
+        icona: 'C+',
+        colore: '#6c3483'
+    },
+    'servizio-traduzione-claims': {
+        nome: 'Traduzione Claims',
+        descrizione: 'Traduzione professionale delle rivendicazioni in inglese, francese, tedesco o spagnolo. Certificata per depositi internazionali.',
+        icona: 'Tr',
+        colore: '#1a5276'
+    },
+    'servizio-monitoraggio-concorrenza': {
+        nome: 'Monitoraggio Concorrenza',
+        descrizione: 'Sorveglianza attiva dei brevetti dei concorrenti in 5 settori tecnologici. Alert automatici via email.',
+        icona: 'Mc',
+        colore: '#7d6608'
+    },
+    'servizio-consulenza': {
+        nome: 'Consulenza 1:1',
+        descrizione: 'Sessione video 30 min con un esperto brevettuale. Domande, strategia, dubbi, next steps.',
+        icona: 'C1',
+        colore: '#2c5f2d'
+    },
+    'servizio-analisi-tecnica': {
+        nome: 'Analisi Tecnica',
+        descrizione: 'Valutazione tecnica approfondita della tua invenzione. Analisi di fattibilita e benchmark tecnologico.',
+        icona: 'At',
+        colore: '#2c5f2d'
+    },
+    'servizio-ricerca-figurativa': {
+        nome: 'Ricerca Figurativa',
+        descrizione: 'Ricerca di design e marchi simili alla tua invenzione. Include banche dati figurative EUIPO, USPTO, WIPO.',
+        icona: 'Rf',
+        colore: '#1a5276'
+    },
+    'servizio-analisi-nullita': {
+        nome: 'Analisi Nullita',
+        descrizione: 'Valutazione della validita di un brevetto esistente. Ricerca di elementi che potrebbero invalidare un brevetto concorrente.',
+        icona: 'N',
+        colore: '#8b0000'
+    },
+    'servizio-opposizione': {
+        nome: 'Preparazione Opposizione',
+        descrizione: 'Preparazione completa di un opposizione a brevetto. Raccolta prove, redazione argomentazioni, e presentazione all UIBM.',
+        icona: 'O',
+        colore: '#8b0000'
+    },
+    'servizio-licensing': {
+        nome: 'Strategia Licensing',
+        descrizione: 'Analisi delle opportunita di licenza per il tuo brevetto. Mappa dei potenziali licensee e bozza contratto.',
+        icona: 'L',
+        colore: '#7d6608'
+    },
+    'servizio-valorizzazione': {
+        nome: 'Valorizzazione Brevetto',
+        descrizione: 'Valutazione economica del tuo brevetto. Metodi: costo, mercato, reddito. Report per investitori o cessione.',
+        icona: 'Val',
+        colore: '#7d6608'
+    },
+    'servizio-due-diligence': {
+        nome: 'Due Diligence IP',
+        descrizione: 'Analisi completa del portfolio IP di un azienda target. Per M&A, investimenti, o partnership.',
+        icona: 'DD',
+        colore: '#1a5276'
+    },
+    'servizio-freedom-to-operate': {
+        nome: 'Freedom to Operate',
+        descrizione: 'Verifica che il tuo prodotto non violi brevetti esistenti. Ricerca in banche dati mondiali + analisi legale.',
+        icona: 'FTO',
+        colore: '#2c5f2d'
+    },
+    'servizio-patentability': {
+        nome: 'Patentability Search',
+        descrizione: 'Ricerca brevettuale in stile americano. Focus su prior art in inglese. Include analisi di citazioni e famiglie brevettuali.',
+        icona: 'PS',
+        colore: '#1a5276'
+    },
+    'servizio-landscape': {
+        nome: 'Landscape Analysis',
+        descrizione: 'Mappa tecnologica completa di un settore. Trend, concorrenti, white spaces, e opportunita. Report strategico 50+ pagine.',
+        icona: 'La',
+        colore: '#2c5f2d'
+    },
+    'servizio-cad': {
+        nome: 'Disegno CAD Professionale',
+        descrizione: 'Creazione di disegni tecnici CAD 2D/3D per brevetti. Formati: DWG, STEP, IGES. Pronti per UIBM e produzione.',
+        icona: 'CAD',
+        colore: '#2c5f2d'
+    },
+    'servizio-legale-base': {
+        nome: 'Supporto Legale Base',
+        descrizione: 'Consulenza legale su contratti IP (NDA, licenze, cessioni). Revisione di 1 contratto. Note e raccomandazioni.',
+        icona: 'Leg',
+        colore: '#6c3483'
     }
 };
 
