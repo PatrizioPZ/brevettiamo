@@ -400,8 +400,8 @@ const {data,error:authError}=await supabaseClient.auth.signInWithPassword({email
 if(authError)throw authError;
 
 // Check admin role
-const {data:profile}=await supabaseClient.from('profiles').select('role').eq('id',data.user.id).single();
-if(!profile||profile.role!=='admin'){
+const {data:profile}=await supabaseClient.from('utenti').select('ruolo').eq('email',data.user.email).single();
+if(!profile||profile.ruolo!=='admin'){
 await supabaseClient.auth.signOut();
 throw new Error('Non autorizzato');
 }
