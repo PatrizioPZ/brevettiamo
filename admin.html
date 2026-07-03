@@ -359,7 +359,7 @@ body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-he
 <script>
 const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
 const SUPABASE_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
-const supabase=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let currentUser=null;
 let currentTab='dashboard';
@@ -396,13 +396,13 @@ const password=document.getElementById('login-password').value;
 const error=document.getElementById('login-error');
 
 try{
-const {data,error:authError}=await supabase.auth.signInWithPassword({email,password});
+const {data,error:authError}=await supabaseClient.auth.signInWithPassword({email,password});
 if(authError)throw authError;
 
 // Check admin role
-const {data:profile}=await supabase.from('profiles').select('role').eq('id',data.user.id).single();
+const {data:profile}=await supabaseClient.from('profiles').select('role').eq('id',data.user.id).single();
 if(!profile||profile.role!=='admin'){
-await supabase.auth.signOut();
+await supabaseClient.auth.signOut();
 throw new Error('Non autorizzato');
 }
 
@@ -422,7 +422,7 @@ console.error(e);
 }
 
 function doLogout(){
-supabase.auth.signOut();
+supabaseClient.auth.signOut();
 location.reload();
 }
 
@@ -442,16 +442,16 @@ if(tab==='users')loadUsers();
 async function loadAllData(){
 try{
 // Load from Supabase
-const {data:srv}=await supabase.from('services').select('*');
+const {data:srv}=await supabaseClient.from('services').select('*');
 if(srv)SRV_DATA=srv;
 
-const {data:oc}=await supabase.from('occhio_services').select('*');
+const {data:oc}=await supabaseClient.from('occhio_services').select('*');
 if(oc)OC_DATA=oc;
 
-const {data:pr}=await supabase.from('pricing').select('*');
+const {data:pr}=await supabaseClient.from('pricing').select('*');
 if(pr)PR_DATA=pr;
 
-const {data:stats}=await supabase.from('platform_stats').select('*').single();
+const {data:stats}=await supabaseClient.from('platform_stats').select('*').single();
 if(stats){
 document.getElementById('stat-users').value=stats.beta_testers||127;
 document.getElementById('stat-hours').value=stats.hours_saved||2847;
@@ -525,7 +525,7 @@ PR_DATA.map((p,i)=>`<tr>
 async function saveServices(){
 try{
 for(const s of SRV_DATA){
-await supabase.from('services').upsert({id:s.id,name:s.name,status:s.status,reliability:s.rel,market_price:s.price,save_time:s.saveT,save_money:s.saveM});
+await supabaseClient.from('services').upsert({id:s.id,name:s.name,status:s.status,reliability:s.rel,market_price:s.price,save_time:s.saveT,save_money:s.saveM});
 }
 addLog('SERVIZI','Modificati servizi BrevettIAmo');
 alert('Servizi salvati su Supabase!');
@@ -538,7 +538,7 @@ alert('Errore salvataggio. Dati mantenuti in locale.');
 async function saveOcchio(){
 try{
 for(const o of OC_DATA){
-await supabase.from('occhio_services').upsert({id:o.id,name:o.name,status:o.status,reliability:o.rel,detail:o.det});
+await supabaseClient.from('occhio_services').upsert({id:o.id,name:o.name,status:o.status,reliability:o.rel,detail:o.det});
 }
 addLog("OCCHIO","Modificati servizi L'OCCHIO");
 alert("Servizi L'OCCHIO salvati!");
@@ -551,7 +551,7 @@ alert('Errore salvataggio.');
 async function savePricing(){
 try{
 for(const p of PR_DATA){
-await supabase.from('pricing').upsert({id:p.id,name:p.name,price:p.price,period:p.period,reliability:p.rel});
+await supabaseClient.from('pricing').upsert({id:p.id,name:p.name,price:p.price,period:p.period,reliability:p.rel});
 }
 addLog('PREZZI','Modificati pacchetti prezzo');
 alert('Prezzi salvati!');
@@ -569,7 +569,7 @@ hours_saved:parseInt(document.getElementById('stat-hours').value),
 money_saved:parseInt(document.getElementById('stat-money').value),
 avg_reliability:parseInt(document.getElementById('stat-reliability').value)
 };
-await supabase.from('platform_stats').upsert({id:1,...stats});
+await supabaseClient.from('platform_stats').upsert({id:1,...stats});
 addLog('STATS','Aggiornate statistiche piattaforma');
 alert('Statistiche aggiornate!');
 }catch(e){
@@ -583,7 +583,7 @@ try{
 const banner=document.getElementById('banner-text').value;
 const disclaimer=document.getElementById('disclaimer-text').value;
 const footer=document.getElementById('footer-text').value;
-await supabase.from('legal_texts').upsert({id:1,banner,disclaimer,footer});
+await supabaseClient.from('legal_texts').upsert({id:1,banner,disclaimer,footer});
 addLog('LEGAL','Modificati testi legali');
 alert('Testi legali salvati!');
 }catch(e){
@@ -622,7 +622,7 @@ container.innerHTML=LOGS.map(l=>`
 // USERS
 async function loadUsers(){
 try{
-const {data:users}=await supabase.from('profiles').select('*,users(email)').limit(50);
+const {data:users}=await supabaseClient.from('profiles').select('*,users(email)').limit(50);
 const tbody=document.getElementById('users-table');
 if(!users||users.length===0){
 tbody.innerHTML='<tr><th>Email</th><th>Ruolo</th><th>Data Registrazione</th><th>Stato</th><th>Azioni</th></tr><tr><td colspan="5" style="text-align:center;padding:2rem">Nessun utente registrato</td></tr>';
@@ -675,7 +675,7 @@ URL.revokeObjectURL(url);
 // INIT
 document.addEventListener('DOMContentLoaded',()=>{
 // Check existing session
-supabase.auth.getSession().then(({data})=>{
+supabaseClient.auth.getSession().then(({data})=>{
 if(data.session){
 doLogin(); // Will verify admin role
 }
