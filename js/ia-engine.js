@@ -1,102 +1,207 @@
-// js/ia-engine.js - Motore IA BrevettIAmo
-class IAEngine {
-    constructor() {
-        this.proxyUrl = CONFIG.PROXY_URL;
-        this.modelli = CONFIG.MODELLI;
-        this.timeout = CONFIG.TIMEOUT_MS;
-        this.maxRetry = CONFIG.MAX_RETRY;
+#!/usr/bin/env python3
+"""
+Autofix BrevettIAmo - Script di autocorrezione con IA
+Usa Groq per analisi rapida e Kimi per fix complessi
+"""
+
+import os
+import sys
+import json
+import re
+import requests
+
+# Configurazione
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
+KIMI_API_KEY = os.environ.get('KIMI_API_KEY', '')
+
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+KIMI_URL = "https://api.moonshot.cn/v1/chat/completions"
+
+# File da monitorare
+FILE_PATTERNS = [
+    '*.html',
+    '*.js',
+    '*.css'
+]
+
+def call_groq(prompt, model="llama-3.1-8b-instant"):
+    """Chiama Groq API per analisi rapida"""
+    if not GROQ_API_KEY:
+        return None
+
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
     }
-    async chiama(servizioId, descrizione, files, tipoModello) {
-        const tentativi = [];
-        let ultimoErrore = null;
-        for (let t = 0; t <= this.maxRetry; t++) {
-            try {
-                const risultato = await this._eseguiChiamata(servizioId, descrizione, files, tipoModello);
-                this._salvaRisultato(servizioId, descrizione, risultato);
-                return { success: true, contenuto: risultato.contenuto, modello: risultato.modello, tokens: risultato.tokens, tempo: risultato.tempo, tentativi: t + 1 };
-            } catch (e) {
-                ultimoErrore = e;
-                tentativi.push({ tentativo: t + 1, errore: e.message, timestamp: new Date().toISOString() });
-                if (t < this.maxRetry) await this._sleep(Math.pow(2, t) * 1000);
-            }
-        }
-        return { success: false, errore: ultimoErrore.message, tentativi: tentativi, fallback: true };
+
+    data = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": "Sei un esperto di JavaScript e HTML. Analizza il codice e trova errori di sintassi, apostrofi non escapati, BOM, e problemi di encoding. Rispondi in italiano."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.1,
+        "max_tokens": 2000
     }
-    async _eseguiChiamata(servizioId, descrizione, files, tipoModello) {
-        const modello = this.modelli[tipoModello] || this.modelli.testo;
-        const promptTemplate = PROMPTS[servizioId] || PROMPTS.default;
-        const prompt = promptTemplate.replace(/{descrizione}/g, descrizione);
-        const contesto = this._getContesto(servizioId);
-        const messages = [
-            { role: 'system', content: 'Sei un assistente esperto in proprieta intellettuale. ' + contesto + ' Rispondi in italiano. Genera output in HTML strutturato. Non usare markdown, solo HTML.' },
-            { role: 'user', content: prompt }
-        ];
-        if (files && files.length > 0) {
-            const filesDesc = files.map(f => '[File: ' + f.nome + ', tipo: ' + f.tipo + ']').join('\n');
-            messages[1].content += '\n\nFile allegati:\n' + filesDesc;
-        }
-        const inizio = Date.now();
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-        try {
-            const response = await fetch(this.proxyUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: modello, messages: messages, temperature: CONFIG.DEFAULT_TEMPERATURE, max_tokens: CONFIG.DEFAULT_MAX_TOKENS }),
-                signal: controller.signal
-            });
-            clearTimeout(timeoutId);
-            if (!response.ok) throw new Error('Proxy errore ' + response.status);
-            const data = await response.json();
-            return { contenuto: data.choices[0].message.content, modello: modello, tokens: { prompt: data.usage?.prompt_tokens || 0, completion: data.usage?.completion_tokens || 0, total: data.usage?.total_tokens || 0 }, tempo: Date.now() - inizio, raw: data };
-        } catch (e) {
-            clearTimeout(timeoutId);
-            throw e;
-        }
+
+    try:
+        response = requests.post(GROQ_URL, headers=headers, json=data, timeout=30)
+        if response.status_code == 200:
+            return response.json()['choices'][0]['message']['content']
+        else:
+            print(f"Groq errore {response.status_code}: {response.text}")
+            return None
+    except Exception as e:
+        print(f"Groq exception: {e}")
+        return None
+
+def call_kimi(prompt, model="moonshot-v1-8k"):
+    """Chiama Kimi API per fix complessi"""
+    if not KIMI_API_KEY:
+        return None
+
+    headers = {
+        "Authorization": f"Bearer {KIMI_API_KEY}",
+        "Content-Type": "application/json"
     }
-    _getContesto(servizioId) {
-        const map = {
-            'servizio-priorart': 'Esegui ricerca Prior Art completa in database EPO/USPTO/WIPO. Trova documenti simili precedenti e analizza novita.',
-            'servizio-priorart-base': 'Esegui ricerca Prior Art base in banche dati EP/US/WO. Identifica documenti simili.',
-            'servizio-priorart-avanzata': 'Esegui ricerca Prior Art avanzata in 15+ database globali. Analisi famiglie brevettuali e mappa concorrenti.',
-            'servizio-rivendicazioni': 'Redigi rivendicazioni brevettuali professionali in formato legale italiano conformi UIBM.',
-            'servizio-claims-base': 'Redigi rivendicazioni principali indipendenti.',
-            'servizio-claims-pro': 'Redigi rivendicazioni complete con strategia gerarchica.',
-            'servizio-traduzione-claims': 'Traduci rivendicazioni in inglese tecnico-legale per depositi internazionali.',
-            'servizio-deposito': 'Prepara documentazione completa per deposito UIBM.',
-            'servizio-analisi-brevettabilita': 'Valuta i 3 criteri legali: novita, attivita inventiva, applicabilita industriale.',
-            'servizio-analisi-tecnica': 'Analisi tecnica approfondita: fattibilita, benchmark, vantaggi competitivi.',
-            'servizio-monitoraggio': 'Configura monitoraggio scadenze brevettuali.',
-            'servizio-monitoraggio-concorrenza': 'Analisi portfolio concorrenti in 5 settori.',
-            'servizio-consulenza': 'Prepara report consulenza strategica brevettuale.',
-            'servizio-ricerca-figurativa': 'Ricerca in banche dati figurative EUIPO/USPTO/WIPO.',
-            'servizio-analisi-nullita': 'Valuta validita brevetto esistente.',
-            'servizio-opposizione': 'Prepara opposizione a brevetto.',
-            'servizio-licensing': 'Analisi opportunita licensing.',
-            'servizio-valorizzazione': 'Valutazione economica brevetto.',
-            'servizio-due-diligence': 'Due Diligence IP completa.',
-            'servizio-freedom-to-operate': 'Verifica Freedom to Operate.',
-            'servizio-patentability': 'Ricerca brevettuale stile americano.',
-            'servizio-landscape': 'Landscape Analysis settore.',
-            'servizio-legale-base': 'Consulenza legale IP.',
-            'servizio-tavole': 'Genera tavole tecniche SVG conformi UIBM.',
-            'servizio-cad': 'Crea disegni CAD 2D/3D.'
-        };
-        return map[servizioId] || 'Analizza la richiesta e fornisci output professionale in italiano.';
+
+    data = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": "Sei un esperto sviluppatore web. Correggi errori di sintassi JavaScript, HTML, CSS. Attento a apostrofi, BOM, encoding UTF-8. Rispondi SOLO con il codice corretto, senza spiegazioni."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.1,
+        "max_tokens": 4000
     }
-    _salvaRisultato(servizioId, descrizione, risultato) {
-        try {
-            localStorage.setItem('brevettiamo_risultato_ia', JSON.stringify({
-                servizioId: servizioId, descrizione: descrizione, contenuto: risultato.contenuto,
-                modello: risultato.modello, tokens: risultato.tokens, tempo: risultato.tempo,
-                timestamp: new Date().toISOString()
-            }));
-        } catch (e) { console.warn('Errore salvataggio:', e); }
-    }
-    static recuperaRisultato() {
-        try { const d = localStorage.getItem('brevettiamo_risultato_ia'); return d ? JSON.parse(d) : null; } catch (e) { return null; }
-    }
-    static isConfigurato() { return CONFIG.PROXY_URL && CONFIG.PROXY_URL.length > 10; }
-    _sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-}
-if (typeof window !== 'undefined') window.IAEngine = IAEngine;
+
+    try:
+        response = requests.post(KIMI_URL, headers=headers, json=data, timeout=60)
+        if response.status_code == 200:
+            return response.json()['choices'][0]['message']['content']
+        else:
+            print(f"Kimi errore {response.status_code}: {response.text}")
+            return None
+    except Exception as e:
+        print(f"Kimi exception: {e}")
+        return None
+
+def check_and_fix_bom(filepath):
+    """Controlla e rimuove BOM dal file"""
+    with open(filepath, 'rb') as f:
+        content_bytes = f.read()
+
+    if content_bytes.startswith(b'\xef\xbb\xbf'):
+        print(f"  BOM trovato in {filepath}! Rimuovo...")
+        content_bytes = content_bytes[3:]
+        with open(filepath, 'wb') as f:
+            f.write(content_bytes)
+        return True
+    return False
+
+def check_syntax_js(content):
+    """Controlla errori di sintassi base in JS"""
+    errors = []
+
+    # Controlla apostrofi non escapati in stringhe
+    lines = content.split('\n')
+    for i, line in enumerate(lines, 1):
+        if "'" in line and "\\'" not in line:
+            count = line.count("'")
+            escaped = line.count("\\'")
+            actual = count - escaped
+            if actual % 2 != 0:
+                errors.append(f"Riga {i}: apostrofi non bilanciati")
+
+    # Controlla var object.property (errore comune)
+    if re.search(r'var\s+\w+\.\w+\s*=', content):
+        errors.append("Trovato 'var object.property' - errore JS")
+
+    return errors
+
+def fix_file(filepath):
+    """Corregge un file usando IA"""
+    print(f"\nAnalizzando: {filepath}")
+
+    # Prima: controlla e rimuovi BOM
+    bom_fixed = check_and_fix_bom(filepath)
+    if bom_fixed:
+        print(f"  BOM rimosso!")
+
+    # Leggi file senza BOM
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # Check sintassi base
+    errors = check_syntax_js(content)
+
+    if not errors and not bom_fixed:
+        print(f"  Nessun errore rilevato")
+        return False
+
+    if errors:
+        print(f"  Errori trovati: {errors}")
+
+    # Se solo BOM, non serve chiamare IA
+    if not errors and bom_fixed:
+        return True
+
+    # Prova fix con Groq
+    prompt = f"""Correggi questo file JavaScript/HTML. Errori trovati: {errors}
+
+File: {filepath}
+
+```javascript
+{content}
+```
+
+Rispondi SOLO con il codice corretto, senza spiegazioni, senza markdown."""
+
+    fixed = call_groq(prompt)
+
+    if not fixed:
+        fixed = call_kimi(prompt)
+
+    if fixed:
+        # Rimuovi BOM se presente nella risposta
+        if fixed.startswith('\xef\xbb\xbf'):
+            fixed = fixed[3:]
+
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(fixed)
+
+        print(f"  File corretto!")
+        return True
+    else:
+        print(f"  Nessuna correzione applicata")
+        return False
+
+def main():
+    print("=" * 60)
+    print("BrevettIAmo Autofix - Avvio")
+    print("=" * 60)
+
+    if not GROQ_API_KEY and not KIMI_API_KEY:
+        print("Nessuna API key configurata. Esco.")
+        sys.exit(1)
+
+    import glob
+    files_to_check = []
+
+    for pattern in FILE_PATTERNS:
+        files_to_check.extend(glob.glob(pattern, recursive=True))
+
+    print(f"\nTrovati {len(files_to_check)} file da controllare")
+
+    fixed_count = 0
+
+    for filepath in files_to_check:
+        if fix_file(filepath):
+            fixed_count += 1
+
+    print(f"\n{'=' * 60}")
+    print(f"Risultato: {fixed_count} file corretti su {len(files_to_check)}")
+    print(f"{'=' * 60}")
+
+if __name__ == "__main__":
+    main()
