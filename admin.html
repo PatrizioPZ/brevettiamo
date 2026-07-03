@@ -109,6 +109,7 @@ body{font-family:'Lora',Georgia,serif;background:var(--p);color:var(--f);line-he
 }
 </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
 
@@ -539,8 +540,8 @@ try{
 for(const o of OC_DATA){
 await supabase.from('occhio_services').upsert({id:o.id,name:o.name,status:o.status,reliability:o.rel,detail:o.det});
 }
-addLog('OCCHIO','Modificati servizi L'OCCHIO');
-alert('Servizi L'OCCHIO salvati!');
+addLog("OCCHIO","Modificati servizi L'OCCHIO");
+alert("Servizi L'OCCHIO salvati!");
 }catch(e){
 console.error(e);
 alert('Errore salvataggio.');
