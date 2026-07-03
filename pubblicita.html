@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -202,7 +203,7 @@
 </head>
 <body>
 
-<<header>
+<header>
     <div class="header-content">
         <a href="index.html" class="logo">BREVETT<span>I</span>AMO</a>
         <nav>
@@ -259,83 +260,4 @@
         <div class="form-group">
             <label>Titolo Breve (max 30 caratteri)</label>
             <input type="text" id="titolo" maxlength="30" placeholder="Es. Brevetto Tecnologia Verde">
-        </div>
-        
-        <div class="form-group">
-            <label>Descrizione (opzionale, max 100 caratteri)</label>
-            <textarea id="descrizione" maxlength="100" rows="2" placeholder="Breve descrizione del tuo prodotto..."></textarea>
-        </div>
-        
-        <button type="submit" class="btn">Inserisci il Mio Banner</button>
-        
-    </form>
-    
-    <div class="disclaimer">
-        <strong>Disclaimer / Liberatoria</strong>
-        Inserendo il banner dichiari che:<br>
-        - L'immagine e il contenuto sono di tua proprieta o hai diritto di usarli<br>
-        - Non inserirai contenuti illegali, offensivi o di proprieta altrui<br>
-        - BrevettIAmo non controlla i contenuti e non e responsabile per eventuali violazioni<br>
-        - Il banner puo essere rimosso senza preavviso in caso di segnalazione di abuso<br>
-        - Dati trattati ai sensi del GDPR per finalita di pubblicita
-    </div>
-    
-    <div class="preview-section">
-        <h2>Anteprima del Tuo Banner</h2>
-        <div class="banner-preview" id="preview">
-            <span style="color: var(--text-light);">Compila il form per vedere l'anteprima</span>
-        </div>
-    </div>
-    
-</div>
-
-<<footer>
-    <p>BrevettIAmo 2026 - Protetti da Brevetto UBIM</p>
-    <p style="margin-top: 0.5rem; font-size: 0.8rem;">Tutti i diritti riservati</p>
-</footer>
-
-<script>
-    // Anteprima live
-    document.getElementById('immagine').addEventListener('input', function() {
-        const url = this.value;
-        const preview = document.getElementById('preview');
-        if (url && url.startsWith('http')) {
-            preview.innerHTML = '<img src="' + url + '" alt="Anteprima banner" onerror="this.parentElement.innerHTML=\'<<span style=color:red>Immagine non trovata. Controlla l\\\'URL.</span>\'">';
-        }
-    });
-    
-    function inviaBanner() {
-        const nome = document.getElementById('nome').value;
-        const email = document.getElementById('email').value;
-        const link = document.getElementById('link').value;
-        const immagine = document.getElementById('immagine').value;
-        const titolo = document.getElementById('titolo').value;
-        const descrizione = document.getElementById('descrizione').value;
-        
-        // Crea il codice HTML del banner
-        const bannerCode = 
-            '    <!-- ' + nome + ' -->\n' +
-            '    <a href="' + link + '" target="_blank" title="' + titolo + '" style="display: block; transition: transform 0.3s;" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'">\n' +
-            '        <img src="' + immagine + '" alt="' + nome + '" style="width: 100%; height: 120px; object-fit: contain; border-radius: 8px; background: white; padding: 0.5rem; border: 1px solid var(--ps);">\n' +
-            '    </a>';
-        
-        // Prepara email
-        const subject = 'Nuovo Banner Pubblicitario - ' + nome;
-        const body = 'Nome: ' + nome + '\n' +
-                     'Email: ' + email + '\n' +
-                     'Link: ' + link + '\n' +
-                     'Immagine: ' + immagine + '\n' +
-                     'Titolo: ' + titolo + '\n' +
-                     'Descrizione: ' + descrizione + '\n\n' +
-                     'CODICE HTML DA INSERIRE:\n' + bannerCode;
-        
-        // Apri email client
-        window.location.href = 'mailto:info@brevettiamo.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-        
-        alert('Grazie! Ora invia l\\\'email che si e aperta. Il tuo banner sara attivo entro 24h.');
-        return false;
-    }
-</script>
-
-</body>
-</html>
+        </div
