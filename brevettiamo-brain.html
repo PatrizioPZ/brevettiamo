@@ -796,39 +796,52 @@ const ReportGenerator = {
 };
 
 // ============================================================
-// ORCHESTRATORE PRINCIPALE
+// ORCHESTRATORE PRINCIPALE - VERSIONE REALE
 // ============================================================
 async function inviaComando() {
     const input = document.getElementById('command-input');
     const richiesta = input.value.trim();
 
-    if (!richiesta) { alert('Inserisci una richiesta'); return; }
+    if (!richiesta) { 
+        alert('Inserisci una richiesta'); 
+        return; 
+    }
 
+    // Mostra pannello thinking
     document.getElementById('thinking-panel').classList.add('active');
     document.getElementById('result-panel').classList.remove('active');
 
     // Reset fasi
-    for(let i=1;i<=6;i++) {
+    for(let i=1; i<=6; i++) {
         document.getElementById('ph-'+i).textContent = 'In attesa';
         document.getElementById('ph-'+i).className = 'phase-status';
     }
 
     aggiungiLog('Richiesta ricevuta: "' + richiesta.substring(0,50) + '..."');
-    aggiungiLog('Criptazione AES-256-GCM...');
+    aggiungiLog('Scrittura brain-request.txt via GitHub API...');
 
-    // FASE 1: Semantic Parser
-    const analisi = await SemanticParser.analizza(richiesta);
-    aggiungiLog('Analisi semantica completata');
+    // FASE 1: Scrivi brain-request.txt (attiva workflow)
+    try {
+        const el = document.getElementById('ph-1');
+        el.textContent = 'In corso...';
+        el.classList.add('active');
+        
+        await window.BrainWriter.writeRequest(richiesta);
+        
+        el.textContent = 'Completato';
+        el.classList.remove('active');
+        el.classList.add('done');
+        aggiungiLog('brain-request.txt scritto con successo');
+        
+    } catch (e) {
+        aggiungiLog('ERRORE: ' + e.message);
+        document.getElementById('ph-1').textContent = 'ERRORE';
+        document.getElementById('ph-1').classList.add('active');
+        return;
+    }
 
-    // FASE 2: Identifica target
-    const target = MultiRepoManager.identificaTarget(richiesta);
-    aggiungiLog(`Target identificato: ${target.repo.name} (${Math.round(target.confidenza*100)}% confidenza)`);
-
-    // FASE 3: 7 Cappelli
-    const deBono = await DeBonoEngine.esegui(richiesta, {repo:target.repo});
-
+    // FASE 2-6: Simula le altre fasi (il workflow le fa davvero)
     const fasi = [
-        {id:'ph-1', nome:'Bianco', ms:600},
         {id:'ph-2', nome:'Rosso', ms:500},
         {id:'ph-3', nome:'Nero', ms:800},
         {id:'ph-4', nome:'Giallo', ms:500},
@@ -847,41 +860,40 @@ async function inviaComando() {
         aggiungiLog(`Fase ${fase.nome} completata`);
     }
 
-    // FASE 4: Predictive
-    const predittiva = await PredictiveAnalyzer.analizza({tipo:analisi.intento, target:target.repo.name}, {});
-    aggiungiLog(`Predictive: probabilita successo ${Math.round(predittiva.predizione.successProbability*100)}%`);
+    aggiungiLog('Workflow Brain attivato. Attendi risposta...');
+    aggiungiLog('Il risultato apparira automaticamente quando pronto.');
 
-    // FASE 5: Esecuzione (simulata)
-    aggiungiLog('Invocazione Groq API...');
-    await sleep(1000);
-    aggiungiLog('Groq ha elaborato la risposta');
-    aggiungiLog('Verifica tripla: Kimi -> Groq -> Test automatico');
-    await sleep(800);
-
-    if (deBono.eseguire && predittiva.eseguire) {
-        aggiungiLog('Verifica superata - Commit approvato');
-        aggiungiLog(`Branch creato: test/auto-${Date.now()}`);
-        aggiungiLog('Modifiche applicate');
-        aggiungiLog('Test automatici: 15/15 superati');
-        aggiungiLog('Merge in main: APPROVATO');
-    } else {
-        aggiungiLog('Esecuzione BLOCCATA da 7 Cappelli');
-    }
-
-    mostraRisultato(richiesta, deBono, predittiva, target);
+    // Mostra messaggio in attesa
+    mostraRisultatoInAttesa(richiesta);
 }
 
-function mostraRisultato(richiesta, deBono, predittiva, target) {
+function mostraRisultatoInAttesa(richiesta) {
     const panel = document.getElementById('result-panel');
     const body = document.getElementById('result-body');
     panel.classList.add('active');
 
-    const risultato = `
-=== BREVETTIAMO BRAIN - RISULTATO ===
+    body.textContent = `
+=== BREVETTIAMO BRAIN - IN ATTESA ===
 Versione: ${BRAIN_VERSION}
 Timestamp: ${now()}
-Repo Target: ${target.repo.name}
-Modalita: ZERO CLICK
+Stato: Workflow attivato
+
+--- RICHIESTA ---
+"${richiesta}"
+
+--- STATO ---
+brain-request.txt: SCRITTO
+Workflow GitHub Actions: ATTIVATO
+Attesa risposta: 30-60 secondi...
+
+Il risultato apparira automaticamente quando il workflow completa.
+Non chiudere la pagina.
+
+=== IN ATTESA ===
+    `;
+    
+    aggiungiLog('Pannello risultato mostrato - in attesa risposta workflow');
+}
 
 --- RICHIESTA ---
 "${richiesta}"
