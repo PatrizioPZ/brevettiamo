@@ -211,25 +211,25 @@ jobs:
            # ============================================================
       # FASE 8: ESECUZIONE - ANALISI CODICE + FIX
       # ============================================================
-      - name: Analizza codice sorgente
+           - name: Analizza codice sorgente
         if: steps.blu.outputs.eseguire == 'true'
         id: analizza-codice
         run: |
           echo "=== ANALISI CODICE ==="
           
           # Trova file HTML/JS che potrebbero avere il bug
-          FILES=$(find . -name "*.html" -o -name "*.js" | grep -E "(service|elabora|flow)" | head -20)
+          find . -name "*.html" -o -name "*.js" | grep -E "(service|elabora|flow)" | head -20 > /tmp/files.txt
           
-          if [ -z "$FILES" ]; then
-            FILES=$(find . -maxdepth 2 -name "*.html" | head -10)
+          if [ ! -s /tmp/files.txt ]; then
+            find . -maxdepth 2 -name "*.html" | head -10 > /tmp/files.txt
           fi
           
           echo "File trovati:"
-          echo "$FILES"
+          cat /tmp/files.txt
           
           # Crea report analisi
           echo "=== FILE ANALIZZATI ===" > brain-logs/code-analysis.log
-          for file in $FILES; do
+          while IFS= read -r file; do
             if [ -f "$file" ]; then
               echo "--- $file ---" >> brain-logs/code-analysis.log
               # Cerca errori comuni
@@ -237,9 +237,10 @@ jobs:
               # Cerca funzioni che potrebbero bloccarsi
               grep -n "while\|for\|setInterval\|setTimeout" "$file" >> brain-logs/code-analysis.log 2>/dev/null || true
             fi
-          done
+          done < /tmp/files.txt
           
-          echo "files=$FILES" >> $GITHUB_OUTPUT
+          # Salva output in modo sicuro
+          echo "files_found=true" >> $GITHUB_OUTPUT
           echo "Analisi completata"
       
       - name: Call Groq AI per fix
