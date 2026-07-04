@@ -1,0 +1,4 @@
+Il flusso in services.html si blocca dopo la descrizione, prima dell'elaborazione. 
+Controlla il file services.html e i file JS collegati. 
+Cerca errori di sintassi, variabili non definite, funzioni mancanti, o API che non rispondono.
+Se trovi l'errore, correggilo e committa la fix.
