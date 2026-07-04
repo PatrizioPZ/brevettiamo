@@ -208,37 +208,119 @@ jobs:
           echo "Probabilita successo: 85%"
           echo "simulazione=ok" >> $GITHUB_OUTPUT
       
+           # ============================================================
+      # FASE 8: ESECUZIONE - ANALISI CODICE + FIX
       # ============================================================
-      # FASE 8: ESECUZIONE (Groq)
-      # ============================================================
-      - name: Call Groq AI
+      - name: Analizza codice sorgente
         if: steps.blu.outputs.eseguire == 'true'
-        id: groq-call
+        id: analizza-codice
+        run: |
+          echo "=== ANALISI CODICE ==="
+          
+          # Trova file HTML/JS che potrebbero avere il bug
+          FILES=$(find . -name "*.html" -o -name "*.js" | grep -E "(service|elabora|flow)" | head -20)
+          
+          if [ -z "$FILES" ]; then
+            FILES=$(find . -maxdepth 2 -name "*.html" | head -10)
+          fi
+          
+          echo "File trovati:"
+          echo "$FILES"
+          
+          # Crea report analisi
+          echo "=== FILE ANALIZZATI ===" > brain-logs/code-analysis.log
+          for file in $FILES; do
+            if [ -f "$file" ]; then
+              echo "--- $file ---" >> brain-logs/code-analysis.log
+              # Cerca errori comuni
+              grep -n "undefined\|null\|error\|bug\|FIXME\|TODO" "$file" >> brain-logs/code-analysis.log 2>/dev/null || true
+              # Cerca funzioni che potrebbero bloccarsi
+              grep -n "while\|for\|setInterval\|setTimeout" "$file" >> brain-logs/code-analysis.log 2>/dev/null || true
+            fi
+          done
+          
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+          echo "Analisi completata"
+      
+      - name: Call Groq AI per fix
+        if: steps.blu.outputs.eseguire == 'true'
+        id: groq-fix
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           REQUEST="${{ steps.read-request.outputs.request }}"
-          TIPO="${{ steps.bianco.outputs.tipo }}"
+          FILES="${{ steps.analizza-codice.outputs.files }}"
           
-          echo "=== ESECUZIONE GROQ ==="
-          echo "Invocazione API..."
+          echo "=== GROQ FIX GENERATION ==="
           
-          # Chiama Groq con contesto completo
+          # Leggi contenuto file principale (se esiste)
+          MAIN_FILE=$(echo "$FILES" | head -1)
+          FILE_CONTENT=""
+          if [ -f "$MAIN_FILE" ]; then
+            FILE_CONTENT=$(cat "$MAIN_FILE" | head -100)
+          fi
+          
+          # Chiama Groq per generare fix
           RESPONSE=$(curl -s -X POST https://api.groq.com/openai/v1/chat/completions \
             -H "Authorization: Bearer $GROQ_API_KEY" \
             -H "Content-Type: application/json" \
             -d "{
               \"model\": \"llama-3.1-70b-versatile\",
               \"messages\": [
-                {\"role\": \"system\", \"content\": \"Sei BrevettIAmo Brain v1.5. Analisi: tipo=$TIPO, decisione=${{ steps.blu.outputs.decisione }}. Genera codice/modifiche.\"},
-                {\"role\": \"user\", \"content\": \"$REQUEST\"}
+                {\"role\": \"system\", \"content\": \"Sei un esperto sviluppatore web. Analizza il codice, trova il bug descritto dall'utente, e genera SOLO il codice fixato. Rispondi in formato: FILE:percorso\\n\\n\\`\\`\\`codice\\ncontenuto\\n\\`\\`\\`\"},
+                {\"role\": \"user\", \"content\": \"Bug: $REQUEST\\n\\nFile analizzati: $FILES\\n\\nContenuto principale:\\n$FILE_CONTENT\\n\\nGenera la fix.\"}
               ],
-              \"temperature\": 0.7,
+              \"temperature\": 0.3,
               \"max_tokens\": 4096
             }")
           
           echo "response=$RESPONSE" >> $GITHUB_OUTPUT
-          echo "Groq ha risposto"
+          
+          # Estrai fix dal JSON
+          FIX=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['choices'][0]['message']['content'])" 2>/dev/null || echo "NO_FIX")
+          
+          echo "fix<<EOF" >> $GITHUB_OUTPUT
+          echo "$FIX" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          echo "Fix generata"
+      
+      - name: Applica fix
+        if: steps.blu.outputs.eseguire == 'true'
+        id: applica-fix
+        run: |
+          FIX='${{ steps.groq-fix.outputs.fix }}'
+          
+          echo "=== APPLICA FIX ==="
+          
+          if echo "$FIX" | grep -q "FILE:"; then
+            # Estrai percorso file e contenuto
+            FILE_PATH=$(echo "$FIX" | grep "FILE:" | head -1 | sed 's/FILE://')
+            echo "File da modificare: $FILE_PATH"
+            
+            # Estrai contenuto tra ```
+            echo "$FIX" | awk '/```/{flag=1;next}/```/{flag=0}flag' > /tmp/fix-content.txt
+            
+            if [ -n "$FILE_PATH" ] && [ -f "$FILE_PATH" ]; then
+              # Backup
+              cp "$FILE_PATH" "$FILE_PATH.bak"
+              
+              # Applica fix
+              cp /tmp/fix-content.txt "$FILE_PATH"
+              
+              echo "Fix applicata su $FILE_PATH"
+              echo "fix_applied=true" >> $GITHUB_OUTPUT
+              echo "fix_file=$FILE_PATH" >> $GITHUB_OUTPUT
+            else
+              echo "File non trovato, fix salvata in brain-logs/"
+              echo "$FIX" > brain-logs/proposed-fix.txt
+              echo "fix_applied=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "Nessuna fix generata da Groq"
+            echo "$FIX" > brain-logs/groq-response.txt
+            echo "fix_applied=false" >> $GITHUB_OUTPUT
+          fi
       
       # ============================================================
       # FASE 9: APPLICA MODIFICHE
