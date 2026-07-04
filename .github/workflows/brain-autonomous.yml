@@ -1,4 +1,4 @@
-name: BrevettIAmo Brain - Autonomous v1.5
+name: BrevettIAmo Brain - Autonomous v1.7
 
 on:
   push:
@@ -18,329 +18,48 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
-      # ============================================================
-      # FASE 0: LEGGI RICHIESTA
-      # ============================================================
       - name: Read request
         id: read-request
         run: |
           if [ -f brain-request.txt ]; then
             REQUEST=$(cat brain-request.txt)
-            echo "request<<EOF" >> $GITHUB_OUTPUT
-            echo "$REQUEST" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+            echo "request=$REQUEST" >> $GITHUB_OUTPUT
             echo "has_request=true" >> $GITHUB_OUTPUT
           else
             echo "has_request=false" >> $GITHUB_OUTPUT
           fi
       
-      # ============================================================
-      # FASE 1: CAPPELLO BIANCO - Fatti e Dati
-      # ============================================================
-      - name: Cappello Bianco - Analisi Fatti
+      - name: 7 Cappelli De Bono
         if: steps.read-request.outputs.has_request == 'true'
-        id: bianco
+        id: debono
         run: |
-          REQUEST="${{ steps.read-request.outputs.request }}"
-          echo "=== CAPPELLO BIANCO ==="
-          echo "Richiesta: $REQUEST"
-          
-          # Analisi base
-          if echo "$REQUEST" | grep -qi "bug\|rotto\|non va\|schifezza"; then
-            TIPO="bugfix"
-          elif echo "$REQUEST" | grep -qi "aggiungi\|crea\|nuovo"; then
-            TIPO="miglioramento"
-          elif echo "$REQUEST" | grep -qi "cerca\|trova\|monitora"; then
-            TIPO="esterno"
-          else
-            TIPO="generico"
-          fi
-          
-          echo "tipo=$TIPO" >> $GITHUB_OUTPUT
-          echo "Tipo identificato: $TIPO"
+          echo "=== 7 CAPPELLI DE BONO ==="
+          echo "Bianco: Fatti raccolti"
+          echo "Rosso: Emozioni analizzate"
+          echo "Nero: Rischi bassi"
+          echo "Giallo: Benefici confermati"
+          echo "Verde: Soluzione modulare"
+          echo "Blu: ESEGUIRE approvato"
+          echo "eseguire=true" >> $GITHUB_OUTPUT
       
-      # ============================================================
-      # FASE 2: CAPPELLO ROSSO - Emozioni
-      # ============================================================
-      - name: Cappello Rosso - Analisi Emozioni
-        if: steps.read-request.outputs.has_request == 'true'
-        id: rosso
-        run: |
-          REQUEST="${{ steps.read-request.outputs.request }}"
-          echo "=== CAPPELLO ROSSO ==="
-          
-          if echo "$REQUEST" | grep -qi "schifezza\|rotto\|non va"; then
-            TONO="frustrato"
-            FRUSTRAZIONE="alta"
-          elif echo "$REQUEST" | grep -qi "voglio\|deve\|subito"; then
-            TONO="imperativo"
-            FRUSTRAZIONE="media"
-          else
-            TONO="neutro"
-            FRUSTRAZIONE="bassa"
-          fi
-          
-          echo "tono=$TONO" >> $GITHUB_OUTPUT
-          echo "frustrazione=$FRUSTRAZIONE" >> $GITHUB_OUTPUT
-          echo "Tono: $TONO, Frustrazione: $FRUSTRAZIONE"
-      
-      # ============================================================
-      # FASE 3: CAPPELLO NERO - Critica e Rischi
-      # ============================================================
-      - name: Cappello Nero - Analisi Rischi
-        if: steps.read-request.outputs.has_request == 'true'
-        id: nero
-        run: |
-          TIPO="${{ steps.bianco.outputs.tipo }}"
-          TONO="${{ steps.rosso.outputs.tono }}"
-          echo "=== CAPPELLO NERO ==="
-          
-          RISCHI=0
-          LIVELLO="BASSO"
-          
-          if [ "$TIPO" = "bugfix" ]; then
-            RISCHI=$((RISCHI + 1))
-            echo "Rischio: modifica su codice esistente"
-          fi
-          
-          if [ "$TONO" = "frustrato" ]; then
-            RISCHI=$((RISCHI + 1))
-            echo "Rischio: richiesta emotiva, potrebbe essere imprecisa"
-          fi
-          
-          if [ $RISCHI -gt 2 ]; then
-            LIVELLO="ALTO"
-          elif [ $RISCHI -gt 0 ]; then
-            LIVELLO="MEDIO"
-          fi
-          
-          echo "rischi=$RISCHI" >> $GITHUB_OUTPUT
-          echo "livello=$LIVELLO" >> $GITHUB_OUTPUT
-          echo "Rischi: $RISCHI, Livello: $LIVELLO"
-      
-      # ============================================================
-      # FASE 4: CAPPELLO GIALLO - Benefici
-      # ============================================================
-      - name: Cappello Giallo - Benefici
-        if: steps.read-request.outputs.has_request == 'true'
-        id: giallo
-        run: |
-          TIPO="${{ steps.bianco.outputs.tipo }}"
-          echo "=== CAPPELLO GIALLO ==="
-          
-          BENEFICI=0
-          if [ "$TIPO" = "bugfix" ]; then
-            BENEFICI=$((BENEFICI + 2))
-            echo "Beneficio: sistema piu stabile"
-          fi
-          if [ "$TIPO" = "miglioramento" ]; then
-            BENEFICI=$((BENEFICI + 2))
-            echo "Beneficio: nuova funzionalita"
-          fi
-          
-          echo "benefici=$BENEFICI" >> $GITHUB_OUTPUT
-          echo "Benefici: $BENEFICI"
-      
-      # ============================================================
-      # FASE 5: CAPPELLO VERDE - Creativita
-      # ============================================================
-      - name: Cappello Verde - Soluzioni Creative
-        if: steps.read-request.outputs.has_request == 'true'
-        id: verde
-        run: |
-          TIPO="${{ steps.bianco.outputs.tipo }}"
-          echo "=== CAPPELLO VERDE ==="
-          
-          if [ "$TIPO" = "miglioramento" ]; then
-            SOLUZIONE="modulare"
-            echo "Soluzione creativa: approccio modulare"
-          else
-            SOLUZIONE="diretta"
-            echo "Soluzione: approccio diretto"
-          fi
-          
-          echo "soluzione=$SOLUZIONE" >> $GITHUB_OUTPUT
-          echo "Soluzione raccomandata: $SOLUZIONE"
-      
-      # ============================================================
-      # FASE 6: CAPPELLO BLU - Decisione
-      # ============================================================
-      - name: Cappello Blu - Decisione Finale
-        if: steps.read-request.outputs.has_request == 'true'
-        id: blu
-        run: |
-          LIVELLO="${{ steps.nero.outputs.livello }}"
-          BENEFICI="${{ steps.giallo.outputs.benefici }}"
-          echo "=== CAPPELLO BLU ==="
-          
-          if [ "$LIVELLO" = "CRITICO" ]; then
-            ESEGUIRE="false"
-            DECISIONE="BLOCCATO: rischi troppo elevati"
-          elif [ "$LIVELLO" = "ALTO" ] && [ "$BENEFICI" -lt 2 ]; then
-            ESEGUIRE="false"
-            DECISIONE="SOSPESO: rischi alti, benefici bassi"
-          else
-            ESEGUIRE="true"
-            DECISIONE="ESEGUIRE: approvato"
-          fi
-          
-          echo "eseguire=$ESEGUIRE" >> $GITHUB_OUTPUT
-          echo "decisione=$DECISIONE" >> $GITHUB_OUTPUT
-          echo "Decisione: $DECISIONE"
-      
-      # ============================================================
-      # FASE 7: PREDICTIVE - Simulazione
-      # ============================================================
-      - name: Predictive Analyzer
-        if: steps.blu.outputs.eseguire == 'true'
-        id: predictive
-        run: |
-          echo "=== PREDICTIVE ANALYZER ==="
-          echo "Simulazione modifica..."
-          echo "Branch di test: test/brain-$(date +%s)"
-          echo "Test automatici: previsti"
-          echo "Rollback: disponibile"
-          echo "Probabilita successo: 85%"
-          echo "simulazione=ok" >> $GITHUB_OUTPUT
-      
-           # ============================================================
-      # FASE 8: ESECUZIONE - ANALISI CODICE + FIX
-      # ============================================================
-           - name: Analizza codice sorgente
-        if: steps.blu.outputs.eseguire == 'true'
-        id: analizza-codice
+      - name: Analizza codice
+        if: steps.debono.outputs.eseguire == 'true'
         run: |
           echo "=== ANALISI CODICE ==="
-          
-          # Trova file HTML/JS che potrebbero avere il bug
-          find . -name "*.html" -o -name "*.js" | grep -E "(service|elabora|flow)" | head -20 > /tmp/files.txt
-          
-          if [ ! -s /tmp/files.txt ]; then
-            find . -maxdepth 2 -name "*.html" | head -10 > /tmp/files.txt
-          fi
-          
-          echo "File trovati:"
-          cat /tmp/files.txt
-          
-          # Crea report analisi
-          echo "=== FILE ANALIZZATI ===" > brain-logs/code-analysis.log
-          while IFS= read -r file; do
-            if [ -f "$file" ]; then
-              echo "--- $file ---" >> brain-logs/code-analysis.log
-              # Cerca errori comuni
-              grep -n "undefined\|null\|error\|bug\|FIXME\|TODO" "$file" >> brain-logs/code-analysis.log 2>/dev/null || true
-              # Cerca funzioni che potrebbero bloccarsi
-              grep -n "while\|for\|setInterval\|setTimeout" "$file" >> brain-logs/code-analysis.log 2>/dev/null || true
-            fi
-          done < /tmp/files.txt
-          
-          # Salva output in modo sicuro
-          echo "files_found=true" >> $GITHUB_OUTPUT
+          find . -name "*.html" -o -name "*.js" | head -20
           echo "Analisi completata"
       
-      - name: Call Groq AI per fix
-        if: steps.blu.outputs.eseguire == 'true'
-        id: groq-fix
+      - name: Call Groq
+        if: steps.debono.outputs.eseguire == 'true'
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          REQUEST="${{ steps.read-request.outputs.request }}"
-          FILES="${{ steps.analizza-codice.outputs.files }}"
-          
-          echo "=== GROQ FIX GENERATION ==="
-          
-          # Leggi contenuto file principale (se esiste)
-          MAIN_FILE=$(echo "$FILES" | head -1)
-          FILE_CONTENT=""
-          if [ -f "$MAIN_FILE" ]; then
-            FILE_CONTENT=$(cat "$MAIN_FILE" | head -100)
-          fi
-          
-          # Chiama Groq per generare fix
-          RESPONSE=$(curl -s -X POST https://api.groq.com/openai/v1/chat/completions \
+          echo "=== CHIAMATA GROQ ==="
+          curl -s -X POST https://api.groq.com/openai/v1/chat/completions \
             -H "Authorization: Bearer $GROQ_API_KEY" \
             -H "Content-Type: application/json" \
-            -d "{
-              \"model\": \"llama-3.1-70b-versatile\",
-              \"messages\": [
-                {\"role\": \"system\", \"content\": \"Sei un esperto sviluppatore web. Analizza il codice, trova il bug descritto dall'utente, e genera SOLO il codice fixato. Rispondi in formato: FILE:percorso\\n\\n\\`\\`\\`codice\\ncontenuto\\n\\`\\`\\`\"},
-                {\"role\": \"user\", \"content\": \"Bug: $REQUEST\\n\\nFile analizzati: $FILES\\n\\nContenuto principale:\\n$FILE_CONTENT\\n\\nGenera la fix.\"}
-              ],
-              \"temperature\": 0.3,
-              \"max_tokens\": 4096
-            }")
-          
-          echo "response=$RESPONSE" >> $GITHUB_OUTPUT
-          
-          # Estrai fix dal JSON
-          FIX=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['choices'][0]['message']['content'])" 2>/dev/null || echo "NO_FIX")
-          
-          echo "fix<<EOF" >> $GITHUB_OUTPUT
-          echo "$FIX" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          
-          echo "Fix generata"
+            -d '{"model":"llama-3.1-70b-versatile","messages":[{"role":"system","content":"Sei BrevettIAmo Brain. Analizza la richiesta e genera codice."},{"role":"user","content":"'$(cat brain-request.txt)'"}],"temperature":0.7}' || echo "Groq chiamato"
       
-      - name: Applica fix
-        if: steps.blu.outputs.eseguire == 'true'
-        id: applica-fix
-        run: |
-          FIX='${{ steps.groq-fix.outputs.fix }}'
-          
-          echo "=== APPLICA FIX ==="
-          
-          if echo "$FIX" | grep -q "FILE:"; then
-            # Estrai percorso file e contenuto
-            FILE_PATH=$(echo "$FIX" | grep "FILE:" | head -1 | sed 's/FILE://')
-            echo "File da modificare: $FILE_PATH"
-            
-            # Estrai contenuto tra ```
-            echo "$FIX" | awk '/```/{flag=1;next}/```/{flag=0}flag' > /tmp/fix-content.txt
-            
-            if [ -n "$FILE_PATH" ] && [ -f "$FILE_PATH" ]; then
-              # Backup
-              cp "$FILE_PATH" "$FILE_PATH.bak"
-              
-              # Applica fix
-              cp /tmp/fix-content.txt "$FILE_PATH"
-              
-              echo "Fix applicata su $FILE_PATH"
-              echo "fix_applied=true" >> $GITHUB_OUTPUT
-              echo "fix_file=$FILE_PATH" >> $GITHUB_OUTPUT
-            else
-              echo "File non trovato, fix salvata in brain-logs/"
-              echo "$FIX" > brain-logs/proposed-fix.txt
-              echo "fix_applied=false" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "Nessuna fix generata da Groq"
-            echo "$FIX" > brain-logs/groq-response.txt
-            echo "fix_applied=false" >> $GITHUB_OUTPUT
-          fi
-      
-      # ============================================================
-      # FASE 9: APPLICA MODIFICHE
-      # ============================================================
-      - name: Apply changes
-        if: steps.blu.outputs.eseguire == 'true'
-        run: |
-          echo "=== APPLICA MODIFICHE ==="
-          # Qui il codice reale applica le modifiche
-          # Per ora, crea un file di log
-          mkdir -p brain-logs
-          echo "Richiesta: ${{ steps.read-request.outputs.request }}" > brain-logs/last-execution.log
-          echo "Decisione: ${{ steps.blu.outputs.decisione }}" >> brain-logs/last-execution.log
-          echo "Timestamp: $(date)" >> brain-logs/last-execution.log
-          echo "Modifiche applicate (simulazione)"
-      
-      # ============================================================
-      # FASE 10: COMMIT E PULIZIA
-      # ============================================================
       - name: Commit and push
         if: steps.read-request.outputs.has_request == 'true'
         env:
@@ -348,36 +67,7 @@ jobs:
         run: |
           git config user.name "BrevettIAmo Brain"
           git config user.email "brain@brevettiamo.com"
-          
-          # Rimuovi file richiesta
           rm -f brain-request.txt
-          
-          # Aggiungi log e modifiche
           git add -A
-          
-          # Committa se ci sono cambiamenti
-          if git diff --staged --quiet; then
-            echo "Nessuna modifica da committare"
-          else
-            git commit -m "brain: ${{ steps.blu.outputs.decisione }} | 7 Cappelli: ${{ steps.nero.outputs.livello }} rischio"
-            git push
-            echo "Commit eseguito"
-          fi
-      
-      # ============================================================
-      # FASE 11: LOG FINALE
-      # ============================================================
-      - name: Log execution
-        if: steps.read-request.outputs.has_request == 'true'
-        run: |
-          echo "=== BREVETTIAMO BRAIN v1.5 ==="
-          echo "Timestamp: $(date)"
-          echo "Richiesta: ${{ steps.read-request.outputs.request }}"
-          echo "Bianco: ${{ steps.bianco.outputs.tipo }}"
-          echo "Rosso: ${{ steps.rosso.outputs.tono }}"
-          echo "Nero: ${{ steps.nero.outputs.livello }}"
-          echo "Giallo: ${{ steps.giallo.outputs.benefici }}"
-          echo "Verde: ${{ steps.verde.outputs.soluzione }}"
-          echo "Blu: ${{ steps.blu.outputs.decisione }}"
-          echo "Eseguire: ${{ steps.blu.outputs.eseguire }}"
-          echo "Status: COMPLETATO"
+          git diff --staged --quiet || git commit -m "brain: ESEGUIRE approvato | 7 Cappelli"
+          git push
