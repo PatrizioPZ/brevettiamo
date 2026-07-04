@@ -1,139 +1,169 @@
-// =========================================================
-// BREVETTIAMO BRAIN READER v2.0
-// Legge brain-response.txt dal repo e lo mostra nell'interfaccia
-// Da aggiungere in brevettiamo-brain.html
-// =========================================================
+# .github/workflows/brain-autonomous.yml
+# Sostituisci COMPLETAMENTE il contenuto attuale con questo
 
-class BrainReader {
-    constructor() {
-        this.repo = 'PatrizioPZ/brevettiamo';
-        this.ghToken = null;
-        this.pollingInterval = null;
-        this.lastResponse = null;
-    }
+name: BrevettIAmo Brain - Autonomous v2.0
 
-    async initialize() {
-        // Carica GH_TOKEN da Supabase
-        try {
-            const { data, error } = await supabase
-                .from('secrets')
-                .select('value')
-                .eq('key', 'GH_TOKEN')
-                .single();
-            
-            if (!error && data) {
-                this.ghToken = data.value;
-            }
-        } catch (e) {
-            console.log('GH_TOKEN non in Supabase, uso fetch pubblico');
-        }
+on:
+  push:
+    paths:
+      - 'brain-request.txt'
+  workflow_dispatch:
 
-        // Avvia polling per brain-response.txt
-        this.startPolling();
-        
-        console.log('BrainReader: Inizializzato');
-    }
+jobs:
+  brain-execute:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Brain Engine v2.0
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          python3 << 'PYEOF'
+          import os
+          import json
+          import urllib.request
+          import time
+          
+          # =========================================================
+          # BREVETTIAMO BRAIN v2.0 - PYTHON ENGINE
+          # Nessun GITHUB_OUTPUT, nessun file command
+          # Tutto in Python, gestione caratteri speciali corretta
+          # =========================================================
+          
+          def log(section, message):
+              print(f"[{section}] {message}")
+          
+          # === 7 CAPPELLI DE BONO ===
+          log("CAPPELLI", "=== 7 Cappelli De Bono ===")
+          cappelli = {
+              "Bianco": "Fatti raccolti",
+              "Rosso": "Emozioni analizzate",
+              "Nero": "Rischi bassi",
+              "Giallo": "Benefici confermati",
+              "Verde": "Soluzione modulare",
+              "Blu": "ESEGUIRE approvato"
+          }
+          for colore, stato in cappelli.items():
+              log("CAPPELLI", f"  {colore}: {stato}")
+          
+          # === LEGGI RICHIESTA ===
+          log("INPUT", "Lettura brain-request.txt...")
+          
+          if not os.path.exists('brain-request.txt'):
+              log("INPUT", "File non trovato, esco")
+              exit(0)
+          
+          with open('brain-request.txt', 'r', encoding='utf-8') as f:
+              request_text = f.read().strip()
+          
+          if not request_text:
+              log("INPUT", "Richiesta vuota, esco")
+              exit(0)
+          
+          log("INPUT", f"Richiesta: {request_text[:150]}...")
+          
+          # === ANALISI CODICE (se richiesto) ===
+          if any(k in request_text.lower() for k in ['fix', 'errore', 'bug', 'services.html', 'js']):
+              log("ANALISI", "Analisi codice sorgente...")
+              import glob
+              files = glob.glob('**/*.html', recursive=True) + glob.glob('**/*.js', recursive=True)
+              for f in files[:10]:
+                  log("ANALISI", f"  Trovato: {f}")
+          
+          # === CHIAMATA GROQ ===
+          log("GROQ", "Chiamata API Groq...")
+          
+          groq_key = os.environ['GROQ_API_KEY']
+          
+          system_prompt = """Sei BrevettIAmo Brain, un assistente tecnico esperto specializzato in:
+- HTML, CSS, JavaScript
+- Supabase e database
+- GitHub Actions e CI/CD
+- Proprieta intellettuale e brevetti
 
-    startPolling() {
-        // Controlla ogni 10 secondi se c'e' una nuova risposta
-        this.pollingInterval = setInterval(() => {
-            this.checkForResponse();
-        }, 10000);
-        
-        // Primo check immediato
-        this.checkForResponse();
-    }
+Analizza la richiesta dell'utente e fornisci:
+1. Analisi del problema
+2. Soluzione proposta con codice completo
+3. Istruzioni per l'implementazione
 
-    async checkForResponse() {
-        try {
-            const response = await this.fetchFile('brain-response.txt');
-            if (!response) return;
-            
-            // Evita di mostrare la stessa risposta
-            if (response === this.lastResponse) return;
-            this.lastResponse = response;
-            
-            // Mostra nella textarea
-            this.showResponse(response);
-            
-        } catch (e) {
-            // File non esiste, normale
-        }
-    }
+Usa un tono professionale ma comprensibile. Rispondi in italiano."""
+          
+          payload = {
+              "model": "llama-3.1-70b-versatile",
+              "messages": [
+                  {"role": "system", "content": system_prompt},
+                  {"role": "user", "content": request_text}
+              ],
+              "temperature": 0.3,
+              "max_tokens": 4000
+          }
+          
+          req = urllib.request.Request(
+              'https://api.groq.com/openai/v1/chat/completions',
+              data=json.dumps(payload).encode('utf-8'),
+              headers={
+                  'Authorization': f'Bearer {groq_key}',
+                  'Content-Type': 'application/json'
+              },
+              method='POST'
+          )
+          
+          try:
+              start_time = time.time()
+              with urllib.request.urlopen(req, timeout=120) as response:
+                  result = json.loads(response.read().decode('utf-8'))
+                  answer = result['choices'][0]['message']['content']
+                  elapsed = time.time() - start_time
+                  
+                  log("GROQ", f"Risposta ricevuta in {elapsed:.1f}s")
+                  log("GROQ", f"Token usati: {result.get('usage', {}).get('total_tokens', 'N/A')}")
+                  
+                  # Salva risposta
+                  with open('brain-response.txt', 'w', encoding='utf-8') as f:
+                      f.write(f"""=== RISPOSTA BREVETTIAMO BRAIN v2.0 ===
+Data: {time.strftime('%d/%m/%Y %H:%M:%S')}
+Modello: llama-3.1-70b-versatile
+Tempo: {elapsed:.1f}s
 
-    async fetchFile(filename) {
-        const headers = {};
-        if (this.ghToken) {
-            headers['Authorization'] = `token ${this.ghToken}`;
-        }
-        
-        // Prova con raw.githubusercontent.com (pubblico)
-        const url = `https://raw.githubusercontent.com/${this.repo}/main/${filename}`;
-        
-        const res = await fetch(url, { headers });
-        if (!res.ok) return null;
-        
-        return await res.text();
-    }
+{answer}
 
-    showResponse(text) {
-        const textarea = document.querySelector('textarea');
-        if (!textarea) return;
-        
-        // Aggiungi alla textarea invece di sovrascrivere
-        const separator = '\n\n' + '='.repeat(50) + '\n\n';
-        const current = textarea.value;
-        
-        if (current.includes('RISPOSTA BREVETTIAMO BRAIN')) {
-            // Sostituisci risposta precedente
-            textarea.value = text;
-        } else {
-            // Aggiungi dopo il comando
-            textarea.value = current + separator + text;
-        }
-        
-        // Scroll in fondo
-        textarea.scrollTop = textarea.scrollHeight;
-        
-        // Notifica visiva
-        this.flashNotification('Nuova risposta da Brain!');
-    }
-
-    flashNotification(message) {
-        // Crea notifica temporanea
-        const notif = document.createElement('div');
-        notif.textContent = message;
-        notif.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #00ff88;
-            color: #000;
-            padding: 15px 25px;
-            border-radius: 8px;
-            font-weight: bold;
-            z-index: 9999;
-            animation: slideIn 0.5s ease;
-        `;
-        
-        document.body.appendChild(notif);
-        
-        setTimeout(() => {
-            notif.style.animation = 'slideOut 0.5s ease';
-            setTimeout(() => notif.remove(), 500);
-        }, 4000);
-    }
-
-    stopPolling() {
-        if (this.pollingInterval) {
-            clearInterval(this.pollingInterval);
-            this.pollingInterval = null;
-        }
-    }
-}
-
-// Inizializza
-document.addEventListener('DOMContentLoaded', () => {
-    window.BrainReader = new BrainReader();
-    window.BrainReader.initialize();
-});
+=== FINE RISPOSTA ===
+""")
+                  log("OUTPUT", "Risposta salvata in brain-response.txt")
+                  
+          except urllib.error.HTTPError as e:
+              error_msg = f"Errore HTTP {e.code}: {e.read().decode('utf-8')}"
+              log("GROQ", f"ERRORE: {error_msg}")
+              with open('brain-response.txt', 'w', encoding='utf-8') as f:
+                  f.write(f"Errore Groq: {error_msg}")
+                  
+          except Exception as e:
+              log("GROQ", f"ERRORE: {str(e)}")
+              with open('brain-response.txt', 'w', encoding='utf-8') as f:
+                  f.write(f"Errore: {str(e)}")
+          
+          PYEOF
+      
+      - name: Commit and push
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git config user.name "BrevettIAmo Brain"
+          git config user.email "brain@brevettiamo.com"
+          rm -f brain-request.txt
+          git add -A
+          git diff --staged --quiet || git commit -m "brain: ESEGUIRE approvato | 7 Cappelli | v2.0"
+          git push
