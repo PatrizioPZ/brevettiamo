@@ -18,13 +18,17 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
       
-      - name: Read request
+          - name: Read request
         id: read-request
         run: |
           if [ -f brain-request.txt ]; then
-            REQUEST=$(cat brain-request.txt)
-            echo "request=$REQUEST" >> $GITHUB_OUTPUT
-            echo "has_request=true" >> $GITHUB_OUTPUT
+            # Usa delimiter per gestire contenuto multilinea
+            {
+              echo "has_request=true"
+              echo "request<<EOF"
+              cat brain-request.txt
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
           else
             echo "has_request=false" >> $GITHUB_OUTPUT
           fi
