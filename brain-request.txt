@@ -1,0 +1,3 @@
+Il flusso in services.html si blocca dopo la descrizione, prima dell'elaborazione.
+Controlla errori di sintassi, variabili non definite, funzioni mancanti.
+Se trovi l'errore, proponi la fix completa.
