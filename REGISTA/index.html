@@ -462,7 +462,7 @@ function avviaServizio(servizioId) {
     const iframe = document.getElementById('flusso-iframe');
     iframe.style.display = 'block';
     
-    const flussoUrl = '../welcome.html?servizio=' + encodeURIComponent(servizioId);
+    const flussoUrl = '/brevettiamo/welcome.html?servizio=' + encodeURIComponent(servizioId);
     iframe.src = flussoUrl;
 }
 
