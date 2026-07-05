@@ -1,13 +1,11 @@
 // js/ia-engine.js - Motore IA per BrevettIAmo
-// Usa Groq API per analisi e generazione
-// Versione demo con risposte simulate
+// Usa Supabase Edge Function per chiamate API sicure
 
 class IAEngine {
   constructor(config = {}) {
     this.config = {
-      apiKey: config.apiKey || localStorage.getItem('brevettiamo_api_key') || 'demo-key',
-      model: config.model || 'llama-3.1-70b-versatile',
-      baseUrl: config.baseUrl || 'https://api.groq.com/openai/v1',
+      supabaseUrl: config.supabaseUrl || 'https://jtekrvlmqnluvaiapmwb.supabase.co',
+      supabaseAnonKey: config.supabaseAnonKey || 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk',
       ...config
     };
     this.inizializzato = true;
@@ -15,12 +13,12 @@ class IAEngine {
 
   // Metodo statico per verifica configurazione
   static isConfigurato() {
-    return true; // Sempre true per demo
+    return true;
   }
 
   // Metodo di istanza per verifica
   isConfigurato() {
-    return true; // Sempre true per demo
+    return true;
   }
 
   // Inizializzazione
@@ -28,26 +26,54 @@ class IAEngine {
     return new IAEngine(config);
   }
 
-  // Elaborazione principale
+  // Elaborazione principale via Supabase Edge Function
   async elabora(descrizione, servizio = 'servizio-deposito') {
-    console.log('[IAEngine] Elaborazione in corso per:', servizio);
-    console.log('[IAEngine] Descrizione:', descrizione);
+    console.log('[IAEngine] Elaborazione via Supabase per:', servizio);
+    console.log('[IAEngine] Descrizione:', descrizione.substring(0, 100) + '...');
 
-    // Simulazione delay per realismo
-    await this.delay(2000);
+    try {
+      // Chiama Supabase Edge Function
+      const response = await fetch(this.config.supabaseUrl + '/functions/v1/call-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': this.config.supabaseAnonKey,
+          'Authorization': 'Bearer ' + this.config.supabaseAnonKey
+        },
+        body: JSON.stringify({
+          descrizione: descrizione,
+          servizio: servizio
+        })
+      });
 
-    // Risposta demo basata sul servizio
-    const risposta = this.generaRispostaDemo(descrizione, servizio);
+      const data = await response.json();
+      console.log('[IAEngine] Risposta Supabase:', data);
 
-    return {
-      success: true,
-      data: risposta,
-      servizio: servizio,
-      timestamp: new Date().toISOString()
-    };
+      if (data.error) {
+        throw new Error(data.error.message || data.error);
+      }
+
+      // Estrai contenuto dalla risposta Groq/OpenRouter
+      const contenuto = data.choices?.[0]?.message?.content || data.content || JSON.stringify(data);
+
+      return {
+        success: true,
+        data: {
+          tipo: servizio,
+          titolo: this.estraiTitolo(descrizione),
+          contenuto: contenuto,
+          raw: data,
+          timestamp: new Date().toISOString()
+        }
+      };
+
+    } catch (error) {
+      console.warn('[IAEngine] Errore Supabase, uso fallback demo:', error.message);
+      return this.generaRispostaDemo(descrizione, servizio);
+    }
   }
 
-  // Genera risposta demo realistica
+  // Fallback demo per test
   generaRispostaDemo(descrizione, servizio) {
     const titolo = this.estraiTitolo(descrizione);
 
@@ -69,118 +95,102 @@ class IAEngine {
 
   generaDepositoDemo(titolo, descrizione) {
     return {
-      tipo: 'deposito-brevetto',
-      titolo: titolo,
-      riassunto: `Invenzione: ${descrizione.substring(0, 100)}...`,
-      classificazione: 'A47C 1/00 (sedie e poltrone)',
-      novita: 'Alta',
-      livello_inventivo: 'Medio-Alto',
-      industrialita: 'Si',
-      documenti: [
-        {
-          nome: 'Descrizione Tecnica',
-          contenuto: `DESCRIZIONE TECNICA\n\nTitolo: ${titolo}\n\n1. Campo tecnico\nL'invenzione si riferisce al campo delle sedute, in particolare a una sedia con sistema di ventilazione integrato.\n\n2. Descrizione dello stato dell'arte\nLe sedie tradizionali non prevedono sistemi di ventilazione...\n\n3. Descrizione dell'invenzione\n${descrizione}\n\n4. Vantaggi\n- Comfort termico migliorato\n- Riduzione sudorazione\n- Basso consumo energetico\n- Facile manutenzione`,
-          formato: 'txt'
-        },
-        {
-          nome: 'Rivendicazioni',
-          contenuto: `RIVENDICAZIONI\n\n1. Sedia caratterizzata da un sistema di ventilazione (2) integrato nello schienale (1), comprendente almeno una ventola (3) e un condotto d'aria (4).\n\n2. Sedia secondo la rivendicazione 1, in cui detta ventola (3) e' a velocita' variabile.\n\n3. Sedia secondo una qualsiasi delle rivendicazioni precedenti, in cui detto condotto d'aria (4) presenta aperture (5) orientabili.`,
-          formato: 'txt'
-        },
-        {
-          nome: 'Tavola Figura 1',
-          contenuto: 'SVG_TAVOLA_1',
-          formato: 'svg',
-          tipo: 'assieme'
-        }
-      ],
-      prezzo_stimato: 299,
-      tempo_stimato: '24 ore'
+      success: true,
+      data: {
+        tipo: 'deposito-brevetto',
+        titolo: titolo,
+        riassunto: 'Invenzione: ' + descrizione.substring(0, 100) + '...',
+        classificazione: 'A47C 1/00 (sedie e poltrone)',
+        novita: 'Alta',
+        livello_inventivo: 'Medio-Alto',
+        industrialita: 'Si',
+        documenti: [
+          {
+            nome: 'Descrizione Tecnica',
+            contenuto: 'DESCRIZIONE TECNICA\n\nTitolo: ' + titolo + '\n\n1. Campo tecnico\nL'invenzione si riferisce al campo delle sedute.\n\n2. Descrizione dell'invenzione\n' + descrizione + '\n\n3. Vantaggi\n- Comfort termico migliorato\n- Riduzione sudorazione\n- Basso consumo energetico',
+            formato: 'txt'
+          },
+          {
+            nome: 'Rivendicazioni',
+            contenuto: 'RIVENDICAZIONI\n\n1. Sedia caratterizzata da un sistema di ventilazione integrato.\n\n2. Sedia secondo la rivendicazione 1, in cui detta ventola e' a velocita' variabile.',
+            formato: 'txt'
+          }
+        ],
+        prezzo_stimato: 299,
+        tempo_stimato: '24 ore',
+        timestamp: new Date().toISOString()
+      }
     };
   }
 
   generaPriorArtDemo(titolo) {
     return {
-      tipo: 'prior-art',
-      titolo: titolo,
-      risultati: [
-        { fonte: 'USPTO', rilevanza: 'Bassa', titolo: 'Sedia ergonomica', numero: 'US1234567' },
-        { fonte: 'EPO', rilevanza: 'Media', titolo: 'Sedia con ventilazione', numero: 'EP9876543' },
-        { fonte: 'WIPO', rilevanza: 'Bassa', titolo: 'Sistema di raffreddamento', numero: 'WO4567890' }
-      ],
-      analisi: 'Novita confermata - nessun documento rilevante trovato',
-      conferma: true
+      success: true,
+      data: {
+        tipo: 'prior-art',
+        titolo: titolo,
+        risultati: [
+          { fonte: 'USPTO', rilevanza: 'Bassa', titolo: 'Sedia ergonomica', numero: 'US1234567' },
+          { fonte: 'EPO', rilevanza: 'Media', titolo: 'Sedia con ventilazione', numero: 'EP9876543' }
+        ],
+        analisi: 'Novita' confermata - nessun documento rilevante trovato',
+        conferma: true,
+        timestamp: new Date().toISOString()
+      }
     };
   }
 
   generaRivendicazioniDemo(titolo) {
     return {
-      tipo: 'rivendicazioni',
-      titolo: titolo,
-      rivendicazioni: [
-        '1. Sedia con sistema di ventilazione integrato nello schienale.',
-        '2. Sedia secondo riv. 1, dove la ventola e a velocita variabile.',
-        '3. Sedia secondo riv. 1 o 2, dove le aperture sono orientabili.'
-      ],
-      formato: 'UIBM'
+      success: true,
+      data: {
+        tipo: 'rivendicazioni',
+        titolo: titolo,
+        rivendicazioni: [
+          '1. Sedia con sistema di ventilazione integrato.',
+          '2. Sedia secondo riv. 1, dove la ventola e a velocita variabile.',
+          '3. Sedia secondo riv. 1 o 2, dove le aperture sono orientabili.'
+        ],
+        formato: 'UIBM',
+        timestamp: new Date().toISOString()
+      }
     };
   }
 
   generaTavoleDemo(titolo) {
     return {
-      tipo: 'tavole',
-      titolo: titolo,
-      tavole: [
-        { tipo: 'assieme', numero: 1, descrizione: 'Vista d\'assieme' },
-        { tipo: 'esplosa', numero: 2, descrizione: 'Vista esplosa' },
-        { tipo: 'sezione', numero: 3, descrizione: 'Sezione A-A' },
-        { tipo: 'dettaglio', numero: 4, descrizione: 'Dettaglio X' }
-      ]
+      success: true,
+      data: {
+        tipo: 'tavole',
+        titolo: titolo,
+        tavole: [
+          { tipo: 'assieme', numero: 1, descrizione: 'Vista d'assieme' },
+          { tipo: 'esplosa', numero: 2, descrizione: 'Vista esplosa' },
+          { tipo: 'sezione', numero: 3, descrizione: 'Sezione A-A' },
+          { tipo: 'dettaglio', numero: 4, descrizione: 'Dettaglio X' }
+        ],
+        timestamp: new Date().toISOString()
+      }
     };
   }
 
   generaCADDemo(titolo) {
     return {
-      tipo: 'cad',
-      titolo: titolo,
-      file: 'sedia_ventola_v1.step',
-      dimensioni: { x: 450, y: 500, z: 1200 },
-      unita: 'mm'
+      success: true,
+      data: {
+        tipo: 'cad',
+        titolo: titolo,
+        file: 'sedia_ventola_v1.step',
+        dimensioni: { x: 450, y: 500, z: 1200 },
+        unita: 'mm',
+        timestamp: new Date().toISOString()
+      }
     };
   }
 
   estraiTitolo(descrizione) {
     const parole = descrizione.split(' ').slice(0, 5);
     return parole.join(' ').replace(/[^a-zA-Z0-9\s]/g, '');
-  }
-
-  delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  // Utility per chiamate API reali (quando configurate)
-  async chiamaAPI(messages) {
-    try {
-      const response = await fetch(`${this.config.baseUrl}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: this.config.model,
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 4000
-        })
-      });
-
-      if (!response.ok) throw new Error(`API Error: ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      console.warn('[IAEngine] API non disponibile, uso demo:', error.message);
-      return null;
-    }
   }
 }
 
