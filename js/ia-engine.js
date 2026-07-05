@@ -131,7 +131,7 @@ class IAEngine {
       tipo: 'tavole',
       titolo: titolo,
       tavole: [
-        { tipo: 'assieme', numero: 1, descrizione: 'Vista d'assieme' },
+        { tipo: 'assieme', numero: 1, descrizione: 'Vista d\'assieme' },
         { tipo: 'esplosa', numero: 2, descrizione: 'Vista esplosa' },
         { tipo: 'sezione', numero: 3, descrizione: 'Sezione A-A' },
         { tipo: 'dettaglio', numero: 4, descrizione: 'Dettaglio X' }
