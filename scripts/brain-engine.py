@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
-# BREVETTIAMO BRAIN ENGINE v2.0
-# Chiama Groq dal server GitHub Actions
-
 import os
 import json
 import urllib.request
 import time
-import glob
-
 
 def log(section, message):
     print(f"[{section}] {message}")
-
 
 def main():
     log("CAPPELLI", "=== 7 Cappelli De Bono ===")
@@ -38,14 +32,9 @@ def main():
 
     log("INPUT", f"Richiesta: {request_text[:150]}...")
 
-    if any(k in request_text.lower() for k in ['fix', 'errore', 'bug', 'services.html', 'js']):
-        log("ANALISI", "Analisi codice sorgente...")
-        for f in (glob.glob('**/*.html', recursive=True) + glob.glob('**/*.js', recursive=True))[:10]:
-            log("ANALISI", f"  Trovato: {f}")
+    log("OPENROUTER", "Chiamata API OpenRouter...")
 
-    log("GROQ", "Chiamata API Groq...")
-
-    groq_key = os.environ['GROQ_API_KEY']
+    openrouter_key = os.environ['OPENROUTER_API_KEY']
 
     system_prompt = ("Sei BrevettIAmo Brain, assistente tecnico esperto in HTML, CSS, JavaScript, "
                     "Supabase, GitHub Actions e proprieta intellettuale. "
@@ -53,7 +42,7 @@ def main():
                     "Rispondi in italiano.")
 
     payload = {
-        "model": "llama-3.3-70b-versatile",
+        "model": "meta-llama/llama-3.3-70b-versatile:free",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": request_text}
@@ -63,11 +52,13 @@ def main():
     }
 
     req = urllib.request.Request(
-        'https://api.groq.com/openai/v1/chat/completions',
+        'https://openrouter.ai/api/v1/chat/completions',
         data=json.dumps(payload).encode('utf-8'),
         headers={
-            'Authorization': f'Bearer {groq_key}',
-            'Content-Type': 'application/json'
+            'Authorization': f'Bearer {openrouter_key}',
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://patriziopz.github.io/brevettiamo/',
+            'X-Title': 'BrevettIAmo Brain'
         },
         method='POST'
     )
@@ -79,31 +70,23 @@ def main():
             answer = result['choices'][0]['message']['content']
             elapsed = time.time() - start
 
-            log("GROQ", f"Risposta in {elapsed:.1f}s")
-            log("GROQ", f"Token: {result.get('usage', {}).get('total_tokens', 'N/A')}")
+            log("OPENROUTER", f"Risposta in {elapsed:.1f}s")
+            log("OPENROUTER", f"Token: {result.get('usage', {}).get('total_tokens', 'N/A')}")
 
             with open('brain-response.txt', 'w', encoding='utf-8') as f:
-                f.write(f"=== RISPOSTA BREVETTIAMO BRAIN v2.0 ===
-")
-                f.write(f"Data: {time.strftime('%d/%m/%Y %H:%M:%S')}
-")
-                f.write(f"Modello: llama-3.3-70b-versatile
-")
-                f.write(f"Tempo: {elapsed:.1f}s
-
-")
+                f.write(f"=== RISPOSTA BREVETTIAMO BRAIN v2.0 ===\n")
+                f.write(f"Data: {time.strftime('%d/%m/%Y %H:%M:%S')}\n")
+                f.write(f"Modello: meta-llama/llama-3.3-70b-versatile:free\n")
+                f.write(f"Provider: OpenRouter\n")
+                f.write(f"Tempo: {elapsed:.1f}s\n\n")
                 f.write(answer)
-                f.write("
-
-=== FINE RISPOSTA ===
-")
+                f.write("\n\n=== FINE RISPOSTA ===\n")
             log("OUTPUT", "Risposta salvata in brain-response.txt")
 
     except Exception as e:
-        log("GROQ", f"ERRORE: {str(e)}")
+        log("OPENROUTER", f"ERRORE: {str(e)}")
         with open('brain-response.txt', 'w', encoding='utf-8') as f:
             f.write(f"Errore: {str(e)}")
-
 
 if __name__ == "__main__":
     main()
