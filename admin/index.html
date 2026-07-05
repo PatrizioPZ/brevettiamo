@@ -221,7 +221,6 @@
         .message.error { background: #f8d7da; color: #721c24; display: block; }
         .loading { text-align: center; padding: 40px; font-style: italic; color: var(--grigio); }
     </style>
-<base target="_blank">
 </head>
 <body>
     <div class="header">
@@ -292,7 +291,7 @@
                         <h3>Pacchetti</h3>
                         <table id="table-pacchetti">
                             <thead>
-                                <tr><th>Nome</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th></tr>
+                                <tr><th>Nome</th><th>Prezzo (€)</th><th>Crediti</th><th>Stato</th></tr>
                             </thead>
                             <tbody></tbody>
                         </table>
@@ -301,7 +300,7 @@
                         <h3>Servizi Singoli</h3>
                         <table id="table-servizi">
                             <thead>
-                                <tr><th>Nome</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th></tr>
+                                <tr><th>Nome</th><th>Prezzo (€)</th><th>Crediti</th><th>Stato</th></tr>
                             </thead>
                             <tbody></tbody>
                         </table>
@@ -380,14 +379,6 @@
     </div>
 
 <script>
-// === BYPASS LOGIN - NETLIFY ===
-localStorage.setItem('brevettiamo_admin', 'true');
-localStorage.setItem('brevettiamo_user', JSON.stringify({
-    email: 'admin@brevettiamo.com',
-    role: 'admin',
-    name: 'Admin BrevettIAmo'
-}));
-
 // === CONFIG ===
 const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
@@ -441,7 +432,7 @@ function getToken() {
 function logBrain(msg) {
     const div = document.getElementById('brain-log');
     const time = new Date().toLocaleTimeString('it-IT');
-    div.innerHTML = '<div>[' + time + '] ' + msg + '</div>' + div.innerHTML;
+    div.innerHTML = `<div>[${time}] ${msg}</div>` + div.innerHTML;
 }
 
 async function writeRequest(text) {
@@ -450,7 +441,7 @@ async function writeRequest(text) {
 
     let sha = null;
     try {
-        const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/brain-request.txt', {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/brain-request.txt`, {
             headers: { 'Authorization': 'token ' + token }
         });
         if (res.ok) { const data = await res.json(); sha = data.sha; }
@@ -459,7 +450,7 @@ async function writeRequest(text) {
     const body = { message: 'brain: richiesta da admin', content: btoa(unescape(encodeURIComponent(text))), branch: 'main' };
     if (sha) body.sha = sha;
 
-    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/brain-request.txt', {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/brain-request.txt`, {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -469,7 +460,7 @@ async function writeRequest(text) {
 
 async function readResponse() {
     try {
-        const res = await fetch('https://raw.githubusercontent.com/' + REPO + '/main/brain-response.txt');
+        const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/brain-response.txt`);
         if (!res.ok) return null;
         return await res.text();
     } catch(e) { return null; }
@@ -485,8 +476,7 @@ async function inviaBrain() {
     try {
         await writeRequest(text);
         logBrain('brain-request.txt scritto con successo');
-        document.getElementById('brain-result').textContent = 'Richiesta inviata. Workflow in esecuzione...
-Attendi 30-60 secondi e clicca "Controlla Risposta".';
+        document.getElementById('brain-result').textContent = 'Richiesta inviata. Workflow in esecuzione...\nAttendi 30-60 secondi e clicca "Controlla Risposta".';
     } catch(e) {
         logBrain('ERRORE: ' + e.message);
         alert('Errore: ' + e.message);
@@ -522,10 +512,12 @@ async function caricaPrezzi() {
 
         (pacchetti || []).forEach((item, i) => {
             const row = document.createElement('tr');
-            row.innerHTML = '<td><input type="text" id="p_nome_' + i + '" value="' + (item.nome || '') + '"></td>' +
-                '<td><input type="number" id="p_prezzo_' + i + '" value="' + (item.prezzo || 0) + '" step="0.01"></td>' +
-                '<td><input type="number" id="p_crediti_' + i + '" value="' + (item.crediti || 0) + '"></td>' +
-                '<td><select id="p_stato_' + i + '"><option value="attivo" ' + (item.stato === 'attivo' ? 'selected' : '') + '>Attivo</option><option value="inattivo" ' + (item.stato === 'inattivo' ? 'selected' : '') + '>Inattivo</option></select></td>';
+            row.innerHTML = `
+                <td><input type="text" id="p_nome_${i}" value="${item.nome || ''}"></td>
+                <td><input type="number" id="p_prezzo_${i}" value="${item.prezzo || 0}" step="0.01"></td>
+                <td><input type="number" id="p_crediti_${i}" value="${item.crediti || 0}"></td>
+                <td><select id="p_stato_${i}"><option value="attivo" ${item.stato==='attivo'?'selected':''}>Attivo</option><option value="inattivo" ${item.stato==='inattivo'?'selected':''}>Inattivo</option></select></td>
+            `;
             row.dataset.id = item.id;
             row.dataset.table = 'pacchetti';
             tbodyP.appendChild(row);
@@ -533,10 +525,12 @@ async function caricaPrezzi() {
 
         (servizi || []).forEach((item, i) => {
             const row = document.createElement('tr');
-            row.innerHTML = '<td><input type="text" id="s_nome_' + i + '" value="' + (item.nome || '') + '"></td>' +
-                '<td><input type="number" id="s_prezzo_' + i + '" value="' + (item.prezzo || 0) + '" step="0.01"></td>' +
-                '<td><input type="number" id="s_crediti_' + i + '" value="' + (item.crediti || 0) + '"></td>' +
-                '<td><select id="s_stato_' + i + '"><option value="attivo" ' + (item.stato === 'attivo' ? 'selected' : '') + '>Attivo</option><option value="inattivo" ' + (item.stato === 'inattivo' ? 'selected' : '') + '>Inattivo</option></select></td>';
+            row.innerHTML = `
+                <td><input type="text" id="s_nome_${i}" value="${item.nome || ''}"></td>
+                <td><input type="number" id="s_prezzo_${i}" value="${item.prezzo || 0}" step="0.01"></td>
+                <td><input type="number" id="s_crediti_${i}" value="${item.crediti || 0}"></td>
+                <td><select id="s_stato_${i}"><option value="attivo" ${item.stato==='attivo'?'selected':''}>Attivo</option><option value="inattivo" ${item.stato==='inattivo'?'selected':''}>Inattivo</option></select></td>
+            `;
             row.dataset.id = item.id;
             row.dataset.table = 'servizi_singoli';
             tbodyS.appendChild(row);
@@ -556,10 +550,10 @@ async function salvaPrezzi() {
             const id = row.dataset.id;
             const i = Array.from(row.parentNode.children).indexOf(row);
             await supabaseClient.from('pacchetti').update({
-                nome: document.getElementById('p_nome_' + i).value,
-                prezzo: parseFloat(document.getElementById('p_prezzo_' + i).value) || 0,
-                crediti: parseInt(document.getElementById('p_crediti_' + i).value) || 0,
-                stato: document.getElementById('p_stato_' + i).value
+                nome: document.getElementById(`p_nome_${i}`).value,
+                prezzo: parseFloat(document.getElementById(`p_prezzo_${i}`).value) || 0,
+                crediti: parseInt(document.getElementById(`p_crediti_${i}`).value) || 0,
+                stato: document.getElementById(`p_stato_${i}`).value
             }).eq('id', id);
         }
 
@@ -568,10 +562,10 @@ async function salvaPrezzi() {
             const id = row.dataset.id;
             const i = Array.from(row.parentNode.children).indexOf(row);
             await supabaseClient.from('servizi_singoli').update({
-                nome: document.getElementById('s_nome_' + i).value,
-                prezzo: parseFloat(document.getElementById('s_prezzo_' + i).value) || 0,
-                crediti: parseInt(document.getElementById('s_crediti_' + i).value) || 0,
-                stato: document.getElementById('s_stato_' + i).value
+                nome: document.getElementById(`s_nome_${i}`).value,
+                prezzo: parseFloat(document.getElementById(`s_prezzo_${i}`).value) || 0,
+                crediti: parseInt(document.getElementById(`s_crediti_${i}`).value) || 0,
+                stato: document.getElementById(`s_stato_${i}`).value
             }).eq('id', id);
         }
 
@@ -585,7 +579,7 @@ function showMsg(id, text, type) {
     const el = document.getElementById(id);
     el.textContent = text;
     el.className = 'message ' + type;
-    setTimeout(function() { el.className = 'message'; }, 3000);
+    setTimeout(() => el.className = 'message', 3000);
 }
 
 function salvaBanner() {
@@ -596,18 +590,16 @@ function salvaBanner() {
 
 function logout() {
     localStorage.removeItem('brevettiamo_admin');
-    localStorage.removeItem('brevettiamo_user');
     window.location.href = 'login.html';
 }
 
 // === INIT ===
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     caricaToken();
     const banner = localStorage.getItem('brevettiamo_banner');
     if (banner) document.getElementById('banner-text').value = banner;
     logBrain('Brain v2.0 inizializzato');
     logBrain('Workflow: GitHub Actions + OpenRouter');
-    logBrain('Bypass login attivo - Netlify');
 });
 </script>
 </body>
