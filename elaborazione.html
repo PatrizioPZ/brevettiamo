@@ -1,340 +1,324 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elaborazione IA — BrevettIAmo</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .elaborazione-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            text-align: center;
-        }
-        
-        .spinner-ia {
-            width: 80px;
-            height: 80px;
-            border: 4px solid #e0e0e0;
-            border-top: 4px solid #2563eb;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 30px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .progress-bar {
-            width: 100%;
-            max-width: 400px;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            margin: 20px auto;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
-            border-radius: 4px;
-            transition: width 0.5s ease;
-            width: 0%;
-        }
-        
-        .status-text {
-            font-size: 16px;
-            color: #666;
-            margin: 15px 0;
-            min-height: 24px;
-        }
-        
-        .status-detail {
-            font-size: 13px;
-            color: #999;
-            margin-top: 8px;
-        }
-        
-        .error-box {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 500px;
-            display: none;
-        }
-        
-        .error-box.visible {
-            display: block;
-        }
-        
-        .error-box h3 {
-            color: #dc2626;
-            margin-bottom: 10px;
-        }
-        
-        .retry-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 15px;
-            margin-top: 15px;
-        }
-        
-        .retry-btn:hover {
-            background: #1d4ed8;
-        }
-        
-        .fallback-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
-            margin-left: 10px;
-        }
-        
-        .info-box {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px auto;
-            max-width: 500px;
-            font-size: 14px;
-            color: #1e40af;
-        }
-        
-        .model-badge {
-            display: inline-block;
-            background: #dbeafe;
-            color: #1e40af;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elaborazione - BrevettIAmo</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    background: #f5f0e8;
+    min-height: 100vh;
+    color: #3d2b1f;
+}
+
+.pergamena {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #faf6f0;
+    border: 2px solid #c9a96e;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(61,43,31,0.15), inset 0 0 60px rgba(201,169,110,0.1);
+    padding: 50px;
+    position: relative;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.logo h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: #8b0000;
+    letter-spacing: 2px;
+}
+
+.loading-container {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading-spinner {
+    width: 80px;
+    height: 80px;
+    border: 4px solid #d4c4a8;
+    border-top: 4px solid #8b0000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 30px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    color: #8b0000;
+    margin-bottom: 15px;
+}
+
+.loading-submessage {
+    font-style: italic;
+    color: #8b7355;
+    font-size: 0.95rem;
+}
+
+.stato-elaborazione {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(201,169,110,0.08);
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    text-align: left;
+}
+
+.stato-elaborazione h3 {
+    font-family: 'Cinzel', serif;
+    color: #8b0000;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.stato-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dashed #d4c4a8;
+}
+
+.stato-item:last-child { border-bottom: none; }
+
+.stato-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.stato-pending { background: #d4c4a8; color: #fff; }
+.stato-active { background: #8b0000; color: #fff; animation: pulse 1.5s infinite; }
+.stato-done { background: #2c5f2d; color: #fff; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.stato-text { flex: 1; font-size: 0.9rem; }
+
+.error-box {
+    background: rgba(139,0,0,0.05);
+    border: 1px dashed #8b0000;
+    border-radius: 4px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.error-box h3 {
+    font-family: 'Cinzel', serif;
+    color: #8b0000;
+    margin-bottom: 10px;
+}
+
+.error-box p {
+    color: #8b7355;
+    font-size: 0.9rem;
+}
+
+.btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    padding: 16px 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #c9a96e;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(201,169,110,0.3);
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background: #b8985a;
+    transform: translateY(-2px);
+}
+
+.hidden { display: none !important; }
+
+@media (max-width: 600px) {
+    .pergamena { padding: 25px; margin: 20px; }
+}
+</style>
 <base target="_blank">
 </head>
 <body>
-    <div class="elaborazione-container">
-        <h1>Elaborazione in corso</h1>
-        <p style="color: #666; margin-bottom: 30px;">L'IA sta analizzando la tua richiesta...</p>
-        
-        <div id="spinner" class="spinner-ia"></div>
-        
-        <div class="progress-bar">
-            <div id="progressFill" class="progress-fill"></div>
-        </div>
-        
-        <div id="statusText" class="status-text">Inizializzazione...</div>
-        <div id="statusDetail" class="status-detail"></div>
-        
-        <div id="modelBadge" class="model-badge" style="display: none;"></div>
-        
-        <div id="errorBox" class="error-box">
-            <h3>Errore durante l'elaborazione</h3>
-            <p id="errorMessage"></p>
-            <div id="errorDetail" style="font-size: 12px; color: #666; margin-top: 8px;"></div>
-            <div style="margin-top: 15px;">
-                <button class="retry-btn" onclick="riprova()">Riprova</button>
-                <button class="fallback-btn" onclick="usaFallback()">Usa template statico</button>
+
+<div class="pergamena">
+    <div class="logo">
+        <h1>ELABORAZIONE IN CORSO</h1>
+    </div>
+
+    <div id="loading-panel" class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-message" id="loading-message">Inizializzazione...</div>
+        <div class="loading-submessage" id="loading-submessage">L'IA sta preparando l'analisi</div>
+
+        <div class="stato-elaborazione">
+            <h3>Stato elaborazione</h3>
+            <div id="stato-lista">
+                <div class="stato-item">
+                    <div class="stato-icon stato-active" id="icon-1">1</div>
+                    <div class="stato-text" id="text-1">Inizializzazione motore IA</div>
+                </div>
+                <div class="stato-item">
+                    <div class="stato-icon stato-pending" id="icon-2">2</div>
+                    <div class="stato-text" id="text-2">Analisi descrizione invenzione</div>
+                </div>
+                <div class="stato-item">
+                    <div class="stato-icon stato-pending" id="icon-3">3</div>
+                    <div class="stato-text" id="text-3">Generazione documentazione</div>
+                </div>
+                <div class="stato-item">
+                    <div class="stato-icon stato-pending" id="icon-4">4</div>
+                    <div class="stato-text" id="text-4">Finalizzazione risultato</div>
+                </div>
             </div>
-        </div>
-        
-        <div id="infoBox" class="info-box" style="display: none;">
-            <strong>Suggerimento:</strong> <span id="infoText"></span>
         </div>
     </div>
 
-    <!-- Script di configurazione e motore IA -->
-    <script src="config.js"></script>
-    <script src="js/prompts.js"></script>
-    <script src="js/contesto-ai.js"></script>
-    <script src="../js/ia-engine.js"></script>
-    
-    <script>
-        // ============================================
-        // PULIZIA LOCALSTORAGE - FORZA NUOVA CHIAMATA
-        // ============================================
-        localStorage.removeItem('brevettiamo_risultato_ia');
-        localStorage.removeItem('brevettiamo_ia_meta');
-        localStorage.removeItem('brevettiamo_use_fallback');
-        console.log('Cache pulita - forzo nuova chiamata IA');
-        
-        // Recupera dati dalla pagina precedente
-        const servizioId = localStorage.getItem('brevettiamo_servizio_id');
-        const servizioNome = localStorage.getItem('brevettiamo_servizio_nome');
-        const descrizione = localStorage.getItem('brevettiamo_descrizione');
-        const note = localStorage.getItem('brevettiamo_note');
-        const files = JSON.parse(localStorage.getItem('brevettiamo_files') || '[]');
-        
-        const statusText = document.getElementById('statusText');
-        const statusDetail = document.getElementById('statusDetail');
-        const progressFill = document.getElementById('progressFill');
-        const errorBox = document.getElementById('errorBox');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorDetail = document.getElementById('errorDetail');
-        const modelBadge = document.getElementById('modelBadge');
-        const infoBox = document.getElementById('infoBox');
-        const infoText = document.getElementById('infoText');
-        
-        let elaborazioneInCorso = false;
-        
-        // Messaggi di progresso simulati
-        const messaggiProgresso = [
-            { pct: 10, msg: 'Analisi della descrizione...', detail: 'Estrazione elementi tecnici chiave' },
-            { pct: 25, msg: 'Preparazione del prompt...', detail: 'Selezione modello IA ottimale' },
-            { pct: 40, msg: 'Connessione con l\'IA...', detail: 'Handshake con proxy Supabase' },
-            { pct: 55, msg: 'Generazione in corso...', detail: 'Elaborazione documento professionale' },
-            { pct: 70, msg: 'Raffinamento output...', detail: 'Formattazione e strutturazione' },
-            { pct: 85, msg: 'Verifica qualita...', detail: 'Controllo completezza e coerenza' },
-            { pct: 95, msg: 'Finalizzazione...', detail: 'Salvataggio risultato' }
-        ];
-        
-        async function avviaElaborazione() {
-            if (elaborazioneInCorso) return;
-            elaborazioneInCorso = true;
-            
-            // Verifica dati
-            if (!servizioId || !descrizione) {
-                mostraErrore('Dati mancanti', 'Torna a descrizione.html e completa il form.');
-                return;
-            }
-            
-            // Verifica proxy configurato
-            if (!IAEngine.isConfigurato()) {
-                mostraErrore(
-                    'Proxy non configurato',
-                    'Verifica che config.js contenga PROXY_URL corretto.'
-                );
-                return;
-            }
-            
-            // Avvia progresso simulato
-            let msgIndex = 0;
-            const progressInterval = setInterval(() => {
-                if (msgIndex < messaggiProgresso.length) {
-                    const step = messaggiProgresso[msgIndex];
-                    progressFill.style.width = step.pct + '%';
-                    statusText.textContent = step.msg;
-                    statusDetail.textContent = step.detail;
-                    msgIndex++;
-                }
-            }, 1500);
-            
-            // Crea motore IA e chiama
-            const engine = new IAEngine();
-            
-            try {
-                // Genera prompt con contesto AI se disponibile
-                let promptRichiesta = descrizione;
-                let promptSistema = null;
+    <div id="error-panel" class="error-box hidden">
+        <h3>Si e' verificato un errore</h3>
+        <p id="error-message">Impossibile completare l'elaborazione</p>
+        <button class="btn" onclick="location.reload()">RIPROVA</button>
+    </div>
+</div>
 
-                try {
-                    const categoria = ContestoAI.trovaCategoria(descrizione + ' ' + (note || ''));
-                    if (categoria) {
-                        promptSistema = ContestoAI.generaPromptSistema(categoria);
-                        statusDetail.textContent = 'Prompt arricchito con contesto UIBM';
-                        console.log('[ContestoAI] Prompt generato con contesto');
-                    }
-                } catch (e) {
-                    console.warn('[ContestoAI] Errore generazione prompt:', e);
-                }
-
-                const risultato = await engine.chiama(servizioId, descrizione, files, 'testo', promptSistema);
-                
-                clearInterval(progressInterval);
-                
-                if (risultato.success) {
-                    // Successo!
-                    progressFill.style.width = '100%';
-                    statusText.textContent = 'Completato!';
-                    statusDetail.textContent = 'Generato in ' + risultato.tempo + 'ms | Tokens: ' + risultato.tokens.total;
-                    modelBadge.textContent = risultato.modello;
-                    modelBadge.style.display = 'inline-block';
-                    
-                    // Salva metadati aggiuntivi
-                    localStorage.setItem('brevettiamo_ia_meta', JSON.stringify({
-                        modello: risultato.modello,
-                        tokens: risultato.tokens,
-                        tempo: risultato.tempo,
-                        tentativi: risultato.tentativi,
-                        timestamp: new Date().toISOString()
-                    }));
-                    
-                    // Redirect a risultato dopo 1.5s
-                    setTimeout(() => {
-                        window.location.href = 'risultato.html';
-                    }, 1500);
-                    
-                } else {
-                    // Fallimento con retry esauriti
-                    clearInterval(progressInterval);
-                    mostraErrore(
-                        'L\'IA non ha risposto correttamente',
-                        'Errore: ' + risultato.errore + '\n\nTentativi effettuati: ' + risultato.tentativi.length + '\n\nPuoi riprovare o usare il template statico.'
-                    );
-                }
-                
-            } catch (errore) {
-                clearInterval(progressInterval);
-                mostraErrore('Errore imprevisto', errore.message);
-            }
-        }
-        
-        function mostraErrore(titolo, dettaglio) {
-            document.getElementById('spinner').style.display = 'none';
-            progressFill.style.width = '0%';
-            statusText.textContent = 'Elaborazione fallita';
-            statusDetail.textContent = '';
-            
-            errorBox.classList.add('visible');
-            errorMessage.textContent = titolo;
-            errorDetail.textContent = dettaglio;
-            elaborazioneInCorso = false;
-        }
-        
-        function riprova() {
-            errorBox.classList.remove('visible');
-            document.getElementById('spinner').style.display = 'block';
-            progressFill.style.width = '0%';
-            statusText.textContent = 'Inizializzazione...';
-            statusDetail.textContent = '';
-            avviaElaborazione();
-        }
-        
-        function usaFallback() {
-            // Salva flag per usare template statico
-            localStorage.setItem('brevettiamo_use_fallback', 'true');
-            window.location.href = 'risultato.html';
-        }
-        
-        // Avvia automaticamente al caricamento
-        document.addEventListener('DOMContentLoaded', () => {
-            // Piccolo delay per permettere al browser di renderizzare
-            setTimeout(avviaElaborazione, 500);
-        });
-    </script>
-    <!-- BREVETTIAMO E2E -->
+<!-- Script di configurazione e motore IA -->
+<script src="/config.js"></script>
+<script src="/js/prompts.js"></script>
+<script src="/js/contesto-ai.js"></script>
+<script src="/js/ia-engine.js"></script>
 <script src="/js/e2e-module.js"></script>
+
 <script>
-  if (typeof BrevettIAmoE2E !== 'undefined') {
-    BrevettIAmoE2E.init();
-  }
+// ==========================================
+// ELABORAZIONE BREVETTIAMO
+// ==========================================
+
+const servizioId = new URLSearchParams(window.location.search).get('servizio') || 'servizio-deposito';
+const descrizione = localStorage.getItem('brevettiamo_descrizione') || '';
+
+async function avviaElaborazione() {
+    console.log('[Elaborazione] Avvio per servizio:', servizioId);
+    console.log('[Elaborazione] Descrizione:', descrizione.substring(0, 100) + '...');
+
+    try {
+        // Step 1: Inizializzazione
+        aggiornaStato(1, 'active');
+
+        // Verifica IAEngine
+        if (typeof IAEngine === 'undefined') {
+            throw new Error('IAEngine non caricato. Ricarica la pagina.');
+        }
+
+        // Verifica configurazione
+        if (!IAEngine.isConfigurato || !IAEngine.isConfigurato()) {
+            throw new Error('IAEngine non configurato');
+        }
+
+        // Step 2: Analisi
+        aggiornaStato(2, 'active');
+        await delay(1500);
+
+        // Step 3: Generazione
+        aggiornaStato(3, 'active');
+
+        // Inizializza motore IA
+        const motore = IAEngine.init();
+
+        // Elabora
+        const risultato = await motore.elabora(descrizione, servizioId);
+
+        if (!risultato || !risultato.success) {
+            throw new Error('Elaborazione fallita');
+        }
+
+        // Step 4: Finalizzazione
+        aggiornaStato(4, 'active');
+        await delay(800);
+
+        // Salva risultato
+        localStorage.setItem('brevettiamo_risultato', JSON.stringify(risultato.data));
+        localStorage.setItem('brevettiamo_servizio', servizioId);
+
+        // Completa
+        aggiornaStato(1, 'done');
+        aggiornaStato(2, 'done');
+        aggiornaStato(3, 'done');
+        aggiornaStato(4, 'done');
+
+        document.getElementById('loading-message').textContent = 'Elaborazione completata!';
+        document.getElementById('loading-submessage').textContent = 'Reindirizzamento al risultato...';
+
+        // Reindirizza a risultato
+        setTimeout(() => {
+            window.location.href = '/risultato.html?servizio=' + encodeURIComponent(servizioId);
+        }, 1500);
+
+    } catch (error) {
+        console.error('[Elaborazione] Errore:', error);
+        mostraErrore(error.message);
+    }
+}
+
+function aggiornaStato(step, stato) {
+    const icon = document.getElementById('icon-' + step);
+    const text = document.getElementById('text-' + step);
+
+    if (icon) {
+        icon.className = 'stato-icon stato-' + stato;
+        if (stato === 'done') icon.textContent = 'OK';
+    }
+
+    if (text && stato === 'active') {
+        text.style.fontWeight = 'bold';
+        text.style.color = '#8b0000';
+    }
+}
+
+function mostraErrore(messaggio) {
+    document.getElementById('loading-panel').classList.add('hidden');
+    document.getElementById('error-panel').classList.remove('hidden');
+    document.getElementById('error-message').textContent = messaggio;
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Avvia automaticamente al caricamento
+document.addEventListener('DOMContentLoaded', () => {
+    // Piccolo delay per permettere al browser di renderizzare
+    setTimeout(avviaElaborazione, 500);
+});
 </script>
+
 </body>
 </html>
