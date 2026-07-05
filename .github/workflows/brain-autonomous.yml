@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,8 +22,6 @@ jobs:
         with:
           python-version: '3.11'
       - run: python3 scripts/brain-engine.py
-        env:
-        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       - run: |
           git config user.name "Brain"
           git config user.email "brain@brevettiamo.com"
