@@ -555,41 +555,39 @@ function logout() {
     window.location.href = 'login.html';
 }
 
-// === INIT ===
-document.addEventListener('DOMContentLoaded', function() {
-    caricaToken();
-    var banner = localStorage.getItem('brevettiamo_banner');
-    if (banner) document.getElementById('banner-text').value = banner;
+// === INIT - NO DOMContentLoaded, esegui subito dopo il caricamento dello script ===
+caricaToken();
+var banner = localStorage.getItem('brevettiamo_banner');
+if (banner) document.getElementById('banner-text').value = banner;
 
-    // Bind navigation
-    bindNav('dashboard', 'dashboard');
-    bindNav('servizi', 'servizi');
-    bindNav('occhio', 'occhio');
-    bindNav('pacchetti', 'pacchetti');
-    bindNav('statistiche', 'statistiche');
-    bindNav('banner', 'banner');
-    bindNav('log', 'log');
-    bindNav('utenti', 'utenti');
-    bindNav('brain', 'brain');
+// Bind navigation
+bindNav('dashboard', 'dashboard');
+bindNav('servizi', 'servizi');
+bindNav('occhio', 'occhio');
+bindNav('pacchetti', 'pacchetti');
+bindNav('statistiche', 'statistiche');
+bindNav('banner', 'banner');
+bindNav('log', 'log');
+bindNav('utenti', 'utenti');
+bindNav('brain', 'brain');
 
-    // Bind buttons
-    var btnSalvaToken = document.getElementById('btn-salva-token');
-    if (btnSalvaToken) btnSalvaToken.addEventListener('click', salvaToken);
-    var btnInviaBrain = document.getElementById('btn-invia-brain');
-    if (btnInviaBrain) btnInviaBrain.addEventListener('click', inviaBrain);
-    var btnControlla = document.getElementById('btn-controlla-risposta');
-    if (btnControlla) btnControlla.addEventListener('click', controllaRisposta);
-    var btnSalvaPrezzi = document.getElementById('btn-salva-prezzi');
-    if (btnSalvaPrezzi) btnSalvaPrezzi.addEventListener('click', salvaPrezzi);
-    var btnSalvaBanner = document.getElementById('btn-salva-banner');
-    if (btnSalvaBanner) btnSalvaBanner.addEventListener('click', salvaBanner);
-    var btnLogout = document.getElementById('btn-logout');
-    if (btnLogout) btnLogout.addEventListener('click', logout);
+// Bind buttons
+var btnSalvaToken = document.getElementById('btn-salva-token');
+if (btnSalvaToken) btnSalvaToken.addEventListener('click', salvaToken);
+var btnInviaBrain = document.getElementById('btn-invia-brain');
+if (btnInviaBrain) btnInviaBrain.addEventListener('click', inviaBrain);
+var btnControlla = document.getElementById('btn-controlla-risposta');
+if (btnControlla) btnControlla.addEventListener('click', controllaRisposta);
+var btnSalvaPrezzi = document.getElementById('btn-salva-prezzi');
+if (btnSalvaPrezzi) btnSalvaPrezzi.addEventListener('click', salvaPrezzi);
+var btnSalvaBanner = document.getElementById('btn-salva-banner');
+if (btnSalvaBanner) btnSalvaBanner.addEventListener('click', salvaBanner);
+var btnLogout = document.getElementById('btn-logout');
+if (btnLogout) btnLogout.addEventListener('click', logout);
 
-    logBrain('Brain v2.0 inizializzato');
-    logBrain('Workflow: GitHub Actions + OpenRouter');
-    logBrain('Bypass login attivo');
-});
+logBrain('Brain v2.0 inizializzato');
+logBrain('Workflow: GitHub Actions + OpenRouter');
+logBrain('Bypass login attivo');
 </script>
 </body>
 </html>
