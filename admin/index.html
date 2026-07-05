@@ -221,6 +221,7 @@
         .message.error { background: #f8d7da; color: #721c24; display: block; }
         .loading { text-align: center; padding: 40px; font-style: italic; color: var(--grigio); }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="header">
@@ -230,7 +231,7 @@
         </div>
         <div class="user-info">
             <span id="user-email">admin@brevettiamo.com</span>
-            <button class="btn-logout" onclick="logout()">ESCI</button>
+            <button class="btn-logout" id="btn-logout">ESCI</button>
         </div>
     </div>
 
@@ -238,50 +239,43 @@
         <div class="sidebar">
             <h3>Navigazione</h3>
             <ul>
-                <li onclick="showSection('dashboard')" id="nav-dashboard">Dashboard</li>
-                <li onclick="showSection('servizi')" id="nav-servizi">Servizi BrevettIAmo</li>
-                <li onclick="showSection('occhio')" id="nav-occhio">L'OCCHIO</li>
-                <li onclick="showSection('pacchetti')" id="nav-pacchetti">Pacchetti & Prezzi</li>
-                <li onclick="showSection('statistiche')" id="nav-statistiche">Statistiche</li>
-                <li onclick="showSection('banner')" id="nav-banner">Banner & Disclaimer</li>
+                <li id="nav-dashboard">Dashboard</li>
+                <li id="nav-servizi">Servizi BrevettIAmo</li>
+                <li id="nav-occhio">L'OCCHIO</li>
+                <li id="nav-pacchetti">Pacchetti & Prezzi</li>
+                <li id="nav-statistiche">Statistiche</li>
+                <li id="nav-banner">Banner & Disclaimer</li>
             </ul>
             <div class="section-title">Sicurezza</div>
             <ul>
-                <li onclick="showSection('log')" id="nav-log">Log Operazioni</li>
-                <li onclick="showSection('utenti')" id="nav-utenti">Utenti</li>
+                <li id="nav-log">Log Operazioni</li>
+                <li id="nav-utenti">Utenti</li>
             </ul>
             <div class="section-title">IA & Workflow</div>
             <ul>
-                <li onclick="showSection('brain')" id="nav-brain" class="active">Brain v2.0</li>
+                <li id="nav-brain" class="active">Brain v2.0</li>
             </ul>
         </div>
 
         <div class="content">
-            <!-- DASHBOARD -->
             <div id="dashboard" class="section">
                 <h2>Dashboard</h2>
                 <div class="card">
                     <p>Benvenuto nel pannello admin di BrevettIAmo.</p>
                 </div>
             </div>
-
-            <!-- SERVIZI -->
             <div id="servizi" class="section">
                 <h2>Servizi BrevettIAmo</h2>
                 <div class="card">
                     <p>Gestione servizi in arrivo...</p>
                 </div>
             </div>
-
-            <!-- L'OCCHIO -->
             <div id="occhio" class="section">
                 <h2>L'OCCHIO - Monitoraggio</h2>
                 <div class="card">
                     <p>Monitoraggio contraffazioni in arrivo...</p>
                 </div>
             </div>
-
-            <!-- PACCHETTI & PREZZI -->
             <div id="pacchetti" class="section">
                 <h2>Pacchetti & Prezzi</h2>
                 <div id="msg-pacchetti" class="message"></div>
@@ -290,86 +284,59 @@
                     <div class="card">
                         <h3>Pacchetti</h3>
                         <table id="table-pacchetti">
-                            <thead>
-                                <tr><th>Nome</th><th>Prezzo (€)</th><th>Crediti</th><th>Stato</th></tr>
-                            </thead>
+                            <thead><tr><th>Nome</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th></tr></thead>
                             <tbody></tbody>
                         </table>
                     </div>
                     <div class="card">
                         <h3>Servizi Singoli</h3>
                         <table id="table-servizi">
-                            <thead>
-                                <tr><th>Nome</th><th>Prezzo (€)</th><th>Crediti</th><th>Stato</th></tr>
-                            </thead>
+                            <thead><tr><th>Nome</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th></tr></thead>
                             <tbody></tbody>
                         </table>
                     </div>
-                    <button class="btn btn-success" onclick="salvaPrezzi()">Salva Modifiche</button>
+                    <button class="btn btn-success" id="btn-salva-prezzi">Salva Modifiche</button>
                 </div>
             </div>
-
-            <!-- STATISTICHE -->
             <div id="statistiche" class="section">
                 <h2>Statistiche</h2>
-                <div class="card">
-                    <p>Statistiche in arrivo...</p>
-                </div>
+                <div class="card"><p>Statistiche in arrivo...</p></div>
             </div>
-
-            <!-- BANNER -->
             <div id="banner" class="section">
                 <h2>Banner & Disclaimer</h2>
                 <div class="card">
                     <h3>Testo Banner Rosso (Top)</h3>
                     <textarea id="banner-text">BETA v1.0.0 - TUTTI I SERVIZI SONO GRATUITI - I PREZZI SONO INDICATIVI - NESSUN PAGAMENTO ATTIVO</textarea>
-                    <button class="btn btn-primary" onclick="salvaBanner()">Salva Banner</button>
+                    <button class="btn btn-primary" id="btn-salva-banner">Salva Banner</button>
                 </div>
             </div>
-
-            <!-- LOG -->
             <div id="log" class="section">
                 <h2>Log Operazioni</h2>
-                <div class="card">
-                    <p>Log in arrivo...</p>
-                </div>
+                <div class="card"><p>Log in arrivo...</p></div>
             </div>
-
-            <!-- UTENTI -->
             <div id="utenti" class="section">
                 <h2>Utenti</h2>
-                <div class="card">
-                    <p>Gestione utenti in arrivo...</p>
-                </div>
+                <div class="card"><p>Gestione utenti in arrivo...</p></div>
             </div>
-
-            <!-- BRAIN v2.0 -->
             <div id="brain" class="section active">
                 <h2>Brain v2.0 - Workflow IA</h2>
-
                 <div class="card">
                     <h3>Configurazione GitHub Token</h3>
-                    <p style="font-size:13px; color:#666; margin-bottom:10px;">
-                        Inserisci il tuo GitHub Personal Access Token per abilitare il workflow.
-                        Il token viene salvato nel browser (localStorage).
-                    </p>
+                    <p style="font-size:13px; color:#666; margin-bottom:10px;">Inserisci il tuo GitHub Personal Access Token per abilitare il workflow. Il token viene salvato nel browser (localStorage).</p>
                     <input type="password" id="token-input" class="token-input" placeholder="ghp_xxxxxxxxxxxx">
-                    <button class="btn btn-primary" onclick="salvaToken()">Salva Token</button>
+                    <button class="btn btn-primary" id="btn-salva-token">Salva Token</button>
                     <div id="token-status" style="margin-top:10px; font-size:12px; color:#666;">Token non configurato</div>
                 </div>
-
                 <div class="card">
                     <h3>Invia Richiesta al Workflow</h3>
                     <textarea id="brain-input" placeholder="Scrivi qui la tua richiesta. Il workflow Brain la elaborera automaticamente via OpenRouter."></textarea>
-                    <button class="btn btn-primary" onclick="inviaBrain()">Invia a Workflow</button>
-                    <button class="btn btn-secondary" onclick="controllaRisposta()">Controlla Risposta</button>
+                    <button class="btn btn-primary" id="btn-invia-brain">Invia a Workflow</button>
+                    <button class="btn btn-secondary" id="btn-controlla-risposta">Controlla Risposta</button>
                 </div>
-
                 <div class="card">
                     <h3>Risultato</h3>
                     <div id="brain-result" class="result-box">In attesa...</div>
                 </div>
-
                 <div class="card">
                     <h3>Audit Trail</h3>
                     <div id="brain-log" style="font-size:12px; color:#666; max-height:200px; overflow-y:auto;"></div>
@@ -379,27 +346,34 @@
     </div>
 
 <script>
+// === BYPASS LOGIN ===
+localStorage.setItem('brevettiamo_admin', 'true');
+localStorage.setItem('brevettiamo_user', JSON.stringify({email: 'admin@brevettiamo.com', role: 'admin', name: 'Admin BrevettIAmo'}));
+
 // === CONFIG ===
 const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const REPO = 'PatrizioPZ/brevettiamo';
-
 let ghToken = null;
 
 // === NAVIGAZIONE ===
 function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.sidebar li').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.sidebar li').forEach(function(l) { l.classList.remove('active'); });
     document.getElementById(id).classList.add('active');
     document.getElementById('nav-' + id).classList.add('active');
-
     if (id === 'pacchetti') caricaPrezzi();
+}
+
+function bindNav(id, section) {
+    var el = document.getElementById('nav-' + id);
+    if (el) el.addEventListener('click', function() { showSection(section); });
 }
 
 // === TOKEN ===
 function caricaToken() {
-    const salvato = localStorage.getItem('brevettiamo_gh_token');
+    var salvato = localStorage.getItem('brevettiamo_gh_token');
     if (salvato) {
         ghToken = salvato;
         document.getElementById('token-status').textContent = 'Token configurato (salvato in localStorage)';
@@ -410,8 +384,8 @@ function caricaToken() {
 }
 
 function salvaToken() {
-    const input = document.getElementById('token-input');
-    const token = input.value.trim();
+    var input = document.getElementById('token-input');
+    var token = input.value.trim();
     if (!token || !token.startsWith('ghp_')) {
         alert('Inserisci un token valido (inizia con ghp_)');
         return;
@@ -430,27 +404,24 @@ function getToken() {
 
 // === BRAIN WORKFLOW ===
 function logBrain(msg) {
-    const div = document.getElementById('brain-log');
-    const time = new Date().toLocaleTimeString('it-IT');
-    div.innerHTML = `<div>[${time}] ${msg}</div>` + div.innerHTML;
+    var div = document.getElementById('brain-log');
+    var time = new Date().toLocaleTimeString('it-IT');
+    div.innerHTML = '<div>[' + time + '] ' + msg + '</div>' + div.innerHTML;
 }
 
 async function writeRequest(text) {
-    const token = getToken();
+    var token = getToken();
     if (!token) throw new Error('Token non configurato');
-
-    let sha = null;
+    var sha = null;
     try {
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/brain-request.txt`, {
+        var res = await fetch('https://api.github.com/repos/' + REPO + '/contents/brain-request.txt', {
             headers: { 'Authorization': 'token ' + token }
         });
-        if (res.ok) { const data = await res.json(); sha = data.sha; }
+        if (res.ok) { var data = await res.json(); sha = data.sha; }
     } catch(e) {}
-
-    const body = { message: 'brain: richiesta da admin', content: btoa(unescape(encodeURIComponent(text))), branch: 'main' };
+    var body = { message: 'brain: richiesta da admin', content: btoa(unescape(encodeURIComponent(text))), branch: 'main' };
     if (sha) body.sha = sha;
-
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/brain-request.txt`, {
+    var res = await fetch('https://api.github.com/repos/' + REPO + '/contents/brain-request.txt', {
         method: 'PUT',
         headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -460,23 +431,22 @@ async function writeRequest(text) {
 
 async function readResponse() {
     try {
-        const res = await fetch(`https://raw.githubusercontent.com/${REPO}/main/brain-response.txt`);
+        var res = await fetch('https://raw.githubusercontent.com/' + REPO + '/main/brain-response.txt');
         if (!res.ok) return null;
         return await res.text();
     } catch(e) { return null; }
 }
 
 async function inviaBrain() {
-    const input = document.getElementById('brain-input');
-    const text = input.value.trim();
+    var input = document.getElementById('brain-input');
+    var text = input.value.trim();
     if (!text) { alert('Inserisci una richiesta'); return; }
     if (!getToken()) { alert('Inserisci prima il GitHub Token'); return; }
-
     logBrain('Invio richiesta...');
     try {
         await writeRequest(text);
         logBrain('brain-request.txt scritto con successo');
-        document.getElementById('brain-result').textContent = 'Richiesta inviata. Workflow in esecuzione...\nAttendi 30-60 secondi e clicca "Controlla Risposta".';
+        document.getElementById('brain-result').textContent = 'Richiesta inviata. Workflow in esecuzione... Attendi 30-60 secondi e clicca Controlla Risposta.';
     } catch(e) {
         logBrain('ERRORE: ' + e.message);
         alert('Errore: ' + e.message);
@@ -486,7 +456,7 @@ async function inviaBrain() {
 async function controllaRisposta() {
     if (!getToken()) { alert('Inserisci prima il GitHub Token'); return; }
     logBrain('Controllo risposta...');
-    const resp = await readResponse();
+    var resp = await readResponse();
     if (resp) {
         logBrain('Risposta trovata!');
         document.getElementById('brain-result').textContent = resp;
@@ -500,42 +470,33 @@ async function controllaRisposta() {
 async function caricaPrezzi() {
     document.getElementById('loading-pacchetti').style.display = 'block';
     document.getElementById('content-pacchetti').style.display = 'none';
-
     try {
-        const { data: pacchetti } = await supabaseClient.from('pacchetti').select('*').order('ordine');
-        const { data: servizi } = await supabaseClient.from('servizi_singoli').select('*').order('nome');
-
-        const tbodyP = document.querySelector('#table-pacchetti tbody');
-        const tbodyS = document.querySelector('#table-servizi tbody');
+        var { data: pacchetti } = await supabaseClient.from('pacchetti').select('*').order('ordine');
+        var { data: servizi } = await supabaseClient.from('servizi_singoli').select('*').order('nome');
+        var tbodyP = document.querySelector('#table-pacchetti tbody');
+        var tbodyS = document.querySelector('#table-servizi tbody');
         tbodyP.innerHTML = '';
         tbodyS.innerHTML = '';
-
-        (pacchetti || []).forEach((item, i) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><input type="text" id="p_nome_${i}" value="${item.nome || ''}"></td>
-                <td><input type="number" id="p_prezzo_${i}" value="${item.prezzo || 0}" step="0.01"></td>
-                <td><input type="number" id="p_crediti_${i}" value="${item.crediti || 0}"></td>
-                <td><select id="p_stato_${i}"><option value="attivo" ${item.stato==='attivo'?'selected':''}>Attivo</option><option value="inattivo" ${item.stato==='inattivo'?'selected':''}>Inattivo</option></select></td>
-            `;
+        (pacchetti || []).forEach(function(item, i) {
+            var row = document.createElement('tr');
+            row.innerHTML = '<td><input type="text" id="p_nome_' + i + '" value="' + (item.nome || '') + '"></td>' +
+                '<td><input type="number" id="p_prezzo_' + i + '" value="' + (item.prezzo || 0) + '" step="0.01"></td>' +
+                '<td><input type="number" id="p_crediti_' + i + '" value="' + (item.crediti || 0) + '"></td>' +
+                '<td><select id="p_stato_' + i + '"><option value="attivo" ' + (item.stato === 'attivo' ? 'selected' : '') + '>Attivo</option><option value="inattivo" ' + (item.stato === 'inattivo' ? 'selected' : '') + '>Inattivo</option></select></td>';
             row.dataset.id = item.id;
             row.dataset.table = 'pacchetti';
             tbodyP.appendChild(row);
         });
-
-        (servizi || []).forEach((item, i) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><input type="text" id="s_nome_${i}" value="${item.nome || ''}"></td>
-                <td><input type="number" id="s_prezzo_${i}" value="${item.prezzo || 0}" step="0.01"></td>
-                <td><input type="number" id="s_crediti_${i}" value="${item.crediti || 0}"></td>
-                <td><select id="s_stato_${i}"><option value="attivo" ${item.stato==='attivo'?'selected':''}>Attivo</option><option value="inattivo" ${item.stato==='inattivo'?'selected':''}>Inattivo</option></select></td>
-            `;
+        (servizi || []).forEach(function(item, i) {
+            var row = document.createElement('tr');
+            row.innerHTML = '<td><input type="text" id="s_nome_' + i + '" value="' + (item.nome || '') + '"></td>' +
+                '<td><input type="number" id="s_prezzo_' + i + '" value="' + (item.prezzo || 0) + '" step="0.01"></td>' +
+                '<td><input type="number" id="s_crediti_' + i + '" value="' + (item.crediti || 0) + '"></td>' +
+                '<td><select id="s_stato_' + i + '"><option value="attivo" ' + (item.stato === 'attivo' ? 'selected' : '') + '>Attivo</option><option value="inattivo" ' + (item.stato === 'inattivo' ? 'selected' : '') + '>Inattivo</option></select></td>';
             row.dataset.id = item.id;
             row.dataset.table = 'servizi_singoli';
             tbodyS.appendChild(row);
         });
-
         document.getElementById('loading-pacchetti').style.display = 'none';
         document.getElementById('content-pacchetti').style.display = 'block';
     } catch(e) {
@@ -545,30 +506,30 @@ async function caricaPrezzi() {
 
 async function salvaPrezzi() {
     try {
-        const rowsP = document.querySelectorAll('#table-pacchetti tbody tr');
-        for (const row of rowsP) {
-            const id = row.dataset.id;
-            const i = Array.from(row.parentNode.children).indexOf(row);
+        var rowsP = document.querySelectorAll('#table-pacchetti tbody tr');
+        for (var i = 0; i < rowsP.length; i++) {
+            var row = rowsP[i];
+            var id = row.dataset.id;
+            var idx = Array.from(row.parentNode.children).indexOf(row);
             await supabaseClient.from('pacchetti').update({
-                nome: document.getElementById(`p_nome_${i}`).value,
-                prezzo: parseFloat(document.getElementById(`p_prezzo_${i}`).value) || 0,
-                crediti: parseInt(document.getElementById(`p_crediti_${i}`).value) || 0,
-                stato: document.getElementById(`p_stato_${i}`).value
+                nome: document.getElementById('p_nome_' + idx).value,
+                prezzo: parseFloat(document.getElementById('p_prezzo_' + idx).value) || 0,
+                crediti: parseInt(document.getElementById('p_crediti_' + idx).value) || 0,
+                stato: document.getElementById('p_stato_' + idx).value
             }).eq('id', id);
         }
-
-        const rowsS = document.querySelectorAll('#table-servizi tbody tr');
-        for (const row of rowsS) {
-            const id = row.dataset.id;
-            const i = Array.from(row.parentNode.children).indexOf(row);
+        var rowsS = document.querySelectorAll('#table-servizi tbody tr');
+        for (var i = 0; i < rowsS.length; i++) {
+            var row = rowsS[i];
+            var id = row.dataset.id;
+            var idx = Array.from(row.parentNode.children).indexOf(row);
             await supabaseClient.from('servizi_singoli').update({
-                nome: document.getElementById(`s_nome_${i}`).value,
-                prezzo: parseFloat(document.getElementById(`s_prezzo_${i}`).value) || 0,
-                crediti: parseInt(document.getElementById(`s_crediti_${i}`).value) || 0,
-                stato: document.getElementById(`s_stato_${i}`).value
+                nome: document.getElementById('s_nome_' + idx).value,
+                prezzo: parseFloat(document.getElementById('s_prezzo_' + idx).value) || 0,
+                crediti: parseInt(document.getElementById('s_crediti_' + idx).value) || 0,
+                stato: document.getElementById('s_stato_' + idx).value
             }).eq('id', id);
         }
-
         showMsg('msg-pacchetti', 'Prezzi aggiornati con successo!', 'success');
     } catch(e) {
         showMsg('msg-pacchetti', 'Errore: ' + e.message, 'error');
@@ -576,30 +537,58 @@ async function salvaPrezzi() {
 }
 
 function showMsg(id, text, type) {
-    const el = document.getElementById(id);
+    var el = document.getElementById(id);
     el.textContent = text;
     el.className = 'message ' + type;
-    setTimeout(() => el.className = 'message', 3000);
+    setTimeout(function() { el.className = 'message'; }, 3000);
 }
 
 function salvaBanner() {
-    const text = document.getElementById('banner-text').value;
+    var text = document.getElementById('banner-text').value;
     localStorage.setItem('brevettiamo_banner', text);
     alert('Banner salvato!');
 }
 
 function logout() {
     localStorage.removeItem('brevettiamo_admin');
+    localStorage.removeItem('brevettiamo_user');
     window.location.href = 'login.html';
 }
 
 // === INIT ===
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     caricaToken();
-    const banner = localStorage.getItem('brevettiamo_banner');
+    var banner = localStorage.getItem('brevettiamo_banner');
     if (banner) document.getElementById('banner-text').value = banner;
+
+    // Bind navigation
+    bindNav('dashboard', 'dashboard');
+    bindNav('servizi', 'servizi');
+    bindNav('occhio', 'occhio');
+    bindNav('pacchetti', 'pacchetti');
+    bindNav('statistiche', 'statistiche');
+    bindNav('banner', 'banner');
+    bindNav('log', 'log');
+    bindNav('utenti', 'utenti');
+    bindNav('brain', 'brain');
+
+    // Bind buttons
+    var btnSalvaToken = document.getElementById('btn-salva-token');
+    if (btnSalvaToken) btnSalvaToken.addEventListener('click', salvaToken);
+    var btnInviaBrain = document.getElementById('btn-invia-brain');
+    if (btnInviaBrain) btnInviaBrain.addEventListener('click', inviaBrain);
+    var btnControlla = document.getElementById('btn-controlla-risposta');
+    if (btnControlla) btnControlla.addEventListener('click', controllaRisposta);
+    var btnSalvaPrezzi = document.getElementById('btn-salva-prezzi');
+    if (btnSalvaPrezzi) btnSalvaPrezzi.addEventListener('click', salvaPrezzi);
+    var btnSalvaBanner = document.getElementById('btn-salva-banner');
+    if (btnSalvaBanner) btnSalvaBanner.addEventListener('click', salvaBanner);
+    var btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) btnLogout.addEventListener('click', logout);
+
     logBrain('Brain v2.0 inizializzato');
     logBrain('Workflow: GitHub Actions + OpenRouter');
+    logBrain('Bypass login attivo');
 });
 </script>
 </body>
