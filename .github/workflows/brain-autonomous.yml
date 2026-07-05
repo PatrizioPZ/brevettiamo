@@ -21,7 +21,7 @@ jobs:
           python-version: '3.11'
       - run: python3 scripts/brain-engine.py
         env:
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       - run: |
           git config user.name "Brain"
           git config user.email "brain@brevettiamo.com"
