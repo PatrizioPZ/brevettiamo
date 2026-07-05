@@ -3,50 +3,611 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin — BrevettIAmo</title>
-    <link rel="stylesheet" href="../css/admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Admin - BrevettIAmo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --pergamena: #f5f0e8;
+            --pergamena-scuro: #e8e0d0;
+            --oro: #c9a84c;
+            --oro-scuro: #a88a3a;
+            --nero: #1a1a1a;
+            --grigio: #666;
+            --rosso: #c0392b;
+            --verde: #27ae60;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Lora', serif;
+            background: var(--nero);
+            color: var(--nero);
+            min-height: 100vh;
+        }
+        .header {
+            background: var(--nero);
+            color: var(--oro);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--oro);
+        }
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5em;
+        }
+        .header .badge {
+            background: var(--oro);
+            color: var(--nero);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--pergamena);
+            font-size: 0.9em;
+        }
+        .header .btn-logout {
+            background: var(--rosso);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+        }
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+        .sidebar {
+            width: 250px;
+            background: var(--pergamena);
+            padding: 20px 0;
+            border-right: 2px solid var(--oro);
+        }
+        .sidebar h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--oro);
+            padding: 0 20px 15px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar li:hover, .sidebar li.active {
+            background: var(--pergamena-scuro);
+            border-left-color: var(--oro);
+        }
+        .sidebar .section-title {
+            font-family: 'Cinzel', serif;
+            color: var(--grigio);
+            font-size: 0.75em;
+            padding: 20px 20px 5px;
+            text-transform: uppercase;
+        }
+        .content {
+            flex: 1;
+            padding: 30px;
+            background: var(--pergamena);
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--oro);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--oro);
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid var(--pergamena-scuro);
+            border-radius: 4px;
+            font-family: 'Lora', serif;
+            font-size: 14px;
+            resize: vertical;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .btn-primary {
+            background: var(--oro);
+            color: var(--nero);
+        }
+        .btn-primary:hover {
+            background: var(--oro-scuro);
+        }
+        .btn-secondary {
+            background: var(--grigio);
+            color: white;
+        }
+        .btn-success {
+            background: var(--verde);
+            color: white;
+        }
+        .result-box {
+            background: var(--pergamena-scuro);
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            min-height: 100px;
+        }
+        .token-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--pergamena-scuro);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--pergamena-scuro);
+        }
+        th {
+            background: var(--oro);
+            color: white;
+            font-family: 'Cinzel', serif;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid var(--pergamena-scuro);
+            border-radius: 4px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+        .message {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .message.success { background: #d4edda; color: #155724; display: block; }
+        .message.error { background: #f8d7da; color: #721c24; display: block; }
+        .loading { text-align: center; padding: 40px; font-style: italic; color: var(--grigio); }
+    </style>
+<base target="_blank">
 </head>
-<body class="admin-login">
-    <div class="admin-login-container">
-        <div class="admin-login-card">
-            <div class="admin-logo">
-                <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
-                    <rect width="32" height="32" rx="8" fill="#00C853"/>
-                    <path d="M8 16h16M16 8v16" stroke="#1a1a2e" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span>Brevett<span class="accent">I</span>Amo <span class="admin-label">Admin</span></span>
+<body>
+    <div class="header">
+        <div style="display:flex; align-items:center; gap:15px;">
+            <h1>BREVETTIAMO ADMIN</h1>
+            <span class="badge">v1.0-BETA</span>
+        </div>
+        <div class="user-info">
+            <span id="user-email">admin@brevettiamo.com</span>
+            <button class="btn-logout" onclick="logout()">ESCI</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <h3>Navigazione</h3>
+            <ul>
+                <li onclick="showSection('dashboard')" id="nav-dashboard">Dashboard</li>
+                <li onclick="showSection('servizi')" id="nav-servizi">Servizi BrevettIAmo</li>
+                <li onclick="showSection('occhio')" id="nav-occhio">L'OCCHIO</li>
+                <li onclick="showSection('pacchetti')" id="nav-pacchetti">Pacchetti & Prezzi</li>
+                <li onclick="showSection('statistiche')" id="nav-statistiche">Statistiche</li>
+                <li onclick="showSection('banner')" id="nav-banner">Banner & Disclaimer</li>
+            </ul>
+            <div class="section-title">Sicurezza</div>
+            <ul>
+                <li onclick="showSection('log')" id="nav-log">Log Operazioni</li>
+                <li onclick="showSection('utenti')" id="nav-utenti">Utenti</li>
+            </ul>
+            <div class="section-title">IA & Workflow</div>
+            <ul>
+                <li onclick="showSection('brain')" id="nav-brain" class="active">Brain v2.0</li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="section">
+                <h2>Dashboard</h2>
+                <div class="card">
+                    <p>Benvenuto nel pannello admin di BrevettIAmo.</p>
+                </div>
             </div>
 
-            <h1>Accesso Riservato</h1>
-            <p>Area amministrativa. Accesso consentito solo al personale autorizzato.</p>
+            <!-- SERVIZI -->
+            <div id="servizi" class="section">
+                <h2>Servizi BrevettIAmo</h2>
+                <div class="card">
+                    <p>Gestione servizi in arrivo...</p>
+                </div>
+            </div>
 
-            <form id="admin-login-form">
-                <div class="form-group">
-                    <label for="admin-user">Username</label>
-                    <input type="text" id="admin-user" placeholder="admin" required autocomplete="off">
+            <!-- L'OCCHIO -->
+            <div id="occhio" class="section">
+                <h2>L'OCCHIO - Monitoraggio</h2>
+                <div class="card">
+                    <p>Monitoraggio contraffazioni in arrivo...</p>
                 </div>
-                <div class="form-group">
-                    <label for="admin-password">Password</label>
-                    <input type="password" id="admin-password" placeholder="••••••••" required>
-                </div>
-                <div class="form-group">
-                    <label for="admin-2fa">Codice 2FA (opzionale)</label>
-                    <input type="text" id="admin-2fa" placeholder="123456" maxlength="6">
-                </div>
-                <button type="submit" class="btn btn-primary btn-large">
-                    🔐 Accedi al Pannello
-                </button>
-            </form>
+            </div>
 
-            <div class="admin-login-footer">
-                <p>IP rilevato: <span id="admin-ip">--.--.--.--</span></p>
-                <p>Accesso tracciato per sicurezza</p>
+            <!-- PACCHETTI & PREZZI -->
+            <div id="pacchetti" class="section">
+                <h2>Pacchetti & Prezzi</h2>
+                <div id="msg-pacchetti" class="message"></div>
+                <div id="loading-pacchetti" class="loading">Caricamento...</div>
+                <div id="content-pacchetti" style="display:none;">
+                    <div class="card">
+                        <h3>Pacchetti</h3>
+                        <table id="table-pacchetti">
+                            <thead>
+                                <tr><th>Nome</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <h3>Servizi Singoli</h3>
+                        <table id="table-servizi">
+                            <thead>
+                                <tr><th>Nome</th><th>Prezzo (EUR)</th><th>Crediti</th><th>Stato</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-success" onclick="salvaPrezzi()">Salva Modifiche</button>
+                </div>
+            </div>
+
+            <!-- STATISTICHE -->
+            <div id="statistiche" class="section">
+                <h2>Statistiche</h2>
+                <div class="card">
+                    <p>Statistiche in arrivo...</p>
+                </div>
+            </div>
+
+            <!-- BANNER -->
+            <div id="banner" class="section">
+                <h2>Banner & Disclaimer</h2>
+                <div class="card">
+                    <h3>Testo Banner Rosso (Top)</h3>
+                    <textarea id="banner-text">BETA v1.0.0 - TUTTI I SERVIZI SONO GRATUITI - I PREZZI SONO INDICATIVI - NESSUN PAGAMENTO ATTIVO</textarea>
+                    <button class="btn btn-primary" onclick="salvaBanner()">Salva Banner</button>
+                </div>
+            </div>
+
+            <!-- LOG -->
+            <div id="log" class="section">
+                <h2>Log Operazioni</h2>
+                <div class="card">
+                    <p>Log in arrivo...</p>
+                </div>
+            </div>
+
+            <!-- UTENTI -->
+            <div id="utenti" class="section">
+                <h2>Utenti</h2>
+                <div class="card">
+                    <p>Gestione utenti in arrivo...</p>
+                </div>
+            </div>
+
+            <!-- BRAIN v2.0 -->
+            <div id="brain" class="section active">
+                <h2>Brain v2.0 - Workflow IA</h2>
+
+                <div class="card">
+                    <h3>Configurazione GitHub Token</h3>
+                    <p style="font-size:13px; color:#666; margin-bottom:10px;">
+                        Inserisci il tuo GitHub Personal Access Token per abilitare il workflow.
+                        Il token viene salvato nel browser (localStorage).
+                    </p>
+                    <input type="password" id="token-input" class="token-input" placeholder="ghp_xxxxxxxxxxxx">
+                    <button class="btn btn-primary" onclick="salvaToken()">Salva Token</button>
+                    <div id="token-status" style="margin-top:10px; font-size:12px; color:#666;">Token non configurato</div>
+                </div>
+
+                <div class="card">
+                    <h3>Invia Richiesta al Workflow</h3>
+                    <textarea id="brain-input" placeholder="Scrivi qui la tua richiesta. Il workflow Brain la elaborera automaticamente via OpenRouter."></textarea>
+                    <button class="btn btn-primary" onclick="inviaBrain()">Invia a Workflow</button>
+                    <button class="btn btn-secondary" onclick="controllaRisposta()">Controlla Risposta</button>
+                </div>
+
+                <div class="card">
+                    <h3>Risultato</h3>
+                    <div id="brain-result" class="result-box">In attesa...</div>
+                </div>
+
+                <div class="card">
+                    <h3>Audit Trail</h3>
+                    <div id="brain-log" style="font-size:12px; color:#666; max-height:200px; overflow-y:auto;"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="../js/core.js"></script>
-    <script src="../js/admin/auth.js"></script>
+<script>
+// === BYPASS LOGIN - NETLIFY ===
+localStorage.setItem('brevettiamo_admin', 'true');
+localStorage.setItem('brevettiamo_user', JSON.stringify({
+    email: 'admin@brevettiamo.com',
+    role: 'admin',
+    name: 'Admin BrevettIAmo'
+}));
+
+// === CONFIG ===
+const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const REPO = 'PatrizioPZ/brevettiamo';
+
+let ghToken = null;
+
+// === NAVIGAZIONE ===
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelectorAll('.sidebar li').forEach(function(l) { l.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    document.getElementById('nav-' + id).classList.add('active');
+
+    if (id === 'pacchetti') caricaPrezzi();
+}
+
+// === TOKEN ===
+function caricaToken() {
+    const salvato = localStorage.getItem('brevettiamo_gh_token');
+    if (salvato) {
+        ghToken = salvato;
+        document.getElementById('token-status').textContent = 'Token configurato (salvato in localStorage)';
+        document.getElementById('token-status').style.color = '#27ae60';
+        return true;
+    }
+    return false;
+}
+
+function salvaToken() {
+    const input = document.getElementById('token-input');
+    const token = input.value.trim();
+    if (!token || !token.startsWith('ghp_')) {
+        alert('Inserisci un token valido (inizia con ghp_)');
+        return;
+    }
+    localStorage.setItem('brevettiamo_gh_token', token);
+    ghToken = token;
+    document.getElementById('token-status').textContent = 'Token salvato con successo!';
+    document.getElementById('token-status').style.color = '#27ae60';
+    alert('Token salvato!');
+}
+
+function getToken() {
+    if (!ghToken) caricaToken();
+    return ghToken;
+}
+
+// === BRAIN WORKFLOW ===
+function logBrain(msg) {
+    const div = document.getElementById('brain-log');
+    const time = new Date().toLocaleTimeString('it-IT');
+    div.innerHTML = '<div>[' + time + '] ' + msg + '</div>' + div.innerHTML;
+}
+
+async function writeRequest(text) {
+    const token = getToken();
+    if (!token) throw new Error('Token non configurato');
+
+    let sha = null;
+    try {
+        const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/brain-request.txt', {
+            headers: { 'Authorization': 'token ' + token }
+        });
+        if (res.ok) { const data = await res.json(); sha = data.sha; }
+    } catch(e) {}
+
+    const body = { message: 'brain: richiesta da admin', content: btoa(unescape(encodeURIComponent(text))), branch: 'main' };
+    if (sha) body.sha = sha;
+
+    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/brain-request.txt', {
+        method: 'PUT',
+        headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error('GitHub error: ' + res.status);
+}
+
+async function readResponse() {
+    try {
+        const res = await fetch('https://raw.githubusercontent.com/' + REPO + '/main/brain-response.txt');
+        if (!res.ok) return null;
+        return await res.text();
+    } catch(e) { return null; }
+}
+
+async function inviaBrain() {
+    const input = document.getElementById('brain-input');
+    const text = input.value.trim();
+    if (!text) { alert('Inserisci una richiesta'); return; }
+    if (!getToken()) { alert('Inserisci prima il GitHub Token'); return; }
+
+    logBrain('Invio richiesta...');
+    try {
+        await writeRequest(text);
+        logBrain('brain-request.txt scritto con successo');
+        document.getElementById('brain-result').textContent = 'Richiesta inviata. Workflow in esecuzione... Attendi 30-60 secondi e clicca Controlla Risposta.';
+    } catch(e) {
+        logBrain('ERRORE: ' + e.message);
+        alert('Errore: ' + e.message);
+    }
+}
+
+async function controllaRisposta() {
+    if (!getToken()) { alert('Inserisci prima il GitHub Token'); return; }
+    logBrain('Controllo risposta...');
+    const resp = await readResponse();
+    if (resp) {
+        logBrain('Risposta trovata!');
+        document.getElementById('brain-result').textContent = resp;
+    } else {
+        logBrain('Risposta non ancora pronta');
+        document.getElementById('brain-result').textContent = 'Risposta non ancora pronta. Riprova tra qualche secondo.';
+    }
+}
+
+// === PACCHETTI & PREZZI ===
+async function caricaPrezzi() {
+    document.getElementById('loading-pacchetti').style.display = 'block';
+    document.getElementById('content-pacchetti').style.display = 'none';
+
+    try {
+        const { data: pacchetti } = await supabaseClient.from('pacchetti').select('*').order('ordine');
+        const { data: servizi } = await supabaseClient.from('servizi_singoli').select('*').order('nome');
+
+        const tbodyP = document.querySelector('#table-pacchetti tbody');
+        const tbodyS = document.querySelector('#table-servizi tbody');
+        tbodyP.innerHTML = '';
+        tbodyS.innerHTML = '';
+
+        (pacchetti || []).forEach(function(item, i) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td><input type="text" id="p_nome_' + i + '" value="' + (item.nome || '') + '"></td>' +
+                '<td><input type="number" id="p_prezzo_' + i + '" value="' + (item.prezzo || 0) + '" step="0.01"></td>' +
+                '<td><input type="number" id="p_crediti_' + i + '" value="' + (item.crediti || 0) + '"></td>' +
+                '<td><select id="p_stato_' + i + '"><option value="attivo" ' + (item.stato === 'attivo' ? 'selected' : '') + '>Attivo</option><option value="inattivo" ' + (item.stato === 'inattivo' ? 'selected' : '') + '>Inattivo</option></select></td>';
+            row.dataset.id = item.id;
+            row.dataset.table = 'pacchetti';
+            tbodyP.appendChild(row);
+        });
+
+        (servizi || []).forEach(function(item, i) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td><input type="text" id="s_nome_' + i + '" value="' + (item.nome || '') + '"></td>' +
+                '<td><input type="number" id="s_prezzo_' + i + '" value="' + (item.prezzo || 0) + '" step="0.01"></td>' +
+                '<td><input type="number" id="s_crediti_' + i + '" value="' + (item.crediti || 0) + '"></td>' +
+                '<td><select id="s_stato_' + i + '"><option value="attivo" ' + (item.stato === 'attivo' ? 'selected' : '') + '>Attivo</option><option value="inattivo" ' + (item.stato === 'inattivo' ? 'selected' : '') + '>Inattivo</option></select></td>';
+            row.dataset.id = item.id;
+            row.dataset.table = 'servizi_singoli';
+            tbodyS.appendChild(row);
+        });
+
+        document.getElementById('loading-pacchetti').style.display = 'none';
+        document.getElementById('content-pacchetti').style.display = 'block';
+    } catch(e) {
+        showMsg('msg-pacchetti', 'Errore: ' + e.message, 'error');
+    }
+}
+
+async function salvaPrezzi() {
+    try {
+        const rowsP = document.querySelectorAll('#table-pacchetti tbody tr');
+        for (const row of rowsP) {
+            const id = row.dataset.id;
+            const i = Array.from(row.parentNode.children).indexOf(row);
+            await supabaseClient.from('pacchetti').update({
+                nome: document.getElementById('p_nome_' + i).value,
+                prezzo: parseFloat(document.getElementById('p_prezzo_' + i).value) || 0,
+                crediti: parseInt(document.getElementById('p_crediti_' + i).value) || 0,
+                stato: document.getElementById('p_stato_' + i).value
+            }).eq('id', id);
+        }
+
+        const rowsS = document.querySelectorAll('#table-servizi tbody tr');
+        for (const row of rowsS) {
+            const id = row.dataset.id;
+            const i = Array.from(row.parentNode.children).indexOf(row);
+            await supabaseClient.from('servizi_singoli').update({
+                nome: document.getElementById('s_nome_' + i).value,
+                prezzo: parseFloat(document.getElementById('s_prezzo_' + i).value) || 0,
+                crediti: parseInt(document.getElementById('s_crediti_' + i).value) || 0,
+                stato: document.getElementById('s_stato_' + i).value
+            }).eq('id', id);
+        }
+
+        showMsg('msg-pacchetti', 'Prezzi aggiornati con successo!', 'success');
+    } catch(e) {
+        showMsg('msg-pacchetti', 'Errore: ' + e.message, 'error');
+    }
+}
+
+function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'message ' + type;
+    setTimeout(function() { el.className = 'message'; }, 3000);
+}
+
+function salvaBanner() {
+    const text = document.getElementById('banner-text').value;
+    localStorage.setItem('brevettiamo_banner', text);
+    alert('Banner salvato!');
+}
+
+function logout() {
+    localStorage.removeItem('brevettiamo_admin');
+    localStorage.removeItem('brevettiamo_user');
+    window.location.href = 'login.html';
+}
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', function() {
+    caricaToken();
+    const banner = localStorage.getItem('brevettiamo_banner');
+    if (banner) document.getElementById('banner-text').value = banner;
+    logBrain('Brain v2.0 inizializzato');
+    logBrain('Workflow: GitHub Actions + OpenRouter');
+    logBrain('Bypass login attivo - Netlify');
+});
+</script>
 </body>
 </html>
