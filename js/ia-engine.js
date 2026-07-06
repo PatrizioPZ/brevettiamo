@@ -24,8 +24,8 @@ class IAEngine {
   }
 
   async elabora(descrizione, servizio = "servizio-deposito") {
-    console.log("[IAEngine] Elaborazione via Supabase per:", servizio);
-    console.log("[IAEngine] Descrizione:", descrizione.substring(0, 100) + "...");
+    console.log("[IAEngine] Elaborazione via Supabase per servizio:", servizio);
+    console.log("[IAEngine] Descrizione ricevuta:", descrizione.substring(0, 100) + "...");
 
     try {
       const response = await fetch(this.config.supabaseUrl + "/functions/v1/call-ai", {
@@ -42,7 +42,7 @@ class IAEngine {
       });
 
       const data = await response.json();
-      console.log("[IAEngine] Risposta Supabase:", data);
+      console.log("[IAEngine] Risposta Supabase ricevuta");
 
       if (data.error) {
         throw new Error(data.error.message || data.error);
@@ -62,7 +62,7 @@ class IAEngine {
       };
 
     } catch (error) {
-      console.warn("[IAEngine] Errore Supabase, uso fallback demo:", error.message);
+      console.warn("[IAEngine] Errore Supabase, uso modalita demo:", error.message);
       return this.generaRispostaDemo(descrizione, servizio);
     }
   }
@@ -100,12 +100,29 @@ class IAEngine {
         documenti: [
           {
             nome: "Descrizione Tecnica",
-            contenuto: "DESCRIZIONE TECNICA\n\nTitolo: " + titolo + "\n\n1. Campo tecnico\nL invenzione si riferisce al campo delle sedute.\n\n2. Descrizione dell invenzione\n" + descrizione + "\n\n3. Vantaggi\n- Comfort termico migliorato\n- Riduzione sudorazione\n- Basso consumo energetico",
+            contenuto: "DESCRIZIONE TECNICA
+
+Titolo: " + titolo + "
+
+1. Campo tecnico
+La presente invenzione si riferisce al campo delle sedute.
+
+2. Descrizione dell invenzione
+" + descrizione + "
+
+3. Vantaggi
+- Comfort termico migliorato
+- Riduzione sudorazione
+- Basso consumo energetico",
             formato: "txt"
           },
-                   {
+          {
             nome: "Rivendicazioni",
-            contenuto: "RIVENDICAZIONI\n\n1. Sedia caratterizzata da un sistema di ventilazione integrato.\n\n2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
+            contenuto: "RIVENDICAZIONI
+
+1. Sedia caratterizzata da un sistema di ventilazione integrato.
+
+2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
             formato: "txt"
           }
         ],
@@ -157,7 +174,7 @@ class IAEngine {
         tipo: "tavole",
         titolo: titolo,
         tavole: [
-          { tipo: "assieme", numero: 1, descrizione: "Vista d assieme" },
+          { tipo: "assieme", numero: 1, descrizione: "Vista complessiva" },
           { tipo: "esplosa", numero: 2, descrizione: "Vista esplosa" },
           { tipo: "sezione", numero: 3, descrizione: "Sezione A-A" },
           { tipo: "dettaglio", numero: 4, descrizione: "Dettaglio X" }
