@@ -100,29 +100,12 @@ class IAEngine {
         documenti: [
           {
             nome: "Descrizione Tecnica",
-            contenuto: "DESCRIZIONE TECNICA
-
-Titolo: " + titolo + "
-
-1. Campo tecnico
-La presente invenzione si riferisce al campo delle sedute.
-
-2. Descrizione dell invenzione
-" + descrizione + "
-
-3. Vantaggi
-- Comfort termico migliorato
-- Riduzione sudorazione
-- Basso consumo energetico",
+            contenuto: "DESCRIZIONE TECNICA\n\nTitolo: " + titolo + "\n\n1. Campo tecnico\nLa presente invenzione si riferisce al campo delle sedute.\n\n2. Descrizione dell invenzione\n" + descrizione + "\n\n3. Vantaggi\n- Comfort termico migliorato\n- Riduzione sudorazione\n- Basso consumo energetico",
             formato: "txt"
           },
           {
             nome: "Rivendicazioni",
-            contenuto: "RIVENDICAZIONI
-
-1. Sedia caratterizzata da un sistema di ventilazione integrato.
-
-2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
+            contenuto: "RIVENDICAZIONI\n\n1. Sedia caratterizzata da un sistema di ventilazione integrato.\n\n2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
             formato: "txt"
           }
         ],
