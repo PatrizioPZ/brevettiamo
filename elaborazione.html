@@ -449,7 +449,7 @@ async function avviaElaborazione() {
         document.getElementById("loading-submessage").textContent = "Reindirizzamento al risultato...";
 
         setTimeout(function() {
-            window.location.href = "/brevettiamo/risultato.html?servizio=" + encodeURIComponent(servizioId);
+           window.location.href = "/brevettiamo/revisione.html?servizio=" + encodeURIComponent(servizioId);
         }, 1500);
 
     } catch (error) {
