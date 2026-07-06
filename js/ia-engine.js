@@ -1,5 +1,6 @@
 // js/ia-engine.js - Motore IA per BrevettIAmo
 // Usa Supabase Edge Function per chiamate API sicure
+// Versione DEFINITIVA per presentazione I3P
 
 class IAEngine {
   constructor(config = {}) {
@@ -23,32 +24,37 @@ class IAEngine {
     return new IAEngine(config);
   }
 
-  async elabora(descrizione, servizio = "servizio-deposito") {
-    console.log("[IAEngine] Elaborazione via Supabase per servizio:", servizio);
-    console.log("[IAEngine] Descrizione ricevuta:", descrizione.substring(0, 100) + "...");
+  async elabora(descrizione, servizio) {
+    console.log("[IAEngine] Elaborazione via Supabase per servizio: " + servizio);
+    console.log("[IAEngine] Descrizione: " + descrizione.substring(0, 100));
 
     try {
-      const response = await fetch(this.config.supabaseUrl + "/functions/v1/call-ai", {
+      const url = this.config.supabaseUrl + "/functions/v1/call-ai";
+      const body = JSON.stringify({
+        descrizione: descrizione,
+        servizio: servizio
+      });
+
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "apikey": this.config.supabaseAnonKey,
           "Authorization": "Bearer " + this.config.supabaseAnonKey
         },
-        body: JSON.stringify({
-          descrizione: descrizione,
-          servizio: servizio
-        })
+        body: body
       });
 
       const data = await response.json();
-      console.log("[IAEngine] Risposta Supabase ricevuta");
+      console.log("[IAEngine] Risposta ricevuta");
 
       if (data.error) {
-        throw new Error(data.error.message || data.error);
+        throw new Error("Errore API: " + (data.error.message || data.error));
       }
 
-      const contenuto = data.choices?.[0]?.message?.content || data.content || JSON.stringify(data);
+      const contenuto = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content 
+        ? data.choices[0].message.content 
+        : (data.content || JSON.stringify(data));
 
       return {
         success: true,
@@ -62,7 +68,7 @@ class IAEngine {
       };
 
     } catch (error) {
-      console.warn("[IAEngine] Errore Supabase, uso modalita demo:", error.message);
+      console.warn("[IAEngine] Errore, uso modalita demo: " + error.message);
       return this.generaRispostaDemo(descrizione, servizio);
     }
   }
@@ -70,29 +76,29 @@ class IAEngine {
   generaRispostaDemo(descrizione, servizio) {
     const titolo = this.estraiTitolo(descrizione);
 
-    switch(servizio) {
-      case "servizio-deposito":
-        return this.generaDepositoDemo(titolo, descrizione);
-      case "servizio-prior-art":
-        return this.generaPriorArtDemo(titolo);
-      case "servizio-rivendicazioni":
-        return this.generaRivendicazioniDemo(titolo);
-      case "servizio-tavole":
-        return this.generaTavoleDemo(titolo);
-      case "servizio-cad":
-        return this.generaCADDemo(titolo);
-      default:
-        return this.generaDepositoDemo(titolo, descrizione);
+    if (servizio === "servizio-deposito") {
+      return this.generaDepositoDemo(titolo, descrizione);
+    } else if (servizio === "servizio-prior-art") {
+      return this.generaPriorArtDemo(titolo);
+    } else if (servizio === "servizio-rivendicazioni") {
+      return this.generaRivendicazioniDemo(titolo);
+    } else if (servizio === "servizio-tavole") {
+      return this.generaTavoleDemo(titolo);
+    } else if (servizio === "servizio-cad") {
+      return this.generaCADDemo(titolo);
+    } else {
+      return this.generaDepositoDemo(titolo, descrizione);
     }
   }
 
   generaDepositoDemo(titolo, descrizione) {
+    const descShort = descrizione.substring(0, 100);
     return {
       success: true,
       data: {
         tipo: "deposito-brevetto",
         titolo: titolo,
-        riassunto: "Invenzione: " + descrizione.substring(0, 100) + "...",
+        riassunto: "Invenzione: " + descShort + "...",
         classificazione: "A47C 1/00 (sedie e poltrone)",
         novita: "Alta",
         livello_inventivo: "Medio-Alto",
@@ -100,12 +106,12 @@ class IAEngine {
         documenti: [
           {
             nome: "Descrizione Tecnica",
-            contenuto: "DESCRIZIONE TECNICA\n\nTitolo: " + titolo + "\n\n1. Campo tecnico\nLa presente invenzione si riferisce al campo delle sedute.\n\n2. Descrizione dell invenzione\n" + descrizione + "\n\n3. Vantaggi\n- Comfort termico migliorato\n- Riduzione sudorazione\n- Basso consumo energetico",
+            contenuto: "DESCRIZIONE TECNICA - Titolo: " + titolo + " - 1. Campo tecnico: La presente invenzione si riferisce al campo delle sedute. - 2. Descrizione: " + descrizione + " - 3. Vantaggi: Comfort termico migliorato, riduzione sudorazione, basso consumo energetico.",
             formato: "txt"
           },
           {
             nome: "Rivendicazioni",
-            contenuto: "RIVENDICAZIONI\n\n1. Sedia caratterizzata da un sistema di ventilazione integrato.\n\n2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
+            contenuto: "RIVENDICAZIONI - 1. Sedia caratterizzata da un sistema di ventilazione integrato. - 2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
             formato: "txt"
           }
         ],
