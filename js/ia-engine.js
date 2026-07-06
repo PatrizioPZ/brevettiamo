@@ -103,11 +103,11 @@ class IAEngine {
             contenuto: "DESCRIZIONE TECNICA\n\nTitolo: " + titolo + "\n\n1. Campo tecnico\nL invenzione si riferisce al campo delle sedute.\n\n2. Descrizione dell invenzione\n" + descrizione + "\n\n3. Vantaggi\n- Comfort termico migliorato\n- Riduzione sudorazione\n- Basso consumo energetico",
             formato: "txt"
           },
-          {
+                   {
             nome: "Rivendicazioni",
             contenuto: "RIVENDICAZIONI\n\n1. Sedia caratterizzata da un sistema di ventilazione integrato.\n\n2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
             formato: "txt"
-            formato: "txt",
+          }
         ],
         prezzo_stimato: 299,
         tempo_stimato: "24 ore",
