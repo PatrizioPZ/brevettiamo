@@ -5,12 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Descrizione - BrevettIAmo</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: Georgia, serif;
     background: #f5f0e8;
     min-height: 100vh;
     color: #3d2b1f;
@@ -32,14 +30,14 @@ body {
     margin-bottom: 30px;
 }
 .logo h1 {
-    font-family: 'Cinzel', serif;
+    font-family: Georgia, serif;
     font-size: 1.8rem;
     color: #8b0000;
     letter-spacing: 2px;
 }
 
 .titolo-sezione {
-    font-family: 'Cinzel', serif;
+    font-family: Georgia, serif;
     font-size: 1.3rem;
     color: #8b0000;
     margin-bottom: 20px;
@@ -57,7 +55,7 @@ body {
 }
 
 .sezione h2 {
-    font-family: 'Cinzel', serif;
+    font-family: Georgia, serif;
     color: #8b0000;
     font-size: 1.1rem;
     margin-bottom: 15px;
@@ -69,7 +67,7 @@ body {
     padding: 15px;
     border: 1px solid #d4c4a8;
     border-radius: 4px;
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: Georgia, serif;
     font-size: 0.95rem;
     line-height: 1.6;
     background: #fff;
@@ -149,7 +147,7 @@ input[type="file"] {
 }
 
 .btn {
-    font-family: 'Cinzel', serif;
+    font-family: Georgia, serif;
     font-size: 0.95rem;
     letter-spacing: 2px;
     padding: 16px 40px;
@@ -249,14 +247,12 @@ let schizzi = [];
 function caricaDescrizionePrecedente() {
     console.log("[Descrizione] Caricamento descrizione precedente");
 
-    // Carica descrizione precedente se esiste
     const descrizionePrecedente = localStorage.getItem("brevettiamo_descrizione");
     if (descrizionePrecedente) {
         document.getElementById("descrizione").value = descrizionePrecedente;
         console.log("[Descrizione] Descrizione precedente caricata");
     }
 
-    // Carica schizzi precedenti se esistono
     const schizziPrecedenti = localStorage.getItem("brevettiamo_schizzi");
     if (schizziPrecedenti) {
         try {
@@ -295,7 +291,6 @@ function caricaSchizzi(event) {
 function mostraSchizzi() {
     const container = document.getElementById("schizzi-container");
 
-    // Mantieni il bottone "+"
     let html = '<div class="schizzo-item" onclick="document.getElementById('file-input').click()">' +
                '<span class="schizzo-add">+</span></div>';
 
@@ -332,12 +327,10 @@ function avviaElaborazione() {
     console.log("[Descrizione] Descrizione: " + descrizione.substring(0, 100) + "...");
     console.log("[Descrizione] Schizzi: " + schizzi.length);
 
-    // Salva descrizione e schizzi
     localStorage.setItem("brevettiamo_descrizione", descrizione);
     localStorage.setItem("brevettiamo_schizzi", JSON.stringify(schizzi));
     localStorage.setItem("brevettiamo_servizio", servizioId);
 
-    // Vai a elaborazione
     window.location.href = "/brevettiamo/elaborazione.html?servizio=" + encodeURIComponent(servizioId);
 }
 
@@ -345,7 +338,6 @@ function tornaIndietro() {
     window.history.back();
 }
 
-// Carica descrizione precedente all avvio
 document.addEventListener("DOMContentLoaded", caricaDescrizionePrecedente);
 </script>
 
