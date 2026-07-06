@@ -107,7 +107,7 @@ class IAEngine {
             nome: "Rivendicazioni",
             contenuto: "RIVENDICAZIONI\n\n1. Sedia caratterizzata da un sistema di ventilazione integrato.\n\n2. Sedia secondo la rivendicazione 1, in cui detta ventola e a velocita variabile.",
             formato: "txt"
-          }
+            formato: "txt",
         ],
         prezzo_stimato: 299,
         tempo_stimato: "24 ore",
