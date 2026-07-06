@@ -1,610 +1,286 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Risultato — BrevettIAmo</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="config.js"></script>
-    <script src="js/uibm-direttive.js"></script>
-    <script src="js/uibm-verificatore.js"></script>
-    <script src="js/svg-generator.js"></script>
-    <script src="js/image-generator.js"></script>
-    <style>
-        .risultato-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-        
-        .header-risultato {
-            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-        }
-        
-        .header-risultato h1 {
-            margin: 0 0 10px 0;
-            font-size: 24px;
-        }
-        
-        .header-risultato .meta {
-            font-size: 13px;
-            opacity: 0.9;
-        }
-        
-        .badge-ia {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-        
-        .badge-fallback {
-            display: inline-block;
-            background: #fef3c7;
-            color: #92400e;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-        
-        .content-ia {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 30px;
-            line-height: 1.7;
-            color: #374151;
-        }
-        
-        .content-ia h2 {
-            color: #1e3a5f;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 10px;
-            margin-top: 30px;
-        }
-        
-        .content-ia h3 {
-            color: #2563eb;
-            margin-top: 25px;
-        }
-        
-        .content-ia ul, .content-ia ol {
-            padding-left: 25px;
-        }
-        
-        .content-ia li {
-            margin-bottom: 8px;
-        }
-        
-        .content-ia strong {
-            color: #1e3a5f;
-        }
-        
-        .content-ia table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        .content-ia th, .content-ia td {
-            border: 1px solid #e5e7eb;
-            padding: 12px;
-            text-align: left;
-        }
-        
-        .content-ia th {
-            background: #f3f4f6;
-            font-weight: 600;
-        }
-        
-        .azioni-container {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-        
-        .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-        }
-        
-        .btn-secondary:hover {
-            background: #e5e7eb;
-        }
-        
-        .btn-success {
-            background: #10b981;
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: #059669;
-        }
-        
-        .revisione-box {
-            background: #fef3c7;
-            border: 1px solid #fcd34d;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-        }
-        
-        .revisione-box h3 {
-            color: #92400e;
-            margin-top: 0;
-        }
-        
-        .revisione-box textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 14px;
-            resize: vertical;
-            margin-top: 10px;
-        }
-        
-        .revisione-box textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        
-        .disclaimer {
-            background: #f3f4f6;
-            border-left: 4px solid #9ca3af;
-            padding: 15px;
-            margin-top: 30px;
-            font-size: 13px;
-            color: #6b7280;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .stats-bar {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #6b7280;
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .loading-placeholder {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
-        }
-        
-        .loading-placeholder .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #e5e7eb;
-            border-top: 3px solid #2563eb;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .template-fallback {
-            display: none;
-        }
-        
-        .template-fallback.visible {
-            display: block;
-        }
-        
-        .svg-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f9fafb;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .svg-section h2 {
-            color: #1e3a5f;
-            margin-bottom: 15px;
-        }
-        
-        .svg-container {
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            padding: 10px;
-            overflow: auto;
-            max-width: 100%;
-        }
-        
-        .image-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f9fafb;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .image-section h2 {
-            color: #1e3a5f;
-            margin-bottom: 15px;
-        }
-        
-        .image-container {
-            text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            min-height: 200px;
-        }
-        
-        .image-container img {
-            max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
-        .image-error {
-            color: #dc2626;
-            padding: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Risultato - BrevettIAmo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    background: #f5f0e8;
+    min-height: 100vh;
+    color: #3d2b1f;
+}
+
+.pergamena {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #faf6f0;
+    border: 2px solid #c9a96e;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(61,43,31,0.15), inset 0 0 60px rgba(201,169,110,0.1);
+    padding: 50px;
+    position: relative;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.logo h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: #8b0000;
+    letter-spacing: 2px;
+}
+
+.titolo-risultato {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: #8b0000;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #c9a96e;
+    padding-bottom: 15px;
+}
+
+.sezione {
+    margin: 25px 0;
+    padding: 20px;
+    background: rgba(201,169,110,0.08);
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+}
+
+.sezione h2 {
+    font-family: 'Cinzel', serif;
+    color: #8b0000;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.sezione p, .sezione li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #3d2b1f;
+    margin-bottom: 8px;
+}
+
+.sezione ul {
+    margin-left: 20px;
+}
+
+.contenuto-raw {
+    background: #fff;
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    padding: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    padding: 16px 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #c9a96e;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(201,169,110,0.3);
+    margin: 10px;
+}
+
+.btn:hover {
+    background: #b8985a;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #8b7355;
+}
+
+.btn-secondary:hover {
+    background: #6b5a45;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.info-box {
+    background: rgba(139,0,0,0.05);
+    border: 1px dashed #8b0000;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+}
+
+.info-box strong {
+    color: #8b0000;
+}
+
+@media (max-width: 600px) {
+    .pergamena { padding: 25px; margin: 20px; }
+}
+</style>
+<base target="_blank">
 </head>
 <body>
-    <div class="risultato-container">
-        <div class="header-risultato">
-            <h1 id="titoloServizio">Risultato Analisi</h1>
-            <div class="meta">
-                <span id="nomeServizio">Servizio</span>
-                <span id="badgeTipo" class="badge-ia">IA Generata</span>
-            </div>
-            <div class="stats-bar" id="statsBar">
-                <span class="stat-item" id="statModello"></span>
-                <span class="stat-item" id="statTokens"></span>
-                <span class="stat-item" id="statTempo"></span>
-            </div>
-        </div>
-        
-        <div id="contentIA" class="content-ia">
-            <div class="loading-placeholder">
-                <div class="spinner"></div>
-                <p>Caricamento risultato...</p>
-            </div>
-        </div>
-        
-        <div id="templateFallback" class="template-fallback content-ia">
-        </div>
-        
-        <div class="azioni-container">
-            <button class="btn btn-success" onclick="accettaRisultato()">
-                Accetta e scarica
-            </button>
-            <button class="btn btn-secondary" onclick="richiediRevisione()">
-                Richiedi revisione
-            </button>
-            <a href="servizi.html" class="btn btn-secondary">
-                Nuovo servizio
-            </a>
-        </div>
-        
-        <div id="revisioneBox" class="revisione-box" style="display: none;">
-            <h3>Richiedi una revisione</h3>
-            <p>Descrivi cosa vuoi modificare o migliorare:</p>
-            <textarea id="noteRevisione" placeholder="Es. Aggiungi piu dettagli sulla classificazione IPC, riscrivi le rivendicazioni piu ampie, aggiungi una sezione sui costi..."></textarea>
-            <div style="margin-top: 15px;">
-                <button class="btn btn-primary" onclick="inviaRevisione()">
-                    Invia revisione
-                </button>
-                <button class="btn btn-secondary" onclick="annullaRevisione()">
-                    Annulla
-                </button>
-            </div>
-        </div>
-        
-        <div class="disclaimer">
-            <strong>Disclaimer:</strong> Questo documento e generato da intelligenza artificale e ha scopo puramente informativo. 
-            Non sostituisce la consulenza di un professionista abilitato (Consulente in Proprieta Industriale o Avvocato). 
-            Verificare sempre con un esperto prima di qualsiasi deposito o azione legale.
+
+<div class="pergamena">
+    <div class="logo">
+        <h1>RISULTATO ELABORAZIONE</h1>
+    </div>
+
+    <div id="risultato-container">
+        <div class="titolo-risultato" id="titolo-servizio">Caricamento risultato...</div>
+
+        <div id="contenuto-reale">
+            <!-- Qui verra inserito il contenuto reale -->
         </div>
     </div>
 
-    <script>
-        const servizioId = localStorage.getItem('brevettiamo_servizio_id');
-        const servizioNome = localStorage.getItem('brevettiamo_servizio_nome');
-        const useFallback = localStorage.getItem('brevettiamo_use_fallback') === 'true';
-        
-        const contentIA = document.getElementById('contentIA');
-        const templateFallback = document.getElementById('templateFallback');
-        const badgeTipo = document.getElementById('badgeTipo');
-        const nomeServizio = document.getElementById('nomeServizio');
-        const titoloServizio = document.getElementById('titoloServizio');
-        
-        nomeServizio.textContent = servizioNome || 'Servizio';
-        titoloServizio.textContent = 'Risultato: ' + (servizioNome || 'Analisi');
-        
-        function recuperaRisultato() {
-            try {
-                const dati = localStorage.getItem('brevettiamo_risultato_ia');
-                return dati ? JSON.parse(dati) : null;
-            } catch (e) {
-                return null;
-            }
-        }
-        
-        async function caricaRisultato() {
-            if (useFallback) {
-                mostraFallback();
-                return;
-            }
-            
-            const risultato = recuperaRisultato();
-            
-            if (risultato && risultato.contenuto) {
-                await mostraOutputIA(risultato);
-            } else {
-                console.warn('Nessun risultato IA trovato, uso fallback');
-                mostraFallback();
-            }
-        }
-        
-        async function mostraOutputIA(risultato) {
-            badgeTipo.textContent = 'IA Generata';
-            badgeTipo.className = 'badge-ia';
-            
-            contentIA.innerHTML = risultato.contenuto;
-            
-            const meta = JSON.parse(localStorage.getItem('brevettiamo_ia_meta') || '{}');
-            if (meta.modello) {
-                document.getElementById('statModello').textContent = 'Modello: ' + meta.modello;
-            }
-            if (meta.tokens) {
-                document.getElementById('statTokens').textContent = 'Tokens: ' + meta.tokens.total;
-            }
-            if (meta.tempo) {
-                document.getElementById('statTempo').textContent = 'Tempo: ' + meta.tempo + 'ms';
-            }
-            
-            localStorage.removeItem('brevettiamo_use_fallback');
-            
-            if (servizioId === 'servizio-tavole' || servizioId === 'servizio-cad') {
-                await generaTavoleDisegni(risultato.contenuto);
-            }
-            
-            const verificatore = new UIBMVerificatore();
-            const report = verificatore.verifica(risultato.contenuto, servizioId);
-            contentIA.innerHTML += report.generaHTML();
-        }
-        
-        async function generaTavoleDisegni(testoIA) {
-            try {
-                const specs = SVGGenerator.estraiSpecifiche(testoIA);
-                const generator = new SVGGenerator();
-                const svg = generator.generaTavola(specs);
-                
-                const svgSection = document.createElement('div');
-                svgSection.className = 'svg-section';
-                svgSection.innerHTML = `
-                    <h2>TAVOLA SVG UIBM</h2>
-                    <div class="svg-container" id="svgContainer">
-                        ${svg}
-                    </div>
-                    <button onclick="downloadSVG()" style="margin-top: 15px; padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">
-                        Scarica SVG
-                    </button>
-                `;
-                contentIA.appendChild(svgSection);
-            } catch (e) {
-                console.error('Errore generazione SVG:', e);
-            }
-            
-            const promptImg = ImageGenerator.estraiPrompt(testoIA);
-            
-            if (promptImg) {
-                const imageSection = document.createElement('div');
-                imageSection.className = 'image-section';
-                imageSection.innerHTML = `
-                    <h2>RENDER 3D FOTOREALISTICO</h2>
-                    <div class="image-container" id="imageContainer">
-                        <div class="loading-placeholder">
-                            <div class="spinner"></div>
-                            <p>Generazione immagine in corso...<br><em>(circa 10-20 secondi)</em></p>
-                            <p style="font-size: 12px; color: #999; margin-top: 10px;">Prompt: ${promptImg.substring(0, 100)}...</p>
-                        </div>
-                    </div>
-                `;
-                contentIA.appendChild(imageSection);
-                
-                const imgGen = new ImageGenerator();
-                const imgResult = await imgGen.genera(promptImg, '1024x1024', 'vivid');
-                
-                const container = document.getElementById('imageContainer');
-                
-                if (imgResult.success) {
-                    container.innerHTML = `
-                        <img src="${imgResult.url}" alt="Render 3D">
-                        <p style="margin-top: 15px; font-size: 13px; color: #666;">
-                            <strong>Prompt ottimizzato:</strong> ${imgResult.revisedPrompt || promptImg}
-                        </p>
-                        <a href="${imgResult.url}" target="_blank" download="render_3d.png" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: #10b981; color: white; text-decoration: none; border-radius: 6px; font-size: 14px;">
-                            Scarica PNG
-                        </a>
-                    `;
-                } else {
-                    container.innerHTML = `
-                        <div class="image-error">
-                            <p>Errore generazione immagine: ${imgResult.errore}</p>
-                            <p style="font-size: 13px; color: #666; margin-top: 10px;">
-                                Puoi usare questo prompt manualmente su DALL-E o Midjourney:<br>
-                                <code style="background: #f3f4f6; padding: 10px; display: block; margin-top: 8px; border-radius: 4px; word-break: break-all;">${promptImg}</code>
-                            </p>
-                        </div>
-                    `;
-                }
-            }
-        }
-        
-        function mostraFallback() {
-            badgeTipo.textContent = 'Template Statico';
-            badgeTipo.className = 'badge-fallback';
-            
-            const templateHTML = generaTemplateStatico(servizioId);
-            templateFallback.innerHTML = templateHTML;
-            
-            contentIA.style.display = 'none';
-            templateFallback.classList.add('visible');
-            
-            document.getElementById('statsBar').style.display = 'none';
-        }
-        
-        function generaTemplateStatico(servizioId) {
-            return '<h2>Documento di ' + (servizioNome || 'Analisi') + '</h2>' +
-                '<p><strong>Servizio:</strong> ' + servizioId + '</p>' +
-                '<p><strong>Descrizione fornita:</strong></p>' +
-                '<blockquote style="background: #f3f4f6; padding: 15px; border-left: 4px solid #2563eb; margin: 15px 0;">' +
-                (localStorage.getItem('brevettiamo_descrizione') || 'Nessuna descrizione') +
-                '</blockquote>' +
-                '<h3>Sezione 1: Analisi Preliminare</h3>' +
-                '<p>Questo e un template statico generato automaticamente. Per ottenere un risultato personalizzato con l\'IA:</p>' +
-                '<ol>' +
-                '<li>Verifica che la chiave API Groq sia configurata in <code>config.js</code></li>' +
-                '<li>Ricarica la pagina e riprova</li>' +
-                '<li>Assicurati di avere connessione internet</li>' +
-                '</ol>' +
-                '<h3>Sezione 2: Note Tecniche</h3>' +
-                '<p>Le note aggiuntive fornite:</p>' +
-                '<p>' + (localStorage.getItem('brevettiamo_note') || 'Nessuna nota aggiuntiva') + '</p>' +
-                '<h3>Sezione 3: Prossimi Passi</h3>' +
-                '<ul>' +
-                '<li>Consulta un Consulente in Proprieta Industriale</li>' +
-                '<li>Prepara i disegni/tecnici dettagliati</li>' +
-                '<li>Valuta il deposito presso UIBM</li>' +
-                '<li>Considera una ricerca prior art formale</li>' +
-                '</ul>' +
-                '<div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 20px;">' +
-                '<strong>Nota:</strong> Questo template e generico. Per un documento professionale personalizzato, configura la chiave API Groq e riesegui l\'elaborazione.' +
-                '</div>';
-        }
-        
-        function accettaRisultato() {
-            const contenuto = useFallback ? templateFallback.innerHTML : contentIA.innerHTML;
-            const blob = new Blob([
-                '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + servizioNome + ' - BrevettIAmo</title>' +
-                '<style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;line-height:1.6;color:#333}</style>' +
-                '</head><body><h1>' + servizioNome + '</h1><p><em>Generato da BrevettIAmo</em></p><hr>' +
-                contenuto +
-                '</body></html>'
-            ], { type: 'text/html' });
-            
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'brevettiamo_' + servizioId + '_' + new Date().toISOString().slice(0,10) + '.html';
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            alert('Documento scaricato!');
-        }
-        
-        function downloadSVG() {
-            const svg = document.querySelector('svg');
-            if (!svg) {
-                alert('Nessun SVG trovato');
-                return;
-            }
-            
-            const svgData = new XMLSerializer().serializeToString(svg);
-            const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'tavola_uibm_' + servizioId + '_' + new Date().toISOString().slice(0,10) + '.svg';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-        
-        function richiediRevisione() {
-            document.getElementById('revisioneBox').style.display = 'block';
-            document.getElementById('noteRevisione').focus();
-        }
-        
-        function annullaRevisione() {
-            document.getElementById('revisioneBox').style.display = 'none';
-            document.getElementById('noteRevisione').value = '';
-        }
-        
-        function inviaRevisione() {
-            const note = document.getElementById('noteRevisione').value.trim();
-            if (!note) {
-                alert('Inserisci le note per la revisione');
-                return;
-            }
-            
-            localStorage.setItem('brevettiamo_note_revisione', note);
-            
-            const descrizioneOriginale = localStorage.getItem('brevettiamo_descrizione') || '';
-            const descrizioneRevisonata = descrizioneOriginale + '\n\n[REVISIONE RICHIESTA]: ' + note;
-            localStorage.setItem('brevettiamo_descrizione', descrizioneRevisonata);
-            
-            localStorage.removeItem('brevettiamo_risultato_ia');
-            localStorage.removeItem('brevettiamo_use_fallback');
-            
-            alert('Revisione inviata! Verrai reindirizzato all\'elaborazione.');
-            window.location.href = 'elaborazione.html';
-        }
-        
-        document.addEventListener('DOMContentLoaded', caricaRisultato);
-    </script>
-    <!-- BREVETTIAMO E2E -->
-<script src="e2e-module.js"></script>
+    <div class="actions">
+        <button class="btn" onclick="scaricaRisultato()">SCARICA PDF</button>
+        <button class="btn btn-secondary" onclick="tornaServizi()">TORNA AI SERVIZI</button>
+    </div>
+</div>
+
 <script>
-  if (typeof BrevettIAmoE2E !== 'undefined') {
-    BrevettIAmoE2E.init();
-  }
+// ==========================================
+// RISULTATO BREVETTIAMO - MOSTRA CONTENUTO REALE
+// ==========================================
+
+const servizioId = new URLSearchParams(window.location.search).get("servizio") || "servizio-deposito";
+const risultatoJSON = localStorage.getItem("brevettiamo_risultato");
+const servizioNome = localStorage.getItem("brevettiamo_servizio") || servizioId;
+
+function mostraRisultato() {
+    console.log("[Risultato] Caricamento risultato per servizio: " + servizioId);
+
+    if (!risultatoJSON) {
+        mostraErrore("Nessun risultato trovato. Riprova l elaborazione.");
+        return;
+    }
+
+    try {
+        const risultato = JSON.parse(risultatoJSON);
+        console.log("[Risultato] Dati caricati:", risultato);
+
+        // Titolo servizio
+        const titoli = {
+            "servizio-deposito": "Deposito Brevetto - Risultato",
+            "servizio-prior-art": "Ricerca Prior Art - Risultato",
+            "servizio-rivendicazioni": "Rivendicazioni - Risultato",
+            "servizio-tavole": "Tavole Tecniche - Risultato",
+            "servizio-cad": "Disegni CAD - Risultato"
+        };
+
+        document.getElementById("titolo-servizio").textContent = titoli[servizioId] || "Risultato Elaborazione";
+
+        // Contenuto reale
+        const container = document.getElementById("contenuto-reale");
+
+        if (risultato.contenuto) {
+            // Contenuto testuale dall IA
+            container.innerHTML = '<div class="sezione"><h2>Analisi IA</h2><div class="contenuto-raw">' + escapeHtml(risultato.contenuto) + '</div></div>';
+        } else if (risultato.documenti) {
+            // Documenti generati
+            let html = '';
+            for (let i = 0; i < risultato.documenti.length; i++) {
+                const doc = risultato.documenti[i];
+                html += '<div class="sezione">';
+                html += '<h2>' + escapeHtml(doc.nome) + '</h2>';
+                html += '<div class="contenuto-raw">' + escapeHtml(doc.contenuto) + '</div>';
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        } else if (risultato.rivendicazioni) {
+            // Rivendicazioni
+            let html = '<div class="sezione"><h2>Rivendicazioni Generate</h2><ul>';
+            for (let i = 0; i < risultato.rivendicazioni.length; i++) {
+                html += '<li>' + escapeHtml(risultato.rivendicazioni[i]) + '</li>';
+            }
+            html += '</ul></div>';
+            container.innerHTML = html;
+        } else if (risultato.tavole) {
+            // Tavole
+            let html = '<div class="sezione"><h2>Tavole Tecniche</h2>';
+            for (let i = 0; i < risultato.tavole.length; i++) {
+                const t = risultato.tavole[i];
+                html += '<p><strong>Tavola ' + t.numero + ':</strong> ' + escapeHtml(t.descrizione) + ' (Tipo: ' + t.tipo + ')</p>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        } else {
+            // Fallback: mostra JSON completo
+            container.innerHTML = '<div class="sezione"><h2>Dati Completi</h2><div class="contenuto-raw">' + escapeHtml(JSON.stringify(risultato, null, 2)) + '</div></div>';
+        }
+
+        // Info aggiuntive
+        if (risultato.prezzo_stimato || risultato.tempo_stimato) {
+            let info = '<div class="info-box">';
+            if (risultato.prezzo_stimato) info += '<strong>Prezzo stimato:</strong> ' + risultato.prezzo_stimato + ' EUR<br>';
+            if (risultato.tempo_stimato) info += '<strong>Tempo stimato:</strong> ' + risultato.tempo_stimato;
+            info += '</div>';
+            container.innerHTML += info;
+        }
+
+    } catch (error) {
+        console.error("[Risultato] Errore parsing:", error);
+        mostraErrore("Errore nel caricamento del risultato.");
+    }
+}
+
+function mostraErrore(messaggio) {
+    document.getElementById("contenuto-reale").innerHTML = 
+        '<div class="info-box"><strong>Errore:</strong> ' + messaggio + '</div>';
+}
+
+function escapeHtml(text) {
+    if (!text) return "";
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function scaricaRisultato() {
+    const risultato = JSON.parse(risultatoJSON || "{}");
+    const blob = new Blob([JSON.stringify(risultato, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "risultato-" + servizioId + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function tornaServizi() {
+    window.location.href = "/brevettiamo/servizi.html";
+}
+
+// Carica risultato al avvio
+document.addEventListener("DOMContentLoaded", mostraRisultato);
 </script>
+
 </body>
 </html>
