@@ -116,6 +116,14 @@ body {
     transform: translateY(-2px);
 }
 
+.btn-success {
+    background: #2c5f2d;
+}
+
+.btn-success:hover {
+    background: #1e4a1f;
+}
+
 .btn-secondary {
     background: #8b7355;
 }
@@ -170,15 +178,15 @@ body {
     </div>
 
     <div class="actions">
-        <button class="btn" onclick="confermaRisultato()">CONFERMA E PROSEGUI</button>
-        <button class="btn btn-secondary" onclick="rigenera()">RIGENERA</button>
-        <button class="btn btn-danger" onclick="tornaIndietro()">TORNA INDIETRO</button>
+        <button class="btn btn-success" onclick="accettaEScarica()">ACCETTA E SCARICA</button>
+        <button class="btn btn-secondary" onclick="tornaEModifica()">TORNA E MODIFICA</button>
+        <button class="btn" onclick="rigenera()">RIGENERA</button>
     </div>
 </div>
 
 <script>
 // ==========================================
-// REVISIONE BREVETTIAMO
+// REVISIONE BREVETTIAMO - FLUSSO COMPLETO
 // ==========================================
 
 const servizioId = new URLSearchParams(window.location.search).get("servizio") || "servizio-deposito";
@@ -254,8 +262,8 @@ function caricaRisultato() {
     }
 }
 
-function confermaRisultato() {
-    console.log("[Revisione] Conferma risultato");
+function accettaEScarica() {
+    console.log("[Revisione] Accetta e scarica");
 
     try {
         const risultato = JSON.parse(risultatoJSON);
@@ -286,24 +294,43 @@ function confermaRisultato() {
         localStorage.setItem("brevettiamo_risultato_revisionato", JSON.stringify(risultato));
         localStorage.setItem("brevettiamo_risultato", JSON.stringify(risultato));
 
+        // Scarica file
+        scaricaFile(risultato);
+
         // Vai al risultato finale
         window.location.href = "/brevettiamo/risultato.html?servizio=" + encodeURIComponent(servizioId);
 
     } catch (error) {
-        console.error("[Revisione] Errore conferma:", error);
+        console.error("[Revisione] Errore accetta:", error);
         alert("Errore nel salvataggio delle modifiche.");
     }
 }
 
-function rigenera() {
-    console.log("[Revisione] Rigenera");
-    // Torna a elaborazione per rigenerare
-    window.location.href = "/brevettiamo/elaborazione.html?servizio=" + encodeURIComponent(servizioId);
+function scaricaFile(risultato) {
+    // Crea file JSON con il risultato
+    const blob = new Blob([JSON.stringify(risultato, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "brevettiamo-risultato-" + servizioId + "-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log("[Revisione] File scaricato");
 }
 
-function tornaIndietro() {
-    console.log("[Revisione] Torna indietro");
-    window.history.back();
+function tornaEModifica() {
+    console.log("[Revisione] Torna e modifica descrizione");
+    // Torna alla pagina di descrizione
+    window.location.href = "/brevettiamo/descrizione.html?servizio=" + encodeURIComponent(servizioId);
+}
+
+function rigenera() {
+    console.log("[Revisione] Rigenera con stessa descrizione");
+    // Torna a elaborazione per rigenerare
+    window.location.href = "/brevettiamo/elaborazione.html?servizio=" + encodeURIComponent(servizioId);
 }
 
 function mostraErrore(messaggio) {
