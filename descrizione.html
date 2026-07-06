@@ -6,340 +6,59 @@
 <title>Descrizione - BrevettIAmo</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: Georgia, serif;
-    background: #f5f0e8;
-    min-height: 100vh;
-    color: #3d2b1f;
-}
-
-.pergamena {
-    max-width: 900px;
-    margin: 40px auto;
-    background: #faf6f0;
-    border: 2px solid #c9a96e;
-    border-radius: 4px;
-    box-shadow: 0 4px 20px rgba(61,43,31,0.15), inset 0 0 60px rgba(201,169,110,0.1);
-    padding: 50px;
-    position: relative;
-}
-
-.logo {
-    text-align: center;
-    margin-bottom: 30px;
-}
-.logo h1 {
-    font-family: Georgia, serif;
-    font-size: 1.8rem;
-    color: #8b0000;
-    letter-spacing: 2px;
-}
-
-.titolo-sezione {
-    font-family: Georgia, serif;
-    font-size: 1.3rem;
-    color: #8b0000;
-    margin-bottom: 20px;
-    text-align: center;
-    border-bottom: 2px solid #c9a96e;
-    padding-bottom: 15px;
-}
-
-.sezione {
-    margin: 25px 0;
-    padding: 20px;
-    background: rgba(201,169,110,0.08);
-    border: 1px solid #d4c4a8;
-    border-radius: 4px;
-}
-
-.sezione h2 {
-    font-family: Georgia, serif;
-    color: #8b0000;
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-}
-
-.textarea-desc {
-    width: 100%;
-    min-height: 200px;
-    padding: 15px;
-    border: 1px solid #d4c4a8;
-    border-radius: 4px;
-    font-family: Georgia, serif;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    background: #fff;
-    resize: vertical;
-    margin-bottom: 15px;
-}
-
-.textarea-desc:focus {
-    outline: none;
-    border-color: #8b0000;
-    box-shadow: 0 0 5px rgba(139,0,0,0.1);
-}
-
-.schizzi-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin: 15px 0;
-}
-
-.schizzo-item {
-    width: 150px;
-    height: 150px;
-    border: 2px dashed #d4c4a8;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: #fff;
-    position: relative;
-    overflow: hidden;
-}
-
-.schizzo-item:hover {
-    border-color: #8b0000;
-    background: rgba(139,0,0,0.02);
-}
-
-.schizzo-item img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: cover;
-}
-
-.schizzo-item .remove-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: #8b0000;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    display: none;
-}
-
-.schizzo-item:hover .remove-btn {
-    display: block;
-}
-
-.schizzo-add {
-    font-size: 2rem;
-    color: #d4c4a8;
-}
-
-.schizzo-item:hover .schizzo-add {
-    color: #8b0000;
-}
-
-input[type="file"] {
-    display: none;
-}
-
-.btn {
-    font-family: Georgia, serif;
-    font-size: 0.95rem;
-    letter-spacing: 2px;
-    padding: 16px 40px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: #c9a96e;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(201,169,110,0.3);
-    margin: 10px;
-}
-
-.btn:hover {
-    background: #b8985a;
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background: #8b7355;
-}
-
-.btn-secondary:hover {
-    background: #6b5a45;
-}
-
-.actions {
-    text-align: center;
-    margin-top: 30px;
-}
-
-.info-box {
-    background: rgba(139,0,0,0.05);
-    border: 1px dashed #8b0000;
-    border-radius: 4px;
-    padding: 15px;
-    margin: 15px 0;
-    font-size: 0.9rem;
-}
-
-.info-box strong {
-    color: #8b0000;
-}
-
-@media (max-width: 600px) {
-    .pergamena { padding: 25px; margin: 20px; }
-    .schizzo-item { width: 100px; height: 100px; }
-}
+body { font-family: Georgia, serif; background: #f5f0e8; min-height: 100vh; color: #3d2b1f; }
+.pergamena { max-width: 900px; margin: 40px auto; background: #faf6f0; border: 2px solid #c9a96e; border-radius: 4px; box-shadow: 0 4px 20px rgba(61,43,31,0.15); padding: 50px; }
+.logo { text-align: center; margin-bottom: 30px; }
+.logo h1 { font-family: Georgia, serif; font-size: 1.8rem; color: #8b0000; letter-spacing: 2px; }
+.titolo-sezione { font-family: Georgia, serif; font-size: 1.3rem; color: #8b0000; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #c9a96e; padding-bottom: 15px; }
+.sezione { margin: 25px 0; padding: 20px; background: rgba(201,169,110,0.08); border: 1px solid #d4c4a8; border-radius: 4px; }
+.sezione h2 { font-family: Georgia, serif; color: #8b0000; font-size: 1.1rem; margin-bottom: 15px; }
+.textarea-desc { width: 100%; min-height: 200px; padding: 15px; border: 1px solid #d4c4a8; border-radius: 4px; font-family: Georgia, serif; font-size: 0.95rem; line-height: 1.6; background: #fff; resize: vertical; margin-bottom: 15px; }
+.textarea-desc:focus { outline: none; border-color: #8b0000; box-shadow: 0 0 5px rgba(139,0,0,0.1); }
+.btn { font-family: Georgia, serif; font-size: 0.95rem; letter-spacing: 2px; padding: 16px 40px; border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s; background: #c9a96e; color: #fff; box-shadow: 0 4px 15px rgba(201,169,110,0.3); margin: 10px; }
+.btn:hover { background: #b8985a; transform: translateY(-2px); }
+.btn-secondary { background: #8b7355; }
+.btn-secondary:hover { background: #6b5a45; }
+.actions { text-align: center; margin-top: 30px; }
+@media (max-width: 600px) { .pergamena { padding: 25px; margin: 20px; } }
 </style>
 <base target="_blank">
 </head>
 <body>
-
 <div class="pergamena">
-    <div class="logo">
-        <h1>DESCRIZIONE PROGETTO</h1>
-    </div>
-
-    <div class="titolo-sezione" id="titolo-servizio">Descrivi la tua invenzione</div>
-
-    <div class="sezione">
-        <h2>Descrizione Tecnica</h2>
-        <textarea class="textarea-desc" id="descrizione" placeholder="Descrivi la tua invenzione in dettaglio. Cosa fa? Come funziona? Qual e il problema che risolve?
-
-Esempio: Ho inventato un dispositivo che...
-
-Piu dettagli fornisci, migliore sara l analisi."></textarea>
-    </div>
-
-    <div class="sezione">
-        <h2>Schizzi e Disegni (Opzionale)</h2>
-        <p style="font-size: 0.9rem; margin-bottom: 10px;">Carica schizzi, foto o disegni per aiutare l IA a comprendere meglio la tua invenzione.</p>
-
-        <div class="schizzi-container" id="schizzi-container">
-            <div class="schizzo-item" onclick="document.getElementById('file-input').click()">
-                <span class="schizzo-add">+</span>
-            </div>
-        </div>
-
-        <input type="file" id="file-input" accept="image/*" multiple onchange="caricaSchizzi(event)">
-    </div>
-
-    <div class="actions">
-        <button class="btn" onclick="avviaElaborazione()">AVVIA ELABORAZIONE</button>
-        <button class="btn btn-secondary" onclick="tornaIndietro()">TORNA INDIETRO</button>
-    </div>
+<div class="logo"><h1>DESCRIZIONE PROGETTO</h1></div>
+<div class="titolo-sezione" id="titolo-servizio">Descrivi la tua invenzione</div>
+<div class="sezione">
+<h2>Descrizione Tecnica</h2>
+<textarea class="textarea-desc" id="descrizione" placeholder="Descrivi la tua invenzione in dettaglio. Cosa fa? Come funziona? Qual e il problema che risolve? Esempio: Ho inventato un dispositivo che... Piu dettagli fornisci, migliore sara l analisi."></textarea>
 </div>
-
+<div class="actions">
+<button class="btn" onclick="avviaElaborazione()">AVVIA ELABORAZIONE</button>
+<button class="btn btn-secondary" onclick="tornaIndietro()">TORNA INDIETRO</button>
+</div>
+</div>
 <script>
-// ==========================================
-// DESCRIZIONE BREVETTIAMO
-// ==========================================
-
 const servizioId = new URLSearchParams(window.location.search).get("servizio") || "servizio-deposito";
-let schizzi = [];
-
 function caricaDescrizionePrecedente() {
-    console.log("[Descrizione] Caricamento descrizione precedente");
-
     const descrizionePrecedente = localStorage.getItem("brevettiamo_descrizione");
     if (descrizionePrecedente) {
         document.getElementById("descrizione").value = descrizionePrecedente;
-        console.log("[Descrizione] Descrizione precedente caricata");
-    }
-
-    const schizziPrecedenti = localStorage.getItem("brevettiamo_schizzi");
-    if (schizziPrecedenti) {
-        try {
-            schizzi = JSON.parse(schizziPrecedenti);
-            mostraSchizzi();
-            console.log("[Descrizione] Schizzi precedenti caricati: " + schizzi.length);
-        } catch (e) {
-            console.warn("[Descrizione] Errore caricamento schizzi:", e);
-        }
     }
 }
-
-function caricaSchizzi(event) {
-    const files = event.target.files;
-    console.log("[Descrizione] Caricamento " + files.length + " schizzi");
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
-
-        reader.onload = function(e) {
-            schizzi.push({
-                nome: file.name,
-                tipo: file.type,
-                data: e.target.result,
-                timestamp: new Date().toISOString()
-            });
-            mostraSchizzi();
-            salvaSchizzi();
-        };
-
-        reader.readAsDataURL(file);
-    }
-}
-
-function mostraSchizzi() {
-    const container = document.getElementById("schizzi-container");
-
-    let html = '<div class="schizzo-item" onclick="document.getElementById('file-input').click()">' +
-               '<span class="schizzo-add">+</span></div>';
-
-    for (let i = 0; i < schizzi.length; i++) {
-        html += '<div class="schizzo-item">';
-        html += '<img src="' + schizzi[i].data + '" alt="Schizzo ' + (i+1) + '">';
-        html += '<button class="remove-btn" onclick="rimuoviSchizzo(' + i + ')">×</button>';
-        html += '</div>';
-    }
-
-    container.innerHTML = html;
-}
-
-function rimuoviSchizzo(index) {
-    console.log("[Descrizione] Rimozione schizzo " + index);
-    schizzi.splice(index, 1);
-    mostraSchizzi();
-    salvaSchizzi();
-}
-
-function salvaSchizzi() {
-    localStorage.setItem("brevettiamo_schizzi", JSON.stringify(schizzi));
-}
-
 function avviaElaborazione() {
     const descrizione = document.getElementById("descrizione").value.trim();
-
     if (!descrizione) {
         alert("Inserisci una descrizione prima di procedere.");
         return;
     }
-
-    console.log("[Descrizione] Avvio elaborazione per servizio: " + servizioId);
-    console.log("[Descrizione] Descrizione: " + descrizione.substring(0, 100) + "...");
-    console.log("[Descrizione] Schizzi: " + schizzi.length);
-
     localStorage.setItem("brevettiamo_descrizione", descrizione);
-    localStorage.setItem("brevettiamo_schizzi", JSON.stringify(schizzi));
     localStorage.setItem("brevettiamo_servizio", servizioId);
-
     window.location.href = "/brevettiamo/elaborazione.html?servizio=" + encodeURIComponent(servizioId);
 }
-
 function tornaIndietro() {
     window.history.back();
 }
-
 document.addEventListener("DOMContentLoaded", caricaDescrizionePrecedente);
 </script>
-
 </body>
 </html>
