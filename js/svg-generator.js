@@ -1,270 +1,394 @@
-// js/svg-generator.js — Generatore tavole tecniche SVG conformi UIBM
+// js/svg-generator.js - Generatore SVG intelligente per tavole tecniche UIBM
 
 class SVGGenerator {
-    constructor() {
-        this.width = 210; // mm A4
-        this.height = 297; // mm A4
-        this.margin = 25; // mm
-        this.scale = 1;
+  constructor() {
+    this.width = 800
+    this.height = 600
+    this.margin = 50
+    this.centerX = this.width / 2
+    this.centerY = this.height / 2
+  }
+
+  // Genera tavole complete da JSON strutturato
+  generaTavole(jsonData) {
+    if (!jsonData || !jsonData.viste || !jsonData.componenti) {
+      console.error('[SVGGenerator] Dati JSON non validi')
+      return this.generaTavoleFallback(jsonData)
     }
-    
-    generaTavola(specs) {
-        const oggetto = (specs && specs.oggetto) ? specs.oggetto : 'OGGETTO';
-        const viste = (specs && specs.viste) ? specs.viste : [];
-        const parti = (specs && specs.parti) ? specs.parti : [];
-        
-        let svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" width="210mm" height="297mm" style="background: white; font-family: Arial, Helvetica, sans-serif;">';
-        
-        // Bordo pagina UIBM
-        svg += '<rect x="5" y="5" width="200" height="287" fill="none" stroke="#000" stroke-width="0.5"/>';
-        
-        // Intestazione
-        svg += '<text x="105" y="15" text-anchor="middle" font-size="4" font-weight="bold" font-family="Arial">TAVOLA TECNICA - ' + oggetto.toUpperCase() + '</text>';
-        svg += '<line x1="10" y1="18" x2="200" y2="18" stroke="#000" stroke-width="0.3"/>';
-        
-        // Viste (max 4 in griglia 2x2)
-        let yPos = 25;
-        const vistaWidth = 90;
-        const vistaHeight = 60;
-        
-        if (viste.length > 0) {
-            viste.forEach((vista, i) => {
-                const col = i % 2;
-                const row = Math.floor(i / 2);
-                const x = 10 + col * 95;
-                const y = yPos + row * 70;
-                svg += this.disegnaVista(vista, x, y, vistaWidth, vistaHeight);
-            });
-        } else {
-            svg += this.disegnaVista({ nome: 'FRONTALE' }, 10, yPos, vistaWidth, vistaHeight);
-            svg += this.disegnaVista({ nome: 'LATERALE' }, 105, yPos, vistaWidth, vistaHeight);
-            svg += this.disegnaVista({ nome: 'SEZIONE A-A' }, 10, yPos + 70, vistaWidth, vistaHeight);
-        }
-        
-        // Legenda parti
-        const legendaY = yPos + 150;
-        svg += this.disegnaLegenda(parti, 10, legendaY);
-        
-        // Note UIBM in fondo
-        svg += '<text x="10" y="290" font-size="2.5" fill="#666" font-family="Arial">Scala: ' + this.scale + ':1 | Formato: A4 (210x297mm) | Margini: 25mm conformi UIBM | Font: Arial 3.5mm</text>';
-        
-        svg += '</svg>';
-        return svg;
+
+    const tavole = []
+
+    for (const vista of jsonData.viste) {
+      const svg = this.generaVista(vista, jsonData.componenti)
+      tavole.push({
+        tipo: vista.tipo,
+        titolo: vista.titolo || `Vista ${vista.tipo}`,
+        numero: tavole.length + 1,
+        svg: svg,
+        componenti: this.estraiComponentiVista(vista, jsonData.componenti)
+      })
     }
-    
-    disegnaVista(vista, x, y, w, h) {
-        let svg = '<g transform="translate(' + x + ', ' + y + ')">';
-        
-        // FIX: Evita doppio "VISTA"
-        const nomeVista = (vista.nome || 'VISTA').replace(/^VISTA\s*/i, '');
-        svg += '<text x="' + (w/2) + '" y="-2" text-anchor="middle" font-size="3" font-weight="bold" font-family="Arial">VISTA ' + nomeVista + '</text>';
-        
-        // Bordo vista
-        svg += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="none" stroke="#333" stroke-width="0.5"/>';
-        
-        // Disegna elementi se specificati
-        if (vista.elementi && vista.elementi.length > 0) {
-            vista.elementi.forEach(el => {
-                svg += this.disegnaElemento(el);
-            });
-        } else {
-            svg += this.disegnaPlaceholder(nomeVista, w, h);
-        }
-        
-        // Quote
-        if (vista.quote && vista.quote.length > 0) {
-            vista.quote.forEach((q, i) => {
-                svg += '<text x="2" y="' + (h + 5 + i*4) + '" font-size="2.5" font-family="Arial">' + (q.nome || '') + ': ' + (q.valore || '') + 'mm</text>';
-            });
-        }
-        
-        svg += '</g>';
-        return svg;
+
+    return tavole
+  }
+
+  // Genera una singola vista
+  generaVista(vista, componenti) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    svg.setAttribute('width', this.width)
+    svg.setAttribute('height', this.height)
+    svg.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`)
+    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+
+    // Sfondo
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+    rect.setAttribute('width', '100%')
+    rect.setAttribute('height', '100%')
+    rect.setAttribute('fill', '#ffffff')
+    svg.appendChild(rect)
+
+    // Titolo
+    const title = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+    title.setAttribute('x', this.centerX)
+    title.setAttribute('y', 30)
+    title.setAttribute('text-anchor', 'middle')
+    title.setAttribute('font-family', 'Arial, sans-serif')
+    title.setAttribute('font-size', '18')
+    title.setAttribute('font-weight', 'bold')
+    title.setAttribute('fill', '#000000')
+    title.textContent = `${vista.titolo || vista.tipo.toUpperCase()}`
+    svg.appendChild(title)
+
+    // Gruppo per i componenti
+    const gruppo = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+    gruppo.setAttribute('transform', `translate(${this.centerX}, ${this.centerY})`)
+
+    // Disegna componenti
+    const componentiVista = this.estraiComponentiVista(vista, componenti)
+    for (const comp of componentiVista) {
+      const elemento = this.disegnaComponente(comp, vista.tipo)
+      if (elemento) {
+        gruppo.appendChild(elemento)
+      }
     }
-    
-    disegnaElemento(el) {
-        switch(el.tipo) {
-            case 'rettangolo':
-                return '<rect x="' + (el.x || 0) + '" y="' + (el.y || 0) + '" width="' + (el.w || 10) + '" height="' + (el.h || 10) + '" fill="' + (el.fill || 'none') + '" stroke="#000" stroke-width="0.5"/>';
-            case 'cerchio':
-                return '<circle cx="' + (el.cx || 50) + '" cy="' + (el.cy || 50) + '" r="' + (el.r || 10) + '" fill="' + (el.fill || 'none') + '" stroke="#000" stroke-width="0.5"/>';
-            case 'linea':
-                return '<line x1="' + (el.x1 || 0) + '" y1="' + (el.y1 || 0) + '" x2="' + (el.x2 || 10) + '" y2="' + (el.y2 || 10) + '" stroke="#000" stroke-width="0.5"/>';
-            case 'arco':
-                return '<path d="' + (el.d || 'M 10 10 Q 50 50 90 10') + '" fill="none" stroke="#000" stroke-width="0.5"/>';
-            case 'testo':
-                return '<text x="' + (el.x || 0) + '" y="' + (el.y || 0) + '" font-size="' + (el.size || 3) + '" font-family="Arial">' + (el.testo || '') + '</text>';
-            default:
-                return '';
-        }
+
+    svg.appendChild(gruppo)
+
+    // Bordo tavola
+    const bordo = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+    bordo.setAttribute('x', 10)
+    bordo.setAttribute('y', 10)
+    bordo.setAttribute('width', this.width - 20)
+    bordo.setAttribute('height', this.height - 20)
+    bordo.setAttribute('fill', 'none')
+    bordo.setAttribute('stroke', '#000000')
+    bordo.setAttribute('stroke-width', '2')
+    svg.appendChild(bordo)
+
+    return svg
+  }
+
+  // Disegna un singolo componente
+  disegnaComponente(comp, tipoVista) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+
+    const forma = comp.forma || 'rettangolo'
+    const dim = comp.dimensioni || { larghezza: 100, altezza: 50, profondita: 30 }
+    const pos = comp.posizione || { x: 0, y: 0, z: 0 }
+    const num = comp.numero || 101
+
+    // Scala dimensioni per visualizzazione
+    const scala = 2
+    const w = (dim.larghezza || 100) / scala
+    const h = (dim.altezza || 50) / scala
+    const d = (dim.profondita || 30) / scala
+
+    // Posizione centrata
+    const x = pos.x / scala - w / 2
+    const y = pos.y / scala - h / 2
+
+    let elemento
+
+    switch (forma.toLowerCase()) {
+      case 'rettangolo':
+      case 'rettangolare':
+        elemento = this.disegnaRettangolo(x, y, w, h, num)
+        break
+      case 'cerchio':
+      case 'circolare':
+        elemento = this.disegnaCerchio(x, y, w / 2, num)
+        break
+      case 'cilindro':
+      case 'cilindrico':
+        elemento = this.disegnaCilindro(x, y, w, h, num, tipoVista)
+        break
+      case 'arco':
+      case 'curvo':
+        elemento = this.disegnaArco(x, y, w, h, num)
+        break
+      case 'triangolo':
+        elemento = this.disegnaTriangolo(x, y, w, h, num)
+        break
+      case 'trapezio':
+        elemento = this.disegnaTrapezio(x, y, w, h, num)
+        break
+      case 'linea':
+        elemento = this.disegnaLinea(x, y, w, h, num)
+        break
+      default:
+        elemento = this.disegnaRettangolo(x, y, w, h, num)
     }
-    
-    disegnaPlaceholder(nomeVista, w, h) {
-        let svg = '';
-        const cx = w / 2;
-        const cy = h / 2;
-        
-        if (nomeVista.indexOf('FRONTALE') !== -1) {
-            svg += '<rect x="' + (cx-25) + '" y="' + (cy-20) + '" width="50" height="40" fill="none" stroke="#000" stroke-width="0.8"/>';
-            svg += '<line x1="' + (cx-15) + '" y1="' + (cy-10) + '" x2="' + (cx+15) + '" y2="' + (cy-10) + '" stroke="#000" stroke-width="0.3" stroke-dasharray="2,1"/>';
-            svg += '<circle cx="' + cx + '" cy="' + cy + '" r="5" fill="none" stroke="#000" stroke-width="0.5"/>';
-        } else if (nomeVista.indexOf('LATERALE') !== -1) {
-            svg += '<rect x="' + (cx-15) + '" y="' + (cy-20) + '" width="30" height="40" fill="none" stroke="#000" stroke-width="0.8"/>';
-            svg += '<line x1="' + cx + '" y1="' + (cy-20) + '" x2="' + cx + '" y2="' + (cy+20) + '" stroke="#000" stroke-width="0.3" stroke-dasharray="2,1"/>';
-        } else if (nomeVista.indexOf('SEZIONE') !== -1) {
-            svg += '<rect x="' + (cx-20) + '" y="' + (cy-15) + '" width="40" height="30" fill="#e0e0e0" stroke="#000" stroke-width="0.8"/>';
-            for (let i = -15; i < 15; i += 4) {
-                svg += '<line x1="' + (cx-20) + '" y1="' + (cy+i) + '" x2="' + (cx+20) + '" y2="' + (cy+i+3) + '" stroke="#666" stroke-width="0.2"/>';
-            }
-        } else {
-            svg += '<rect x="' + (cx-20) + '" y="' + (cy-15) + '" width="40" height="30" fill="none" stroke="#000" stroke-width="0.8"/>';
-            svg += '<line x1="' + (cx-20) + '" y1="' + (cy-15) + '" x2="' + (cx+10) + '" y2="' + (cy-25) + '" stroke="#000" stroke-width="0.5"/>';
-            svg += '<line x1="' + (cx+20) + '" y1="' + (cy-15) + '" x2="' + (cx+30) + '" y2="' + (cy-25) + '" stroke="#000" stroke-width="0.5"/>';
-            svg += '<line x1="' + (cx+10) + '" y1="' + (cy-25) + '" x2="' + (cx+30) + '" y2="' + (cy-25) + '" stroke="#000" stroke-width="0.5"/>';
-            svg += '<line x1="' + (cx+20) + '" y1="' + (cy+15) + '" x2="' + (cx+30) + '" y2="' + (cy+5) + '" stroke="#000" stroke-width="0.5"/>';
-            svg += '<line x1="' + (cx+30) + '" y1="' + (cy-25) + '" x2="' + (cx+30) + '" y2="' + (cy+5) + '" stroke="#000" stroke-width="0.5"/>';
-        }
-        
-        // FIX: Evita doppio "VISTA" nel placeholder
-        const nomePulito = nomeVista.replace(/^VISTA\s*/i, '');
-        svg += '<text x="' + cx + '" y="' + (cy+35) + '" text-anchor="middle" font-size="2.5" fill="#999" font-family="Arial">[VISTA ' + nomePulito + ']</text>';
-        
-        return svg;
+
+    if (elemento) {
+      g.appendChild(elemento)
     }
-    
-    disegnaLegenda(parti, x, y) {
-        let svg = '<g transform="translate(' + x + ', ' + y + ')">';
-        svg += '<text x="0" y="0" font-size="3" font-weight="bold" font-family="Arial">LEGENDA PARTI</text>';
-        svg += '<line x1="0" y1="2" x2="80" y2="2" stroke="#000" stroke-width="0.3"/>';
-        
-        if (!parti || parti.length === 0) {
-            const partiDefault = [
-                { numero: 1, nome: 'Corpo principale' },
-                { numero: 2, nome: 'Elemento mobile' },
-                { numero: 3, nome: 'Fissaggio' }
-            ];
-            partiDefault.forEach((parte, i) => {
-                const rowY = 8 + i * 6;
-                svg += '<circle cx="5" cy="' + (rowY-1) + '" r="3" fill="white" stroke="#000" stroke-width="0.5"/>';
-                svg += '<text x="5" y="' + (rowY+0.5) + '" text-anchor="middle" font-size="2.5" font-family="Arial">' + parte.numero + '</text>';
-                svg += '<text x="12" y="' + rowY + '" font-size="2.5" font-family="Arial">' + parte.nome + '</text>';
-            });
-        } else {
-            parti.forEach((parte, i) => {
-                const rowY = 8 + i * 6;
-                svg += '<circle cx="5" cy="' + (rowY-1) + '" r="3" fill="white" stroke="#000" stroke-width="0.5"/>';
-                svg += '<text x="5" y="' + (rowY+0.5) + '" text-anchor="middle" font-size="2.5" font-family="Arial">' + (parte.numero || (i+1)) + '</text>';
-                svg += '<text x="12" y="' + rowY + '" font-size="2.5" font-family="Arial">' + (parte.nome || 'Parte ' + (i+1)) + '</text>';
-            });
-        }
-        
-        svg += '</g>';
-        return svg;
+
+    // Aggiungi numero di riferimento
+    const testo = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+    testo.setAttribute('x', x + w / 2)
+    testo.setAttribute('y', y - 10)
+    testo.setAttribute('text-anchor', 'middle')
+    testo.setAttribute('font-family', 'Arial, sans-serif')
+    testo.setAttribute('font-size', '12')
+    testo.setAttribute('fill', '#000000')
+    testo.textContent = num
+    g.appendChild(testo)
+
+    return g
+  }
+
+  // Forme geometriche base
+  disegnaRettangolo(x, y, w, h, num) {
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+    rect.setAttribute('x', x)
+    rect.setAttribute('y', y)
+    rect.setAttribute('width', w)
+    rect.setAttribute('height', h)
+    rect.setAttribute('fill', 'none')
+    rect.setAttribute('stroke', '#000000')
+    rect.setAttribute('stroke-width', '1.5')
+    return rect
+  }
+
+  disegnaCerchio(x, y, r, num) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+    circle.setAttribute('cx', x + r)
+    circle.setAttribute('cy', y + r)
+    circle.setAttribute('r', r)
+    circle.setAttribute('fill', 'none')
+    circle.setAttribute('stroke', '#000000')
+    circle.setAttribute('stroke-width', '1.5')
+    return circle
+  }
+
+  disegnaCilindro(x, y, w, h, num, tipoVista) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+
+    if (tipoVista === 'sezione') {
+      // Vista sezione: rettangolo con tratteggio
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rect.setAttribute('x', x)
+      rect.setAttribute('y', y)
+      rect.setAttribute('width', w)
+      rect.setAttribute('height', h)
+      rect.setAttribute('fill', 'none')
+      rect.setAttribute('stroke', '#000000')
+      rect.setAttribute('stroke-width', '1.5')
+      g.appendChild(rect)
+
+      // Tratteggio sezione
+      const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+      line1.setAttribute('x1', x + 5)
+      line1.setAttribute('y1', y + 5)
+      line1.setAttribute('x2', x + w - 5)
+      line1.setAttribute('y2', y + h - 5)
+      line1.setAttribute('stroke', '#000000')
+      line1.setAttribute('stroke-width', '0.5')
+      line1.setAttribute('stroke-dasharray', '5,5')
+      g.appendChild(line1)
+    } else {
+      // Vista esterna: rettangolo con ellissi sopra e sotto
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rect.setAttribute('x', x)
+      rect.setAttribute('y', y + 10)
+      rect.setAttribute('width', w)
+      rect.setAttribute('height', h - 20)
+      rect.setAttribute('fill', 'none')
+      rect.setAttribute('stroke', '#000000')
+      rect.setAttribute('stroke-width', '1.5')
+      g.appendChild(rect)
+
+      // Ellisse superiore
+      const ellipse1 = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse')
+      ellipse1.setAttribute('cx', x + w / 2)
+      ellipse1.setAttribute('cy', y + 10)
+      ellipse1.setAttribute('rx', w / 2)
+      ellipse1.setAttribute('ry', 10)
+      ellipse1.setAttribute('fill', 'none')
+      ellipse1.setAttribute('stroke', '#000000')
+      ellipse1.setAttribute('stroke-width', '1.5')
+      g.appendChild(ellipse1)
+
+      // Ellisse inferiore (linea tratteggiata per vista 3D)
+      const ellipse2 = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse')
+      ellipse2.setAttribute('cx', x + w / 2)
+      ellipse2.setAttribute('cy', y + h - 10)
+      ellipse2.setAttribute('rx', w / 2)
+      ellipse2.setAttribute('ry', 10)
+      ellipse2.setAttribute('fill', 'none')
+      ellipse2.setAttribute('stroke', '#000000')
+      ellipse2.setAttribute('stroke-width', '1.5')
+      ellipse2.setAttribute('stroke-dasharray', '3,3')
+      g.appendChild(ellipse2)
     }
-    
-    static estraiSpecifiche(testoIA) {
-        const specs = {
-            oggetto: '',
-            viste: [],
-            parti: [],
-            dimensioni: {}
-        };
-        
-        const testoPulito = testoIA.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-        
-        // Estrai oggetto
-        let matchOggetto = testoIA.match(/TITOLO TECNICO<\/h1>\s*<p>([^<]+)/i) ||
-                          testoIA.match(/<h1>([^<]{5,60})<\/h1>/i) ||
-                          testoIA.match(/Oggetto:<\/strong>\s*([^<]+)/i);
-        
-        if (matchOggetto) {
-            specs.oggetto = matchOggetto[1].trim();
-        }
-        
-        if (!specs.oggetto) {
-            const matchOggetto2 = testoPulito.match(/[Ll]a?\s+([a-zA-Z\s]{10,50}(?:con|per|da|che))\s+(?:è|e|sono)/i);
-            if (matchOggetto2) {
-                specs.oggetto = matchOggetto2[1].trim();
-            }
-        }
-        
-        if (!specs.oggetto) {
-            const righe = testoPulito.split(/[.!?]/).filter(r => r.trim().length > 10);
-            if (righe.length > 0) {
-                const primaRiga = righe[0].trim();
-                const parole = primaRiga.split(/\s+/).filter(p => p.length > 2);
-                specs.oggetto = parole.slice(0, 6).join(' ');
-            }
-        }
-        
-        if (!specs.oggetto || specs.oggetto.length < 3) {
-            specs.oggetto = 'OGGETTO BREVETTUALE';
-        }
-        
-        if (specs.oggetto.length > 50) {
-            specs.oggetto = specs.oggetto.substring(0, 50) + '...';
-        }
-        
-        // FIX: Estrai parti con filtro costi
-        const regexParti = /(\d+)[\.\)]\s*([^\n<]{3,50}?)(?=\n|<|$)/g;
-        let match;
-        while ((match = regexParti.exec(testoPulito)) !== null) {
-            const nome = match[2].trim();
-            const numero = match[1];
-            // FIX: Esclude costi, anni, sezioni generiche
-            if (nome.length > 2 && nome.length < 50 && 
-                nome.indexOf('ANALISI') === -1 && nome.indexOf('TITOLO') === -1 && 
-                nome.indexOf('DESCRIZIONE') === -1 && nome.indexOf('CONCLUSIONI') === -1 &&
-                nome.indexOf('euro') === -1 && nome.indexOf('cost') === -1 &&
-                nome.indexOf('000') === -1 && 
-                parseInt(numero) < 100 && parseInt(numero) > 0) {
-                specs.parti.push({ numero: numero, nome: nome });
-            }
-        }
-        
-        if (specs.parti.length === 0) {
-            const paroleChiave = ['corpo', 'elemento', 'fissaggio', 'pomello', 'gancio', 'struttura', 'mecanismo', 'parte'];
-            let numParte = 1;
-            paroleChiave.forEach(parola => {
-                if (testoPulito.toLowerCase().indexOf(parola) !== -1 && numParte <= 5) {
-                    specs.parti.push({ numero: numParte, nome: parola.charAt(0).toUpperCase() + parola.slice(1) + ' principale' });
-                    numParte++;
-                }
-            });
-            
-            if (specs.parti.length === 0) {
-                specs.parti = [
-                    { numero: 1, nome: 'Corpo principale' },
-                    { numero: 2, nome: 'Elemento funzionale' },
-                    { numero: 3, nome: 'Sistema di fissaggio' }
-                ];
-            }
-        }
-        
-        // Estrai viste
-        const visteNomi = ['FRONTALE', 'LATERALE', 'SUPERIORE', 'SEZIONE', 'PROSPETTIVA', 'ASSONOMETRICA', 'POSTERIORE', 'INFERIORE'];
-        visteNomi.forEach(nome => {
-            if (testoPulito.toUpperCase().indexOf(nome) !== -1) {
-                specs.viste.push({ nome: nome });
-            }
-        });
-        
-        if (specs.viste.length === 0) {
-            specs.viste = [
-                { nome: 'FRONTALE' },
-                { nome: 'LATERALE' },
-                { nome: 'SEZIONE A-A' }
-            ];
-        }
-        
-        if (specs.viste.length > 4) {
-            specs.viste = specs.viste.slice(0, 4);
-        }
-        
-        return specs;
+
+    return g
+  }
+
+  disegnaArco(x, y, w, h, num) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+
+    // Arco inferiore (base del dondolo)
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    const d = `M ${x} ${y + h} Q ${x + w / 2} ${y + h + 30} ${x + w} ${y + h}`
+    path.setAttribute('d', d)
+    path.setAttribute('fill', 'none')
+    path.setAttribute('stroke', '#000000')
+    path.setAttribute('stroke-width', '2')
+    g.appendChild(path)
+
+    return g
+  }
+
+  disegnaTriangolo(x, y, w, h, num) {
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
+    const points = `${x + w / 2},${y} ${x + w},${y + h} ${x},${y + h}`
+    polygon.setAttribute('points', points)
+    polygon.setAttribute('fill', 'none')
+    polygon.setAttribute('stroke', '#000000')
+    polygon.setAttribute('stroke-width', '1.5')
+    return polygon
+  }
+
+  disegnaTrapezio(x, y, w, h, num) {
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon')
+    const offset = w * 0.2
+    const points = `${x + offset},${y} ${x + w - offset},${y} ${x + w},${y + h} ${x},${y + h}`
+    polygon.setAttribute('points', points)
+    polygon.setAttribute('fill', 'none')
+    polygon.setAttribute('stroke', '#000000')
+    polygon.setAttribute('stroke-width', '1.5')
+    return polygon
+  }
+
+  disegnaLinea(x, y, w, h, num) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+    line.setAttribute('x1', x)
+    line.setAttribute('y1', y + h / 2)
+    line.setAttribute('x2', x + w)
+    line.setAttribute('y2', y + h / 2)
+    line.setAttribute('stroke', '#000000')
+    line.setAttribute('stroke-width', '1.5')
+    return line
+  }
+
+  // Estrai componenti visibili in una vista
+  estraiComponentiVista(vista, componenti) {
+    if (!vista.componenti_visibili && !vista.componenti) {
+      return componenti
     }
+
+    const numeri = vista.componenti_visibili || vista.componenti || []
+    return componenti.filter(c => numeri.includes(c.numero))
+  }
+
+  // Genera tavole fallback se JSON non valido
+  generaTavoleFallback(descrizione) {
+    console.log('[SVGGenerator] Generazione fallback per:', descrizione)
+
+    // Analisi semplice della descrizione
+    const desc = (descrizione || '').toLowerCase()
+
+    let componenti = []
+
+    if (desc.includes('sedia') || desc.includes('seduta')) {
+      componenti = [
+        { numero: 101, nome: 'Seduta', forma: 'rettangolo', dimensioni: { larghezza: 400, altezza: 40, profondita: 400 }, posizione: { x: 0, y: -100, z: 0 } },
+        { numero: 102, nome: 'Schienale', forma: 'rettangolo', dimensioni: { larghezza: 400, altezza: 300, profondita: 40 }, posizione: { x: 0, y: -250, z: -180 } },
+        { numero: 103, nome: 'Gambe anteriori', forma: 'cilindro', dimensioni: { larghezza: 40, altezza: 400, profondita: 40 }, posizione: { x: -150, y: 100, z: 150 } },
+        { numero: 104, nome: 'Gambe posteriori', forma: 'cilindro', dimensioni: { larghezza: 40, altezza: 400, profondita: 40 }, posizione: { x: 150, y: 100, z: -150 } },
+      ]
+
+      if (desc.includes('dondolo') || desc.includes('dondola')) {
+        componenti.push(
+          { numero: 105, nome: 'Base curva', forma: 'arco', dimensioni: { larghezza: 500, altezza: 100, profondita: 50 }, posizione: { x: 0, y: 300, z: 0 } },
+          { numero: 106, nome: 'Supporti dondolo', forma: 'rettangolo', dimensioni: { larghezza: 60, altezza: 200, profondita: 40 }, posizione: { x: -200, y: 200, z: 0 } }
+        )
+      }
+    } else if (desc.includes('usb') || desc.includes('connettore')) {
+      componenti = [
+        { numero: 101, nome: 'Connettore USB', forma: 'rettangolo', dimensioni: { larghezza: 30, altezza: 15, profondita: 20 }, posizione: { x: 0, y: 0, z: 0 } },
+        { numero: 102, nome: 'Cavo', forma: 'cilindro', dimensioni: { larghezza: 8, altezza: 200, profondita: 8 }, posizione: { x: 0, y: 100, z: 0 } },
+      ]
+    } else {
+      // Default: cilindro generico
+      componenti = [
+        { numero: 101, nome: 'Corpo principale', forma: 'cilindro', dimensioni: { larghezza: 100, altezza: 200, profondita: 100 }, posizione: { x: 0, y: 0, z: 0 } },
+      ]
+    }
+
+    const viste = [
+      { tipo: 'assieme', titolo: 'Vista assieme montato', componenti_visibili: componenti.map(c => c.numero) },
+      { tipo: 'esplosa', titolo: 'Vista esplosa', componenti: componenti.map(c => c.numero), direzioni_esplosione: { x: 50, y: 0, z: 0 } },
+      { tipo: 'sezione', titolo: 'Sezione A-A', piano_sezione: 'xz', componenti_visibili: componenti.slice(0, 2).map(c => c.numero) },
+      { tipo: 'dettaglio', titolo: 'Dettaglio X', componente: componenti[0].numero, scala: 2 }
+    ]
+
+    return this.generaTavole({ componenti, viste })
+  }
+
+  // Esporta SVG come stringa
+  svgToString(svg) {
+    const serializer = new XMLSerializer()
+    return serializer.serializeToString(svg)
+  }
+
+  // Genera tavole da descrizione testuale (per compatibilita)
+  async generaDaDescrizione(descrizione, apiUrl, apiKey) {
+    try {
+      // Chiama API per ottenere JSON strutturato
+      const response = await fetch(apiUrl + '/functions/v1/call-ai-tavole', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': apiKey,
+          'Authorization': 'Bearer ' + apiKey
+        },
+        body: JSON.stringify({
+          descrizione: descrizione,
+          servizio: 'servizio-tavole'
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success && data.data) {
+        return this.generaTavole(data.data)
+      } else {
+        return this.generaTavoleFallback(descrizione)
+      }
+    } catch (error) {
+      console.error('[SVGGenerator] Errore API:', error)
+      return this.generaTavoleFallback(descrizione)
+    }
+  }
 }
 
+// Esportazione
 if (typeof window !== 'undefined') {
-    window.SVGGenerator = SVGGenerator;
+  window.SVGGenerator = SVGGenerator
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = SVGGenerator
 }
