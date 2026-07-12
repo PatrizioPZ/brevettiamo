@@ -468,7 +468,7 @@ async function avviaElaborazione() {
     } catch (error) {
         clearInterval(logInterval);
         aggiungiLog('ERRORE: ' + error.message, 'error');
-        mostraErrore('Errore durante l'elaborazione: ' + error.message + '\n\nVerifica che:\n1. La Edge Function sia deployata su Supabase\n2. Le API key siano configurate nei secrets\n3. La connessione internet sia attiva');
+        mostraErrore('Errore durante la elaborazione: ' + error.message + '\n\nVerifica che:\n1. La Edge Function sia deployata su Supabase\n2. Le API key siano configurate nei secrets\n3. La connessione internet sia attiva');
         aggiornaStato('&#10060;', 'Errore', 'Elaborazione fallita');
         aggiornaProgresso(0);
     }
