@@ -1,418 +1,497 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benvenuto - BrevettIAmo</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrevettIAmo - Benvenuto</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            font-family: 'Libre Baskerville', Georgia, serif;
-            background: #f5f0e8;
-            min-height: 100vh;
-            color: #3d2b1f;
-        }
+body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    background: #f5f0e8;
+    min-height: 100vh;
+    color: #3d2b1f;
+}
 
-        .pergamena {
-            max-width: 800px;
-            margin: 40px auto;
-            background: #faf6f0;
-            border: 2px solid #c9a96e;
-            border-radius: 4px;
-            box-shadow: 0 4px 20px rgba(61,43,31,0.15), inset 0 0 60px rgba(201,169,110,0.1);
-            padding: 50px;
-            position: relative;
-        }
+.pergamena {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #faf6f0;
+    border: 2px solid #c9a96e;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(61,43,31,0.15), inset 0 0 60px rgba(201,169,110,0.1);
+    padding: 50px;
+    position: relative;
+}
 
-        .pergamena::before, .pergamena::after {
-            content: '';
-            position: absolute;
-            left: 10px; right: 10px;
-            height: 2px;
-            background: #c9a96e;
-            opacity: 0.3;
-        }
-        .pergamena::before { top: 15px; }
-        .pergamena::after { bottom: 15px; }
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #d4c4a8;
+}
+.header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    color: #8b0000;
+    letter-spacing: 3px;
+}
+.header .subtitle {
+    font-style: italic;
+    color: #8b7355;
+    font-size: 1rem;
+    margin-top: 8px;
+}
+.header .motto {
+    font-size: 0.85rem;
+    color: #a09080;
+    margin-top: 5px;
+    font-style: italic;
+}
 
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .logo h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            color: #8b0000;
-            letter-spacing: 3px;
-        }
-        .logo p {
-            font-style: italic;
-            color: #8b7355;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
+/* Servizio selezionato */
+.servizio-box {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px 25px;
+    background: rgba(139,0,0,0.05);
+    border: 2px solid #8b0000;
+    border-radius: 4px;
+}
+.servizio-box h2 {
+    font-family: 'Cinzel', serif;
+    color: #8b0000;
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+.servizio-box p {
+    color: #5a4a3a;
+    font-size: 0.9rem;
+}
 
-        .sezione {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(201,169,110,0.08);
-            border: 1px solid #d4c4a8;
-            border-radius: 4px;
-        }
+/* Sezioni legali */
+.legal-section {
+    margin-bottom: 25px;
+}
+.legal-section h3 {
+    font-family: 'Cinzel', serif;
+    color: #3d2b1f;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #d4c4a8;
+}
+.legal-section h3 .icon {
+    font-size: 1.3rem;
+}
+.legal-content {
+    background: #fffef8;
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    padding: 20px;
+    max-height: 250px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #5a4a3a;
+}
+.legal-content p {
+    margin-bottom: 10px;
+}
+.legal-content p:last-child {
+    margin-bottom: 0;
+}
+.legal-content strong {
+    color: #3d2b1f;
+}
 
-        .sezione-titolo {
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
-            color: #8b0000;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .sezione-titolo .numero {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            background: #c9a96e;
-            color: #fff;
-            border-radius: 50%;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
+/* Checkbox accettazione */
+.accept-box {
+    background: rgba(201,169,110,0.08);
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+.accept-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+.accept-item:last-child {
+    margin-bottom: 0;
+}
+.accept-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: #8b0000;
+    cursor: pointer;
+}
+.accept-item label {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #3d2b1f;
+    cursor: pointer;
+    flex: 1;
+}
+.accept-item label strong {
+    color: #8b0000;
+}
 
-        .testo-scroll {
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 15px;
-            background: #fffef8;
-            border: 1px solid #e8dcc8;
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: #5a4a3a;
-        }
-        .testo-scroll::-webkit-scrollbar { width: 6px; }
-        .testo-scroll::-webkit-scrollbar-track { background: #f0ebe0; }
-        .testo-scroll::-webkit-scrollbar-thumb { background: #c9a96e; border-radius: 3px; }
+/* Pulsanti */
+.azioni {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+.btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    padding: 16px 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 220px;
+}
+.btn-primary {
+    background: #8b0000;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(139,0,0,0.3);
+}
+.btn-primary:hover {
+    background: #6b0000;
+    transform: translateY(-2px);
+}
+.btn-primary:disabled {
+    background: #a08080;
+    cursor: not-allowed;
+    transform: none;
+}
+.btn-secondary {
+    background: transparent;
+    color: #8b7355;
+    border: 2px solid #d4c4a8;
+}
+.btn-secondary:hover {
+    background: rgba(201,169,110,0.1);
+    border-color: #c9a96e;
+}
 
-        .checkbox-row {
-            margin-top: 15px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 12px;
-            background: #fffef8;
-            border: 1px solid #e8dcc8;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .checkbox-row:hover { border-color: #c9a96e; background: #faf6f0; }
-        .checkbox-row input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #8b0000;
-            margin-top: 2px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-        .checkbox-row label {
-            font-size: 0.85rem;
-            line-height: 1.6;
-            cursor: pointer;
-            color: #5a4a3a;
-        }
-        .checkbox-row label strong { color: #8b0000; }
+/* Errore */
+.errore {
+    background: rgba(139,0,0,0.08);
+    border: 1px solid #8b0000;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #8b0000;
+    font-size: 0.9rem;
+    display: none;
+}
+.errore.active { display: block; }
 
-        .bottone-container {
-            text-align: center;
-            margin-top: 30px;
-        }
-        .btn-entra {
-            font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            padding: 16px 50px;
-            background: #c9a96e;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(201,169,110,0.3);
-        }
-        .btn-entra:hover:not(:disabled) {
-            background: #b8985a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(201,169,110,0.4);
-        }
-        .btn-entra:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+/* Info Dual IA */
+.info-box {
+    background: rgba(26,82,118,0.05);
+    border: 1px dashed #1a5276;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+.info-box p {
+    font-size: 0.85rem;
+    color: #1a5276;
+    line-height: 1.5;
+}
+.info-box strong {
+    color: #134060;
+}
 
-        .hint {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: #8b7355;
-            font-style: italic;
-        }
-
-        .banner-beta {
-            background: #8b0000;
-            color: #fff;
-            text-align: center;
-            padding: 12px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            margin: -50px -50px 30px -50px;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .servizio-selezionato {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: rgba(139,0,0,0.05);
-            border: 1px dashed #8b0000;
-            border-radius: 4px;
-        }
-        .servizio-selezionato h3 {
-            font-family: 'Cinzel', serif;
-            color: #8b0000;
-            font-size: 1rem;
-        }
-        .servizio-selezionato p {
-            font-size: 0.85rem;
-            color: #8b7355;
-            margin-top: 5px;
-        }
-
-        .btn-download {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 20px;
-            background: transparent;
-            border: 1px solid #8b0000;
-            color: #8b0000;
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            text-decoration: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-download:hover {
-            background: #8b0000;
-            color: #fff;
-        }
-    </style>
-<base target="_blank">
+@media (max-width: 600px) {
+    .pergamena { padding: 25px; margin: 20px; }
+    .header h1 { font-size: 1.5rem; }
+    .azioni { flex-direction: column; }
+    .btn { width: 100%; }
+}
+</style>
 <base target="_blank">
 </head>
 <body>
-    <div class="pergamena">
-        <div class="banner-beta">BETA CHIUSA - ACCESSO RISERVATO</div>
 
-        <div class="logo">
-            <h1>BENVENUTO IN BREVETTIAMO</h1>
-            <p>Il Portale delle Invenzioni</p>
-        </div>
-
-        <div class="servizio-selezionato" id="servizio-info">
-            <h3>Servizio selezionato</h3>
-            <p id="nome-servizio">Caricamento...</p>
-        </div>
-
-        <!-- SEZIONE 1: AVVERTENZA SUPREMA -->
-        <div class="sezione">
-            <div class="sezione-titolo">
-                <span class="numero">1</span>
-                L'AVVERTENZA SUPREMO (Formula Miranda di BrevettIAmo)
-            </div>
-            <div class="testo-scroll">
-                <p>Gentile Inventore, prima di aprire il tuo scrigno e inserire i dettagli della tua opera nell'officina, ascolta questo avvertimento: il presente servizio ha valore puramente informativo, di orientamento concettuale e di supporto allo sviluppo.</p>
-                <p><strong>NON costituisce un deposito di brevetto ufficiale</strong> presso le autorita competenti (es. UIBM, EPO, WIPO) ne una consulenza legale formale. Il Gestore non si assume alcuna responsabilita per l'eventuale perdita del requisito di "novita" della tua invenzione qualora tu decida autonomamente di divulgarla al di fuori dei canali protetti del nostro Ordine.</p>
-                <p>Ogni dato inserito prima del deposito ufficiale viene comunicato a tuo rischio e pericolo; pertanto, ti esortiamo a mantenere il piu stretto riserbo fino al sigillo definitivo.</p>
-            </div>
-        </div>
-
-        <!-- SEZIONE 2: NDA + DOWNLOAD -->
-        <div class="sezione">
-            <div class="sezione-titolo">
-                <span class="numero">2</span>
-                ACCORDO DI RISERVATEZZA (NDA) PER I SERVIZI AUTOMATIZZATI
-            </div>
-            <div class="testo-scroll">
-                <p>Il Gestore della piattaforma si impegna solennemente a non utilizzare, non riprodurre, non copiare e non divulgare a terzi le informazioni descrittive e i progetti da te inviati.</p>
-                <p>Nella modalita di erogazione standard digitale (Grado Apprendista e Maestro Pro), l'analisi del progetto avviene esclusivamente tramite processi informatici e algoritmi crittografati protetti. Nessun operatore umano o collaboratore del Gestore ha accesso alla descrizione dell'idea, garantendo la totale riservatezza tecnologica e strutturale del dato all'interno del database sicuro.</p>
-                <p><strong>Il Concilio Segreto (Terzieta dei Consulenti):</strong> Qualora tu decida di attivare il servizio integrativo o di richiedere il consulto a seguito di un allarme dell'Occhio (Grado Massimo Attivo), la revisione sara delegata a un professionista indipendente terzo e autonomo. Il professionista rispondera direttamente, in via esclusiva e sotto la propria responsabilita professionale, della riservatezza dei dati.</p>
-            </div>
-            <div style="text-align: center; margin-top: 10px;">
-                <a href="data/NDA_BrevettIAmo.pdf" class="btn-download" download>Scarica NDA in PDF</a>
-            </div>
-            <div class="checkbox-row">
-                <input type="checkbox" id="check-nda" onchange="verificaCheckbox()">
-                <label for="check-nda">Ho letto e <strong>accetto l'Accordo di Riservatezza (NDA)</strong>. Acconsento al trattamento riservato delle informazioni tecniche da me fornite ai sensi dell'art. 1218 c.c.</label>
-            </div>
-        </div>
-
-        <!-- SEZIONE 3: PRIVACY POLICY -->
-        <div class="sezione">
-            <div class="sezione-titolo">
-                <span class="numero">3</span>
-                TRATTAMENTO DEI DATI PERSONALI (Privacy Policy GDPR)
-            </div>
-            <div class="testo-scroll">
-                <p><strong>Titolare del trattamento:</strong> BrevettIAmo (in fase di costituzione)</p>
-                <p><strong>Finalita:</strong> Erogazione servizi beta per protezione proprieta intellettuale, gestione accesso dashboard, comunicazioni allarmi sistema L'Occhio.</p>
-                <p><strong>Dati raccolti:</strong> Email, nome (opzionale), documenti tecnici caricati, dati tecnici inseriti.</p>
-                <p><strong>Base giuridica:</strong> Consenso esplicito (art. 6 GDPR).</p>
-                <p><strong>Conservazione:</strong> I dati sono conservati su server Supabase (UE). Documenti tecnici: fino a revoca consenso.</p>
-                <p><strong>Diritti dell'interessato:</strong> Accesso, rettifica, cancellazione, limitazione, portabilita, opposizione. Email: privacy@brevettiamo.com (attiva in futuro).</p>
-                <p>I dati tecnici della tua invenzione <strong>non vengono venduti, scambiati o ceduti</strong> a terze parti per scopi pubblicitari. Fanno fede legale del tuo consenso informatico i log di sistema e le marche temporali registrate nel database al momento della spunta digitale.</p>
-            </div>
-            <div class="checkbox-row">
-                <input type="checkbox" id="check-privacy" onchange="verificaCheckbox()">
-                <label for="check-privacy">Ho letto e <strong>accetto la Privacy Policy</strong>. Acconsento al trattamento dei miei dati personali ai sensi del GDPR.</label>
-            </div>
-        </div>
-
-        <!-- SEZIONE 4: DICHIARAZIONE TITOLARITA -->
-        <div class="sezione">
-            <div class="sezione-titolo">
-                <span class="numero">4</span>
-                DICHIARAZIONE DI TITOLARITA E MANLEVA TOTALE SUI DATI
-            </div>
-            <div class="testo-scroll">
-                <p>Tu dichiari e garantisci, sotto la tua esclusiva responsabilita civile e penale, di essere il legittimo titolare, inventore o avente diritto dell'idea che stai per inserire.</p>
-                <p>Nel caso in cui tu fornisca generalita false, email fittizie o immetta nella piattaforma progetti di proprieta di terzi senza formale consenso, ti assumi ogni responsabilita di legge.</p>
-                <p><strong>Esoneri e manlevi interamente il Gestore di "BrevettIAmo"</strong> e i suoi collaboratori da qualsiasi richiesta di risarcimento, contestazione o azione legale promossa da terzi.</p>
-            </div>
-            <div class="checkbox-row">
-                <input type="checkbox" id="check-titolarita" onchange="verificaCheckbox()">
-                <label for="check-titolarita">Dichiaro di essere il <strong>legittimo titolare</strong> dell'idea/progetto che inseriro. Esonero il Gestore da qualsiasi responsabilita sui dati da me caricati.</label>
-            </div>
-        </div>
-
-        <!-- SEZIONE 5: DISCLAIMER BETA -->
-        <div class="sezione">
-            <div class="sezione-titolo">
-                <span class="numero">5</span>
-                DISCLAIMER SERVIZI BETA
-            </div>
-            <div class="testo-scroll">
-                <p>Questa e una piattaforma <strong>BETA sperimentale</strong>. I risultati AI hanno limiti di affidabilita. Devi verificare con professionisti abilitati. Il gestore non ha responsabilita civile/professionale. Servizi umani sono sospesi (attesa P.IVA).</p>
-            </div>
-            <div class="checkbox-row">
-                <input type="checkbox" id="check-beta" onchange="verificaCheckbox()">
-                <label for="check-beta">Ho letto e <strong>compreso il disclaimer legale</strong>. Sono consapevole che questa e una piattaforma BETA sperimentale e accetto i limiti di affidabilita dei risultati AI.</label>
-            </div>
-        </div>
-
-        <div class="bottone-container">
-            <button class="btn-entra" id="btn-entra" disabled onclick="entraNelServizio()">ENTRA NEL SERVIZIO</button>
-        </div>
-        <p class="hint" id="hint-text">Devi accettare tutti i documenti per procedere</p>
+<div class="pergamena">
+    <div class="header">
+        <h1>BREVETTIAMO</h1>
+        <p class="subtitle">Piattaforma di Brevettistica Intelligente</p>
+        <p class="motto">"La tua invenzione merita la massima protezione"</p>
     </div>
 
-    <script>
-        // Leggi il servizio selezionato dall'URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const servizioId = urlParams.get('servizio') || '';
+    <div class="servizio-box" id="servizio-box">
+        <h2 id="servizio-nome">Servizio</h2>
+        <p id="servizio-desc">Caricamento...</p>
+    </div>
 
-        // Mappa ID servizio -> nome
-        const nomiServizi = {
-            'servizio-deposito': 'Deposito Brevetto',
-            'servizio-priorart': 'Ricerca Prior Art',
-            'servizio-rivendicazioni': 'Rivendicazioni',
-            'servizio-tavole': 'Tavole Tecniche',
-            'servizio-monitoraggio': 'Monitoraggio',
-            'servizio-priorart-base': 'Ricerca Prior Art Base',
-            'servizio-priorart-avanzata': 'Ricerca Prior Art Avanzata',
-            'servizio-analisi-brevettabilita': 'Analisi Brevettabilita',
-            'servizio-claims-base': 'Redazione Claims Base',
-            'servizio-claims-pro': 'Redazione Claims Pro',
-            'servizio-traduzione-claims': 'Traduzione Claims',
-            'servizio-monitoraggio-concorrenza': 'Monitoraggio Concorrenza',
-            'servizio-consulenza': 'Consulenza 1:1',
-            'servizio-analisi-tecnica': 'Analisi Tecnica',
-            'servizio-ricerca-figurativa': 'Ricerca Figurativa',
-            'servizio-analisi-nullita': 'Analisi Nullita',
-            'servizio-opposizione': 'Preparazione Opposizione',
-            'servizio-licensing': 'Strategia Licensing',
-            'servizio-valorizzazione': 'Valorizzazione Brevetto',
-            'servizio-due-diligence': 'Due Diligence IP',
-            'servizio-freedom-to-operate': 'Freedom to Operate',
-            'servizio-patentability': 'Patentability Search',
-            'servizio-landscape': 'Landscape Analysis',
-            'servizio-cad': 'Disegno CAD Professionale',
-            'servizio-legale-base': 'Supporto Legale Base'
-        };
+    <div class="info-box">
+        <p><strong>Sistema Dual IA attivo</strong><br>
+        Due intelligenze artificiali si confrontano per garantire risultati di qualita. 
+        Analisi critica, verifica incrociata, massima affidabilita.</p>
+    </div>
 
-        // Mostra il servizio selezionato
-        if (servizioId && nomiServizi[servizioId]) {
-            document.getElementById('nome-servizio').textContent = nomiServizi[servizioId];
-        } else {
-            document.getElementById('servizio-info').style.display = 'none';
-        }
+    <!-- PRIVACY -->
+    <div class="legal-section">
+        <h3><span class="icon">&#128274;</span> Informativa Privacy</h3>
+        <div class="legal-content">
+            <p><strong>1. Titolare del trattamento:</strong> BrevettIAmo S.r.l. (di prossima costituzione), con sede in Italia.</p>
+            <p><strong>2. Dati raccolti:</strong> Descrizioni tecniche, file allegati, link web, dati di contatto (email). Tutti i dati sono trattati con la massima riservatezza.</p>
+            <p><strong>3. Finalita:</strong> I dati sono utilizzati esclusivamente per fornire i servizi di brevettistica richiesti. Non vengono condivisi con terzi senza consenso espresso.</p>
+            <p><strong>4. Conservazione:</strong> I dati sono conservati su server sicuri (Supabase) con crittografia end-to-end. Durata: 5 anni dalla conclusione del servizio.</p>
+            <p><strong>5. Diritti:</strong> Hai diritto di accesso, retifica, cancellazione, limitazione del trattamento, portabilita dei dati. Contatta: privacy@brevettiamo.com</p>
+            <p><strong>6. Cookie:</strong> Utilizziamo solo cookie tecnici necessari al funzionamento della piattaforma. Nessun cookie di profilazione.</p>
+        </div>
+    </div>
 
-        function verificaCheckbox() {
-            const check1 = document.getElementById('check-nda').checked;
-            const check2 = document.getElementById('check-privacy').checked;
-            const check3 = document.getElementById('check-titolarita').checked;
-            const check4 = document.getElementById('check-beta').checked;
+    <!-- NDA -->
+    <div class="legal-section">
+        <h3><span class="icon">&#128221;</span> Accordo di Riservatezza (NDA)</h3>
+        <div class="legal-content">
+            <p><strong>1. Oggetto:</strong> Le informazioni tecniche, descrizioni, disegni, schizzi e qualsiasi materiale caricato sulla piattaforma costituiscono informazioni riservate del Cliente.</p>
+            <p><strong>2. Obblighi di BrevettIAmo:</strong> BrevettIAmo si impegna a mantenere la massima riservatezza su tutte le informazioni ricevute. I dati non saranno divulgati a terzi, utilizzati per scopi propri o archiviati in modo non sicuro.</p>
+            <p><strong>3. Accesso ai dati:</strong> Solo il personale autorizzato di BrevettIAmo (e i sistemi IA automatizzati) avranno accesso ai dati, esclusivamente per fornire il servizio richiesto.</p>
+            <p><strong>4. Durata:</strong> L'obbligo di riservatezza sopravvive alla conclusione del rapporto contrattuale per un periodo di 10 anni.</p>
+            <p><strong>5. Esclusioni:</strong> Non costituiscono informazioni riservate i dati di pubblico dominio, gia noti a BrevettIAmo prima della ricezione, o sviluppati indipendentemente.</p>
+            <p><strong>6. Violazione:</strong> In caso di violazione, BrevettIAmo e responsabile secondo le leggi italiane sulla protezione dei dati e della proprieta intellettuale.</p>
+        </div>
+    </div>
 
-            const btn = document.getElementById('btn-entra');
-            const hint = document.getElementById('hint-text');
+    <!-- MANLEVA -->
+    <div class="legal-section">
+        <h3><span class="icon">&#9888;</span> Manleva e Limitazione di Responsabilita</h3>
+        <div class="legal-content">
+            <p><strong>1. Natura del servizio:</strong> BrevettIAmo fornisce strumenti di supporto alla brevettistica basati su intelligenza artificiale. I risultati sono indicativi e non sostituiscono la consulenza di un avvocato brevettuale o un ingegnere abilitato.</p>
+            <p><strong>2. Verifica umana:</strong> Tutti i risultati prodotti dall'IA devono essere verificati e approvati da un professionista umano prima del deposito presso l'UIBM o altri uffici brevetti.</p>
+            <p><strong>3. Esclusione garanzie:</strong> BrevettIAmo non garantisce l'esito positivo di un deposito brevettuale, la validita delle rivendicazioni prodotte, o la completezza delle ricerche prior art.</p>
+            <p><strong>4. Responsabilita:</strong> BrevettIAmo non e responsabile per perdite economiche, mancati depositi, o invalidita di brevetti derivanti dall'uso dei servizi. La responsabilita massima e limitata al costo del servizio acquistato.</p>
+            <p><strong>5. Conformita legale:</strong> L'utente si impegna a utilizzare i servizi in conformita con le leggi italiane e internazionali in materia di proprieta intellettuale.</p>
+            <p><strong>6. Foro competente:</strong> Per qualsiasi controversia, il foro competente e quello di Torino, Italia.</p>
+        </div>
+    </div>
 
-            if (check1 && check2 && check3 && check4) {
-                btn.disabled = false;
-                hint.textContent = 'Tutto pronto! Clicca per procedere.';
-                hint.style.color = '#2d5a27';
-            } else {
-                btn.disabled = true;
-                hint.textContent = 'Devi accettare tutti i documenti per procedere';
-                hint.style.color = '#8b7355';
-            }
-        }
+    <!-- ACCETTAZIONE -->
+    <div class="accept-box">
+        <div class="accept-item">
+            <input type="checkbox" id="check-privacy" onchange="verificaAccettazione()">
+            <label for="check-privacy">
+                <strong>Accetto l'Informativa Privacy</strong> — Ho letto e compreso come i miei dati personali e tecnici saranno trattati. Autorizzo il trattamento dei dati necessari per fornire il servizio richiesto.
+            </label>
+        </div>
+        <div class="accept-item">
+            <input type="checkbox" id="check-nda" onchange="verificaAccettazione()">
+            <label for="check-nda">
+                <strong>Accetto l'Accordo di Riservatezza (NDA)</strong> — Confermo che le mie informazioni tecniche saranno trattate con riservatezza. Accetto gli obblighi reciproci di non divulgazione.
+            </label>
+        </div>
+        <div class="accept-item">
+            <input type="checkbox" id="check-manleva" onchange="verificaAccettazione()">
+            <label for="check-manleva">
+                <strong>Accetto la Manleva e Limitazione di Responsabilita</strong> — Sono consapevole che i risultati dell'IA sono indicativi e richiedono verifica umana. Esonerero BrevettIAmo da responsabilita per decisioni prese sulla base dei risultati automatici.
+            </label>
+        </div>
+        <div class="accept-item">
+            <input type="checkbox" id="check-eta" onchange="verificaAccettazione()">
+            <label for="check-eta">
+                <strong>Dichiaro di essere maggiorenne</strong> — Confermo di avere almeno 18 anni e di avere la capacita giuridica di stipulare accordi e utilizzare servizi di brevettistica.
+            </label>
+        </div>
+    </div>
 
-        function entraNelServizio() {
-            // Salva il consenso in localStorage
-            localStorage.setItem('brevettiamo_consenso', JSON.stringify({
-                nda: true,
-                privacy: true,
-                titolarita: true,
-                beta: true,
-                timestamp: new Date().toISOString(),
-                servizio: servizioId
-            }));
+    <div class="errore" id="errore">
+        Devi accettare tutti i termini per procedere.
+    </div>
 
-            // Reindirizza al flusso corretto in base al servizio
-            if (!servizioId) {
-                alert('Errore: nessun servizio selezionato. Torna alla pagina servizi.');
-                window.location.href = 'servizi.html';
-                return;
-            }
+    <!-- AZIONI -->
+    <div class="azioni">
+        <button class="btn btn-secondary" onclick="tornaMenu()">TORNA AL MENU</button>
+        <button class="btn btn-primary" id="btn-procedi" onclick="procedi()" disabled>PROCEDI ALLA DESCRIZIONE</button>
+    </div>
+</div>
 
-            // Servizi con disegni: file dedicati
-            if (servizioId === 'servizio-tavole') {
-                window.location.href = 'tavole-tecniche-lite.html?servizio=' + encodeURIComponent(servizioId);
-            } else if (servizioId === 'servizio-cad') {
-                window.location.href = 'disegni-cad-lite.html?servizio=' + encodeURIComponent(servizioId);
-            } else {
-                // Tutti gli altri servizi testuali: flusso standard
-                window.location.href = 'descrizione.html?servizio=' + encodeURIComponent(servizioId);
-            }
-        }
-    </script>
+<script>
+// ==================== CONFIGURAZIONE ====================
+const SERVIZI = {
+    'servizio-deposito': {
+        nome: 'Deposito Brevetto',
+        descrizione: 'Preparazione e deposito completo presso l'UIBM'
+    },
+    'servizio-priorart': {
+        nome: 'Ricerca Prior Art',
+        descrizione: 'Ricerca completa in database mondiali per verificare la novita'
+    },
+    'servizio-rivendicazioni': {
+        nome: 'Rivendicazioni',
+        descrizione: 'Redazione professionale delle rivendicazioni brevettuali'
+    },
+    'servizio-monitoraggio': {
+        nome: 'Monitoraggio',
+        descrizione: 'Monitoraggio scadenze, rinnovi, opposizioni e concorrenti'
+    },
+    'servizio-priorart-base': {
+        nome: 'Ricerca Prior Art Base',
+        descrizione: 'Ricerca essenziale nelle banche dati principali'
+    },
+    'servizio-priorart-avanzata': {
+        nome: 'Ricerca Prior Art Avanzata',
+        descrizione: 'Ricerca approfondita in 15+ banche dati globali'
+    },
+    'servizio-analisi-brevettabilita': {
+        nome: 'Analisi Brevettabilita',
+        descrizione: 'Valutazione sui 3 criteri legali: novita, attivita inventiva, applicabilita industriale'
+    },
+    'servizio-claims-base': {
+        nome: 'Redazione Claims Base',
+        descrizione: 'Redazione delle rivendicazioni principali (indipendenti)'
+    },
+    'servizio-claims-pro': {
+        nome: 'Redazione Claims Pro',
+        descrizione: 'Redazione completa di rivendicazioni indipendenti + dipendenti'
+    },
+    'servizio-traduzione-claims': {
+        nome: 'Traduzione Claims',
+        descrizione: 'Traduzione professionale delle rivendicazioni'
+    },
+    'servizio-monitoraggio-concorrenza': {
+        nome: 'Monitoraggio Concorrenza',
+        descrizione: 'Sorveglianza attiva dei brevetti dei concorrenti'
+    },
+    'servizio-consulenza': {
+        nome: 'Consulenza 1:1',
+        descrizione: 'Sessione video 30 min con un esperto brevettuale'
+    },
+    'servizio-analisi-tecnica': {
+        nome: 'Analisi Tecnica',
+        descrizione: 'Valutazione tecnica approfondita della tua invenzione'
+    },
+    'servizio-ricerca-figurativa': {
+        nome: 'Ricerca Figurativa',
+        descrizione: 'Ricerca di design e marchi simili'
+    },
+    'servizio-analisi-nullita': {
+        nome: 'Analisi Nullita',
+        descrizione: 'Valutazione della validita di un brevetto esistente'
+    },
+    'servizio-opposizione': {
+        nome: 'Preparazione Opposizione',
+        descrizione: 'Preparazione completa di un opposizione a brevetto'
+    },
+    'servizio-licensing': {
+        nome: 'Strategia Licensing',
+        descrizione: 'Analisi delle opportunita di licenza'
+    },
+    'servizio-valorizzazione': {
+        nome: 'Valorizzazione Brevetto',
+        descrizione: 'Valutazione economica del tuo brevetto'
+    },
+    'servizio-due-diligence': {
+        nome: 'Due Diligence IP',
+        descrizione: 'Analisi completa del portfolio IP'
+    },
+    'servizio-freedom-to-operate': {
+        nome: 'Freedom to Operate',
+        descrizione: 'Verifica che il tuo prodotto non violi brevetti esistenti'
+    },
+    'servizio-patentability': {
+        nome: 'Patentability Search',
+        descrizione: 'Ricerca brevettuale in stile americano'
+    },
+    'servizio-landscape': {
+        nome: 'Landscape Analysis',
+        descrizione: 'Mappa tecnologica completa di un settore'
+    },
+    'servizio-legale-base': {
+        nome: 'Supporto Legale Base',
+        descrizione: 'Consulenza legale su contratti IP'
+    }
+};
+
+// ==================== STATO ====================
+let servizioCorrente = null;
+
+// ==================== INIZIALIZZAZIONE ====================
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    servizioCorrente = params.get('servizio');
+
+    if (!servizioCorrente || !SERVIZI[servizioCorrente]) {
+        document.getElementById('servizio-nome').textContent = 'Servizio non valido';
+        document.getElementById('servizio-desc').textContent = 'Torna al menu e seleziona un servizio.';
+        document.getElementById('btn-procedi').disabled = true;
+        return;
+    }
+
+    const s = SERVIZI[servizioCorrente];
+    document.getElementById('servizio-nome').textContent = s.nome;
+    document.getElementById('servizio-desc').textContent = s.descrizione;
+});
+
+// ==================== VERIFICA ACCETTAZIONE ====================
+function verificaAccettazione() {
+    const privacy = document.getElementById('check-privacy').checked;
+    const nda = document.getElementById('check-nda').checked;
+    const manleva = document.getElementById('check-manleva').checked;
+    const eta = document.getElementById('check-eta').checked;
+
+    const tuttiAccettati = privacy && nda && manleva && eta;
+    document.getElementById('btn-procedi').disabled = !tuttiAccettati;
+
+    if (tuttiAccettati) {
+        document.getElementById('errore').classList.remove('active');
+    }
+}
+
+// ==================== AZIONI ====================
+function procedi() {
+    const privacy = document.getElementById('check-privacy').checked;
+    const nda = document.getElementById('check-nda').checked;
+    const manleva = document.getElementById('check-manleva').checked;
+    const eta = document.getElementById('check-eta').checked;
+
+    if (!privacy || !nda || !manleva || !eta) {
+        document.getElementById('errore').classList.add('active');
+        return;
+    }
+
+    // Salva accettazione in sessionStorage
+    sessionStorage.setItem('brevettiamo_accettazione', JSON.stringify({
+        privacy: privacy,
+        nda: nda,
+        manleva: manleva,
+        eta: eta,
+        timestamp: new Date().toISOString(),
+        servizio: servizioCorrente
+    }));
+
+    // Naviga a descrizione
+    window.location.href = 'descrizione.html?servizio=' + encodeURIComponent(servizioCorrente);
+}
+
+function tornaMenu() {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'brevettiamo', action: 'torna-menu' }, '*');
+    } else {
+        window.location.href = '../REGISTA/index.html';
+    }
+}
+</script>
+
 </body>
 </html>
