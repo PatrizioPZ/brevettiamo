@@ -446,7 +446,7 @@ async function avviaElaborazione() {
         if (result.success) {
             risultatoElaborazione = result;
             aggiornaProgresso(100, 'Completato!');
-            aggiornaStato('&#9989;', 'Elaborazione completata', 'Dual IA ha terminato l'analisi');
+            aggiornaStato('&#9989;', 'Elaborazione completata', 'Dual IA ha terminato la analisi');
 
             // Mostra anteprima
             document.getElementById('risultato-pre').textContent = JSON.stringify(result, null, 2);
