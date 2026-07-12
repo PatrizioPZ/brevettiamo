@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tavole Tecniche UIBM - BrevettIAmo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root {
+  --primary: #c9a84c;
+  --primary-dark: #a08030;
+  --secondary: #2c1810;
+  --bg: #f5f0e1;
+  --bg-panel: #faf6ed;
+  --text: #2c1810;
+  --text-secondary: #5a4a3a;
+  --text-muted: #8b7355;
+  --success: #27ae60;
+  --warning: #e67e22;
+  --danger: #c0392b;
+  --border: #c9a84c;
+  --radius: 8px;
+  --font: 'Georgia', 'Times New Roman', serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+.service-header { text-align: center; padding: 20px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+.service-header h2 { color: var(--secondary); font-size: 1.8em; }
+.service-header h2 span { color: var(--primary); font-style: italic; }
+.service-header .subtitle { color: var(--text-muted); font-size: 0.9em; font-style: italic; }
+
+.step-indicator { display: flex; justify-content: center; gap: 15px; margin: 20px 0; padding: 15px; background: var(--bg-panel); border-radius: var(--radius); border: 1px solid var(--border); flex-wrap: wrap; }
+.step-item { text-align: center; padding: 12px 20px; border-radius: var(--radius); background: #fffef8; border: 2px solid var(--border); min-width: 100px; transition: all 0.3s; cursor: pointer; }
+.step-item.active { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--secondary); border-color: var(--primary); font-weight: bold; }
+.step-item.done { background: var(--success); color: #fff; border-color: var(--success); }
+.step-item .step-num { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+.step-item .step-label { font-size: 11px; }
+
+.panel { background: var(--bg-panel); border: 2px solid var(--border); border-radius: var(--radius); padding: 25px; margin: 15px 0; box-shadow: 0 4px 20px rgba(44, 24, 16, 0.1); }
+.panel h3 { color: var(--secondary); font-size: 1.2em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+
+input, textarea, select { width: 100%; padding: 12px; background: #fffef8; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 14px; transition: all 0.3s; margin-bottom: 10px; outline: none; }
+input:focus, textarea:focus, select:focus { border-color: var(--primary-dark); box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.2); }
+textarea { min-height: 100px; resize: vertical; }
+
+.btn { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--secondary); border: 2px solid var(--primary); padding: 12px 24px; border-radius: var(--radius); cursor: pointer; font-weight: bold; font-size: 13px; font-family: var(--font); transition: all 0.3s; display: inline-flex; align-items: center; gap: 6px; margin: 6px 6px 6px 0; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201, 168, 76, 0.4); }
+.btn.secondary { background: transparent; color: var(--text-muted); border-color: var(--border); }
+.btn.secondary:hover { background: rgba(201, 168, 76, 0.1); }
+.btn.small { padding: 6px 12px; font-size: 11px; }
+.btn.success { background: linear-gradient(135deg, var(--success), #1e8449); border-color: var(--success); color: #fff; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+.progress-bar { width: 100%; max-width: 400px; height: 8px; background: #e0d5c0; border-radius: 4px; margin: 15px auto; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-dark)); border-radius: 4px; transition: width 0.5s ease; width: 0%; }
+
+.figure-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-top: 20px; }
+.figure-box { background: var(--bg-panel); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px; position: relative; transition: all 0.3s; cursor: pointer; }
+.figure-box:hover { border-color: var(--primary-dark); box-shadow: 0 4px 20px rgba(201, 168, 76, 0.2); }
+.figure-box .fig-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.figure-box h4 { color: var(--secondary); font-size: 13px; font-weight: bold; margin: 0; }
+.fig-badge { background: var(--bg); color: var(--primary-dark); padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; border: 1px solid var(--border); }
+.svg-container { background: #ffffff; border-radius: var(--radius); padding: 12px; min-height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ddd; }
+.svg-container svg { max-width: 100%; height: auto; }
+
+.table-container { margin-top: 10px; overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { background: var(--secondary); color: var(--primary); padding: 10px; text-align: left; font-weight: bold; font-size: 11px; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 11px; }
+tr:nth-child(even) { background: rgba(201, 168, 76, 0.05); }
+
+.correction-panel { background: rgba(230, 126, 34, 0.05); border: 1px solid var(--warning); border-radius: var(--radius); padding: 15px; margin-top: 15px; }
+.correction-item { display: flex; gap: 10px; align-items: center; margin: 8px 0; padding: 8px; background: #fffef8; border-radius: var(--radius); border: 1px solid var(--border); }
+.correction-item label { color: var(--text-muted); font-size: 11px; min-width: 120px; font-weight: bold; }
+.correction-item input, .correction-item textarea { margin-bottom: 0; flex: 1; }
+
+.editor-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(245, 240, 225, 0.98); z-index: 1000; display: none; flex-direction: column; padding: 15px; }
+.editor-canvas { flex: 1; background: #ffffff; border-radius: var(--radius); position: relative; overflow: hidden; cursor: crosshair; border: 2px solid var(--border); }
+.editor-toolbar { display: flex; gap: 8px; padding: 12px; background: var(--bg-panel); border-radius: var(--radius); margin-bottom: 12px; flex-wrap: wrap; border: 1px solid var(--border); }
+.editor-info { color: var(--text-muted); font-size: 11px; padding: 8px; background: #fffef8; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); }
+
+.hidden { display: none !important; }
+
+#drop-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 25px; text-align: center; margin-bottom: 15px; cursor: pointer; transition: all 0.3s; background: var(--bg-panel); }
+#drop-zone:hover { border-color: var(--primary-dark); background: rgba(201, 168, 76, 0.05); }
+
+.model-badge { display: inline-block; background: rgba(201, 168, 76, 0.2); color: var(--primary-dark); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; margin-top: 8px; border: 1px solid var(--border); }
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.spinner { width: 50px; height: 50px; border: 3px solid #e0d5c0; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+
+.info-box { background: rgba(39, 174, 96, 0.05); border: 1px solid var(--success); border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; color: var(--success); }
+.warning-box { background: rgba(230, 126, 34, 0.05); border: 1px solid var(--warning); border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; color: var(--warning); }
+.error-box { background: rgba(192, 57, 39, 0.05); border: 1px solid var(--danger); border-radius: var(--radius); padding: 12px; margin: 10px 0; font-size: 13px; color: var(--danger); }
+
+.result-actions { display: flex; justify-content: center; gap: 12px; margin: 25px 0; flex-wrap: wrap; }
+
+.ai-support-box { background: rgba(201, 168, 76, 0.1); border: 1px solid var(--primary); border-radius: var(--radius); padding: 15px; margin: 15px 0; }
+.ai-support-box h4 { color: var(--primary-dark); margin-bottom: 10px; font-size: 14px; }
+
+.log { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; max-height: 200px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 11px; margin-top: 10px; }
+
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(245, 240, 225, 0.98); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+.login-overlay.show { display: flex; }
+.login-box { background: var(--bg-panel); border: 2px solid var(--border); border-radius: var(--radius); padding: 40px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 8px 40px rgba(44, 24, 16, 0.2); }
+.login-box h2 { color: var(--secondary); margin-bottom: 15px; }
+.login-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
+
+@media (max-width: 768px) {
+  .figure-grid { grid-template-columns: 1fr; }
+  .step-indicator { flex-direction: column; align-items: center; }
+  .step-item { width: 100%; }
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<div class="container" id="main-container">
+
+<div class="service-header">
+  <h2>Tavole <span>Tecniche</span> UIBM</h2>
+  <p class="subtitle">Servizio Automatico - Generazione AI istantanea</p>
+</div>
+
+<div class="step-indicator" id="step-indicator">
+  <div class="step-item active" id="step-desc" onclick="goToStep('descrizione')">
+    <div class="step-num">1</div>
+    <div class="step-label">Descrizione</div>
+  </div>
+  <div class="step-item" id="step-elab" onclick="goToStep('elaborazione')">
+    <div class="step-num">2</div>
+    <div class="step-label">Elaborazione</div>
+  </div>
+  <div class="step-item" id="step-ris" onclick="goToStep('risultato')">
+    <div class="step-num">3</div>
+    <div class="step-label">Risultato</div>
+  </div>
+  <div class="step-item" id="step-corr" onclick="goToStep('correzione')">
+    <div class="step-num">4</div>
+    <div class="step-label">Correzione</div>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 1: DESCRIZIONE ==================== -->
+<div id="screen-descrizione">
+  <div class="panel">
+    <h3>1. Descrizione Tecnica</h3>
+    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px;">Descrivi la tua invenzione. La Dual IA determinera automaticamente il numero di figure (1-10).</p>
+    <textarea id="descrizione" placeholder="Descrivi la tua invenzione..."></textarea>
+  </div>
+
+  <div class="panel">
+    <h3>2. Rivendicazioni (opzionale)</h3>
+    <textarea id="rivendicazioni" placeholder="Inserisci le rivendicazioni..."></textarea>
+  </div>
+
+  <div class="panel">
+    <h3>3. Carica Schizzi (Opzionale)</h3>
+    <div id="drop-zone" onclick="document.getElementById('file-schizzo').click()">
+      <div style="font-size: 32px; color: var(--primary); margin-bottom: 8px;">[TRASCINA]</div>
+      <p style="color: var(--text-muted); font-size: 13px;">Trascina uno schizzo o clicca per selezionare</p>
+      <p style="color: var(--text-muted); font-size: 10px; margin-top: 6px;">JPG, PNG, WEBP (max 5MB)</p>
+      <input type="file" id="file-schizzo" accept="image/*" style="display: none;" onchange="gestisciFile(this)">
+    </div>
+    <div id="preview-schizzo" style="display: none; margin-bottom: 10px; text-align: center;">
+      <div style="max-width: 100%; max-height: 250px; border-radius: 8px; border: 1px solid var(--border); background: #ffffff; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 12px;">
+        <img id="img-preview" style="max-width: 100%; max-height: 250px; object-fit: contain; display: none;" />
+      </div>
+      <div style="margin-top: 8px;">
+        <button class="btn" onclick="analizzaSchizzo()">Analizza con AI Vision</button>
+        <button class="btn secondary small" onclick="rimuoviSchizzo()">Rimuovi</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin: 25px 0;">
+    <button class="btn" style="font-size: 16px; padding: 16px 35px;" onclick="vaiAElaborazione()">Inizia Elaborazione AI</button>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 2: ELABORAZIONE ==================== -->
+<div id="screen-elaborazione" class="hidden">
+  <div class="panel" style="text-align: center; padding: 50px 25px;">
+    <div class="spinner"></div>
+    <div style="color: var(--primary-dark); font-size: 20px; margin-bottom: 12px;">Elaborazione Dual IA in corso...</div>
+    <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">L'AI sta analizzando la tua invenzione e generando le figure tecniche</div>
+    <div class="progress-bar" style="margin: 15px auto;"><div id="elab-progress" class="progress-fill"></div></div>
+    <div id="elab-status" style="color: var(--text-muted); font-size: 12px; margin-top: 10px;">Inizializzazione...</div>
+    <div id="elab-detail" style="color: var(--text-secondary); font-size: 11px; margin-top: 8px;"></div>
+    <div class="log" id="elab-log"></div>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 3: RISULTATO ==================== -->
+<div id="screen-risultato" class="hidden">
+  <div class="panel">
+    <h3>Risultato - Figure Generate</h3>
+    <div class="info-box" id="risultato-info">
+      <strong>Figure:</strong> <span id="numero-figure">0</span> |
+      <strong>Conformita UIBM:</strong> <span id="uibm-perc">0%</span>
+      <div id="modello-usato" class="model-badge" style="display: none;"></div>
+    </div>
+    <div class="figure-grid" id="figure-grid"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Verifica Conformita UIBM</h3>
+    <div id="verifica-box"></div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn success" style="font-size: 15px; padding: 14px 30px;" onclick="accettaEFinalizza()">Accetta e Scarica</button>
+    <button class="btn" style="font-size: 15px; padding: 14px 30px;" onclick="vaiACorrezione()">Revisione / Correzione</button>
+    <button class="btn secondary" onclick="tornaADescrizione()">Torna a Descrizione</button>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 4: CORREZIONE ==================== -->
+<div id="screen-correzione" class="hidden">
+  <div class="panel">
+    <h3>Correzione con Supporto AI</h3>
+    <div class="ai-support-box">
+      <h4>Modifica Testuale Intelligente</h4>
+      <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 8px;">Descrivi le modifiche in linguaggio naturale.</p>
+      <input type="text" id="modifica-testuale" placeholder="Descrivi le modifiche...">
+      <button class="btn" onclick="applicaModificaAI()">Analizza e Applica</button>
+      <div id="modifica-risultato" style="margin-top: 8px; font-size: 11px;"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Correzione Manuale</h3>
+    <div class="correction-panel">
+      <div class="correction-item" style="align-items: flex-start;">
+        <label style="margin-top: 8px;">Elementi:</label>
+        <textarea id="corr-aggiungi" placeholder="Aggiungi/rimuovi elementi..." style="min-height: 60px; resize: vertical;"></textarea>
+      </div>
+      <div class="correction-item">
+        <label>Forme:</label>
+        <input type="text" id="corr-forma" placeholder="es: 131 tonda, 132 ellittica...">
+      </div>
+      <div class="correction-item">
+        <label>Tipi figura:</label>
+        <input type="text" id="corr-tipi" placeholder="es: aggiungi sezione...">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Editor Visivo</h3>
+    <p style="color: var(--text-muted); font-size: 11px; margin-bottom: 10px;">Clicca su una figura per modificarla</p>
+    <div class="figure-grid" id="correzione-grid"></div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn" style="font-size: 15px; padding: 14px 30px;" onclick="applicaCorrezioniERigenera()">Applica e Rigenera</button>
+    <button class="btn secondary" onclick="tornaARisultato()">Torna al Risultato</button>
+    <button class="btn secondary" onclick="tornaADescrizione()">Torna a Descrizione</button>
+  </div>
+</div>
+
+<!-- ==================== SCHERMO 5: OUTPUT ==================== -->
+<div id="screen-output" class="hidden">
+  <div class="panel" style="text-align: center; background: linear-gradient(135deg, rgba(39,174,96,0.05), rgba(39,174,96,0.02)); border: 2px solid var(--success);">
+    <h3 style="color: var(--success); font-size: 1.3em;">Pacchetto UIBM-Ready</h3>
+    <p style="color: var(--text-secondary); margin: 10px 0;">Le tue figure tecniche sono pronte.</p>
+    <div class="figure-grid" id="output-grid"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Download</h3>
+    <div style="text-align: center;">
+      <button class="btn" onclick="downloadSVG()" style="font-size: 15px; padding: 14px 25px;">Scarica SVG</button>
+      <button class="btn success" onclick="downloadPDF()" style="font-size: 15px; padding: 14px 25px;">Scarica PDF UIBM</button>
+      <button class="btn secondary" onclick="downloadZIP()" style="font-size: 15px; padding: 14px 25px;">Scarica ZIP</button>
+    </div>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn secondary" onclick="tornaADescrizione()">Nuova Invenzione</button>
+    <button class="btn secondary" onclick="location.href='dashboard.html'">Dashboard</button>
+  </div>
+</div>
+
+<div class="log" id="log"></div>
+</div>
+
+<script>
+// ============================================
+// TAVOLE TECNICHE UIBM - DUAL IA REALE
+// Chiama call-ai-tavole-v5-slim su Supabase
+// ============================================
+
+const SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+const EDGE_FUNCTION_URL = SUPABASE_URL + '/functions/v1/call-ai-tavole-v5-slim';
+
+var currentScreen = 'descrizione';
+var figureData = [];
+var schizzoData = null;
+
+function log(msg, type) {
+  type = type || "info";
+  var panel = document.getElementById("log");
+  if (!panel) return;
+  var time = new Date().toLocaleTimeString("it-IT");
+  var colors = { info: "#c9a84c", success: "#27ae60", error: "#c0392b", warn: "#e67e22" };
+  panel.innerHTML += "<div style='color:" + colors[type] + ";padding:3px 0;border-bottom:1px solid #e0d5c0;font-size:11px;'>[" + time + "] " + msg + "</div>";
+  panel.scrollTop = panel.scrollHeight;
+}
+
+function showScreen(name) {
+  var screens = ['descrizione', 'elaborazione', 'risultato', 'correzione', 'output'];
+  for (var i = 0; i < screens.length; i++) {
+    var el = document.getElementById('screen-' + screens[i]);
+    if (el) el.classList.add('hidden');
+  }
+  var target = document.getElementById('screen-' + name);
+  if (target) target.classList.remove('hidden');
+  currentScreen = name;
+  updateStepIndicator(name);
+  log("Schermo: " + name, "info");
+}
+
+function updateStepIndicator(screen) {
+  var steps = {
+    'descrizione': { desc: 'active', elab: '', ris: '', corr: '' },
+    'elaborazione': { desc: 'done', elab: 'active', ris: '', corr: '' },
+    'risultato': { desc: 'done', elab: 'done', ris: 'active', corr: '' },
+    'correzione': { desc: 'done', elab: 'done', ris: 'done', corr: 'active' },
+    'output': { desc: 'done', elab: 'done', ris: 'done', corr: 'done' }
+  };
+  var s = steps[screen] || steps['descrizione'];
+  setStepClass('step-desc', s.desc);
+  setStepClass('step-elab', s.elab);
+  setStepClass('step-ris', s.ris);
+  setStepClass('step-corr', s.corr);
+}
+
+function setStepClass(id, status) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('active', 'done');
+  if (status) el.classList.add(status);
+}
+
+function vaiAElaborazione() {
+  var descrizione = document.getElementById("descrizione").value.trim();
+  if (!descrizione) {
+    alert("Inserisci una descrizione");
+    return;
+  }
+  showScreen('elaborazione');
+  generaFigureDualIA();
+}
+
+function tornaADescrizione() {
+  showScreen('descrizione');
+  document.getElementById("elab-progress").style.width = "0%";
+}
+
+function vaiACorrezione() {
+  showScreen('correzione');
+}
+
+function tornaARisultato() {
+  showScreen('risultato');
+}
+
+function accettaEFinalizza() {
+  showScreen('output');
+  log("Output finalizzato", "success");
+}
+
+// ============================================
+// DUAL IA - CHIAMATA REALE A SUPABASE
+// ============================================
+async function generaFigureDualIA() {
+  var descrizione = document.getElementById("descrizione").value.trim();
+  var rivendicazioni = document.getElementById("rivendicazioni").value.trim();
+  var progress = document.getElementById("elab-progress");
+  var status = document.getElementById("elab-status");
+  var detail = document.getElementById("elab-detail");
+  var logPanel = document.getElementById("elab-log");
+
+  progress.style.width = "10%";
+  status.textContent = "Connessione a Supabase...";
+  detail.textContent = "Preparazione payload...";
+  log("Inizio generazione figure con Dual IA...", "info");
+
+  var payload = {
+    servizio: "tavole-tecniche",
+    descrizione: descrizione + (rivendicazioni ? "
+
+Rivendicazioni:
+" + rivendicazioni : ""),
+    fase: "completo",
+    datiExtra: {
+      tipoBrevetto: "invenzione",
+      settore: "meccanica"
+    },
+    bypassCritica: false
+  };
+
+  try {
+    progress.style.width = "30%";
+    status.textContent = "Invio a Dual IA...";
+    log("Invio richiesta a call-ai-tavole-v5-slim", "info");
+
+    var startTime = Date.now();
+    var response = await fetch(EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify(payload)
+    });
+
+    var elapsed = Date.now() - startTime;
+    log("Risposta in " + elapsed + "ms - Status: " + response.status, "info");
+
+    progress.style.width = "60%";
+    status.textContent = "Parsing risultato...";
+
+    var data = await response.json();
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status + ": " + (data.error || data.e || "Errore"));
+    }
+    if (!data.success) {
+      throw new Error(data.error || "Elaborazione fallita");
+    }
+
+    log("Dual IA completata!", "success");
+    log("API Analitica: " + (data.metadata?.apiAnalitica || "N/A"), "success");
+    log("API Critica: " + (data.metadata?.apiCritica || "N/A"), "success");
+
+    progress.style.width = "100%";
+    status.textContent = "Completato!";
+    detail.textContent = "Figure generate con successo";
+
+    // Estrai dati per le figure
+    var analisi = data.analisi?.parsed || {};
+    var numeroFigure = analisi.numeroFigure || 3;
+    var figure = analisi.figure || [];
+    var elementi = analisi.elementiPrincipali || [];
+
+    log("Numero figure: " + numeroFigure, "success");
+
+    // Genera figureData
+    figureData = [];
+    for (var i = 0; i < figure.length; i++) {
+      var fig = figure[i];
+      figureData.push({
+        num: fig.num || (i + 1),
+        tipo: fig.tipo || "assieme",
+        titolo: fig.titolo || ("FIG. " + (i + 1) + " - " + fig.descrizione),
+        descrizione: fig.descrizione || "",
+        motivazione: fig.motivazione || "",
+        elementi: elementi.map(function(e, idx) {
+          return { num: (100 + idx).toString(), nome: e };
+        })
+      });
+    }
+
+    // Se non ci sono figure, crea default
+    if (figureData.length === 0) {
+      figureData = [
+        { num: 1, tipo: "assieme", titolo: "FIG. 1 - Vista assieme", descrizione: "Vista complessiva", motivazione: "Sistema completo", elementi: [{num: "100", nome: "Sistema"}] },
+        { num: 2, tipo: "esplosa", titolo: "FIG. 2 - Vista esplosa", descrizione: "Parti separate", motivazione: "Componenti", elementi: [{num: "101", nome: "Componente A"}] },
+        { num: 3, tipo: "sezione", titolo: "FIG. 3 - Sezione", descrizione: "Sezione interna", motivazione: "Interno", elementi: [{num: "102", nome: "Componente B"}] }
+      ];
+    }
+
+    setTimeout(function() {
+      showScreen('risultato');
+      renderFigureGrid();
+      document.getElementById("numero-figure").textContent = figureData.length;
+      var modelBadge = document.getElementById("modello-usato");
+      modelBadge.textContent = "Dual IA: " + (data.metadata?.apiAnalitica || "N/A") + " + " + (data.metadata?.apiCritica || "N/A");
+      modelBadge.style.display = "inline-block";
+      log("Generate " + figureData.length + " figure", "success");
+    }, 800);
+
+  } catch (e) {
+    status.textContent = "Errore durante la generazione";
+    detail.textContent = e.message;
+    log("Errore: " + e.message, "error");
+    alert("Errore: " + e.message + "
+
+Verifica che la Edge Function call-ai-tavole-v5-slim sia attiva su Supabase.");
+    showScreen('descrizione');
+  }
+}
+
+// ============================================
+// SVG GENERATOR (semplificato)
+// ============================================
+function generaSVG(fig) {
+  var ns = "http://www.w3.org/2000/svg";
+  var svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 600 450");
+  svg.setAttribute("width", "100%");
+  svg.setAttribute("height", "350");
+  svg.style.background = "#ffffff";
+
+  var title = document.createElementNS(ns, "text");
+  title.setAttribute("x", "300"); title.setAttribute("y", "25");
+  title.setAttribute("text-anchor", "middle");
+  title.setAttribute("font-family", "Arial, sans-serif");
+  title.setAttribute("font-size", "14");
+  title.setAttribute("font-weight", "bold");
+  title.setAttribute("fill", "#000");
+  title.textContent = fig.titolo;
+  svg.appendChild(title);
+
+  var cx = 300, cy = 220;
+
+  // Disegna in base al tipo
+  switch(fig.tipo) {
+    case "esplosa": return disegnaEsplosa(svg, ns, fig, cx, cy);
+    case "assieme": return disegnaAssieme(svg, ns, fig, cx, cy);
+    case "dettaglio": return disegnaDettaglio(svg, ns, fig, cx, cy);
+    case "sezione": return disegnaSezione(svg, ns, fig, cx, cy);
+    default: return disegnaDefault(svg, ns, cx, cy);
+  }
+}
+
+function disegnaEsplosa(svg, ns, fig, cx, cy) {
+  var corpo = document.createElementNS(ns, "rect");
+  corpo.setAttribute("x", cx - 80); corpo.setAttribute("y", cy - 120);
+  corpo.setAttribute("width", "160"); corpo.setAttribute("height", "240");
+  corpo.setAttribute("fill", "none"); corpo.setAttribute("stroke", "#000");
+  corpo.setAttribute("stroke-width", "2");
+  svg.appendChild(corpo);
+
+  var linea = document.createElementNS(ns, "line");
+  linea.setAttribute("x1", cx - 60); linea.setAttribute("y1", cy - 80);
+  linea.setAttribute("x2", cx + 60); linea.setAttribute("y2", cy - 80);
+  linea.setAttribute("stroke", "#000"); linea.setAttribute("stroke-width", "1");
+  linea.setAttribute("stroke-dasharray", "5,5");
+  svg.appendChild(linea);
+
+  var num = document.createElementNS(ns, "text");
+  num.setAttribute("x", cx - 100); num.setAttribute("y", cy);
+  num.setAttribute("font-family", "Arial"); num.setAttribute("font-size", "12");
+  num.setAttribute("fill", "#000"); num.textContent = "100";
+  svg.appendChild(num);
+
+  return svg;
+}
+
+function disegnaAssieme(svg, ns, fig, cx, cy) {
+  var corpo = document.createElementNS(ns, "rect");
+  corpo.setAttribute("x", cx - 60); corpo.setAttribute("y", cy - 100);
+  corpo.setAttribute("width", "120"); corpo.setAttribute("height", "200");
+  corpo.setAttribute("rx", "10"); corpo.setAttribute("fill", "none");
+  corpo.setAttribute("stroke", "#000"); corpo.setAttribute("stroke-width", "2");
+  svg.appendChild(corpo);
+
+  var interno = document.createElementNS(ns, "rect");
+  interno.setAttribute("x", cx - 40); interno.setAttribute("y", cy - 60);
+  interno.setAttribute("width", "80"); interno.setAttribute("height", "120");
+  interno.setAttribute("fill", "none"); interno.setAttribute("stroke", "#000");
+  interno.setAttribute("stroke-width", "1"); interno.setAttribute("stroke-dasharray", "3,3");
+  svg.appendChild(interno);
+
+  return svg;
+}
+
+function disegnaDettaglio(svg, ns, fig, cx, cy) {
+  var cerchio = document.createElementNS(ns, "circle");
+  cerchio.setAttribute("cx", cx); cerchio.setAttribute("cy", cy);
+  cerchio.setAttribute("r", "60"); cerchio.setAttribute("fill", "none");
+  cerchio.setAttribute("stroke", "#000"); cerchio.setAttribute("stroke-width", "2");
+  svg.appendChild(cerchio);
+
+  var dettaglio = document.createElementNS(ns, "circle");
+  dettaglio.setAttribute("cx", cx); dettaglio.setAttribute("cy", cy);
+  dettaglio.setAttribute("r", "30"); dettaglio.setAttribute("fill", "none");
+  dettaglio.setAttribute("stroke", "#000"); dettaglio.setAttribute("stroke-width", "1");
+  svg.appendChild(dettaglio);
+
+  return svg;
+}
+
+function disegnaSezione(svg, ns, fig, cx, cy) {
+  var rett = document.createElementNS(ns, "rect");
+  rett.setAttribute("x", cx - 80); rett.setAttribute("y", cy - 100);
+  rett.setAttribute("width", "160"); rett.setAttribute("height", "200");
+  rett.setAttribute("fill", "none"); rett.setAttribute("stroke", "#000");
+  rett.setAttribute("stroke-width", "2");
+  svg.appendChild(rett);
+
+  var linea = document.createElementNS(ns, "line");
+  linea.setAttribute("x1", cx - 80); linea.setAttribute("y1", cy - 100);
+  linea.setAttribute("x2", cx + 80); linea.setAttribute("y2", cy + 100);
+  linea.setAttribute("stroke", "#000"); linea.setAttribute("stroke-width", "1");
+  linea.setAttribute("stroke-dasharray", "5,5");
+  svg.appendChild(linea);
+
+  var label = document.createElementNS(ns, "text");
+  label.setAttribute("x", cx + 90); label.setAttribute("y", cy);
+  label.setAttribute("font-family", "Arial"); label.setAttribute("font-size", "10");
+  label.setAttribute("fill", "#000"); label.textContent = "A-A";
+  svg.appendChild(label);
+
+  return svg;
+}
+
+function disegnaDefault(svg, ns, cx, cy) {
+  var r = document.createElementNS(ns, "rect");
+  r.setAttribute("x", cx - 40); r.setAttribute("y", cy - 40);
+  r.setAttribute("width", "80"); r.setAttribute("height", "80");
+  r.setAttribute("fill", "none"); r.setAttribute("stroke", "#000");
+  r.setAttribute("stroke-width", "2");
+  svg.appendChild(r);
+  return svg;
+}
+
+function generaTabella(elementi) {
+  var html = '<div class="table-container"><table>';
+  html += '<thead><tr><th style="width:70px">Numero</th><th>Descrizione</th></tr></thead><tbody>';
+  for (var i = 0; i < elementi.length; i++) {
+    var el = elementi[i];
+    html += '<tr><td><strong style="color:#c9a84c">' + el.num + '</strong></td><td>' + el.nome + '</td></tr>';
+  }
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function renderFigureGrid() {
+  var grid = document.getElementById("figure-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  for (var i = 0; i < figureData.length; i++) {
+    var fig = figureData[i];
+    var box = document.createElement("div");
+    box.className = "figure-box";
+
+    var header = document.createElement("div");
+    header.className = "fig-header";
+    var h3 = document.createElement("h3");
+    h3.textContent = fig.titolo;
+    header.appendChild(h3);
+    var badge = document.createElement("span");
+    badge.className = "fig-badge";
+    badge.textContent = (fig.tipo || "FIGURA").toUpperCase();
+    header.appendChild(badge);
+    box.appendChild(header);
+
+    var container = document.createElement("div");
+    container.className = "svg-container";
+    container.appendChild(generaSVG(fig));
+    box.appendChild(container);
+
+    if (fig.elementi && fig.elementi.length > 0) {
+      var tabDiv = document.createElement("div");
+      tabDiv.innerHTML = generaTabella(fig.elementi);
+      box.appendChild(tabDiv);
+    }
+
+    var info = document.createElement("div");
+    info.style.cssText = "color:#8b7355;font-size:11px;margin-top:10px;";
+    info.textContent = fig.motivazione || fig.descrizione;
+    box.appendChild(info);
+
+    grid.appendChild(box);
+  }
+}
+
+// ============================================
+// UPLOAD / CORREZIONE / EXPORT
+// ============================================
+function gestisciFile(input) {
+  var file = input.files[0];
+  if (!file) return;
+  log("File: " + file.name + " (" + Math.round(file.size / 1024) + "KB)", "info");
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = document.getElementById("img-preview");
+    img.src = e.target.result;
+    img.style.display = "block";
+    schizzoData = e.target.result;
+    document.getElementById("preview-schizzo").style.display = "block";
+    document.getElementById("drop-zone").style.display = "none";
+    log("Immagine caricata", "success");
+  };
+  reader.readAsDataURL(file);
+}
+
+function rimuoviSchizzo() {
+  document.getElementById("preview-schizzo").style.display = "none";
+  document.getElementById("drop-zone").style.display = "block";
+  document.getElementById("file-schizzo").value = "";
+  document.getElementById("img-preview").src = "";
+  schizzoData = null;
+}
+
+function analizzaSchizzo() {
+  log("Analisi schizzo... (funzione da implementare)", "info");
+}
+
+function applicaModificaAI() {
+  log("Modifica AI... (funzione da implementare)", "info");
+}
+
+function applicaCorrezioniERigenera() {
+  log("Rigenerazione...", "info");
+  showScreen('elaborazione');
+  generaFigureDualIA();
+}
+
+function downloadSVG() {
+  var sc = '<?xml version="1.0" encoding="UTF-8"?>
+';
+  for (var i = 0; i < figureData.length; i++) {
+    var svg = generaSVG(figureData[i]);
+    sc += new XMLSerializer().serializeToString(svg) + "
+
+";
+  }
+  var blob = new Blob([sc], {type: "image/svg+xml"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "brevettiamo_figure.svg";
+  a.click(); URL.revokeObjectURL(url);
+  log("SVG scaricato", "success");
+}
+
+function downloadPDF() {
+  log("PDF... (richiede jsPDF)", "info");
+  alert("Funzione PDF da completare");
+}
+
+function downloadZIP() {
+  log("ZIP... (richiede JSZip)", "info");
+  downloadSVG();
+}
+
+log("Tavole Tecniche UIBM - Dual IA pronta", "success");
+log("Edge Function: call-ai-tavole-v5-slim", "info");
+</script>
+
+</body>
+</html>
