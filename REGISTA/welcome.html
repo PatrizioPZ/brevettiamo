@@ -52,7 +52,6 @@ body {
     font-style: italic;
 }
 
-/* Servizio selezionato */
 .servizio-box {
     text-align: center;
     margin-bottom: 30px;
@@ -70,6 +69,23 @@ body {
 .servizio-box p {
     color: #5a4a3a;
     font-size: 0.9rem;
+}
+
+.info-box {
+    background: rgba(26,82,118,0.05);
+    border: 1px dashed #1a5276;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+.info-box p {
+    font-size: 0.85rem;
+    color: #1a5276;
+    line-height: 1.5;
+}
+.info-box strong {
+    color: #134060;
 }
 
 /* Sezioni legali */
@@ -109,6 +125,39 @@ body {
 }
 .legal-content strong {
     color: #3d2b1f;
+}
+
+/* Download NDA */
+.download-box {
+    background: rgba(201,169,110,0.08);
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+.download-box p {
+    font-size: 0.9rem;
+    color: #5a4a3a;
+    margin-bottom: 15px;
+}
+.btn-download {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    padding: 12px 30px;
+    background: #1a5276;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+.btn-download:hover {
+    background: #134060;
+    transform: translateY(-2px);
 }
 
 /* Checkbox accettazione */
@@ -201,22 +250,25 @@ body {
 }
 .errore.active { display: block; }
 
-/* Info Dual IA */
-.info-box {
-    background: rgba(26,82,118,0.05);
-    border: 1px dashed #1a5276;
+/* E2E info */
+.e2e-box {
+    background: rgba(44,95,45,0.05);
+    border: 1px solid #2c5f2d;
     border-radius: 4px;
     padding: 15px;
     margin-bottom: 25px;
     text-align: center;
 }
-.info-box p {
-    font-size: 0.85rem;
-    color: #1a5276;
-    line-height: 1.5;
+.e2e-box h4 {
+    font-family: 'Cinzel', serif;
+    color: #2c5f2d;
+    font-size: 1rem;
+    margin-bottom: 8px;
 }
-.info-box strong {
-    color: #134060;
+.e2e-box p {
+    font-size: 0.85rem;
+    color: #5a4a3a;
+    line-height: 1.5;
 }
 
 @media (max-width: 600px) {
@@ -234,7 +286,7 @@ body {
     <div class="header">
         <h1>BREVETTIAMO</h1>
         <p class="subtitle">Piattaforma di Brevettistica Intelligente</p>
-        <p class="motto">"La tua invenzione merita la massima protezione"</p>
+        <p class="motto">La tua invenzione merita la massima protezione</p>
     </div>
 
     <div class="servizio-box" id="servizio-box">
@@ -248,6 +300,13 @@ body {
         Analisi critica, verifica incrociata, massima affidabilita.</p>
     </div>
 
+    <div class="e2e-box">
+        <h4>&#128274; Cifratura End-to-End (E2E)</h4>
+        <p>Tutti i dati sono cifrati con AES-256 direttamente nel tuo browser prima dell invio.
+        Solo tu possiedi la chiave di decifratura. BrevettIAmo non puo leggere i tuoi dati.
+        Zero-knowledge, zero accesso, massima tutela.</p>
+    </div>
+
     <!-- PRIVACY -->
     <div class="legal-section">
         <h3><span class="icon">&#128274;</span> Informativa Privacy</h3>
@@ -258,6 +317,8 @@ body {
             <p><strong>4. Conservazione:</strong> I dati sono conservati su server sicuri (Supabase) con crittografia end-to-end. Durata: 5 anni dalla conclusione del servizio.</p>
             <p><strong>5. Diritti:</strong> Hai diritto di accesso, retifica, cancellazione, limitazione del trattamento, portabilita dei dati. Contatta: privacy@brevettiamo.com</p>
             <p><strong>6. Cookie:</strong> Utilizziamo solo cookie tecnici necessari al funzionamento della piattaforma. Nessun cookie di profilazione.</p>
+            <p><strong>7. Cifratura:</strong> Tutti i dati sensibili sono cifrati client-side con AES-256 prima del caricamento. La chiave di cifratura e generata localmente e mai trasmessa ai server.</p>
+            <p><strong>8. Responsabilita:</strong> BrevettIAmo si impegna a mantenere standard di sicurezza conformi al GDPR e alle normative italiane in materia di protezione dati.</p>
         </div>
     </div>
 
@@ -268,10 +329,17 @@ body {
             <p><strong>1. Oggetto:</strong> Le informazioni tecniche, descrizioni, disegni, schizzi e qualsiasi materiale caricato sulla piattaforma costituiscono informazioni riservate del Cliente.</p>
             <p><strong>2. Obblighi di BrevettIAmo:</strong> BrevettIAmo si impegna a mantenere la massima riservatezza su tutte le informazioni ricevute. I dati non saranno divulgati a terzi, utilizzati per scopi propri o archiviati in modo non sicuro.</p>
             <p><strong>3. Accesso ai dati:</strong> Solo il personale autorizzato di BrevettIAmo (e i sistemi IA automatizzati) avranno accesso ai dati, esclusivamente per fornire il servizio richiesto.</p>
-            <p><strong>4. Durata:</strong> L'obbligo di riservatezza sopravvive alla conclusione del rapporto contrattuale per un periodo di 10 anni.</p>
+            <p><strong>4. Durata:</strong> L obbligo di riservatezza sopravvive alla conclusione del rapporto contrattale per un periodo di 10 anni.</p>
             <p><strong>5. Esclusioni:</strong> Non costituiscono informazioni riservate i dati di pubblico dominio, gia noti a BrevettIAmo prima della ricezione, o sviluppati indipendentemente.</p>
             <p><strong>6. Violazione:</strong> In caso di violazione, BrevettIAmo e responsabile secondo le leggi italiane sulla protezione dei dati e della proprieta intellettuale.</p>
+            <p><strong>7. Cifratura:</strong> Grazie alla cifratura E2E, anche in caso di accesso non autorizzato ai server, i dati rimangono illeggibili senza la chiave del Cliente.</p>
         </div>
+    </div>
+
+    <!-- Download NDA -->
+    <div class="download-box">
+        <p><strong>Scarica il testo completo dell NDA</strong> per la tua conservazione personale:</p>
+        <a href="#" class="btn-download" onclick="scaricaNDA(); return false;">SCARICA NDA (PDF)</a>
     </div>
 
     <!-- MANLEVA -->
@@ -279,11 +347,12 @@ body {
         <h3><span class="icon">&#9888;</span> Manleva e Limitazione di Responsabilita</h3>
         <div class="legal-content">
             <p><strong>1. Natura del servizio:</strong> BrevettIAmo fornisce strumenti di supporto alla brevettistica basati su intelligenza artificiale. I risultati sono indicativi e non sostituiscono la consulenza di un avvocato brevettuale o un ingegnere abilitato.</p>
-            <p><strong>2. Verifica umana:</strong> Tutti i risultati prodotti dall'IA devono essere verificati e approvati da un professionista umano prima del deposito presso l'UIBM o altri uffici brevetti.</p>
-            <p><strong>3. Esclusione garanzie:</strong> BrevettIAmo non garantisce l'esito positivo di un deposito brevettuale, la validita delle rivendicazioni prodotte, o la completezza delle ricerche prior art.</p>
-            <p><strong>4. Responsabilita:</strong> BrevettIAmo non e responsabile per perdite economiche, mancati depositi, o invalidita di brevetti derivanti dall'uso dei servizi. La responsabilita massima e limitata al costo del servizio acquistato.</p>
-            <p><strong>5. Conformita legale:</strong> L'utente si impegna a utilizzare i servizi in conformita con le leggi italiane e internazionali in materia di proprieta intellettuale.</p>
+            <p><strong>2. Verifica umana:</strong> Tutti i risultati prodotti dall IA devono essere verificati e approvati da un professionista umano prima del deposito presso la UIBM o altri uffici brevetti.</p>
+            <p><strong>3. Esclusione garanzie:</strong> BrevettIAmo non garantisce l esito positivo di un deposito brevettuale, la validita delle rivendicazioni prodotte, o la completezza delle ricerche prior art.</p>
+            <p><strong>4. Responsabilita:</strong> BrevettIAmo non e responsabile per perdite economiche, mancati depositi, o invalidita di brevetti derivanti dall uso dei servizi. La responsabilita massima e limitata al costo del servizio acquistato.</p>
+            <p><strong>5. Conformita legale:</strong> L utente si impegna a utilizzare i servizi in conformita con le leggi italiane e internazionali in materia di proprieta intellettuale.</p>
             <p><strong>6. Foro competente:</strong> Per qualsiasi controversia, il foro competente e quello di Torino, Italia.</p>
+            <p><strong>7. Limitazione tecnica:</strong> L utente riconosce che i sistemi IA, pur avanzati, possono commettere errori. La responsabilita finale sulle decisioni legali e tecnica rimane sempre dell utente.</p>
         </div>
     </div>
 
@@ -292,19 +361,19 @@ body {
         <div class="accept-item">
             <input type="checkbox" id="check-privacy" onchange="verificaAccettazione()">
             <label for="check-privacy">
-                <strong>Accetto l'Informativa Privacy</strong> — Ho letto e compreso come i miei dati personali e tecnici saranno trattati. Autorizzo il trattamento dei dati necessari per fornire il servizio richiesto.
+                <strong>Accetto l Informativa Privacy</strong> — Ho letto e compreso come i miei dati personali e tecnici saranno trattati. Autorizzo il trattamento dei dati necessari per fornire il servizio richiesto.
             </label>
         </div>
         <div class="accept-item">
             <input type="checkbox" id="check-nda" onchange="verificaAccettazione()">
             <label for="check-nda">
-                <strong>Accetto l'Accordo di Riservatezza (NDA)</strong> — Confermo che le mie informazioni tecniche saranno trattate con riservatezza. Accetto gli obblighi reciproci di non divulgazione.
+                <strong>Accetto l Accordo di Riservatezza (NDA)</strong> — Confermo che le mie informazioni tecniche saranno trattate con riservatezza. Accetto gli obblighi reciproci di non divulgazione.
             </label>
         </div>
         <div class="accept-item">
             <input type="checkbox" id="check-manleva" onchange="verificaAccettazione()">
             <label for="check-manleva">
-                <strong>Accetto la Manleva e Limitazione di Responsabilita</strong> — Sono consapevole che i risultati dell'IA sono indicativi e richiedono verifica umana. Esonerero BrevettIAmo da responsabilita per decisioni prese sulla base dei risultati automatici.
+                <strong>Accetto la Manleva e Limitazione di Responsabilita</strong> — Sono consapevole che i risultati dell IA sono indicativi e richiedono verifica umana. Esonero BrevettIAmo da responsabilita per decisioni prese sulla base dei risultati automatici.
             </label>
         </div>
         <div class="accept-item">
@@ -331,7 +400,7 @@ body {
 const SERVIZI = {
     'servizio-deposito': {
         nome: 'Deposito Brevetto',
-        descrizione: 'Preparazione e deposito completo presso l'UIBM'
+        descrizione: 'Preparazione e deposito completo presso la UIBM'
     },
     'servizio-priorart': {
         nome: 'Ricerca Prior Art',
@@ -391,7 +460,7 @@ const SERVIZI = {
     },
     'servizio-opposizione': {
         nome: 'Preparazione Opposizione',
-        descrizione: 'Preparazione completa di un opposizione a brevetto'
+        descrizione: 'Preparazione completa di una opposizione a brevetto'
     },
     'servizio-licensing': {
         nome: 'Strategia Licensing',
@@ -488,8 +557,52 @@ function tornaMenu() {
     if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'brevettiamo', action: 'torna-menu' }, '*');
     } else {
-        window.location.href = '../REGISTA/index.html';
+        window.location.href = 'index.html';
     }
+}
+
+// ==================== SCARICA NDA ====================
+function scaricaNDA() {
+    const ndaText = `ACCORDO DI RISERVATEZZA (NDA) - BREVETTIAMO
+
+1. OGGETTO
+Le informazioni tecniche, descrizioni, disegni, schizzi e qualsiasi materiale caricato sulla piattaforma BrevettIAmo costituiscono informazioni riservate del Cliente.
+
+2. OBBLIGHI DI BREVETTIAMO
+BrevettIAmo si impegna a mantenere la massima riservatezza su tutte le informazioni ricevute. I dati non saranno divulgati a terzi, utilizzati per scopi propri o archiviati in modo non sicuro.
+
+3. ACCESSO AI DATI
+Solo il personale autorizzato di BrevettIAmo (e i sistemi IA automatizzati) avranno accesso ai dati, esclusivamente per fornire il servizio richiesto.
+
+4. DURATA
+L obbligo di riservatezza sopravvive alla conclusione del rapporto contrattale per un periodo di 10 anni.
+
+5. ESCLUSIONI
+Non costituiscono informazioni riservate i dati di pubblico dominio, gia noti a BrevettIAmo prima della ricezione, o sviluppati indipendentemente.
+
+6. VIOLAZIONE
+In caso di violazione, BrevettIAmo e responsabile secondo le leggi italiane sulla protezione dei dati e della proprieta intellettuale.
+
+7. CIFRATURA
+Grazie alla cifratura End-to-End (E2E), anche in caso di accesso non autorizzato ai server, i dati rimangono illeggibili senza la chiave del Cliente.
+
+8. FORO COMPETENTE
+Per qualsiasi controversia, il foro competente e quello di Torino, Italia.
+
+Data: ${new Date().toLocaleDateString('it-IT')}
+Piattaforma: BrevettIAmo
+`;
+
+    const blob = new Blob([ndaText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'NDA_BrevettIAmo_' + new Date().toISOString().slice(0,10) + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 </script>
 
