@@ -134,6 +134,25 @@ body {
     font-size: 0.85rem;
     color: #8b7355;
 }
+.servizio-card .badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+}
+.badge-testuale {
+    background: rgba(26,82,118,0.1);
+    color: #1a5276;
+    border: 1px solid #1a5276;
+}
+.badge-disegni {
+    background: rgba(44,95,45,0.1);
+    color: #2c5f2d;
+    border: 1px solid #2c5f2d;
+}
 
 #flusso-iframe {
     width: 100%;
@@ -172,11 +191,28 @@ body {
     font-style: italic;
 }
 
+/* Sezione disegni separata */
+.sezione-titolo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: #3d2b1f;
+    margin: 30px 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #d4c4a8;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.sezione-titolo .icon {
+    font-size: 1.4rem;
+}
+
 @media (max-width: 600px) {
     .pergamena { padding: 25px; margin: 20px; }
     .servizi-grid { grid-template-columns: 1fr; }
 }
 </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
@@ -194,7 +230,7 @@ body {
         <h1>BREVETTIAMO</h1>
         <p>Regista Servizi</p>
     </div>
-    
+
     <div class="servizio-info" id="servizio-info">
         <h3>Servizio selezionato</h3>
         <p id="nome-servizio">Caricamento...</p>
@@ -213,18 +249,30 @@ body {
         <h1>BREVETTIAMO</h1>
         <p>Seleziona un servizio</p>
     </div>
-    
-    <div class="servizi-grid" id="servizi-grid">
+
+    <!-- SERVIZI TESTUALI -->
+    <div class="sezione-titolo">
+        <span class="icon">&#128221;</span>
+        Servizi Testuali (23)
     </div>
+    <div class="servizi-grid" id="servizi-grid-testuali"></div>
+
+    <!-- SERVIZI DISEGNI -->
+    <div class="sezione-titolo">
+        <span class="icon">&#127912;</span>
+        Servizi Disegni (2)
+    </div>
+    <div class="servizi-grid" id="servizi-grid-disegni"></div>
 </div>
 
 <iframe id="flusso-iframe" name="flusso-frame"></iframe>
 
 <script>
-const SERVIZI = {
+// ==================== CONFIGURAZIONE SERVIZI ====================
+const SERVIZI_TESTUALI = {
     'servizio-deposito': {
         nome: 'Deposito Brevetto',
-        descrizione: 'Preparazione e deposito completo presso l\'UIBM. Documentazione tecnica, rivendicazioni e tavole incluse.',
+        descrizione: 'Preparazione e deposito completo presso l'UIBM. Documentazione tecnica, rivendicazioni e tavole incluse.',
         icona: 'D',
         colore: '#8b0000'
     },
@@ -239,12 +287,6 @@ const SERVIZI = {
         descrizione: 'Redazione professionale delle rivendicazioni brevettuali. La parte piu importante del tuo brevetto.',
         icona: 'V',
         colore: '#6c3483'
-    },
-    'servizio-tavole': {
-        nome: 'Tavole Tecniche',
-        descrizione: 'Generazione tavole tecniche in formato SVG. Pronti per UIBM, pubblicazioni e presentazioni.',
-        icona: 'T',
-        colore: '#8b0000'
     },
     'servizio-monitoraggio': {
         nome: 'Monitoraggio',
@@ -360,12 +402,6 @@ const SERVIZI = {
         icona: 'La',
         colore: '#2c5f2d'
     },
-    'servizio-cad': {
-        nome: 'Disegno CAD Professionale',
-        descrizione: 'Creazione di disegni tecnici CAD 2D/3D per brevetti. Formati: DWG, STEP, IGES. Pronti per UIBM e produzione.',
-        icona: 'CAD',
-        colore: '#2c5f2d'
-    },
     'servizio-legale-base': {
         nome: 'Supporto Legale Base',
         descrizione: 'Consulenza legale su contratti IP (NDA, licenze, cessioni). Revisione di 1 contratto. Note e raccomandazioni.',
@@ -374,9 +410,25 @@ const SERVIZI = {
     }
 };
 
+const SERVIZI_DISEGNI = {
+    'servizio-tavole': {
+        nome: 'Tavole Tecniche',
+        descrizione: 'Generazione tavole tecniche in formato SVG. Pronti per UIBM, pubblicazioni e presentazioni. Upload schizzi, analisi IA, revisione.',
+        icona: 'T',
+        colore: '#8b0000'
+    },
+    'servizio-cad': {
+        nome: 'Disegno CAD Professionale',
+        descrizione: 'Creazione di disegni tecnici CAD 2D/3D per brevetti. Formati: DWG, STEP, IGES. Pronti per UIBM e produzione. Upload schizzi, generazione CAD.',
+        icona: 'CAD',
+        colore: '#2c5f2d'
+    }
+};
+
 let servizioCorrente = null;
 let utenteLoggato = null;
 
+// ==================== INIZIALIZZAZIONE ====================
 document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
     servizioCorrente = params.get('servizio');
@@ -387,19 +439,19 @@ function login() {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
     const msg = document.getElementById('login-msg');
-    
+
     if (!email || !password) {
         msg.textContent = 'Inserisci email e password';
         msg.style.color = '#8b0000';
         return;
     }
-    
+
     utenteLoggato = {
         email: email,
         id: 'user_' + Date.now(),
         loginTime: Date.now()
     };
-    
+
     localStorage.setItem('brevettiamo_user', JSON.stringify(utenteLoggato));
     mostraMenu();
 }
@@ -415,11 +467,15 @@ function mostraLogin() {
     document.getElementById('menu-panel').classList.add('hidden');
     document.getElementById('flusso-iframe').style.display = 'none';
     document.getElementById('user-bar').classList.add('hidden');
-    
+
     const info = document.getElementById('nome-servizio');
-    if (servizioCorrente && SERVIZI[servizioCorrente]) {
-        const s = SERVIZI[servizioCorrente];
-        info.innerHTML = '<strong>' + s.nome + '</strong><br><span style="font-size:0.85rem;color:#8b7355">' + s.descrizione + '</span>';
+    if (servizioCorrente) {
+        const s = SERVIZI_TESTUALI[servizioCorrente] || SERVIZI_DISEGNI[servizioCorrente];
+        if (s) {
+            info.innerHTML = '<strong>' + s.nome + '</strong><br><span style="font-size:0.85rem;color:#8b7355">' + s.descrizione + '</span>';
+        } else {
+            info.innerHTML = 'Nessun servizio selezionato. Scegli dal menu.';
+        }
     } else {
         info.innerHTML = 'Nessun servizio selezionato. Scegli dal menu.';
     }
@@ -430,39 +486,84 @@ function mostraMenu() {
     document.getElementById('menu-panel').classList.remove('hidden');
     document.getElementById('flusso-iframe').style.display = 'none';
     document.getElementById('user-bar').classList.remove('hidden');
-    
+
     if (utenteLoggato) {
         document.getElementById('user-email').textContent = utenteLoggato.email;
     }
-    
-    const grid = document.getElementById('servizi-grid');
-    grid.innerHTML = '';
-    
-    Object.entries(SERVIZI).forEach(function([id, s]) {
-        const card = document.createElement('div');
-        card.className = 'servizio-card';
-        card.innerHTML = 
-            '<div style="font-size:2rem;color:' + s.colore + ';margin-bottom:10px;font-family:\'Cinzel\',serif;font-weight:bold;">' + s.icona + '</div>' +
-            '<h4>' + s.nome + '</h4>' +
-            '<p>' + s.descrizione + '</p>';
-        card.onclick = function() { avviaServizio(id); };
-        grid.appendChild(card);
+
+    // Renderizza servizi testuali
+    const gridTestuali = document.getElementById('servizi-grid-testuali');
+    gridTestuali.innerHTML = '';
+    Object.entries(SERVIZI_TESTUALI).forEach(function([id, s]) {
+        const card = creaCard(id, s, 'testuale');
+        gridTestuali.appendChild(card);
     });
-    
-    if (servizioCorrente && SERVIZI[servizioCorrente]) {
-        avviaServizio(servizioCorrente);
+
+    // Renderizza servizi disegni
+    const gridDisegni = document.getElementById('servizi-grid-disegni');
+    gridDisegni.innerHTML = '';
+    Object.entries(SERVIZI_DISEGNI).forEach(function([id, s]) {
+        const card = creaCard(id, s, 'disegni');
+        gridDisegni.appendChild(card);
+    });
+
+    if (servizioCorrente) {
+        if (SERVIZI_TESTUALI[servizioCorrente]) {
+            avviaServizioTestuale(servizioCorrente);
+        } else if (SERVIZI_DISEGNI[servizioCorrente]) {
+            avviaServizioDisegni(servizioCorrente);
+        }
     }
 }
 
-function avviaServizio(servizioId) {
+function creaCard(id, s, tipo) {
+    const card = document.createElement('div');
+    card.className = 'servizio-card';
+    const badgeClass = tipo === 'testuale' ? 'badge-testuale' : 'badge-disegni';
+    const badgeText = tipo === 'testuale' ? 'TESTUALE' : 'DISEGNI';
+
+    card.innerHTML = 
+        '<div style="font-size:2rem;color:' + s.colore + ';margin-bottom:10px;font-family:'Cinzel',serif;font-weight:bold;">' + s.icona + '</div>' +
+        '<h4>' + s.nome + '</h4>' +
+        '<p>' + s.descrizione + '</p>' +
+        '<span class="badge ' + badgeClass + '">' + badgeText + '</span>';
+
+    card.onclick = function() { 
+        if (tipo === 'testuale') {
+            avviaServizioTestuale(id);
+        } else {
+            avviaServizioDisegni(id);
+        }
+    };
+
+    return card;
+}
+
+// ==================== AVVIO SERVIZI ====================
+function avviaServizioTestuale(servizioId) {
     servizioCorrente = servizioId;
     document.getElementById('menu-panel').classList.add('hidden');
     document.getElementById('login-panel').classList.add('hidden');
-    
+
     const iframe = document.getElementById('flusso-iframe');
     iframe.style.display = 'block';
-    
-    const flussoUrl = '/brevettiamo/welcome.html?servizio=' + encodeURIComponent(servizioId);
+
+    // Flusso testuale: welcome -> descrizione -> elaborazione -> revisione
+    const flussoUrl = 'welcome.html?servizio=' + encodeURIComponent(servizioId);
+    iframe.src = flussoUrl;
+}
+
+function avviaServizioDisegni(servizioId) {
+    servizioCorrente = servizioId;
+    document.getElementById('menu-panel').classList.add('hidden');
+    document.getElementById('login-panel').classList.add('hidden');
+
+    const iframe = document.getElementById('flusso-iframe');
+    iframe.style.display = 'block';
+
+    // Flusso disegni: percorso dedicato (da creare)
+    // Per ora reindirizza a welcome con parametro disegni
+    const flussoUrl = 'welcome.html?servizio=' + encodeURIComponent(servizioId) + '&tipo=disegni';
     iframe.src = flussoUrl;
 }
 
