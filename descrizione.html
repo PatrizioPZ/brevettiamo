@@ -3,62 +3,701 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Descrizione - BrevettIAmo</title>
+<title>BrevettIAmo - Descrizione Invenzione</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: Georgia, serif; background: #f5f0e8; min-height: 100vh; color: #3d2b1f; }
-.pergamena { max-width: 900px; margin: 40px auto; background: #faf6f0; border: 2px solid #c9a96e; border-radius: 4px; box-shadow: 0 4px 20px rgba(61,43,31,0.15); padding: 50px; }
-.logo { text-align: center; margin-bottom: 30px; }
-.logo h1 { font-family: Georgia, serif; font-size: 1.8rem; color: #8b0000; letter-spacing: 2px; }
-.titolo-sezione { font-family: Georgia, serif; font-size: 1.3rem; color: #8b0000; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #c9a96e; padding-bottom: 15px; }
-.sezione { margin: 25px 0; padding: 20px; background: rgba(201,169,110,0.08); border: 1px solid #d4c4a8; border-radius: 4px; }
-.sezione h2 { font-family: Georgia, serif; color: #8b0000; font-size: 1.1rem; margin-bottom: 15px; }
-.textarea-desc { width: 100%; min-height: 200px; padding: 15px; border: 1px solid #d4c4a8; border-radius: 4px; font-family: Georgia, serif; font-size: 0.95rem; line-height: 1.6; background: #fff; resize: vertical; margin-bottom: 15px; }
-.textarea-desc:focus { outline: none; border-color: #8b0000; box-shadow: 0 0 5px rgba(139,0,0,0.1); }
-.btn { font-family: Georgia, serif; font-size: 0.95rem; letter-spacing: 2px; padding: 16px 40px; border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s; background: #c9a96e; color: #fff; box-shadow: 0 4px 15px rgba(201,169,110,0.3); margin: 10px; }
-.btn:hover { background: #b8985a; transform: translateY(-2px); }
-.btn-secondary { background: #8b7355; }
-.btn-secondary:hover { background: #6b5a45; }
-.actions { text-align: center; margin-top: 30px; }
-@media (max-width: 600px) { .pergamena { padding: 25px; margin: 20px; } }
+
+body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    background: #f5f0e8;
+    min-height: 100vh;
+    color: #3d2b1f;
+}
+
+.pergamena {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #faf6f0;
+    border: 2px solid #c9a96e;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(61,43,31,0.15), inset 0 0 60px rgba(201,169,110,0.1);
+    padding: 50px;
+    position: relative;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #d4c4a8;
+}
+.header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    color: #8b0000;
+    letter-spacing: 2px;
+}
+.header p {
+    font-style: italic;
+    color: #8b7355;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.servizio-info {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 12px 20px;
+    background: rgba(139,0,0,0.05);
+    border: 1px dashed #8b0000;
+    border-radius: 4px;
+}
+.servizio-info h3 {
+    font-family: 'Cinzel', serif;
+    color: #8b0000;
+    font-size: 1rem;
+}
+.servizio-info p {
+    color: #5a4a3a;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.sezione {
+    margin-bottom: 25px;
+}
+.sezione h4 {
+    font-family: 'Cinzel', serif;
+    color: #3d2b1f;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.sezione h4::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: #c9a96e;
+    border-radius: 2px;
+}
+
+.textarea-desc {
+    width: 100%;
+    min-height: 180px;
+    padding: 15px;
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    background: #fffef8;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3d2b1f;
+    resize: vertical;
+}
+.textarea-desc:focus {
+    outline: none;
+    border-color: #c9a96e;
+    box-shadow: 0 0 0 3px rgba(201,169,110,0.15);
+}
+.textarea-desc::placeholder {
+    color: #a09080;
+    font-style: italic;
+}
+
+/* Upload file */
+.upload-zone {
+    border: 2px dashed #d4c4a8;
+    border-radius: 4px;
+    padding: 30px;
+    text-align: center;
+    background: rgba(201,169,110,0.05);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.upload-zone:hover {
+    border-color: #c9a96e;
+    background: rgba(201,169,110,0.1);
+}
+.upload-zone.dragover {
+    border-color: #8b0000;
+    background: rgba(139,0,0,0.05);
+}
+.upload-zone p {
+    color: #8b7355;
+    font-size: 0.9rem;
+}
+.upload-zone .icon {
+    font-size: 2rem;
+    color: #c9a96e;
+    margin-bottom: 10px;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Lista file caricati */
+.file-list {
+    margin-top: 15px;
+}
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #fffef8;
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+.file-item-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+.file-item-icon {
+    font-size: 1.2rem;
+    color: #c9a96e;
+    flex-shrink: 0;
+}
+.file-item-name {
+    font-size: 0.85rem;
+    color: #3d2b1f;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.file-item-size {
+    font-size: 0.75rem;
+    color: #8b7355;
+    flex-shrink: 0;
+}
+.file-item-remove {
+    background: none;
+    border: none;
+    color: #8b0000;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.file-item-remove:hover {
+    background: rgba(139,0,0,0.1);
+}
+
+/* Link web */
+.link-input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.link-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    background: #fffef8;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 14px;
+    color: #3d2b1f;
+}
+.link-input:focus {
+    outline: none;
+    border-color: #c9a96e;
+}
+.link-input::placeholder {
+    color: #a09080;
+    font-style: italic;
+}
+.btn-small {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #c9a96e;
+    color: #fff;
+    white-space: nowrap;
+}
+.btn-small:hover {
+    background: #b8985a;
+}
+
+.link-list {
+    margin-top: 10px;
+}
+.link-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 15px;
+    background: #fffef8;
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+.link-item a {
+    color: #1a5276;
+    text-decoration: none;
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 80%;
+}
+.link-item a:hover {
+    text-decoration: underline;
+}
+
+/* Pulsanti azione */
+.azioni {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: center;
+}
+.btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    padding: 16px 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 200px;
+}
+.btn-primary {
+    background: #8b0000;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(139,0,0,0.3);
+}
+.btn-primary:hover {
+    background: #6b0000;
+    transform: translateY(-2px);
+}
+.btn-primary:disabled {
+    background: #a08080;
+    cursor: not-allowed;
+    transform: none;
+}
+.btn-secondary {
+    background: transparent;
+    color: #8b7355;
+    border: 2px solid #d4c4a8;
+}
+.btn-secondary:hover {
+    background: rgba(201,169,110,0.1);
+    border-color: #c9a96e;
+}
+
+/* Stato caricamento */
+.stato-caricamento {
+    text-align: center;
+    padding: 20px;
+    color: #8b7355;
+    font-style: italic;
+    display: none;
+}
+.stato-caricamento.active {
+    display: block;
+}
+
+/* Errori */
+.errore {
+    background: rgba(139,0,0,0.08);
+    border: 1px solid #8b0000;
+    border-radius: 4px;
+    padding: 12px 15px;
+    color: #8b0000;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    display: none;
+}
+.errore.active {
+    display: block;
+}
+
+@media (max-width: 600px) {
+    .pergamena { padding: 25px; margin: 20px; }
+    .azioni { flex-direction: column; }
+    .btn { width: 100%; }
+    .link-input-row { flex-direction: column; }
+}
 </style>
 <base target="_blank">
 </head>
 <body>
+
 <div class="pergamena">
-<div class="logo"><h1>DESCRIZIONE PROGETTO</h1></div>
-<div class="titolo-sezione" id="titolo-servizio">Descrivi la tua invenzione</div>
-<div class="sezione">
-<h2>Descrizione Tecnica</h2>
-<textarea class="textarea-desc" id="descrizione" placeholder="Descrivi la tua invenzione in dettaglio. Cosa fa? Come funziona? Qual e il problema che risolve? Esempio: Ho inventato un dispositivo che... Piu dettagli fornisci, migliore sara l analisi."></textarea>
+    <div class="header">
+        <h1>DESCRIZIONE PROGETTO</h1>
+        <p>Descrivi la tua invenzione e aggiungi materiali di supporto</p>
+    </div>
+
+    <div class="servizio-info" id="servizio-info">
+        <h3 id="servizio-nome">Servizio</h3>
+        <p id="servizio-desc">Caricamento...</p>
+    </div>
+
+    <div class="errore" id="errore"></div>
+
+    <!-- DESCRIZIONE TESTUALE -->
+    <div class="sezione">
+        <h4>Descrizione Tecnica</h4>
+        <textarea 
+            class="textarea-desc" 
+            id="descrizione" 
+            placeholder="Descrivi dettagliatamente la tua invenzione: cosa e, come funziona, quali problemi risolve, quali sono i vantaggi rispetto allo stato dell'arte. Sii il piu preciso possibile."
+        ></textarea>
+    </div>
+
+    <!-- UPLOAD FILE -->
+    <div class="sezione">
+        <h4>File di Supporto</h4>
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+            <div class="icon">&#128194;</div>
+            <p>Clicca per selezionare file o trascina qui</p>
+            <p style="font-size:0.8rem;color:#a09080;margin-top:5px;">PDF, DOC, DOCX, JPG, PNG, ZIP, TXT, SVG, DWG, STEP e qualsiasi altro formato</p>
+        </div>
+        <input type="file" class="file-input" id="file-input" multiple onchange="handleFiles(this.files)">
+        <div class="file-list" id="file-list"></div>
+    </div>
+
+    <!-- LINK WEB -->
+    <div class="sezione">
+        <h4>Link Web</h4>
+        <div class="link-input-row">
+            <input type="url" class="link-input" id="link-input" placeholder="https://..." onkeypress="if(event.key==='Enter') aggiungiLink()">
+            <button class="btn-small" onclick="aggiungiLink()">AGGIUNGI</button>
+        </div>
+        <div class="link-list" id="link-list"></div>
+    </div>
+
+    <div class="stato-caricamento" id="stato-caricamento">
+        Caricamento in corso...
+    </div>
+
+    <!-- AZIONI -->
+    <div class="azioni">
+        <button class="btn btn-secondary" onclick="tornaIndietro()">TORNA INDIETRO</button>
+        <button class="btn btn-primary" id="btn-avvia" onclick="avviaElaborazione()">AVVIA ELABORAZIONE</button>
+    </div>
 </div>
-<div class="actions">
-<button class="btn" onclick="avviaElaborazione()">AVVIA ELABORAZIONE</button>
-<button class="btn btn-secondary" onclick="tornaIndietro()">TORNA INDIETRO</button>
-</div>
-</div>
+
 <script>
-const servizioId = new URLSearchParams(window.location.search).get("servizio") || "servizio-deposito";
-function caricaDescrizionePrecedente() {
-    const descrizionePrecedente = localStorage.getItem("brevettiamo_descrizione");
-    if (descrizionePrecedente) {
-        document.getElementById("descrizione").value = descrizionePrecedente;
+// ==================== CONFIGURAZIONE ====================
+const SERVIZI = {
+    'servizio-deposito': {
+        nome: 'Deposito Brevetto',
+        descrizione: 'Preparazione e deposito completo presso l'UIBM'
+    },
+    'servizio-priorart': {
+        nome: 'Ricerca Prior Art',
+        descrizione: 'Ricerca completa in database mondiali per verificare la novita'
+    },
+    'servizio-rivendicazioni': {
+        nome: 'Rivendicazioni',
+        descrizione: 'Redazione professionale delle rivendicazioni brevettuali'
+    },
+    'servizio-monitoraggio': {
+        nome: 'Monitoraggio',
+        descrizione: 'Monitoraggio scadenze, rinnovi, opposizioni e concorrenti'
+    },
+    'servizio-priorart-base': {
+        nome: 'Ricerca Prior Art Base',
+        descrizione: 'Ricerca essenziale nelle banche dati principali'
+    },
+    'servizio-priorart-avanzata': {
+        nome: 'Ricerca Prior Art Avanzata',
+        descrizione: 'Ricerca approfondita in 15+ banche dati globali'
+    },
+    'servizio-analisi-brevettabilita': {
+        nome: 'Analisi Brevettabilita',
+        descrizione: 'Valutazione sui 3 criteri legali: novita, attivita inventiva, applicabilita industriale'
+    },
+    'servizio-claims-base': {
+        nome: 'Redazione Claims Base',
+        descrizione: 'Redazione delle rivendicazioni principali (indipendenti)'
+    },
+    'servizio-claims-pro': {
+        nome: 'Redazione Claims Pro',
+        descrizione: 'Redazione completa di rivendicazioni indipendenti + dipendenti'
+    },
+    'servizio-traduzione-claims': {
+        nome: 'Traduzione Claims',
+        descrizione: 'Traduzione professionale delle rivendicazioni'
+    },
+    'servizio-monitoraggio-concorrenza': {
+        nome: 'Monitoraggio Concorrenza',
+        descrizione: 'Sorveglianza attiva dei brevetti dei concorrenti'
+    },
+    'servizio-consulenza': {
+        nome: 'Consulenza 1:1',
+        descrizione: 'Sessione video 30 min con un esperto brevettuale'
+    },
+    'servizio-analisi-tecnica': {
+        nome: 'Analisi Tecnica',
+        descrizione: 'Valutazione tecnica approfondita della tua invenzione'
+    },
+    'servizio-ricerca-figurativa': {
+        nome: 'Ricerca Figurativa',
+        descrizione: 'Ricerca di design e marchi simili'
+    },
+    'servizio-analisi-nullita': {
+        nome: 'Analisi Nullita',
+        descrizione: 'Valutazione della validita di un brevetto esistente'
+    },
+    'servizio-opposizione': {
+        nome: 'Preparazione Opposizione',
+        descrizione: 'Preparazione completa di un opposizione a brevetto'
+    },
+    'servizio-licensing': {
+        nome: 'Strategia Licensing',
+        descrizione: 'Analisi delle opportunita di licenza'
+    },
+    'servizio-valorizzazione': {
+        nome: 'Valorizzazione Brevetto',
+        descrizione: 'Valutazione economica del tuo brevetto'
+    },
+    'servizio-due-diligence': {
+        nome: 'Due Diligence IP',
+        descrizione: 'Analisi completa del portfolio IP'
+    },
+    'servizio-freedom-to-operate': {
+        nome: 'Freedom to Operate',
+        descrizione: 'Verifica che il tuo prodotto non violi brevetti esistenti'
+    },
+    'servizio-patentability': {
+        nome: 'Patentability Search',
+        descrizione: 'Ricerca brevettuale in stile americano'
+    },
+    'servizio-landscape': {
+        nome: 'Landscape Analysis',
+        descrizione: 'Mappa tecnologica completa di un settore'
+    },
+    'servizio-legale-base': {
+        nome: 'Supporto Legale Base',
+        descrizione: 'Consulenza legale su contratti IP'
     }
-}
-function avviaElaborazione() {
-    const descrizione = document.getElementById("descrizione").value.trim();
-    if (!descrizione) {
-        alert("Inserisci una descrizione prima di procedere.");
+};
+
+// ==================== STATO ====================
+let servizioCorrente = null;
+let filesCaricati = [];
+let linksAggiunti = [];
+
+// ==================== INIZIALIZZAZIONE ====================
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    servizioCorrente = params.get('servizio');
+
+    if (!servizioCorrente || !SERVIZI[servizioCorrente]) {
+        mostraErrore('Servizio non valido. Torna al menu e seleziona un servizio.');
+        document.getElementById('btn-avvia').disabled = true;
         return;
     }
-    localStorage.setItem("brevettiamo_descrizione", descrizione);
-    localStorage.setItem("brevettiamo_servizio", servizioId);
-    window.location.href = "/brevettiamo/elaborazione.html?servizio=" + encodeURIComponent(servizioId);
+
+    const s = SERVIZI[servizioCorrente];
+    document.getElementById('servizio-nome').textContent = s.nome;
+    document.getElementById('servizio-desc').textContent = s.descrizione;
+
+    // Drag & drop
+    setupDragDrop();
+});
+
+// ==================== DRAG & DROP ====================
+function setupDragDrop() {
+    const zone = document.getElementById('upload-zone');
+
+    zone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        zone.classList.add('dragover');
+    });
+
+    zone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+    });
+
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
 }
+
+// ==================== GESTIONE FILE ====================
+function handleFiles(fileList) {
+    for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+
+        // Leggi file come base64
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            filesCaricati.push({
+                nome: file.name,
+                tipo: file.type || 'application/octet-stream',
+                dimensione: file.size,
+                data: e.target.result.split(',')[1], // base64 senza prefix
+                dataUrl: e.target.result
+            });
+            aggiornaListaFile();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function aggiornaListaFile() {
+    const container = document.getElementById('file-list');
+    container.innerHTML = '';
+
+    filesCaricati.forEach(function(file, index) {
+        const item = document.createElement('div');
+        item.className = 'file-item';
+
+        const icona = getFileIcon(file.nome);
+        const size = formatSize(file.dimensione);
+
+        item.innerHTML = 
+            '<div class="file-item-info">' +
+                '<span class="file-item-icon">' + icona + '</span>' +
+                '<span class="file-item-name" title="' + file.nome + '">' + file.nome + '</span>' +
+                '<span class="file-item-size">' + size + '</span>' +
+            '</div>' +
+            '<button class="file-item-remove" onclick="rimuoviFile(' + index + ')" title="Rimuovi">&#10005;</button>';
+
+        container.appendChild(item);
+    });
+}
+
+function getFileIcon(nome) {
+    const ext = nome.split('.').pop().toLowerCase();
+    const icons = {
+        'pdf': '&#128196;',
+        'doc': '&#128221;',
+        'docx': '&#128221;',
+        'txt': '&#128221;',
+        'jpg': '&#127748;',
+        'jpeg': '&#127748;',
+        'png': '&#127748;',
+        'gif': '&#127748;',
+        'svg': '&#127912;',
+        'zip': '&#128230;',
+        'dwg': '&#128207;',
+        'step': '&#128207;',
+        'iges': '&#128207;'
+    };
+    return icons[ext] || '&#128194;';
+}
+
+function formatSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function rimuoviFile(index) {
+    filesCaricati.splice(index, 1);
+    aggiornaListaFile();
+}
+
+// ==================== GESTIONE LINK ====================
+function aggiungiLink() {
+    const input = document.getElementById('link-input');
+    const url = input.value.trim();
+
+    if (!url) return;
+
+    // Validazione URL semplice
+    if (!url.match(/^https?:\/\//i)) {
+        mostraErrore('Inserisci un URL valido che inizi con http:// o https://');
+        return;
+    }
+
+    linksAggiunti.push(url);
+    input.value = '';
+    aggiornaListaLink();
+    nascondiErrore();
+}
+
+function aggiornaListaLink() {
+    const container = document.getElementById('link-list');
+    container.innerHTML = '';
+
+    linksAggiunti.forEach(function(url, index) {
+        const item = document.createElement('div');
+        item.className = 'link-item';
+        item.innerHTML = 
+            '<a href="' + url + '" target="_blank">' + url + '</a>' +
+            '<button class="file-item-remove" onclick="rimuoviLink(' + index + ')" title="Rimuovi">&#10005;</button>';
+        container.appendChild(item);
+    });
+}
+
+function rimuoviLink(index) {
+    linksAggiunti.splice(index, 1);
+    aggiornaListaLink();
+}
+
+// ==================== AZIONI ====================
+function avviaElaborazione() {
+    const descrizione = document.getElementById('descrizione').value.trim();
+
+    if (!descrizione && filesCaricati.length === 0 && linksAggiunti.length === 0) {
+        mostraErrore('Inserisci almeno una descrizione, un file o un link.');
+        return;
+    }
+
+    nascondiErrore();
+    document.getElementById('btn-avvia').disabled = true;
+    document.getElementById('stato-caricamento').classList.add('active');
+
+    // Prepara dati
+    const dati = {
+        servizio: servizioCorrente,
+        descrizione: descrizione,
+        files: filesCaricati.map(function(f) {
+            return { nome: f.nome, tipo: f.tipo, data: f.data };
+        }),
+        links: linksAggiunti
+    };
+
+    // Salva in sessionStorage per passare a elaborazione
+    sessionStorage.setItem('brevettiamo_dati', JSON.stringify(dati));
+
+    // Naviga a elaborazione
+    window.location.href = 'elaborazione.html?servizio=' + encodeURIComponent(servizioCorrente);
+}
+
 function tornaIndietro() {
-    window.history.back();
+    window.location.href = 'welcome.html?servizio=' + encodeURIComponent(servizioCorrente || '');
 }
-document.addEventListener("DOMContentLoaded", caricaDescrizionePrecedente);
+
+// ==================== ERRORI ====================
+function mostraErrore(msg) {
+    const el = document.getElementById('errore');
+    el.textContent = msg;
+    el.classList.add('active');
+}
+
+function nascondiErrore() {
+    document.getElementById('errore').classList.remove('active');
+}
 </script>
+
 </body>
 </html>
