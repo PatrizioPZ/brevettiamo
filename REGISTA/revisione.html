@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BrevettIAmo - Revisione Risultato</title>
+<title>Risultato - BrevettIAmo</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Courier+Prime&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -27,40 +27,28 @@ body {
     position: relative;
 }
 
-.header {
+.logo {
     text-align: center;
     margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #d4c4a8;
 }
-.header h1 {
+.logo h1 {
     font-family: 'Cinzel', serif;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     color: #8b0000;
     letter-spacing: 2px;
 }
-.header p {
-    font-style: italic;
-    color: #8b7355;
-    font-size: 0.9rem;
-    margin-top: 5px;
-}
 
-.servizio-info {
-    text-align: center;
-    margin-bottom: 25px;
-    padding: 12px 20px;
-    background: rgba(139,0,0,0.05);
-    border: 1px dashed #8b0000;
-    border-radius: 4px;
-}
-.servizio-info h3 {
+.titolo-risultato {
     font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
     color: #8b0000;
-    font-size: 1rem;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #c9a96e;
+    padding-bottom: 15px;
 }
 
-/* Info API usate */
+/* Info API */
 .api-info {
     display: flex;
     gap: 15px;
@@ -80,32 +68,34 @@ body {
     color: #8b0000;
 }
 
-/* Sezioni risultato */
-.sezione-risultato {
-    background: #fffef8;
+/* Sezioni */
+.sezione {
+    margin: 25px 0;
+    padding: 20px;
+    background: rgba(201,169,110,0.08);
     border: 1px solid #d4c4a8;
     border-radius: 4px;
-    margin-bottom: 20px;
-    overflow: hidden;
 }
-.sezione-header {
-    background: rgba(201,169,110,0.15);
-    padding: 12px 20px;
-    border-bottom: 1px solid #d4c4a8;
+
+.sezione h2 {
+    font-family: 'Cinzel', serif;
+    color: #8b0000;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.sezione-header h4 {
-    font-family: 'Cinzel', serif;
+
+.sezione p, .sezione li {
+    font-size: 0.95rem;
+    line-height: 1.6;
     color: #3d2b1f;
-    font-size: 1rem;
+    margin-bottom: 8px;
 }
-.sezione-header .icon {
-    font-size: 1.2rem;
-}
-.sezione-body {
-    padding: 20px;
+
+.sezione ul {
+    margin-left: 20px;
 }
 
 /* Campi dati */
@@ -153,34 +143,6 @@ body {
     margin-bottom: 0;
 }
 
-/* Risultati EPO */
-.epo-results {
-    margin-top: 15px;
-}
-.epo-item {
-    padding: 12px 15px;
-    background: rgba(26,82,118,0.05);
-    border: 1px solid #d4c4a8;
-    border-radius: 4px;
-    margin-bottom: 8px;
-}
-.epo-item .epo-db {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    color: #1a5276;
-    margin-bottom: 4px;
-}
-.epo-item .epo-title {
-    font-size: 0.9rem;
-    color: #3d2b1f;
-    margin-bottom: 4px;
-}
-.epo-item .epo-id {
-    font-family: 'Courier Prime', monospace;
-    font-size: 0.8rem;
-    color: #8b7355;
-}
-
 /* Verifica box */
 .verifica-box {
     background: rgba(44,95,45,0.05);
@@ -213,9 +175,37 @@ body {
     color: #5a4a3a;
 }
 
-/* JSON raw (fallback) */
+/* Risultati EPO */
+.epo-results {
+    margin-top: 15px;
+}
+.epo-item {
+    padding: 12px 15px;
+    background: rgba(26,82,118,0.05);
+    border: 1px solid #d4c4a8;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+.epo-item .epo-db {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: #1a5276;
+    margin-bottom: 4px;
+}
+.epo-item .epo-title {
+    font-size: 0.9rem;
+    color: #3d2b1f;
+    margin-bottom: 4px;
+}
+.epo-item .epo-id {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: #8b7355;
+}
+
+/* JSON raw */
 .json-raw {
-    font-family: 'Courier Prime', monospace;
+    font-family: 'Courier New', monospace;
     font-size: 0.8rem;
     line-height: 1.5;
     color: #5a4a3a;
@@ -242,66 +232,58 @@ body {
 }
 
 /* Pulsanti */
-.azioni {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 30px;
-    flex-wrap: wrap;
-}
 .btn {
     font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     letter-spacing: 2px;
-    padding: 14px 30px;
+    padding: 16px 40px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s;
-    min-width: 180px;
-}
-.btn-success {
-    background: #2c5f2d;
+    background: #c9a96e;
     color: #fff;
-    box-shadow: 0 4px 15px rgba(44,95,45,0.3);
+    box-shadow: 0 4px 15px rgba(201,169,110,0.3);
+    margin: 10px;
 }
-.btn-success:hover {
-    background: #1e4a1f;
-    transform: translateY(-2px);
-}
-.btn-secondary {
-    background: transparent;
-    color: #8b7355;
-    border: 2px solid #d4c4a8;
-}
-.btn-secondary:hover {
-    background: rgba(201,169,110,0.1);
-    border-color: #c9a96e;
-}
-.btn-download {
-    background: #1a5276;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(26,82,118,0.3);
-}
-.btn-download:hover {
-    background: #134060;
+
+.btn:hover {
+    background: #b8985a;
     transform: translateY(-2px);
 }
 
-/* Errore */
-.errore-box {
-    background: rgba(139,0,0,0.08);
-    border: 1px solid #8b0000;
-    border-radius: 4px;
-    padding: 20px;
-    margin-bottom: 25px;
-    display: none;
+.btn-secondary {
+    background: #8b7355;
 }
-.errore-box.active { display: block; }
-.errore-box h4 {
-    font-family: 'Cinzel', serif;
+
+.btn-secondary:hover {
+    background: #6b5a45;
+}
+
+.btn-success {
+    background: #2c5f2d;
+}
+
+.btn-success:hover {
+    background: #1e4a1f;
+}
+
+.actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.info-box {
+    background: rgba(139,0,0,0.05);
+    border: 1px dashed #8b0000;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+}
+
+.info-box strong {
     color: #8b0000;
-    margin-bottom: 10px;
 }
 
 /* Loading */
@@ -321,24 +303,22 @@ body {
 
 @media (max-width: 600px) {
     .pergamena { padding: 25px; margin: 20px; }
-    .azioni { flex-direction: column; }
-    .btn { width: 100%; }
+    .actions { display: flex; flex-direction: column; }
+    .btn { width: 100%; margin: 5px 0; }
     .api-info { flex-direction: column; align-items: center; }
 }
 </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
 
 <div class="pergamena">
-    <div class="header">
-        <h1>REVISIONE E CORREZIONE</h1>
-        <p>Verifica il risultato della Dual IA</p>
+    <div class="logo">
+        <h1>RISULTATO ELABORAZIONE</h1>
     </div>
 
-    <div class="servizio-info" id="servizio-info">
-        <h3 id="servizio-nome">Servizio</h3>
-    </div>
+    <div class="titolo-risultato" id="titolo-servizio">Caricamento risultato...</div>
 
     <!-- Loading -->
     <div class="loading-box" id="loading-box">
@@ -347,9 +327,8 @@ body {
     </div>
 
     <!-- Errore -->
-    <div class="errore-box" id="errore-box">
-        <h4>Errore</h4>
-        <p id="errore-msg"></p>
+    <div class="info-box" id="errore-box" style="display:none;">
+        <strong>Errore:</strong> <span id="errore-msg"></span>
     </div>
 
     <!-- Contenuto risultato -->
@@ -371,36 +350,36 @@ body {
         <div id="risultato-formattato"></div>
 
         <!-- Risultati EPO (se presenti) -->
-        <div class="sezione-risultato" id="epo-section" style="display:none;">
-            <div class="sezione-header">
-                <span class="icon">&#127760;</span>
-                <h4>Risultati Ricerca EPO</h4>
-            </div>
-            <div class="sezione-body" id="epo-body"></div>
+        <div class="sezione" id="epo-section" style="display:none;">
+            <h2>&#127760; Risultati Ricerca EPO</h2>
+            <div id="epo-body"></div>
         </div>
 
         <!-- JSON Raw (toggle) -->
-        <div class="sezione-risultato">
-            <div class="sezione-header" style="cursor:pointer;" onclick="toggleRaw()">
-                <span class="icon" id="raw-icon">&#9654;</span>
-                <h4>Dati Completi (JSON)</h4>
-            </div>
-            <div class="sezione-body" id="raw-body" style="display:none;">
+        <div class="sezione">
+            <h2 style="cursor:pointer;" onclick="toggleRaw()">
+                <span id="raw-icon">&#9654;</span> Dati Completi (JSON)
+            </h2>
+            <div id="raw-body" style="display:none;">
                 <pre class="json-raw" id="json-raw"></pre>
             </div>
         </div>
 
         <!-- Azioni -->
-        <div class="azioni" id="azioni">
+        <div class="actions" id="azioni">
             <button class="btn btn-secondary" onclick="tornaDescrizione()">MODIFICA DESCRIZIONE</button>
-            <button class="btn btn-download" onclick="scaricaJSON()">SCARICA JSON</button>
+            <button class="btn" onclick="scaricaPDF()">SCARICA PDF</button>
             <button class="btn btn-success" onclick="accettaRisultato()">ACCETTA RISULTATO</button>
         </div>
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-// ==================== CONFIGURAZIONE ====================
+// ==========================================
+// RISULTATO BREVETTIAMO - FORMATTAZIONE DINAMICA + PDF
+// ==========================================
+
 const SERVIZI = {
     'servizio-deposito': 'Deposito Brevetto',
     'servizio-priorart': 'Ricerca Prior Art',
@@ -427,20 +406,21 @@ const SERVIZI = {
     'servizio-legale-base': 'Supporto Legale Base'
 };
 
-// ==================== STATO ====================
 let servizioCorrente = null;
 let risultato = null;
 let datiSessione = null;
 
-// ==================== INIZIALIZZAZIONE ====================
-document.addEventListener('DOMContentLoaded', function() {
+// ==========================================
+// INIZIALIZZAZIONE
+// ==========================================
+document.addEventListener("DOMContentLoaded", function() {
     const params = new URLSearchParams(window.location.search);
-    servizioCorrente = params.get('servizio');
+    servizioCorrente = params.get("servizio");
 
     const nomeServizio = SERVIZI[servizioCorrente] || servizioCorrente || 'Servizio';
-    document.getElementById('servizio-nome').textContent = nomeServizio;
+    document.getElementById("titolo-servizio").textContent = nomeServizio + ' - Risultato';
 
-    // Recupera risultato da sessionStorage
+    // Recupera risultato da sessionStorage (compatibile con elaborazione.html)
     const risultatoRaw = sessionStorage.getItem('brevettiamo_risultato');
     const datiRaw = sessionStorage.getItem('brevettiamo_dati');
 
@@ -465,7 +445,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// ==================== RENDERIZZAZIONE ====================
+// ==========================================
+// RENDERIZZAZIONE
+// ==========================================
 function renderizzaRisultato() {
     if (!risultato) return;
 
@@ -517,28 +499,18 @@ function renderizzaRisultato() {
     const parsed = risultato.analisi?.parsed;
 
     if (parsed) {
-        // PRIOR ART
-        if (servizioCorrente.includes('priorart') || servizioCorrente.includes('patentability') || servizioCorrente.includes('landscape')) {
+        if (servizioCorrente && (servizioCorrente.includes('priorart') || servizioCorrente.includes('patentability') || servizioCorrente.includes('landscape'))) {
             renderizzaPriorArt(container, parsed);
-        }
-        // RIVENDICAZIONI / CLAIMS
-        else if (servizioCorrente.includes('rivendicazioni') || servizioCorrente.includes('claims')) {
+        } else if (servizioCorrente && (servizioCorrente.includes('rivendicazioni') || servizioCorrente.includes('claims'))) {
             renderizzaRivendicazioni(container, parsed);
-        }
-        // ANALISI BREVETTABILITA / FTO / NULLITA
-        else if (servizioCorrente.includes('brevettabilita') || servizioCorrente.includes('freedom') || servizioCorrente.includes('nullita')) {
+        } else if (servizioCorrente && (servizioCorrente.includes('brevettabilita') || servizioCorrente.includes('freedom') || servizioCorrente.includes('nullita'))) {
             renderizzaAnalisi(container, parsed);
-        }
-        // DEPOSITO / REDAZIONE
-        else if (servizioCorrente.includes('deposito') || servizioCorrente.includes('opposizione')) {
+        } else if (servizioCorrente && (servizioCorrente.includes('deposito') || servizioCorrente.includes('opposizione'))) {
             renderizzaDeposito(container, parsed);
-        }
-        // GENERICO
-        else {
+        } else {
             renderizzaGenerico(container, parsed);
         }
     } else {
-        // Nessun parsed, mostra raw
         renderizzaGenerico(container, risultato.analisi?.raw || risultato);
     }
 
@@ -551,117 +523,77 @@ function renderizzaRisultato() {
     document.getElementById('json-raw').textContent = JSON.stringify(risultato, null, 2);
 }
 
-// ==================== RENDERIZZATORI PER TIPO ====================
+// ==========================================
+// RENDERIZZATORI PER TIPO
+// ==========================================
 
 function renderizzaPriorArt(container, data) {
-    // Campo tecnico
     if (data.campoTecnico) {
         container.appendChild(creaCampo('Campo Tecnico', data.campoTecnico));
     }
-
-    // Parole chiave
     if (data.paroleChiave && data.paroleChiave.length > 0) {
         container.appendChild(creaCampoLista('Parole Chiave', data.paroleChiave));
     }
-
-    // Classificazioni IPC
     if (data.classificazioniIPC && data.classificazioniIPC.length > 0) {
         container.appendChild(creaCampoLista('Classificazioni IPC', data.classificazioniIPC));
     }
-
-    // Query ricerca
     if (data.queryRicerca) {
         container.appendChild(creaCampo('Query di Ricerca', data.queryRicerca));
     }
-
-    // Potenziali prior art
     if (data.potenzialiPriorArt && data.potenzialiPriorArt.length > 0) {
         container.appendChild(creaCampoLista('Potenziali Prior Art', data.potenzialiPriorArt));
     }
-
-    // Se vuoto, mostra generico
-    if (container.innerHTML === '') {
-        renderizzaGenerico(container, data);
-    }
+    if (container.innerHTML === '') renderizzaGenerico(container, data);
 }
 
 function renderizzaRivendicazioni(container, data) {
-    // Rivendicazione indipendente
     if (data.rivendicazioneIndipendente) {
         container.appendChild(creaCampo('Rivendicazione Indipendente', data.rivendicazioneIndipendente));
     }
-
-    // Rivendicazioni dipendenti
     if (data.rivendicazioniDipendenti && data.rivendicazioniDipendenti.length > 0) {
         container.appendChild(creaCampoLista('Rivendicazioni Dipendenti', data.rivendicazioniDipendenti));
     }
-
-    // Caratteristiche essenziali
     if (data.caratteristicheEssenziali && data.caratteristicheEssenziali.length > 0) {
         container.appendChild(creaCampoLista('Caratteristiche Essenziali', data.caratteristicheEssenziali));
     }
-
-    if (container.innerHTML === '') {
-        renderizzaGenerico(container, data);
-    }
+    if (container.innerHTML === '') renderizzaGenerico(container, data);
 }
 
 function renderizzaAnalisi(container, data) {
-    // Risultato analisi
     if (data.analisi || data.valutazione) {
         container.appendChild(creaCampo('Analisi', data.analisi || data.valutazione));
     }
-
-    // Criteri
     if (data.criteri && data.criteri.length > 0) {
         container.appendChild(creaCampoLista('Criteri Valutati', data.criteri));
     }
-
-    // Conclusione
     if (data.conclusione || data.esito) {
         container.appendChild(creaCampo('Conclusione', data.conclusione || data.esito));
     }
-
-    // Raccomandazioni
     if (data.raccomandazioni && data.raccomandazioni.length > 0) {
         container.appendChild(creaCampoLista('Raccomandazioni', data.raccomandazioni));
     }
-
-    if (container.innerHTML === '') {
-        renderizzaGenerico(container, data);
-    }
+    if (container.innerHTML === '') renderizzaGenerico(container, data);
 }
 
 function renderizzaDeposito(container, data) {
-    // Descrizione tecnica
     if (data.descrizioneTecnica || data.descrizione) {
         container.appendChild(creaCampo('Descrizione Tecnica', data.descrizioneTecnica || data.descrizione));
     }
-
-    // Rivendicazioni
     if (data.rivendicazioni) {
         container.appendChild(creaCampo('Rivendicazioni', data.rivendicazioni));
     }
-
-    // Abstract
     if (data.abstract || data.riassunto) {
         container.appendChild(creaCampo('Abstract', data.abstract || data.riassunto));
     }
-
-    // Figure
     if (data.figure && data.figure.length > 0) {
         container.appendChild(creaCampoLista('Figure Richieste', data.figure.map(function(f) {
             return (typeof f === 'string') ? f : (f.tipo + ': ' + f.descrizione);
         })));
     }
-
-    if (container.innerHTML === '') {
-        renderizzaGenerico(container, data);
-    }
+    if (container.innerHTML === '') renderizzaGenerico(container, data);
 }
 
 function renderizzaGenerico(container, data) {
-    // Mostra tutti i campi come lista generica
     if (typeof data === 'object' && data !== null) {
         Object.keys(data).forEach(function(key) {
             const val = data[key];
@@ -676,7 +608,9 @@ function renderizzaGenerico(container, data) {
     }
 }
 
-// ==================== HELPERS ====================
+// ==========================================
+// HELPERS
+// ==========================================
 function creaCampo(label, valore) {
     const div = document.createElement('div');
     div.className = 'campo';
@@ -734,7 +668,6 @@ function formattaData(isoString) {
     }
 }
 
-// ==================== TOGGLE RAW ====================
 function toggleRaw() {
     const body = document.getElementById('raw-body');
     const icon = document.getElementById('raw-icon');
@@ -747,48 +680,159 @@ function toggleRaw() {
     }
 }
 
-// ==================== ERRORI ====================
 function mostraErrore(msg) {
     document.getElementById('errore-msg').textContent = msg;
-    document.getElementById('errore-box').classList.add('active');
+    document.getElementById('errore-box').style.display = 'block';
 }
 
-// ==================== AZIONI ====================
+// ==========================================
+// AZIONI
+// ==========================================
 function tornaDescrizione() {
     window.location.href = 'descrizione.html?servizio=' + encodeURIComponent(servizioCorrente);
 }
 
-function scaricaJSON() {
+function scaricaPDF() {
     if (!risultato) return;
 
-    const dataStr = JSON.stringify(risultato, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'brevettiamo_' + servizioCorrente + '_' + new Date().toISOString().slice(0,10) + '.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // Header
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(139, 0, 0);
+    doc.text('BREVETTIAMO', 105, 20, { align: 'center' });
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Risultato Elaborazione - ' + (SERVIZI[servizioCorrente] || servizioCorrente), 105, 30, { align: 'center' });
+
+    doc.setFontSize(10);
+    doc.text('Data: ' + new Date().toLocaleDateString('it-IT'), 105, 38, { align: 'center' });
+
+    // Linea separatrice
+    doc.setDrawColor(201, 169, 110);
+    doc.line(20, 42, 190, 42);
+
+    let y = 50;
+
+    // Info API
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('Sistema Dual IA', 20, y);
+    y += 8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('IA Analitica: ' + (risultato.metadata?.apiAnalitica || 'N/A'), 20, y);
+    y += 6;
+    doc.text('IA Critica: ' + (risultato.metadata?.apiCritica || 'N/A'), 20, y);
+    y += 6;
+    doc.text('Timestamp: ' + formattaData(risultato.timestamp), 20, y);
+    y += 12;
+
+    // Verifica
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    const approvato = risultato.risultato?.approvato;
+    if (approvato === true) {
+        doc.setTextColor(44, 95, 45);
+        doc.text('Verifica Dual IA: APPROVATO', 20, y);
+    } else if (approvato === false) {
+        doc.setTextColor(139, 0, 0);
+        doc.text('Verifica Dual IA: RICHIESTE MODIFICHE', 20, y);
+    } else {
+        doc.setTextColor(0, 0, 0);
+        doc.text('Verifica Dual IA: IN REVISIONE', 20, y);
+    }
+    doc.setTextColor(0, 0, 0);
+    y += 8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    const note = risultato.risultato?.note || 'Nessuna nota';
+    const noteLines = doc.splitTextToSize(note, 170);
+    doc.text(noteLines, 20, y);
+    y += noteLines.length * 6 + 8;
+
+    // Risultato
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('Risultato Analisi', 20, y);
+    y += 8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+
+    const parsed = risultato.analisi?.parsed;
+    if (parsed) {
+        Object.keys(parsed).forEach(function(key) {
+            const val = parsed[key];
+            if (y > 270) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(key + ':', 20, y);
+            y += 6;
+
+            doc.setFont('helvetica', 'normal');
+            if (Array.isArray(val)) {
+                val.forEach(function(item) {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    const itemLines = doc.splitTextToSize('- ' + String(item), 170);
+                    doc.text(itemLines, 25, y);
+                    y += itemLines.length * 5 + 3;
+                });
+            } else {
+                const valLines = doc.splitTextToSize(String(val), 170);
+                doc.text(valLines, 25, y);
+                y += valLines.length * 5 + 6;
+            }
+        });
+    } else {
+        const raw = risultato.analisi?.raw || JSON.stringify(risultato, null, 2);
+        const rawLines = doc.splitTextToSize(raw, 170);
+        doc.text(rawLines, 20, y);
+    }
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(128, 128, 128);
+    doc.text('Generato da BrevettIAmo - Piattaforma di Brevettistica Intelligente', 105, 285, { align: 'center' });
+    doc.text('www.brevettiamo.com', 105, 290, { align: 'center' });
+
+    // Salva
+    doc.save('BrevettIAmo_' + servizioCorrente + '_' + new Date().toISOString().slice(0,10) + '.pdf');
 }
 
 function accettaRisultato() {
-    // Salva come "accettato" in sessionStorage
     if (risultato) {
         risultato.accettato = true;
         risultato.dataAccettazione = new Date().toISOString();
         sessionStorage.setItem('brevettiamo_risultato', JSON.stringify(risultato));
     }
 
-    alert('Risultato accettato! Puoi scaricare il file JSON o proseguire con altri servizi.');
+    alert('Risultato accettato! Il PDF e stato scaricato automaticamente.');
+    scaricaPDF();
 
-    // Torna al menu servizi
     if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'brevettiamo', action: 'torna-menu' }, '*');
     } else {
-        window.location.href = '../REGISTA/index.html';
+        window.location.href = 'index.html';
+    }
+}
+
+function tornaServizi() {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'brevettiamo', action: 'torna-menu' }, '*');
+    } else {
+        window.location.href = 'index.html';
     }
 }
 </script>
