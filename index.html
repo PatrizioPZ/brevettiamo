@@ -1559,6 +1559,12 @@
 </style>
 <base target="_blank">
 <base target="_blank">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a3a5c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BrevettIAmo">
+<base target="_blank">
 </head>
 <body>
 
@@ -1613,6 +1619,7 @@
                 <a href="chat.html">Chat</a>
                 <a href="occhio-landing.html">L'OCCHIO</a>
                 <a href="profilo.html">Profilo</a>
+                <a href="pwa.html">PWA</a>
                 <a href="admin.html" id="admin-link" style="display:none;">Admin</a>
                 <a href="occhio-prezzi.html" class="nav-cta">Inizia Ora</a>
             </nav>
@@ -2048,5 +2055,12 @@
     BrevettIAmoE2E.init();
   }
 </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.log('SW failed:', err));
+      }
+    </script>
 </body>
 </html>
