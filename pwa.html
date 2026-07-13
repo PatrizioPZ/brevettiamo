@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="description" content="PWA BrevettIAmo - App multi-sistema per storage sicuro. Windows, Android, iOS, macOS, Linux.">
 <meta name="theme-color" content="#1a3a5c">
-<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BrevettIAmo">
 <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj4KICA8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0iIzFhM2E1YyIgcng9IjI0Ii8+CiAgPGNpcmNsZSBjeD0iOTYiIGN5PSI5NiIgcj0iNzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M5YTg0YyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGNpcmNsZSBjeD0iOTYiIGN5PSI5NiIgcj0iNTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M5YTg0YyIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtZGFzaGFycmF5PSI4IDgiLz4KICA8Y2lyY2xlIGN4PSI5NiIgY3k9Ijk2IiByPSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYzlhODRjIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8ZWxsaXBzZSBjeD0iOTYiIGN5PSI5NiIgcng9IjM1IiByeT0iMjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M5YTg0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGNpcmNsZSBjeD0iOTYiIGN5PSI5NiIgcj0iMTIiIGZpbGw9IiNjOWE4NGMiIG9wYWNpdHk9IjAuMyIvPgogIDxjaXJjbGUgY3g9Ijk2IiBjeT0iOTYiIHI9IjYiIGZpbGw9IiNjOWE4NGMiLz4KICA8bGluZSB4MT0iOTYiIHkxPSIyNiIgeDI9Ijk2IiB5Mj0iNDYiIHN0cm9rZT0iI2M5YTg0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9Ijk2IiB5MT0iMTQ2IiB4Mj0iOTYiIHkyPSIxNjYiIHN0cm9rZT0iI2M5YTg0YyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjI2IiB5MT0iOTYiIHgyPSI0NiIgeTI9Ijk2IiBzdHJva2U9IiNjOWE4NGMiIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxNDYiIHkxPSI5NiIgeDI9IjE2NiIgeTI9Ijk2IiBzdHJva2U9IiNjOWE4NGMiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=">
+
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>PWA BrevettIAmo - App Multi-Sistema</title>
 <style>
@@ -366,6 +369,7 @@
     .header h1 { font-size: 2.5em; }
   }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -596,6 +600,7 @@ function installPWA() {
     deferredPrompt.userChoice.then((choice) => {
       if (choice.outcome === 'accepted') {
         showStatus('Installazione in corso...', 'info');
+        document.getElementById('installBtn').textContent = 'Installazione...';
       } else {
         showStatus('Installazione annullata.', 'warning');
       }
@@ -603,8 +608,16 @@ function installPWA() {
     });
   } else if (isStandalone()) {
     showStatus('App gia installata!', 'success');
+    document.getElementById('installBtn').textContent = 'App Attiva';
+    document.getElementById('installBtn').disabled = true;
   } else {
-    showStatus('Chrome/Edge: menu -> Installa app. Safari: Aggiungi a Home.', 'info');
+    // Browser non supporta beforeinstallprompt (Safari, Firefox, etc.)
+    showStatus('Per installare: Chrome/Edge menu -> Installa app. Safari iOS: share -> Aggiungi a Home.', 'info');
+    // Mostra istruzioni dettagliate
+    document.getElementById('installMsg').innerHTML = 
+      '<strong>Chrome/Edge:</strong> Menu (3 punti) -> "Installa BrevettIAmo"<br>' +
+      '<strong>Safari iOS:</strong> Tasto Share -> "Aggiungi a Home"<br>' +
+      '<strong>Firefox:</strong> Menu -> "Installa"';
   }
 }
 
