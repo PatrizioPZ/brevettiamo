@@ -1,0 +1,13 @@
+{
+    "task_description": "Crea una funzione di login sicura per la piattaforma BrevettIAmo 2.0 e scrivi il file login.py",
+    "target_file": "login.py",
+    "status": "pending",
+    "priority": "SLOW",
+    "kill_switch": false,
+    "consegna_stimata_minuti": 3,
+    "analisi_funzionamento": "",
+    "api_keys": {
+        "GEMINI_API_KEY": "",
+        "KIMI_API_KEY": ""
+    }
+}
