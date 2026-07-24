@@ -1,8 +1,8 @@
 {
-    "task_description": "Crea una funzione di login sicura per la piattaforma BrevettIAmo 2.0 e scrivi il file login.py",
-    "target_file": "login.py",
+    "task_description": "Crea un file test_agente.py con una funzione hello_world che stampa 'Agente Dormiente funziona!'",
+    "target_file": "test_agente.py",
     "status": "pending",
-    "priority": "SLOW",
+    "priority": "URGENT",
     "kill_switch": false,
     "consegna_stimata_minuti": 3,
     "analisi_funzionamento": "",
