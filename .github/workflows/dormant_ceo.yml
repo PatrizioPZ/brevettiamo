@@ -2,6 +2,7 @@ name: Sleeper Agent Autonomous Pipeline
 on:
   push:
     branches:
+      - main
       - development
     paths:
       - 'task.json'
