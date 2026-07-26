@@ -3,5 +3,9 @@
     "task_description": "nessun task",
     "kill_switch": false,
     "target_file": "output.py",
-    "priority": "SLOW"
+    "priority": "SLOW",
+    "api_keys": {
+        "OPENROUTER_API_KEY": "sk-or-v1-e3f6b465066...",
+        "GROQ_API_KEY": "gsk_0BNBDP9hogcBmxPc..."
+    }
 }
