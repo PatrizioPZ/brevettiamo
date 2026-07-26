@@ -1,3 +1,4 @@
+## KEYWORDS: pwa, file, storage, upload, drag, drop, spazio, installa, app, localstorage, manifest
 # Competenza: Sicurezza e Gestione Login
 Attivati ogni volta che nel task.json viene richiesto un sistema di autenticazione, login o registrazione.
 
