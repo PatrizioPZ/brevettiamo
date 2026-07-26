@@ -1,3 +1,4 @@
+## KEYWORDS: occhio, ui, interfaccia, dashboard, layout, pergamena, tema, css, stile, design
 # Competenza: UI Front-End e Funzione Occhio Password
 Attivati ogni volta che viene generato un form di input per password o dati sensibili.
 
