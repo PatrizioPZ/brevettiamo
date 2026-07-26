@@ -1,12 +1,7 @@
 {
-    "status": "failed",
-    "task_description": "Crea un file pwa.html completo e autosufficiente per BrevettIAmo. Questa e la pagina PWA (Progressive Web App) che funziona come spazio file personale del cliente dopo il login. Requisiti: 1) DOCTYPE html, lang=it, meta viewport, charset UTF-8. 2) Titolo 'BrevettIAmo - Spazio File'. 3) CSS inline con tema scuro pergamena coerente BrevettIAmo (sfondo #1a1a2e, card #16213e, accenti #0f3460, testo #e0e0e0). 4) Header con logo testuale 'BrevettIAmo' e sottotitolo 'Spazio File Personale'. 5) Area drag-and-drop grande e visibile per caricare file da PC con bordo tratteggiato. 6) Lista file caricati in card con: nome, dimensione, tipo, data caricamento. 7) Pulsante elimina rosso per ogni file. 8) Anteprima thumbnail per immagini. 9) Icona generica per PDF e documenti. 10) File salvati in localStorage come base64 (demo). 11) Pulsante 'Installa App' in alto a destra. 12) Link 'Torna ai Servizi' che punta a servizi.html. 13) NO emoji, solo testo e icone SVG inline. 14) JavaScript inline alla fine del body. 15) Responsive mobile-first. 16) Zero dipendenze esterne.",
+    "status": "pending",
+    "task_description": "COMPITO: Correggi e migliora il file pwa.html ESISTENTE in BrevettIAmo. OBBLIGATORIO: leggi il file pwa.html attuale, mantieni tutte le funzionalita (PWA install, drag-drop, file manager, localStorage, sync, crittografia, multi-dispositivo), e applica queste correzioni: 1) Verifica che il tema sia coerente BrevettIAmo: sfondo body #1a1a2e, testo #e0e0e0, card #16213e, accenti #0f3460. 2) NO emoji, solo testo e icone SVG. 3) Assicurati che il link 'Torna ai Servizi' punti a servizi.html. 4) Verifica che localStorage usi la chiave 'brevettiamo_files'. 5) Rimuovi riferimenti a Supabase se non configurato (placeholder). 6) Assicurati che il file sia HTML5 valido con DOCTYPE, html lang=it, charset UTF-8. 7) JavaScript inline alla fine del body. 8) Responsive mobile-first. 9) Produci il file COMPLETO corretto, non un diff. 10) File target: pwa.html.",
     "kill_switch": false,
     "target_file": "pwa.html",
-    "priority": "NORMAL",
-    "analisi_funzionamento": "Errore API: Nessun provider API disponibile o funzionante.",
-    "api_keys": {
-        "OPENROUTER_API_KEY": "sk-or-v1-e3f6b465066...",
-        "GROQ_API_KEY": "gsk_0BNBDP9hogcBmxPc..."
-    }
+    "priority": "NORMAL"
 }
