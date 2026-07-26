@@ -6,6 +6,7 @@ import sys
 import zipfile
 import io
 import re
+import time
 from datetime import datetime
 
 def log(msg):
@@ -111,7 +112,7 @@ def auto_learn(task_desc, target_file, output_code, success):
         if "<!DOCTYPE html>" in output_code:
             learned_rules.append("- File HTML deve iniziare con <!DOCTYPE html>")
         if '<html lang="it">' in output_code:
-            learned_rules.append('- HTML lang deve essere \"it\"')
+            learned_rules.append('- HTML lang deve essere "it"')
         if "localStorage" in output_code:
             learned_rules.append("- Per storage locale usare localStorage con JSON.stringify/parse")
         if "dragover" in output_code or "ondragover" in output_code:
@@ -134,10 +135,9 @@ def auto_learn(task_desc, target_file, output_code, success):
         return
 
     task_words = set(re.findall(r'[a-zA-Z]{3,}', task_desc.lower()))
-    common_words = {'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use', 'che', 'per', 'una', 'con', 'del', 'nel', 'non', 'sono', 'della', 'alla', 'come', 'dopo', 'ogni', 'sotto', 'sopra', 'tra', 'fra', 'questo', 'questa', 'tutto', 'tutti', 'deve', 'essere', 'file', 'codice', 'crea', 'compito', 'task', 'correggi', 'migliora', 'target', 'obbligatorio', 'istruzioni', 'passo', 'prima', 'dentro', 'ogni', 'funzione', 'script', 'style', 'head', 'body'}
+    common_words = {'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use', 'che', 'per', 'una', 'con', 'del', 'nel', 'non', 'sono', 'della', 'alla', 'come', 'dopo', 'ogni', 'sotto', 'sopra', 'tra', 'fra', 'questo', 'questa', 'tutto', 'tutti', 'deve', 'essere', 'file', 'codice', 'crea', 'compito', 'task', 'correggi', 'migliora', 'target', 'obbligatorio', 'istruzioni', 'passo', 'prima', 'dentro', 'ogni', 'funzione', 'script', 'style', 'head', 'body', 'step', 'retry', 'tentativo'}
     keywords = sorted(task_words - common_words)[:10]
 
-    # Costruisco il contenuto senza f-string per evitare conflitti con backtick
     lines = []
     lines.append("# SKILL AUTO-APPRESA: " + target_file)
     lines.append("")
@@ -185,6 +185,8 @@ def clean_ai_output(text, target_file):
             continue
         if stripped.startswith('il codice') or stripped.startswith('il file') or stripped.startswith('certo') or stripped.startswith('ho corretto'):
             continue
+        if stripped.startswith('perfetto') or stripped.startswith('fatto') or stripped.startswith('completato'):
+            continue
         code_lines.append(line)
 
     text = '\n'.join(code_lines).strip()
@@ -231,7 +233,7 @@ def run_the_guardian_sandbox(target_file, task_desc):
 
     return True, "Sistema integro. Sandbox verde."
 
-def call_broker_api(prompt, system_instruction, priority, task_data):
+def call_broker_api(prompt, system_instruction, priority, task_data, timeout=120):
     api_keys = task_data.get("api_keys", {})
     kimi_key = api_keys.get("KIMI_API_KEY") or os.getenv("KIMI_API_KEY")
     gemini_key = api_keys.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
@@ -249,7 +251,7 @@ def call_broker_api(prompt, system_instruction, priority, task_data):
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
                 json={"model": "llama3-8b-8192", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=60
+                timeout=timeout
             )
             if res.status_code == 200:
                 log("Groq OK")
@@ -266,7 +268,7 @@ def call_broker_api(prompt, system_instruction, priority, task_data):
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {groq_key2}", "Content-Type": "application/json"},
                 json={"model": "llama3-8b-8192", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=60
+                timeout=timeout
             )
             if res.status_code == 200:
                 log("Groq 2 OK")
@@ -283,7 +285,7 @@ def call_broker_api(prompt, system_instruction, priority, task_data):
                 "https://api.moonshot.cn/v1/chat/completions",
                 headers={"Authorization": f"Bearer {kimi_key}", "Content-Type": "application/json"},
                 json={"model": "moonshot-v1-8k", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=60
+                timeout=timeout
             )
             if res.status_code == 200:
                 log("Kimi OK")
@@ -297,7 +299,7 @@ def call_broker_api(prompt, system_instruction, priority, task_data):
         try:
             log("Provo Gemini...")
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={gemini_key}"
-            res = requests.post(url, json={"contents": [{"parts": [{"text": f"{system_instruction}\n\nTask: {prompt}"}]}]}, timeout=60)
+            res = requests.post(url, json={"contents": [{"parts": [{"text": f"{system_instruction}\n\nTask: {prompt}"}]}]}, timeout=timeout)
             if res.status_code == 200:
                 log("Gemini OK")
                 return res.json()['candidates'][0]['content']['parts'][0]['text']
@@ -313,7 +315,7 @@ def call_broker_api(prompt, system_instruction, priority, task_data):
                 "https://api.openai.com/v1/chat/completions",
                 headers={"Authorization": f"Bearer {openai_key}", "Content-Type": "application/json"},
                 json={"model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=60
+                timeout=timeout
             )
             if res.status_code == 200:
                 log("OpenAI OK")
@@ -332,7 +334,7 @@ def call_broker_api(prompt, system_instruction, priority, task_data):
                     "https://openrouter.ai/api/v1/chat/completions",
                     headers={"Authorization": f"Bearer {openrouter_key}", "Content-Type": "application/json"},
                     json={"model": model, "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                    timeout=60
+                    timeout=timeout
                 )
                 if res.status_code == 200:
                     log(f"OpenRouter OK con {model}")
@@ -374,8 +376,90 @@ def fallback_create_file(target_file, task_desc):
     log(f"Fallback: nessun template per {target_file}")
     return False
 
+def execute_task_with_retry(task_desc, target_file, priority, task_data, skill_context, existing_code, max_retries=3):
+    """Esegue il task con retry automatico"""
+
+    base_prompt = task_desc
+    if existing_code:
+        max_len = 6000
+        existing_show = existing_code[:max_len]
+        if len(existing_code) > max_len:
+            existing_show += "\n... [file troncato, continua] ..."
+        base_prompt = f"{task_desc}\n\n=== FILE ATTUALE ({target_file}) ===\n{existing_show}\n\n=== ISTRUZIONE ===\nCorreggi il file sopra. Mantieni tutte le funzionalita esistenti valide. Produci il file COMPLETO e corretto. Non omettere parti."
+
+    system_instruction = f"""Agisci come compilatore di codice. NON interpretare. NON spiegare. ESEGUI SOLO.
+
+REGOLE ASSOLUTE:
+1. Output SOLO codice sorgente puro. ZERO spiegazioni. ZERO markdown. ZERO commenti inutili.
+2. Se il target e un file .html, produci HTML5 completo con DOCTYPE, html, head, body, script inline.
+3. Se il target e un file .json, produci JSON valido.
+4. Se il target e un file .py, produci Python valido.
+5. NON includere testo prima o dopo il codice.
+6. Inizia direttamente con il codice.
+7. Se ti viene fornito un file esistente, correggilo mantenendo tutte le funzionalita valide.
+
+{skill_context}"""
+
+    for attempt in range(1, max_retries + 1):
+        log(f"=== TENTATIVO {attempt}/{max_retries} ===")
+
+        # Aumenta dettaglio ad ogni retry
+        if attempt == 1:
+            prompt = base_prompt
+        elif attempt == 2:
+            prompt = base_prompt + "\n\n=== ATTENZIONE ===\nIl tentativo precedente non ha prodotto codice valido. Assicurati di produrre SOLO codice, senza spiegazioni. Inizia direttamente con <!DOCTYPE html> se il target e HTML."
+        else:
+            prompt = base_prompt + "\n\n=== ULTIMO TENTATIVO ===\nDevi assolutamente produrre codice valido. NON scrivere testo. NON spiegare. Inizia immediatamente con il codice del file. Se HTML, inizia con <!DOCTYPE html>."
+
+        output_code = None
+        try:
+            output_code = call_broker_api(prompt, system_instruction, priority, task_data, timeout=120)
+            output_code = clean_ai_output(output_code, target_file)
+            log(f"IA ha generato {len(output_code)} caratteri")
+
+            if not output_code or len(output_code.strip()) < 50:
+                log(f"Tentativo {attempt}: output troppo corto")
+                if attempt < max_retries:
+                    time.sleep(2)
+                    continue
+                else:
+                    raise Exception("Output IA troppo corto dopo tutti i retry")
+
+            # Scrivi file temporaneo per sandbox
+            temp_file = target_file + ".tmp"
+            with open(temp_file, "w", encoding="utf-8") as f:
+                f.write(output_code)
+
+            # Sandbox
+            sandbox_ok, test_log = run_the_guardian_sandbox(temp_file, task_desc)
+
+            if sandbox_ok:
+                # Sposta da temp a definitivo
+                os.replace(temp_file, target_file)
+                log(f"Tentativo {attempt}: SUCCESSO - Sandbox passata")
+                return output_code, True, None
+            else:
+                log(f"Tentativo {attempt}: Sandbox fallita - {test_log}")
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+                if attempt < max_retries:
+                    time.sleep(2)
+                    continue
+                else:
+                    raise Exception(f"Sandbox fallita dopo {max_retries} tentativi: {test_log}")
+
+        except Exception as e:
+            log(f"Tentativo {attempt}: Errore - {e}")
+            if attempt < max_retries:
+                time.sleep(2)
+                continue
+            else:
+                return None, False, str(e)
+
+    return None, False, "Tutti i tentativi falliti"
+
 def main():
-    log("CEO Orchestrator v3.3 avviato")
+    log("CEO Orchestrator v3.4 avviato")
 
     if not os.path.exists("task.json"):
         log("task.json non trovato, creo file idle")
@@ -400,15 +484,16 @@ def main():
     task_desc = task_data["task_description"]
     target_file = task_data.get("target_file", "output.py")
     priority = task_data.get("priority", "SLOW")
+    max_retries = task_data.get("max_retries", 3)
 
     log(f"Task: {task_desc[:100]}...")
-    log(f"Target file: {target_file}, Priority: {priority}")
+    log(f"Target file: {target_file}, Priority: {priority}, Max retries: {max_retries}")
 
     # SCANSIONE DINAMICA SKILL
     all_skills = discover_skills()
     skill_context = load_skills_for_task(task_desc, all_skills)
 
-    # LEGGI FILE ESISTENTE SE PRESENTE (per correzioni)
+    # LEGGI FILE ESISTENTE SE PRESENTE
     existing_code = ""
     if os.path.exists(target_file):
         try:
@@ -418,48 +503,13 @@ def main():
         except Exception as e:
             log(f"Errore lettura file esistente: {e}")
 
-    # Prepara prompt con file esistente
-    if existing_code:
-        max_len = 6000
-        existing_show = existing_code[:max_len]
-        if len(existing_code) > max_len:
-            existing_show += "\n... [file troncato, continua] ..."
-        full_prompt = f"{task_desc}\n\n=== FILE ATTUALE ({target_file}) ===\n{existing_show}\n\n=== ISTRUZIONE ===\nCorreggi il file sopra. Mantieni tutte le funzionalita esistenti valide. Produci il file COMPLETO e corretto. Non omettere parti."
-    else:
-        full_prompt = task_desc
+    # ESECUZIONE CON RETRY
+    output_code, success, error_msg = execute_task_with_retry(
+        task_desc, target_file, priority, task_data, skill_context, existing_code, max_retries
+    )
 
-    system_instruction = f"""Agisci come compilatore di codice. NON interpretare. NON spiegare. ESEGUI SOLO.
-
-REGOLE ASSOLUTE:
-1. Output SOLO codice sorgente puro. ZERO spiegazioni. ZERO markdown. ZERO commenti inutili.
-2. Se il target e un file .html, produci HTML5 completo con DOCTYPE, html, head, body, script inline.
-3. Se il target e un file .json, produci JSON valido.
-4. Se il target e un file .py, produci Python valido.
-5. NON includere testo prima o dopo il codice.
-6. Inizia direttamente con il codice.
-7. Se ti viene fornito un file esistente, correggilo mantenendo tutte le funzionalita valide.
-
-{skill_context}"""
-
-    output_code = None
-    api_error = None
-    success = False
-
-    try:
-        log("Chiamo API...")
-        output_code = call_broker_api(full_prompt, system_instruction, priority, task_data)
-        output_code = clean_ai_output(output_code, target_file)
-        log(f"IA ha generato {len(output_code)} caratteri")
-
-        if not output_code or len(output_code.strip()) < 50:
-            raise Exception("Output IA troppo corto o vuoto")
-
-        with open(target_file, "w", encoding="utf-8") as f:
-            f.write(output_code)
-        log(f"File scritto: {target_file}")
-    except Exception as e:
-        api_error = str(e)
-        log(f"Errore API: {api_error}")
+    if not success:
+        log(f"Tutti i tentativi falliti: {error_msg}")
 
         if fallback_create_file(target_file, task_desc):
             log("Fallback riuscito")
@@ -469,29 +519,20 @@ REGOLE ASSOLUTE:
         else:
             log("Fallback fallito")
             task_data["status"] = "failed"
-            task_data["analisi_funzionamento"] = f"Errore API: {api_error}"
+            task_data["analisi_funzionamento"] = f"Errore dopo {max_retries} tentativi: {error_msg}"
             task_data.pop("api_keys", None)
             with open("task.json", "w", encoding="utf-8") as f:
                 json.dump(task_data, f, indent=4)
             log("Task segnato come failed. Uscita con 0")
             sys.exit(0)
 
-    sandbox_ok, test_log = run_the_guardian_sandbox(target_file, task_desc)
-    if sandbox_ok:
-        task_data["status"] = "completed"
-        task_data["analisi_funzionamento"] = "Codice integrato con successo. Sandbox verde."
-        log("Sandbox: PASS")
-        success = True
-        exit_code = 0
-    else:
-        task_data["status"] = "failed"
-        task_data["analisi_funzionamento"] = f"Sandbox fallita: {test_log}"
-        if os.path.exists(target_file):
-            os.remove(target_file)
-        log(f"Sandbox: FAIL - {test_log}")
-        success = False
-        exit_code = 0
+    # Task completato
+    task_data["status"] = "completed"
+    task_data["analisi_funzionamento"] = f"Codice integrato con successo dopo retry. Sandbox verde."
+    log("Task completato con successo")
+    exit_code = 0
 
+    # AUTO-APPRENDIMENTO
     if success and output_code:
         auto_learn(task_desc, target_file, output_code, success)
 
