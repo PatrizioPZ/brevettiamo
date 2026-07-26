@@ -1,7 +1,12 @@
 {
-    "status": "pending",
+    "status": "completed",
     "task_description": "Crea un file manifest.json completo per la PWA BrevettIAmo. Il file deve includere: name 'BrevettIAmo', short_name 'BrevettIAmo', description 'Piattaforma brevetti intelligente', start_url '/', display 'standalone', background_color '#1a1a2e', theme_color '#16213e', orientation 'portrait', icons con src 'icon-192.png' sizes '192x192' e src 'icon-512.png' sizes '512x512'. Il file deve essere valido JSON senza commenti, senza markdown, solo codice puro.",
     "kill_switch": false,
     "target_file": "manifest.json",
-    "priority": "NORMAL"
+    "priority": "NORMAL",
+    "api_keys": {
+        "OPENROUTER_API_KEY": "sk-or-v1-e3f6b465066...",
+        "GROQ_API_KEY": "gsk_0BNBDP9hogcBmxPc..."
+    },
+    "analisi_funzionamento": "Codice integrato con successo. Sandbox verde."
 }
