@@ -259,6 +259,7 @@ def main():
             log("Fallback fallito, nessun template disponibile")
             task_data["status"] = "failed"
             task_data["analisi_funzionamento"] = f"Errore API: {api_error}"
+            task_data.pop("api_keys", None)  # <-- FIX SICUREZZA: rimuove api_keys
             with open("task.json", "w", encoding="utf-8") as f:
                 json.dump(task_data, f, indent=4)
             log("Task segnato come failed. Uscita con 0 (non blocca il workflow)")
@@ -279,6 +280,9 @@ def main():
         log(f"Sandbox: FAIL - {test_log}")
         exit_code = 0  # Non blocca il workflow, logga solo
 
+    # FIX SICUREZZA: rimuove api_keys prima di salvare nel repo
+    task_data.pop("api_keys", None)
+    
     with open("task.json", "w", encoding="utf-8") as f:
         json.dump(task_data, f, indent=4)
 
