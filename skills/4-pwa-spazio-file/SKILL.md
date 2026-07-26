@@ -1,3 +1,4 @@
+## KEYWORDS: pwa, file, storage, upload, drag, drop, spazio, installa, app, localstorage, manifest
 # SKILL: PWA e Spazio File BrevettIAmo
 
 ## Contesto
