@@ -1,3 +1,4 @@
+## KEYWORDS: api, backend, supabase, groq, openrouter, edge, function, fetch, chiave, secret, provider, token
 # SKILL: API e Backend BrevettIAmo
 
 ## Contesto
