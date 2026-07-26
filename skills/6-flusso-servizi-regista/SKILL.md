@@ -1,3 +1,4 @@
+## KEYWORDS: servizi, regista, flusso, welcome, percorso, pagina, html, index, dashboard, menu
 # SKILL: Flusso Servizi e Regista BrevettIAmo
 
 ## Contesto
