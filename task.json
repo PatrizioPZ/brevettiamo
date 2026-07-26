@@ -1,13 +1,7 @@
 {
-    "task_description": "Crea un file test_agente.py con una funzione hello_world che stampa 'Agente Dormiente funziona!'",
-    "target_file": "test_agente.py",
-    "status": "pending",
-    "priority": "URGENT",
+    "status": "idle",
+    "task_description": "nessun task",
     "kill_switch": false,
-    "consegna_stimata_minuti": 3,
-    "analisi_funzionamento": "",
-    "api_keys": {
-        "GEMINI_API_KEY": "",
-        "KIMI_API_KEY": ""
-    }
+    "target_file": "output.py",
+    "priority": "SLOW"
 }
