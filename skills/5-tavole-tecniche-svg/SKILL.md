@@ -1,3 +1,4 @@
+## KEYWORDS: svg, tavola, disegno, tecnico, figura, assieme, esplosa, sezione, cad, vista, geometric
 # SKILL: Tavole Tecniche e Disegni SVG BrevettIAmo
 
 ## Contesto
