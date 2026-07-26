@@ -1,3 +1,4 @@
+## KEYWORDS: brevetto, uibm, conformita, tavola, rivendicazione, prior art, safety, office, epo, wipo
 # Competenza: Conformita Brevetti e Proprieta Intellettuale
 Attivati ogni volta che viene richiesto codice relativo a brevetti, UIBM, EPO o conformita legale.
 
