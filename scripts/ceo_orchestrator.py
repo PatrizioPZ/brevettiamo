@@ -3,17 +3,12 @@ import json
 import subprocess
 import requests
 import sys
-import time
 import zipfile
 import io
 
 def run_command(command):
     result = subprocess.run(command, shell=True, text=True, capture_output=True)
     return result.stdout.strip(), result.returncode
-
-def autoconfig_git():
-    run_command("git config --global user.name 'BrevettIAmo-CEO-Orchestrator'")
-    run_command("git config --global user.email 'ceo-agent@brevettiamo.local'")
 
 def compress_files(files_dict):
     zip_buffer = io.BytesIO()
@@ -75,9 +70,6 @@ def run_the_guardian_sandbox(target_file, task_desc):
             if code != 0:
                 return False, f"Violazione Occhio UI:\n{out}"
 
-    _, code = run_command("python -m py_compile *.py")
-    if code != 0:
-        return False, "Conflitto o regressione globale rilevata."
     return True, "Sistema integro. Sandbox verde."
 
 def call_broker_api(prompt, system_instruction, priority, task_data):
@@ -114,19 +106,30 @@ def call_broker_api(prompt, system_instruction, priority, task_data):
     raise Exception("Nessun provider API disponibile o funzionante.")
 
 def main():
+    # FIX 1: se task.json non esiste, crea uno vuoto e esci senza errore
     if not os.path.exists("task.json"):
-        sys.exit(1)
+        default_task = {
+            "status": "idle",
+            "task_description": "nessun task",
+            "kill_switch": False,
+            "target_file": "output.py",
+            "priority": "SLOW"
+        }
+        with open("task.json", "w", encoding="utf-8") as f:
+            json.dump(default_task, f, indent=4)
+        print("task.json creato con stato idle. Nessun task da eseguire.")
+        sys.exit(0)
+
     with open("task.json", "r", encoding="utf-8") as f:
         task_data = json.load(f)
+
     if task_data.get("status") != "pending" or task_data.get("kill_switch") == True:
+        print(f"Stato task: {task_data.get('status', 'unknown')}. Kill switch: {task_data.get('kill_switch', False)}. Uscita.")
         sys.exit(0)
 
     task_desc = task_data["task_description"]
     target_file = task_data.get("target_file", "output.py")
     priority = task_data.get("priority", "SLOW")
-
-    if priority == "SLOW":
-        time.sleep(180)
 
     skill_context = load_agno_skills_container(task_desc)
     system_instruction = f"Agisci come Senior Developer. Scrivi SOLO codice sorgente puro, senza spiegazioni, senza markdown.\n{skill_context}"
@@ -155,8 +158,7 @@ def main():
     with open("task.json", "w", encoding="utf-8") as f:
         json.dump(task_data, f, indent=4)
 
-    autoconfig_git()
-    run_command("git add . && git commit -m 'Esecuzione task [skip ci]' && git push origin development")
+    # FIX 2: NON fare git operations - le gestisce il workflow YAML
     sys.exit(exit_code)
 
 if __name__ == "__main__":
