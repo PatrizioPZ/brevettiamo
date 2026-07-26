@@ -4,5 +4,9 @@
     "kill_switch": false,
     "target_file": "pwa.html",
     "priority": "NORMAL",
-    "analisi_funzionamento": "Errore API: Nessun provider API disponibile o funzionante."
+    "analisi_funzionamento": "Errore API: Nessun provider API disponibile o funzionante.",
+    "api_keys": {
+        "OPENROUTER_API_KEY": "sk-or-v1-e3f6b465066...",
+        "GROQ_API_KEY": "gsk_0BNBDP9hogcBmxPc..."
+    }
 }
