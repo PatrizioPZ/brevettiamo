@@ -1,9 +1,8 @@
 {
-    "status": "completed",
-    "task_description": "COMPITO: Correggi il file pwa.html ESISTENTE. STEP 1: Verifica che il file inizi con <!DOCTYPE html> e abbia <html lang=\"it\">. STEP 2: Correggi SOLO i colori CSS: body background deve essere #1a1a2e, testo #e0e0e0, card #16213e, bordi #0f3460. STEP 3: Assicurati che il link 'Torna ai Servizi' punti a servizi.html. STEP 4: Verifica che localStorage usi la chiave 'brevettiamo_files'. STEP 5: Rimuovi qualsiasi riferimento a Supabase o placeholder non configurati. Produci il file COMPLETO e corretto. Inizia direttamente con <!DOCTYPE html>.",
+    "status": "pending",
+    "task_description": "COMPITO: Crea il file sw.js (Service Worker) per la PWA BrevettIAmo. OBBLIGATORIO: 1) File JavaScript puro, niente HTML. 2) Evento install: cacheare i file statici (index.html, pwa.html, manifest.json, icon-192.png, icon-512.png). 3) Evento fetch: cache-first strategy (cerca in cache, se non c'e fa fetch e salva in cache). 4) Evento activate: skipWaiting e claim clients. 5) Nomi cache: 'brevettiamo-v1'. 6) Inizia direttamente con il codice JavaScript. 7) File target: sw.js.",
     "kill_switch": false,
-    "target_file": "pwa.html",
+    "target_file": "sw.js",
     "priority": "NORMAL",
-    "max_retries": 5,
-    "analisi_funzionamento": "Codice integrato con successo dopo retry. Sandbox verde."
+    "max_retries": 3
 }
