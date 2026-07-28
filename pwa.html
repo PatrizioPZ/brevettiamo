@@ -301,12 +301,10 @@ function deriveKey(password,salt){
   });
 }
 
-function deriveSyncId(password,salt){
+function deriveSyncId(password){
   var enc=new TextEncoder();
-  return crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']).then(function(keyMaterial){
-    return crypto.subtle.deriveBits({name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},keyMaterial,256);
-  }).then(function(bits){
-    return Array.from(new Uint8Array(bits)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+  return crypto.subtle.digest('SHA-256',enc.encode('BREVETTIAMO_SYNC_'+password)).then(function(hash){
+    return Array.from(new Uint8Array(hash)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
   });
 }
 
@@ -341,11 +339,17 @@ function setPassword(){
   if(pw.length<8){errEl.textContent='Password minimo 8 caratteri.';errEl.classList.remove('hidden');return}
   if(pw!==confirm){errEl.textContent='Le password non coincidono.';errEl.classList.remove('hidden');return}
   userPassword=pw;
-  getDeterministicSalt(pw).then(function(salt){
-    console.log('SET salt determinato:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
-    return Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]);
-  }).then(function(results){
-    cryptoKey=results[0];syncId=results[1];
+  var salt;
+  getDeterministicSalt(pw).then(function(s){
+    salt=s;
+    console.log('SET salt:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
+    return deriveKey(pw,salt);
+  }).then(function(key){
+    cryptoKey=key;
+    console.log('SET key derivata OK');
+    return deriveSyncId(pw);
+  }).then(function(sid){
+    syncId=sid;
     localStorage.setItem('pwa_salt','deterministic');
     localStorage.setItem('pwa_has_pw','true');
     console.log('SET syncId:',syncId.substring(0,16));
@@ -356,6 +360,9 @@ function setPassword(){
     renderFileList();
     syncFromCloud();
     startAutoSync();
+  }).catch(function(e){
+    console.error('SET error:',e);
+    errEl.textContent='Errore: '+e.message;errEl.classList.remove('hidden');
   });
 }
 
@@ -369,29 +376,24 @@ function checkPassword(){
 function unlockWithPassword(){
   var pw=document.getElementById('pwUnlock').value;
   var errEl=document.getElementById('pwError');
-  getDeterministicSalt(pw).then(function(salt){
-    console.log('UNLOCK salt determinato:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
-    return Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]);
-  }).then(function(results){
-    var testKey=results[0];var testSyncId=results[1];
-    console.log('UNLOCK syncId:',testSyncId.substring(0,16));
-    getAllFilesFromDB().then(function(files){
-      if(files.length>0){
-        decryptData(files[0].encrypted,files[0].iv,testKey).then(function(){
-          cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
-          document.getElementById('passwordOverlay').classList.add('hidden');
-          updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
-          initSupabase();renderFileList();syncFromCloud();startAutoSync();
-        }).catch(function(){
-          errEl.textContent='Password errata.';errEl.classList.remove('hidden');
-        });
-      }else{
-        cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
-        document.getElementById('passwordOverlay').classList.add('hidden');
-        updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
-        initSupabase();renderFileList();syncFromCloud();startAutoSync();
-      }
-    });
+  var salt;
+  getDeterministicSalt(pw).then(function(s){
+    salt=s;
+    console.log('UNLOCK salt:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
+    return deriveKey(pw,salt);
+  }).then(function(key){
+    cryptoKey=key;
+    console.log('UNLOCK key OK');
+    return deriveSyncId(pw);
+  }).then(function(sid){
+    syncId=sid;
+    console.log('UNLOCK syncId:',syncId.substring(0,16));
+    document.getElementById('passwordOverlay').classList.add('hidden');
+    updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
+    initSupabase();renderFileList();syncFromCloud();startAutoSync();
+  }).catch(function(e){
+    console.error('UNLOCK error:',e);
+    errEl.textContent='Password errata o errore: '+e.message;errEl.classList.remove('hidden');
   });
 }
 
