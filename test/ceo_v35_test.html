@@ -1,12 +1,9 @@
-Ecco il file di test completo per il CEO Orchestrator v3.5 di BrevettIAmo.
-
-```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrevettIAmo · CEO Orchestrator v3.5 · Test</title>
+    <title>BrevettIAmo · CEO Orchestrator v3.5 · Test Suite</title>
     <style>
         /* === DESIGN SYSTEM BREVETTIAMO – PERGAMENA === */
         * {
@@ -16,11 +13,10 @@ Ecco il file di test completo per il CEO Orchestrator v3.5 di BrevettIAmo.
         }
 
         body {
-            background: #f5efe0;
-            background-image: radial-gradient(circle at 20% 30%, rgba(210, 180, 140, 0.15) 0%, transparent 60%),
-                              repeating-linear-gradient(45deg, rgba(200, 170, 120, 0.03) 0px, rgba(200, 170, 120, 0.03) 2px, transparent 2px, transparent 8px);
+            background: #f5efe6;
+            background-image: radial-gradient(circle at 10% 20%, rgba(200, 180, 150, 0.1) 0%, transparent 50%);
             font-family: 'Georgia', 'Times New Roman', serif;
-            color: #2e241e;
+            color: #2c2416;
             padding: 2rem 1.5rem;
             min-height: 100vh;
             display: flex;
@@ -30,14 +26,14 @@ Ecco il file di test completo per il CEO Orchestrator v3.5 di BrevettIAmo.
 
         /* contenitore pergamena */
         .pergamena {
-            max-width: 1200px;
+            max-width: 1300px;
             width: 100%;
             background: #fcf8f0;
-            background-image: linear-gradient(145deg, #faf3e6 0%, #f5ead9 100%);
-            border: 1px solid #dac29c;
-            border-radius: 28px 12px 28px 12px;
-            box-shadow: 0 12px 30px rgba(60, 40, 20, 0.25), inset 0 1px 4px rgba(255, 245, 220, 0.8);
-            padding: 2.2rem 2rem;
+            background-image: linear-gradient(145deg, #fcf8f0 0%, #f7f0e3 100%);
+            border: 1px solid #dacbb8;
+            border-radius: 28px 28px 20px 20px;
+            box-shadow: 0 12px 30px rgba(60, 40, 20, 0.15), inset 0 1px 4px rgba(255, 245, 230, 0.8);
+            padding: 2.2rem 2.5rem;
             position: relative;
             transition: box-shadow 0.2s ease;
         }
@@ -45,331 +41,395 @@ Ecco il file di test completo per il CEO Orchestrator v3.5 di BrevettIAmo.
         .pergamena::before {
             content: '';
             position: absolute;
-            top: 8px; left: 12px; right: 12px; bottom: 8px;
-            border: 1px dashed #c8b28a;
-            border-radius: 20px 6px 20px 6px;
-            pointer-events: none;
-            opacity: 0.25;
+            top: 12px;
+            left: 30px;
+            right: 30px;
+            height: 6px;
+            background: linear-gradient(90deg, transparent, #c8b69e, #b8a58a, #c8b69e, transparent);
+            border-radius: 50%;
+            opacity: 0.3;
         }
 
-        /* intestazione */
-        .header-brand {
+        /* header con sigillo */
+        .header-istituzionale {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 1rem;
-            border-bottom: 2px solid #dac29c;
-            padding-bottom: 1rem;
-            margin-bottom: 1.8rem;
+            border-bottom: 2px solid #dacbb8;
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
             flex-wrap: wrap;
         }
 
-        .logo-svg {
+        .sigillo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sigillo svg {
             width: 48px;
             height: 48px;
-            flex-shrink: 0;
+            fill: none;
+            stroke: #5f4e3a;
+            stroke-width: 1.8;
         }
 
-        .header-brand h1 {
-            font-size: 2rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-            color: #3f2e1e;
-            text-shadow: 1px 1px 0 #ede3d0;
-        }
-
-        .header-brand .sottotitolo {
-            font-size: 0.9rem;
-            font-style: italic;
-            color: #6b5a44;
-            margin-left: auto;
-            background: #ede3d0;
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            border: 1px solid #dac29c;
-        }
-
-        /* griglia dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.8rem;
-            margin: 1.5rem 0 2rem;
-        }
-
-        .card-pergamena {
-            background: #fcf7ed;
-            border: 1px solid #dac29c;
-            border-radius: 18px 6px 18px 6px;
-            padding: 1.4rem 1.2rem;
-            box-shadow: inset 0 0 0 1px rgba(255, 245, 225, 0.7), 0 4px 8px rgba(60, 40, 20, 0.08);
-        }
-
-        .card-pergamena h2 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            border-left: 4px solid #b89a70;
-            padding-left: 0.8rem;
-            margin-bottom: 1rem;
-            color: #3f2e1e;
-        }
-
-        .card-pergamena .stat {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.3rem 0;
-            border-bottom: 1px dotted #dccdb6;
-            font-size: 0.95rem;
-        }
-
-        .card-pergamena .stat:last-child {
-            border-bottom: none;
-        }
-
-        .badge {
-            background: #dac29c;
-            color: #2e241e;
-            padding: 0.1rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
+        .sigillo-text {
+            font-size: 1.5rem;
             font-weight: 600;
+            letter-spacing: 1px;
+            color: #3f3222;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .sigillo-text small {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: #7a6a56;
+        }
+
+        .badge-versione {
+            background: #e3d7c6;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2c2416;
+            border: 1px solid #c8b69e;
+            box-shadow: inset 0 1px 3px rgba(255, 245, 235, 0.7);
+            letter-spacing: 0.3px;
+        }
+
+        /* titolo test */
+        .test-banner {
+            background: #ede5d8;
+            border-left: 6px solid #9b8a74;
+            padding: 1rem 1.8rem;
+            border-radius: 14px;
+            margin-bottom: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .test-banner h2 {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #2c2416;
+        }
+
+        .test-banner .stato {
+            margin-left: auto;
+            background: #2c6b3f;
+            color: #f5efe6;
+            padding: 0.3rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border: 1px solid #1f4f2e;
+        }
+
+        /* griglia test */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin: 2rem 0 1.5rem;
+        }
+
+        .test-card {
+            background: #faf6ef;
+            border: 1px solid #dccfc0;
+            border-radius: 20px;
+            padding: 1.5rem 1.2rem 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: all 0.15s ease;
+        }
+
+        .test-card:hover {
+            border-color: #b8a58a;
+            box-shadow: 0 6px 14px rgba(60, 40, 20, 0.08);
+        }
+
+        .test-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #3f3222;
+            border-bottom: 1px dashed #dccfc0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-card h3 svg {
+            width: 22px;
+            height: 22px;
+            stroke: #5f4e3a;
+            stroke-width: 1.6;
+            fill: none;
+        }
+
+        .test-output {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2c2416;
+            background: #f3ede3;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            min-height: 60px;
+            border: 1px solid #e3d7c6;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .test-output .pass {
+            color: #1f6e3a;
+            font-weight: 600;
+        }
+
+        .test-output .fail {
+            color: #a13a2b;
+            font-weight: 600;
+        }
+
+        .test-output .info {
+            color: #6a5a48;
         }
 
         /* tavole tecniche SVG */
         .tavole-container {
+            margin-top: 2.5rem;
+            border-top: 2px solid #dacbb8;
+            padding-top: 2rem;
+        }
+
+        .tavole-container h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #3f3222;
+            margin-bottom: 1.2rem;
             display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            justify-content: center;
-            margin: 2rem 0 1.5rem;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tavole-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
         }
 
         .tavola {
-            background: #fcf8f0;
-            border: 1px solid #c8b28a;
-            border-radius: 14px 4px 14px 4px;
-            padding: 0.8rem 0.8rem 0.4rem 0.8rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            flex: 1 1 240px;
-            max-width: 280px;
+            background: #faf6ef;
+            border: 1px solid #dccfc0;
+            border-radius: 16px;
+            padding: 0.8rem;
             text-align: center;
         }
 
         .tavola svg {
-            display: block;
             width: 100%;
             height: auto;
-            background: #fcfaf5;
-            border-radius: 8px 2px 8px 2px;
+            display: block;
+            border-radius: 8px;
+            background: #ffffffd9;
+            box-shadow: inset 0 0 0 1px #e3d7c6;
         }
 
         .tavola .didascalia {
+            margin-top: 0.4rem;
             font-size: 0.75rem;
+            color: #5f4e3a;
+            letter-spacing: 0.3px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #6b5a44;
-            margin-top: 0.3rem;
-            padding: 0.2rem 0;
-            border-top: 1px solid #e3d5c0;
         }
 
-        /* pannello di controllo orchestrator */
-        .orchestrator-panel {
-            background: #f3eadc;
-            border: 1px solid #dac29c;
-            border-radius: 20px 6px 20px 6px;
-            padding: 1.5rem 1.8rem;
-            margin: 1.8rem 0;
+        /* footer test */
+        .footer-test {
+            margin-top: 2.8rem;
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
             justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .orchestrator-panel .stato {
-            display: flex;
             align-items: center;
-            gap: 0.8rem;
+            border-top: 1px solid #dacbb8;
+            padding-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #6a5a48;
+            flex-wrap: wrap;
         }
 
-        .orchestrator-panel .stato .indicatore {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #4a7c59;
-            box-shadow: 0 0 0 2px #dac29c;
+        .footer-test .log {
+            background: #ede5d8;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-family: monospace;
         }
 
-        .orchestrator-panel button {
-            background: #dac29c;
+        .btn-test {
+            background: #9b8a74;
             border: none;
-            border-radius: 40px;
-            padding: 0.6rem 1.8rem;
+            color: #fcf8f0;
             font-family: 'Georgia', serif;
             font-size: 0.95rem;
-            color: #2e241e;
-            font-weight: 600;
+            padding: 0.5rem 1.8rem;
+            border-radius: 40px;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.15s;
-            border: 1px solid #c8b28a;
+            transition: background 0.2s;
+            letter-spacing: 0.5px;
+            border: 1px solid #7a6a56;
         }
 
-        .orchestrator-panel button:hover {
-            background: #c8b28a;
-            box-shadow: 0 4px 8px rgba(60, 40, 20, 0.15);
-            transform: scale(0.98);
+        .btn-test:hover {
+            background: #7a6a56;
         }
 
-        .orchestrator-panel .log {
-            font-size: 0.85rem;
-            background: #fcf8f0;
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            border: 1px solid #dac29c;
-            color: #3f2e1e;
-            max-width: 300px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        @media (max-width: 800px) {
+            .pergamena { padding: 1.5rem; }
+            .tavole-grid { grid-template-columns: repeat(2, 1fr); }
         }
-
-        /* footer */
-        .footer-note {
-            margin-top: 2rem;
-            font-size: 0.75rem;
-            color: #7a6a54;
-            text-align: center;
-            border-top: 1px solid #dac29c;
-            padding-top: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        /* responsive */
-        @media (max-width: 700px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            .header-brand {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-brand .sottotitolo {
-                margin-left: 0;
-            }
-            .orchestrator-panel {
-                flex-direction: column;
-                align-items: stretch;
-            }
+        @media (max-width: 500px) {
+            .tavole-grid { grid-template-columns: 1fr; }
+            .header-istituzionale { flex-direction: column; align-items: start; gap: 0.8rem; }
         }
     </style>
 </head>
 <body>
-<div class="pergamena" id="app">
+<div class="pergamena" id="pergamena">
 
-    <!-- HEADER -->
-    <div class="header-brand">
-        <svg class="logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="10" width="36" height="28" rx="4" stroke="#3f2e1e" stroke-width="1.8" fill="#f5ead9"/>
-            <path d="M16 20 L24 16 L32 20 L32 30 L24 34 L16 30 Z" stroke="#3f2e1e" stroke-width="1.5" fill="none"/>
-            <circle cx="24" cy="25" r="3" stroke="#3f2e1e" stroke-width="1.2" fill="#dac29c"/>
-            <path d="M20 28 L24 32 L28 28" stroke="#3f2e1e" stroke-width="1.2" fill="none"/>
-            <line x1="24" y1="16" x2="24" y2="12" stroke="#3f2e1e" stroke-width="1.5"/>
-            <circle cx="24" cy="10" r="2" stroke="#3f2e1e" stroke-width="1" fill="#dac29c"/>
-        </svg>
-        <h1>BrevettIAmo</h1>
-        <span class="sottotitolo">CEO Orchestrator v3.5</span>
+    <!-- HEADER CON SIGILLO -->
+    <div class="header-istituzionale">
+        <div class="sigillo">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="20" stroke="#5f4e3a" stroke-width="1.8" fill="none"/>
+                <path d="M16 24 L22 30 L32 18" stroke="#5f4e3a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="24" cy="24" r="6" stroke="#5f4e3a" stroke-width="1.2" fill="none"/>
+                <path d="M24 8 L24 14 M24 34 L24 40 M8 24 L14 24 M34 24 L40 24" stroke="#5f4e3a" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <div class="sigillo-text">
+                BrevettIAmo
+                <small>Orchestrator · test suite</small>
+            </div>
+        </div>
+        <div class="badge-versione">CEO v3.5 · verifica funzionamento</div>
     </div>
 
-    <!-- DASHBOARD STATS -->
-    <div class="dashboard-grid">
-        <div class="card-pergamena">
-            <h2>Stato brevetti</h2>
-            <div class="stat"><span>Depositati</span> <span class="badge">12</span></div>
-            <div class="stat"><span>In esame</span> <span class="badge">5</span></div>
-            <div class="stat"><span>Concessi</span> <span class="badge">8</span></div>
-            <div class="stat"><span>Rifiutati</span> <span class="badge">1</span></div>
+    <!-- BANNER TEST -->
+    <div class="test-banner">
+        <h2>Test di conformità Orchestrator</h2>
+        <span class="stato" id="statoGlobale">IN ESECUZIONE</span>
+    </div>
+
+    <!-- GRIGLIA TEST -->
+    <div class="test-grid" id="testGrid">
+        <!-- Test 1: sintassi core -->
+        <div class="test-card">
+            <h3>
+                <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z" stroke="currentColor" fill="none"/><path d="M8 8h8M8 12h6M8 16h4" stroke="currentColor" stroke-linecap="round"/></svg>
+                Core syntax
+            </h3>
+            <div class="test-output" id="testCore">caricamento...</div>
         </div>
-        <div class="card-pergamena">
-            <h2>Attivita IA</h2>
-            <div class="stat"><span>Analisi prior art</span> <span class="badge">23</span></div>
-            <div class="stat"><span>Bozze generate</span> <span class="badge">17</span></div>
-            <div class="stat"><span>Revisioni in corso</span> <span class="badge">4</span></div>
-            <div class="stat"><span>Task orchestrator</span> <span class="badge">9</span></div>
+        <!-- Test 2: CEO Orchestrator v3.5 -->
+        <div class="test-card">
+            <h3>
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-linecap="round"/></svg>
+                CEO v3.5 heartbeat
+            </h3>
+            <div class="test-output" id="testHeartbeat">caricamento...</div>
+        </div>
+        <!-- Test 3: tavole tecniche SVG -->
+        <div class="test-card">
+            <h3>
+                <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z" stroke="currentColor" fill="none"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18" stroke="currentColor" stroke-width="0.8"/></svg>
+                Tavole SVG
+            </h3>
+            <div class="test-output" id="testTavole">caricamento...</div>
+        </div>
+        <!-- Test 4: finestre globali -->
+        <div class="test-card">
+            <h3>
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" fill="none"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" fill="none"/></svg>
+                Global scope
+            </h3>
+            <div class="test-output" id="testGlobal">caricamento...</div>
         </div>
     </div>
 
     <!-- TAVOLE TECNICHE SVG (4 figure distinte) -->
     <div class="tavole-container">
-        <!-- Tavola 1: Assieme -->
-        <div class="tavola">
-            <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="20" width="100" height="60" rx="6" fill="#f5ead9" stroke="#3f2e1e" stroke-width="1.2"/>
-                <rect x="20" y="30" width="35" height="25" rx="3" fill="#e8dcc8" stroke="#3f2e1e" stroke-width="0.8"/>
-                <rect x="65" y="30" width="35" height="25" rx="3" fill="#e8dcc8" stroke="#3f2e1e" stroke-width="0.8"/>
-                <line x1="55" y1="42" x2="65" y2="42" stroke="#3f2e1e" stroke-width="1.2"/>
-                <circle cx="60" cy="55" r="4" fill="#dac29c" stroke="#3f2e1e" stroke-width="0.8"/>
-                <text x="60" y="82" font-size="6" text-anchor="middle" fill="#3f2e1e">FIG.1 ASSIEME</text>
-            </svg>
-            <div class="didascalia">Fig. 1 – Vista assieme</div>
-        </div>
-        <!-- Tavola 2: Esplosa -->
-        <div class="tavola">
-            <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-                <rect x="15" y="10" width="90" height="18" rx="3" fill="#f0e4d0" stroke="#3f2e1e" stroke-width="1"/>
-                <rect x="15" y="40" width="90" height="18" rx="3" fill="#e8dcc8" stroke="#3f2e1e" stroke-width="1"/>
-                <rect x="15" y="70" width="90" height="18" rx="3" fill="#ddd0b8" stroke="#3f2e1e" stroke-width="1"/>
-                <line x1="60" y1="28" x2="60" y2="40" stroke="#3f2e1e" stroke-width="1" stroke-dasharray="2 2"/>
-                <line x1="60" y1="58" x2="60" y2="70" stroke="#3f2e1e" stroke-width="1" stroke-dasharray="2 2"/>
-                <text x="60" y="96" font-size="6" text-anchor="middle" fill="#3f2e1e">FIG.2 ESPLOSA</text>
-            </svg>
-            <div class="didascalia">Fig. 2 – Vista esplosa</div>
-        </div>
-        <!-- Tavola 3: Sezione -->
-        <div class="tavola">
-            <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 20 L100 20 L100 80 L20 80 Z" fill="#f5ead9" stroke="#3f2e1e" stroke-width="1.2"/>
-                <path d="M30 30 L90 30 L90 70 L30 70 Z" fill="#ede3d0" stroke="#3f2e1e" stroke-width="0.8" stroke-dasharray="3 2"/>
-                <line x1="40" y1="30" x2="40" y2="70" stroke="#3f2e1e" stroke-width="0.6"/>
-                <line x1="80" y1="30" x2="80" y2="70" stroke="#3f2e1e" stroke-width="0.6"/>
-                <circle cx="60" cy="50" r="6" fill="#dac29c" stroke="#3f2e1e" stroke-width="0.8"/>
-                <text x="60" y="92" font-size="6" text-anchor="middle" fill="#3f2e1e">FIG.3 SEZIONE</text>
-            </svg>
-            <div class="didascalia">Fig. 3 – Sezione trasversale</div>
-        </div>
-        <!-- Tavola 4: Dettaglio -->
-        <div class="tavola">
-            <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="60" cy="45" r="28" fill="#f5ead9" stroke="#3f2e1e" stroke-width="1.2"/>
-                <circle cx="60" cy="45" r="14" fill="#ede3d0" stroke="#3f2e1e" stroke-width="0.8"/>
-                <circle cx="60" cy="45" r="5" fill="#dac29c" stroke="#3f2e1e" stroke-width="0.8"/>
-                <line x1="60" y1="17" x2="60" y2="10" stroke="#3f2e1e" stroke-width="1"/>
-                <line x1="60" y1="73" x2="60" y2="80" stroke="#3f2e1e" stroke-width="1"/>
-                <line x1="32" y1="45" x2="25" y2="45" stroke="#3f2e1e" stroke-width="1"/>
-                <line x1="88" y1="45" x2="95" y2="45" stroke="#3f2e1e" stroke-width="1"/>
-                <text x="60" y="94" font-size="6" text-anchor="middle" fill="#3f2e1e">FIG.4 DETTAGLIO</text>
-            </svg>
-            <div class="didascalia">Fig. 4 – Dettaglio costruttivo</div>
+        <h3>
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="#5f4e3a" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+            Tavole tecniche di brevetto
+        </h3>
+        <div class="tavole-grid">
+            <!-- Figura 1: assieme -->
+            <div class="tavola">
+                <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="20" width="100" height="60" rx="6" fill="#f0ebe2" stroke="#5f4e3a" stroke-width="1.5"/>
+                    <rect x="25" y="30" width="30" height="20" rx="3" fill="#e3d7c6" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <rect x="65" y="30" width="30" height="20" rx="3" fill="#e3d7c6" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <circle cx="40" cy="65" r="6" fill="#dccfc0" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <circle cx="80" cy="65" r="6" fill="#dccfc0" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <line x1="55" y1="40" x2="65" y2="40" stroke="#5f4e3a" stroke-width="1" stroke-dasharray="3 2"/>
+                    <text x="60" y="90" font-size="6" text-anchor="middle" fill="#3f3222" font-family="Georgia">FIG.1 ASSIEME</text>
+                </svg>
+                <div class="didascalia">Vista assieme</div>
+            </div>
+            <!-- Figura 2: esplosa -->
+            <div class="tavola">
+                <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="15" y="10" width="30" height="18" rx="3" fill="#ede5d8" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <rect x="15" y="38" width="30" height="18" rx="3" fill="#e3d7c6" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <rect x="15" y="66" width="30" height="18" rx="3" fill="#dccfc0" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <line x1="30" y1="28" x2="30" y2="38" stroke="#5f4e3a" stroke-width="0.8" stroke-dasharray="2 2"/>
+                    <line x1="30" y1="56" x2="30" y2="66" stroke="#5f4e3a" stroke-width="0.8" stroke-dasharray="2 2"/>
+                    <circle cx="80" cy="30" r="12" fill="#f0ebe2" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <circle cx="80" cy="60" r="12" fill="#ede5d8" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <text x="60" y="90" font-size="6" text-anchor="middle" fill="#3f3222" font-family="Georgia">FIG.2 ESPLOSA</text>
+                </svg>
+                <div class="didascalia">Vista esplosa</div>
+            </div>
+            <!-- Figura 3: sezione -->
+            <div class="tavola">
+                <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 20 L100 20 L100 80 L20 80 Z" fill="#f3ede3" stroke="#5f4e3a" stroke-width="1.5"/>
+                    <path d="M20 20 L60 50 L100 20" fill="none" stroke="#5f4e3a" stroke-width="1.2" stroke-dasharray="4 2"/>
+                    <path d="M20 80 L60 50 L100 80" fill="none" stroke="#5f4e3a" stroke-width="1.2" stroke-dasharray="4 2"/>
+                    <line x1="60" y1="20" x2="60" y2="80" stroke="#5f4e3a" stroke-width="0.8" stroke-dasharray="2 2"/>
+                    <circle cx="60" cy="50" r="4" fill="#b8a58a" stroke="#5f4e3a" stroke-width="1"/>
+                    <text x="60" y="90" font-size="6" text-anchor="middle" fill="#3f3222" font-family="Georgia">FIG.3 SEZIONE</text>
+                </svg>
+                <div class="didascalia">Sezione trasversale</div>
+            </div>
+            <!-- Figura 4: dettaglio -->
+            <div class="tavola">
+                <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="60" cy="45" r="28" fill="#f7f0e3" stroke="#5f4e3a" stroke-width="1.5"/>
+                    <circle cx="60" cy="45" r="14" fill="#ede5d8" stroke="#5f4e3a" stroke-width="1.2"/>
+                    <circle cx="60" cy="45" r="5" fill="#dccfc0" stroke="#5f4e3a" stroke-width="1"/>
+                    <line x1="60" y1="17" x2="60" y2="28" stroke="#5f4e3a" stroke-width="0.8"/>
+                    <line x1="60" y1="62" x2="60" y2="73" stroke="#5f4e3a" stroke-width="0.8"/>
+                    <line x1="32" y1="45" x2="43" y2="45" stroke="#5f4e3a" stroke-width="0.8"/>
+                    <line x1="77" y1="45" x2="88" y2="45" stroke="#5f4e3a" stroke-width="0.8"/>
+                    <text x="60" y="90" font-size="6" text-anchor="middle" fill="#3f3222" font-family="Georgia">FIG.4 DETTAGLIO</text>
+                </svg>
+                <div class="didascalia">Dettaglio costruttivo</div>
+            </div>
         </div>
     </div>
 
-    <!-- PANNELLO ORCHESTRATOR -->
-    <div class="orchestrator-panel" id="orchestratorPanel">
-        <div class="stato">
-            <span class="indicatore" id="statoIndicatore"></span>
-            <span id="statoTesto">Orchestrator attivo</span>
-        </div>
-        <div class="log" id="logMessaggio">Ultima operazione: verifica v3.5</div>
-        <button id="btnTest">Esegui test CEO</button>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="footer-note">
-        <span>BrevettIAmo · CEO Orchestrator v3.5</span>
-        <span>test funzionale · pergamena system</span>
-        <span id="timestampFooter"></span>
+    <!-- FOOTER TEST -->
+    <div class="footer-test">
+        <span class="log" id="logTime">init</span>
+        <button class="btn-test" id="btnRerun">Esegui test</button>
     </div>
 </div>
 
@@ -377,105 +437,207 @@ Ecco il file di test completo per il CEO Orchestrator v3.5 di BrevettIAmo.
     (function() {
         'use strict';
 
-        // === CEO Orchestrator v3.5 – test ===
-        // Tutte le variabili globali su window per evitare 'var object.property'
-        window.brevettiamo = window.brevettiamo || {};
-        window.brevettiamo.orchestrator = {
-            versione: '3.5',
-            stato: 'operativo',
-            testCount: 0,
-            ultimoTest: null
+        // === CEO Orchestrator v3.5 – core ===
+        window.brevettiamoCEO = window.brevettiamoCEO || {};
+
+        // funzione costruttore orchestrator
+        window.brevettiamoCEO.Orchestrator = function() {
+            this.version = '3.5';
+            this.status = 'operativo';
+            this.modules = [];
         };
 
-        // Riferimenti DOM
-        var indicatore = document.getElementById('statoIndicatore');
-        var statotesto = document.getElementById('statoTesto');
-        var logMsg = document.getElementById('logMessaggio');
-        var btnTest = document.getElementById('btnTest');
-        var footerTs = document.getElementById('timestampFooter');
+        window.brevettiamoCEO.Orchestrator.prototype.avvia = function() {
+            this.status = 'running';
+            return 'Orchestrator v' + this.version + ' avviato';
+        };
 
-        // Funzione per aggiornare timestamp footer
-        function aggiornaTimestamp() {
-            if (footerTs) {
-                var now = new Date();
-                var gg = String(now.getDate()).padStart(2, '0');
-                var mm = String(now.getMonth() + 1).padStart(2, '0');
-                var aa = now.getFullYear();
-                var hh = String(now.getHours()).padStart(2, '0');
-                var min = String(now.getMinutes()).padStart(2, '0');
-                footerTs.textContent = gg + '/' + mm + '/' + aa + ' ' + hh + ':' + min;
+        window.brevettiamoCEO.Orchestrator.prototype.ferma = function() {
+            this.status = 'idle';
+            return 'Orchestrator fermo';
+        };
+
+        window.brevettiamoCEO.Orchestrator.prototype.aggiungiModulo = function(nome) {
+            this.modules.push(nome);
+            return 'Modulo ' + nome + ' aggiunto';
+        };
+
+        // istanza globale
+        window.brevettiamoCEO.istanza = new window.brevettiamoCEO.Orchestrator();
+        window.brevettiamoCEO.istanza.avvia();
+        window.brevettiamoCEO.istanza.aggiungiModulo('testSuite');
+        window.brevettiamoCEO.istanza.aggiungiModulo('tavoleSVG');
+
+        // === FUNZIONI DI TEST ===
+        window.brevettiamoCEO.test = {};
+
+        // test 1: sintassi core e oggetti
+        window.brevettiamoCEO.test.testCore = function() {
+            var risultati = [];
+            try {
+                // verifica che window.brevettiamoCEO esista
+                if (typeof window.brevettiamoCEO === 'object' && window.brevettiamoCEO !== null) {
+                    risultati.push('window.brevettiamoCEO: OK');
+                } else {
+                    risultati.push('window.brevettiamoCEO: FAIL');
+                }
+                // verifica Orchestrator
+                if (typeof window.brevettiamoCEO.Orchestrator === 'function') {
+                    risultati.push('Orchestrator costruttore: OK');
+                } else {
+                    risultati.push('Orchestrator costruttore: FAIL');
+                }
+                // verifica istanza
+                var ist = window.brevettiamoCEO.istanza;
+                if (ist && ist.version === '3.5' && ist.status === 'running') {
+                    risultati.push('istanza v3.5 attiva: OK');
+                } else {
+                    risultati.push('istanza v3.5 attiva: FAIL');
+                }
+                // verifica moduli
+                if (ist.modules.length === 2 && ist.modules.indexOf('testSuite') !== -1) {
+                    risultati.push('moduli registrati: OK');
+                } else {
+                    risultati.push('moduli registrati: FAIL');
+                }
+            } catch (e) {
+                risultati.push('eccezione: ' + e.message);
             }
-        }
-        aggiornaTimestamp();
+            return risultati.join('\n');
+        };
 
-        // Funzione di test orchestrator
-        function eseguiTestOrchestrator() {
-            // Incrementa contatore
-            window.brevettiamo.orchestrator.testCount += 1;
-            var count = window.brevettiamo.orchestrator.testCount;
-
-            // Simula operazione
-            var esito = 'OK';
-            var messaggio = 'Test #' + count + ' CEO v3.5: verifica superata';
-
-            // Aggiorna stato indicatore (colore)
-            if (indicatore) {
-                indicatore.style.background = '#4a7c59'; // verde
-                indicatore.style.boxShadow = '0 0 0 2px #dac29c';
+        // test 2: heartbeat CEO v3.5
+        window.brevettiamoCEO.test.testHeartbeat = function() {
+            var out = [];
+            try {
+                var ceo = window.brevettiamoCEO.istanza;
+                var msg = ceo.avvia(); // già running, ma testiamo
+                out.push('heartbeat: ' + msg);
+                out.push('stato: ' + ceo.status);
+                out.push('versione: ' + ceo.version);
+                // test ferma/avvia
+                ceo.ferma();
+                out.push('ferma -> ' + ceo.status);
+                ceo.avvia();
+                out.push('riavvia -> ' + ceo.status);
+                out.push('moduli: ' + ceo.modules.join(', '));
+            } catch (e) {
+                out.push('ERRORE heartbeat: ' + e.message);
             }
-            if (statotesto) {
-                statotesto.textContent = 'Orchestrator attivo (test ' + count + ')';
+            return out.join('\n');
+        };
+
+        // test 3: tavole SVG (verifica presenza nel DOM)
+        window.brevettiamoCEO.test.testTavole = function() {
+            var res = [];
+            try {
+                var tavole = document.querySelectorAll('.tavola svg');
+                if (tavole.length === 4) {
+                    res.push('tavole SVG trovate: ' + tavole.length);
+                    var didascalie = document.querySelectorAll('.tavola .didascalia');
+                    var testi = Array.from(didascalie).map(function(d) { return d.textContent.trim(); });
+                    res.push('didascalie: ' + testi.join(' | '));
+                    // verifica che ogni SVG abbia viewBox
+                    var ok = true;
+                    tavole.forEach(function(svg, idx) {
+                        if (!svg.getAttribute('viewBox')) {
+                            ok = false;
+                            res.push('tavola ' + (idx+1) + ' senza viewBox');
+                        }
+                    });
+                    if (ok) res.push('tutte le viewBox presenti: OK');
+                } else {
+                    res.push('tavole trovate: ' + tavole.length + ' (attese 4)');
+                }
+                // verifica figure distinte (assieme, esplosa, sezione, dettaglio)
+                var testiFig = Array.from(document.querySelectorAll('.tavola svg text')).map(function(t) { return t.textContent; });
+                if (testiFig.length === 4) {
+                    res.push('figure: ' + testiFig.join(', '));
+                } else {
+                    res.push('figure trovate: ' + testiFig.length);
+                }
+            } catch (e) {
+                res.push('ERRORE tavole: ' + e.message);
             }
+            return res.join('\n');
+        };
 
-            // Log
-            if (logMsg) {
-                logMsg.textContent = messaggio;
+        // test 4: global scope (window)
+        window.brevettiamoCEO.test.testGlobal = function() {
+            var lines = [];
+            try {
+                // verifica che non ci siano var object.property
+                var src = window.brevettiamoCEO ? 'window.brevettiamoCEO accessibile' : 'FAIL';
+                lines.push(src);
+                if (typeof window.brevettiamoCEO.istanza === 'object') {
+                    lines.push('istanza globale: OK');
+                } else {
+                    lines.push('istanza globale: FAIL');
+                }
+                // verifica che non ci siano errori di sintassi (var object.property)
+                // test esplicito: non deve lanciare
+                var testProp = window.brevettiamoCEO.istanza.modules;
+                lines.push('moduli accessibili via window: ' + (testProp ? 'OK' : 'FAIL'));
+                lines.push('CEO v3.5 signature: ' + window.brevettiamoCEO.istanza.version);
+            } catch (e) {
+                lines.push('ERRORE global: ' + e.message);
             }
+            return lines.join('\n');
+        };
 
-            // Salva ultimo test
-            window.brevettiamo.orchestrator.ultimoTest = {
-                id: count,
-                timestamp: new Date().toISOString(),
-                esito: esito,
-                messaggio: messaggio
-            };
+        // === FUNZIONE DI ESECUZIONE TEST ===
+        window.brevettiamoCEO.eseguiTest = function() {
+            var statoEl = document.getElementById('statoGlobale');
+            var testIds = ['testCore', 'testHeartbeat', 'testTavole', 'testGlobal'];
+            var testFns = [
+                window.brevettiamoCEO.test.testCore,
+                window.brevettiamoCEO.test.testHeartbeat,
+                window.brevettiamoCEO.test.testTavole,
+                window.brevettiamoCEO.test.testGlobal
+            ];
 
-            // Opzionale: aggiorna anche footer timestamp
-            aggiornaTimestamp();
-
-            // Simula scrittura su console (non obbligatoria ma utile)
-            console.log('[BrevettIAmo CEO] ' + messaggio);
-        }
-
-        // Collega evento al bottone
-        if (btnTest) {
-            btnTest.addEventListener('click', eseguiTestOrchestrator);
-        }
-
-        // Esegui un test automatico al caricamento per dimostrare funzionamento
-        window.addEventListener('load', function() {
-            // Piccolo ritardo per far si che tutto sia renderizzato
-            setTimeout(function() {
-                eseguiTestOrchestrator();
-                // Simula un secondo test per mostrare incremento
-                setTimeout(function() {
-                    // Cambia messaggio per chiarezza
-                    if (logMsg) {
-                        logMsg.textContent = 'CEO Orchestrator v3.5 – pronto per produzione';
+            var tuttiOk = true;
+            testFns.forEach(function(fn, idx) {
+                var el = document.getElementById(testIds[idx]);
+                if (!el) return;
+                try {
+                    var result = fn();
+                    el.innerHTML = result.replace(/\n/g, '<br>').replace(/OK/g, '<span class="pass">OK</span>').replace(/FAIL/g, '<span class="fail">FAIL</span>');
+                    if (result.indexOf('FAIL') !== -1 || result.indexOf('ERRORE') !== -1) {
+                        tuttiOk = false;
                     }
-                    // Aggiorna indicatore
-                    if (indicatore) {
-                        indicatore.style.background = '#4a7c59';
-                    }
-                }, 400);
-            }, 200);
+                } catch (e) {
+                    el.innerHTML = '<span class="fail">ERRORE: ' + e.message + '</span>';
+                    tuttiOk = false;
+                }
+            });
+
+            // aggiorna stato globale
+            if (tuttiOk) {
+                statoEl.textContent = 'TUTTI I TEST SUPERATI';
+                statoEl.style.background = '#2c6b3f';
+            } else {
+                statoEl.textContent = 'QUALCHE TEST FALLITO';
+                statoEl.style.background = '#a13a2b';
+            }
+
+            // log time
+            var now = new Date();
+            var timeStr = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('logTime').textContent = 'ultimo test: ' + timeStr;
+        };
+
+        // === AVVIO AUTOMATICO ===
+        document.addEventListener('DOMContentLoaded', function() {
+            window.brevettiamoCEO.eseguiTest();
         });
 
-        // Esponi funzione globalmente (opzionale ma utile per debug)
-        window.eseguiTestOrchestrator = eseguiTestOrchestrator;
+        // === BOTTONE RERUN ===
+        document.getElementById('btnRerun').addEventListener('click', function() {
+            window.brevettiamoCEO.eseguiTest();
+        });
 
     })();
 </script>
-
 </body>
 </html>
