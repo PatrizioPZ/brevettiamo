@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BrevettIAmo PWA - Storage cifrato multi-sistema">
+<meta name="description" content="BrevettIAmo PWA - Storage cifrato multi-sistema con sync cloud">
 <meta name="theme-color" content="#1a3a5c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BrevettIAmo PWA">
-<title>BrevettIAmo PWA - Storage Cifrato</title>
+<title>BrevettIAmo PWA - Storage Cifrato Sync</title>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(135deg,#f5f0e6 0%,#e8e0d0 50%,#d4c8b0 100%);min-height:100vh;color:#2c1810;-webkit-font-smoothing:antialiased}
@@ -38,6 +39,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 .sync-status{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);padding:5px 12px;border-radius:15px;font-size:0.8em;margin-top:10px}
 .sync-dot{width:8px;height:8px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite}
 .sync-dot.offline{background:#f44336;animation:none}
+.sync-dot.syncing{background:#ff9800;animation:pulse 0.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 .platforms{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:15px}
 .platform-card{background:rgba(255,255,255,0.95);border-radius:12px;padding:15px;text-align:center;border:2px solid rgba(201,168,76,0.2);transition:all 0.3s ease}
@@ -71,6 +73,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 .file-item .actions button.delete{background:#f44336;color:white}
 .file-item .actions button.delete:hover{background:#d32f2f}
 .file-item .lock-icon{width:16px;height:16px;margin-right:6px;flex-shrink:0;color:#4caf50}
+.file-item .cloud-icon{width:16px;height:16px;margin-right:6px;flex-shrink:0;color:#2196f3}
 .security-banner{background:linear-gradient(135deg,#1a3a5c 0%,#0d1f33 100%);color:#c9a84c;border-radius:12px;padding:20px;text-align:center;margin-top:15px}
 .security-banner h3{font-size:1.1em;margin-bottom:8px}
 .security-banner p{color:#f5f0e6;opacity:0.9;font-size:0.9em}
@@ -96,6 +99,8 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 .password-box .pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border:none;border-radius:10px;font-size:1em;font-weight:bold;cursor:pointer;margin-top:10px;-webkit-appearance:none}
 .password-box .pw-btn:hover{opacity:0.9}
 .password-box .warning{color:#c62828;font-size:0.8em;margin-top:10px;font-weight:bold}
+.sync-info{background:rgba(33,150,243,0.08);border-radius:10px;padding:12px;margin-top:10px;border:1px solid rgba(33,150,243,0.2)}
+.sync-info p{color:#1565c0;font-size:0.85em;margin:0}
 @media(max-width:600px){.header h1{font-size:1.5em}.header .device-info{display:none}.install-btn{padding:12px 25px;font-size:1em}.platforms{grid-template-columns:repeat(2,1fr)}.features-grid{grid-template-columns:1fr}.file-item{flex-wrap:wrap}.file-item .actions{width:100%;justify-content:flex-end;margin-top:5px}.transfer-box{grid-template-columns:1fr}.password-box{padding:25px}}
 @media(min-width:1024px){.container{max-width:1000px}.header{border-radius:0 0 30px 30px;padding:40px 20px}.header h1{font-size:2.5em}}
 </style>
@@ -106,10 +111,10 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 <div id="passwordOverlay" class="password-overlay">
   <div class="password-box">
     <h2>Chiave di Accesso</h2>
-    <p>Imposta una password per cifrare i tuoi file. Se la dimentichi, i file saranno irrecuperabili.</p>
+    <p>Imposta una password per cifrare i tuoi file. Stessa password su tutti i dispositivi per sincronizzare.</p>
     <input type="password" id="pwInput" placeholder="Password (minimo 8 caratteri)">
     <input type="password" id="pwConfirm" placeholder="Conferma password">
-    <button class="pw-btn" onclick="setPassword()">Attiva Cifratura</button>
+    <button class="pw-btn" onclick="setPassword()">Attiva Cifratura e Sync</button>
     <div id="pwError" class="warning hidden"></div>
   </div>
 </div>
@@ -117,7 +122,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 <div class="header">
   <div class="device-info" id="deviceInfo">Rilevamento...</div>
   <h1>BrevettIAmo PWA</h1>
-  <p class="subtitle">Storage Cifrato Multi-Sistema</p>
+  <p class="subtitle">Storage Cifrato Multi-Sistema con Sync Cloud</p>
   <div class="badge-beta">BETA GRATUITA</div>
   <div class="sync-status" id="syncStatus">
     <span class="sync-dot" id="syncDot"></span>
@@ -129,7 +134,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 
   <div id="loginSection" class="login-section">
     <h2>Accedi con Google</h2>
-    <p>Identificazione opzionale per sync cloud futuro</p>
+    <p>Identificazione opzionale</p>
     <button class="login-btn" onclick="netlifyIdentity.open()">Accedi / Registrati</button>
     <div id="userInfo" class="user-info hidden"></div>
   </div>
@@ -170,17 +175,20 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
   <div class="section">
     <h2><span class="icon">2</span> Caratteristiche</h2>
     <div class="features-grid">
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Cifratura AES-256 GCM</h3><p>Ogni file cifrato individualmente con chiave derivata dalla tua password.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Storage Locale</h3><p>I file cifrati restano sul dispositivo in IndexedDB. Accesso offline.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Sync Cloud Supabase</h3><p>I file cifrati si sincronizzano automaticamente su tutti i dispositivi.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Cifratura AES-256 GCM</h3><p>Ogni file cifrato individualmente. Nessuno puo accedere senza password.</p></div>
       <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Upload Universale</h3><p>Carica da PC, iPad, Android. Touch, drag&amp;drop, selezione file.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Esporta / Importa</h3><p>Trasferisci file cifrati tra dispositivi. Stessa password per decifrare.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Esporta / Importa</h3><p>Backup locale cifrato per archivio o trasferimento offline.</p></div>
       <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Nessuno Store</h3><p>Installazione diretta come PWA. Zero commissioni.</p></div>
     </div>
   </div>
 
   <div class="section" id="filesSection">
     <h2><span class="icon">3</span> I Tuoi File</h2>
-    <p style="margin-bottom:12px;color:#666;font-size:0.9em">Spazio personale cifrato su questo dispositivo. Per trasferire usa Esporta/Importa.</p>
+    <div class="sync-info" id="syncInfoBox">
+      <p id="syncInfoText">Sync: in attesa di password...</p>
+    </div>
+    <p style="margin-bottom:12px;color:#666;font-size:0.9em">Spazio personale cifrato. Stessa password su tutti i dispositivi = stessi file ovunque.</p>
 
     <div class="upload-area" id="uploadArea">
       <h3>Carica File</h3>
@@ -198,7 +206,7 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 
     <div style="margin-top:20px;padding-top:15px;border-top:1px solid rgba(201,168,76,0.2)">
       <h3 style="color:#1a3a5c;font-size:1em;margin-bottom:10px">Trasferisci tra Dispositivi</h3>
-      <p style="color:#666;font-size:0.85em;margin-bottom:10px">Esporta tutto in un file cifrato, trasferiscilo, poi importa sull'altro dispositivo con la stessa password.</p>
+      <p style="color:#666;font-size:0.85em;margin-bottom:10px">Esporta backup cifrato locale, oppure usa il sync automatico cloud con la stessa password.</p>
       <div class="transfer-box">
         <button class="transfer-btn" onclick="exportAllFiles()">Esporta Backup</button>
         <button class="transfer-btn import" onclick="document.getElementById('importInput').click()">Importa Backup</button>
@@ -209,24 +217,31 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 
     <div class="security-banner">
       <h3>Sicurezza End-to-End</h3>
-      <p>Cifratura AES-256 GCM con PBKDF2. La password non lascia mai il dispositivo.</p>
+      <p>Cifratura AES-256 GCM con PBKDF2. Sync su Supabase in forma cifrata. Nessuno puo leggere i tuoi file.</p>
     </div>
   </div>
 
   <div class="section" style="background:rgba(201,168,76,0.08)">
-    <h2><span class="icon">i</span> Versione Beta v2.2</h2>
-    <p style="color:#666;font-size:0.9em;line-height:1.7"><strong>Attuale:</strong> Storage file locale con cifratura AES-256 GCM. Upload da PC, iPad, Android. Esporta/Importa cifrato cross-device.<br><strong>Gratuita</strong> per tutta la fase Beta.</p>
+    <h2><span class="icon">i</span> Versione Beta v3.0</h2>
+    <p style="color:#666;font-size:0.9em;line-height:1.7"><strong>Attuale:</strong> Storage locale + sync cloud Supabase con cifratura AES-256 GCM. Upload da qualsiasi dispositivo. Sync automatico.<br><strong>Gratuita</strong> per tutta la fase Beta.</p>
   </div>
 
 </div>
 
 <div class="footer">
-  <p>BrevettIAmo PWA | Storage Cifrato | 2026</p>
+  <p>BrevettIAmo PWA | Storage Cifrato Sync | 2026</p>
 </div>
 
 <script>
 // ============================
-// NETLIFY IDENTITY (Login Google)
+// CONFIGURAZIONE SUPABASE
+// ============================
+const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
+var supabaseClient=null;
+
+// ============================
+// NETLIFY IDENTITY
 // ============================
 netlifyIdentity.init({APIUrl:'https://brevettiamo-pwa.netlify.app/.netlify/identity'});
 netlifyIdentity.on('init',function(user){updateUserUI(user)});
@@ -240,20 +255,15 @@ function updateUserUI(user){
     var initial=(user.user_metadata.full_name||user.email||'U').charAt(0).toUpperCase();
     section.innerHTML='<h2>Benvenuto</h2><div class="user-info"><div class="user-avatar">'+initial+'</div><div><div style="font-weight:bold">'+(user.user_metadata.full_name||user.email)+'</div><div style="font-size:0.8em;opacity:0.8">'+user.email+'</div></div></div><button class="login-btn" onclick="netlifyIdentity.logout()" style="margin-top:12px">Esci</button>';
   }else{
-    section.innerHTML='<h2>Accedi con Google</h2><p>Identificazione opzionale per sync cloud futuro</p><button class="login-btn" onclick="netlifyIdentity.open()">Accedi / Registrati</button><div id="userInfo" class="user-info hidden"></div>';
+    section.innerHTML='<h2>Accedi con Google</h2><p>Identificazione opzionale</p><button class="login-btn" onclick="netlifyIdentity.open()">Accedi / Registrati</button><div id="userInfo" class="user-info hidden"></div>';
   }
 }
 
-function getAuthToken(){
-  var user=netlifyIdentity.currentUser();
-  if(!user)return Promise.resolve(null);
-  return user.jwt();
-}
-
 // ============================
-// CIFRATURA WEB CRYPTO API
+// CIFRATURA + SYNC ID
 // ============================
 var cryptoKey=null;
+var syncId=null;
 var userPassword=null;
 var DB_NAME='BrevettIAmoPWA';
 var DB_VERSION=1;
@@ -264,6 +274,15 @@ function deriveKey(password,salt){
   var enc=new TextEncoder();
   return crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveKey']).then(function(keyMaterial){
     return crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},keyMaterial,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+  });
+}
+
+function deriveSyncId(password,salt){
+  var enc=new TextEncoder();
+  return crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']).then(function(keyMaterial){
+    return crypto.subtle.deriveBits({name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},keyMaterial,256);
+  }).then(function(bits){
+    return Array.from(new Uint8Array(bits)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
   });
 }
 
@@ -292,20 +311,24 @@ function setPassword(){
   if(pw!==confirm){errEl.textContent='Le password non coincidono.';errEl.classList.remove('hidden');return}
   userPassword=pw;
   var salt=crypto.getRandomValues(new Uint8Array(16));
-  deriveKey(pw,salt).then(function(key){
-    cryptoKey=key;
+  Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]).then(function(results){
+    cryptoKey=results[0];
+    syncId=results[1];
     localStorage.setItem('pwa_salt',JSON.stringify(Array.from(salt)));
     localStorage.setItem('pwa_has_pw','true');
     document.getElementById('passwordOverlay').classList.add('hidden');
-    showStatus('Cifratura attivata. I file saranno protetti.','success');
+    showStatus('Cifratura e sync attivati!','success');
+    updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8)+'...');
+    initSupabase();
     renderFileList();
+    syncFromCloud();
   });
 }
 
 function checkPassword(){
   if(localStorage.getItem('pwa_has_pw')==='true'){
     var box=document.querySelector('.password-box');
-    box.innerHTML='<h2>Accesso</h2><p>Inserisci la tua password per decifrare i file.</p><input type="password" id="pwUnlock" placeholder="Password"><button class="pw-btn" onclick="unlockWithPassword()">Sblocca</button><div id="pwError" class="warning hidden"></div>';
+    box.innerHTML='<h2>Accesso</h2><p>Inserisci la tua password per decifrare e sincronizzare i file.</p><input type="password" id="pwUnlock" placeholder="Password"><button class="pw-btn" onclick="unlockWithPassword()">Sblocca</button><div id="pwError" class="warning hidden"></div>';
   }
 }
 
@@ -315,21 +338,94 @@ function unlockWithPassword(){
   var saltArr=JSON.parse(localStorage.getItem('pwa_salt')||'[]');
   if(saltArr.length===0){errEl.textContent='Errore configurazione.';errEl.classList.remove('hidden');return}
   var salt=new Uint8Array(saltArr);
-  deriveKey(pw,salt).then(function(testKey){
+  Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]).then(function(results){
+    var testKey=results[0];
+    var testSyncId=results[1];
     getAllFilesFromDB().then(function(files){
       if(files.length>0){
         decryptData(files[0].encrypted,files[0].iv,testKey).then(function(){
-          cryptoKey=testKey;userPassword=pw;
+          cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
           document.getElementById('passwordOverlay').classList.add('hidden');
+          updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8)+'...');
+          initSupabase();
           renderFileList();
+          syncFromCloud();
         }).catch(function(){
           errEl.textContent='Password errata.';errEl.classList.remove('hidden');
         });
       }else{
-        cryptoKey=testKey;userPassword=pw;
+        cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
         document.getElementById('passwordOverlay').classList.add('hidden');
+        updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8)+'...');
+        initSupabase();
         renderFileList();
+        syncFromCloud();
       }
+    });
+  });
+}
+
+function updateSyncInfo(text){
+  var el=document.getElementById('syncInfoText');
+  if(el)el.textContent=text;
+}
+
+// ============================
+// SUPABASE
+// ============================
+function initSupabase(){
+  if(typeof supabase!=='undefined'&&supabase.createClient){
+    supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    console.log('Supabase connesso');
+  }else{
+    console.log('Supabase non disponibile');
+  }
+}
+
+function uploadToSupabase(fileRecord){
+  if(!supabaseClient||!syncId)return Promise.resolve();
+  return supabaseClient.from('pwa_files').insert({
+    sync_id:syncId,
+    name:fileRecord.name,
+    file_type:fileRecord.type,
+    iv:fileRecord.iv,
+    encrypted_data:fileRecord.encrypted,
+    size:fileRecord.size,
+    device:fileRecord.device
+  }).then(function(res){
+    if(res.error){console.error('Supabase upload error:',res.error);return false}
+    console.log('File syncato su cloud');
+    return true;
+  });
+}
+
+function syncFromCloud(){
+  if(!supabaseClient||!syncId)return;
+  updateSyncInfo('Sync in corso...');
+  document.getElementById('syncDot').className='sync-dot syncing';
+  supabaseClient.from('pwa_files').select('*').eq('sync_id',syncId).order('created_at',{ascending:false}).then(function(res){
+    document.getElementById('syncDot').className='sync-dot';
+    if(res.error){console.error('Sync error:',res.error);updateSyncInfo('Sync errore');return}
+    var cloudFiles=res.data||[];
+    if(cloudFiles.length===0){updateSyncInfo('Sync attivo - Nessun file in cloud');return}
+    getAllFilesFromDB().then(function(localFiles){
+      var localNames=localFiles.map(function(f){return f.name});
+      var newFiles=cloudFiles.filter(function(cf){return localNames.indexOf(cf.name)===-1});
+      if(newFiles.length===0){updateSyncInfo('Sync attivo - Tutto sincronizzato');return}
+      var imported=0;
+      function importNext(idx){
+        if(idx>=newFiles.length){
+          updateSyncInfo('Sync completato - '+imported+' nuovi file');
+          renderFileList();
+          return;
+        }
+        var cf=newFiles[idx];
+        saveFileToDB(cf.name,cf.file_type,{iv:cf.iv,data:cf.encrypted_data},cf.size||0).then(function(){
+          imported++;
+          importNext(idx+1);
+        }).catch(function(){importNext(idx+1)});
+      }
+      importNext(0);
     });
   });
 }
@@ -425,8 +521,8 @@ function updateSyncStatus(){
   var dot=document.getElementById('syncDot');
   var text=document.getElementById('syncText');
   if(!dot||!text)return;
-  if(navigator.onLine){dot.className='sync-dot';text.textContent='Online - IndexedDB attivo'}
-  else{dot.className='sync-dot offline';text.textContent='Offline - file in locale'}
+  if(navigator.onLine){dot.className='sync-dot';text.textContent='Online - Sync attivo'}
+  else{dot.className='sync-dot offline';text.textContent='Offline - solo locale'}
 }
 window.addEventListener('online',updateSyncStatus);
 window.addEventListener('offline',updateSyncStatus);
@@ -477,7 +573,7 @@ function isStandalone(){
 }
 
 // ============================
-// FILE UPLOAD - CIFRATO
+// FILE UPLOAD - CIFRATO + SYNC
 // ============================
 function handleFiles(fileList){
   if(!fileList||fileList.length===0)return;
@@ -506,7 +602,10 @@ function handleFiles(fileList){
     reader.onload=function(e){
       var base64=e.target.result;
       encryptData(base64,cryptoKey).then(function(encrypted){
-        return saveFileToDB(file.name,file.type,encrypted,file.size);
+        var fileRecord={name:file.name,type:file.type||'application/octet-stream',iv:encrypted.iv,encrypted:encrypted.data,size:file.size,device:detectDevice().name};
+        return saveFileToDB(file.name,file.type,encrypted,file.size).then(function(dbId){
+          return uploadToSupabase(fileRecord);
+        });
       }).then(function(){
         processed++;
         if(fill)fill.style.width=(processed/total*100)+'%';
@@ -596,13 +695,13 @@ function deleteFileById(id){
 }
 
 // ============================
-// EXPORT / IMPORT CROSS-DEVICE
+// EXPORT / IMPORT
 // ============================
 function exportAllFiles(){
   getAllFilesFromDB().then(function(files){
     if(files.length===0){showStatus('Nessun file da esportare.','warning');return}
     var saltArr=JSON.parse(localStorage.getItem('pwa_salt')||'[]');
-    var exportData={version:'2.2',exported:new Date().toISOString(),device:detectDevice().name,salt:saltArr,files:files};
+    var exportData={version:'3.0',exported:new Date().toISOString(),device:detectDevice().name,salt:saltArr,files:files};
     var json=JSON.stringify(exportData);
     var blob=new Blob([json],{type:'application/json'});
     var url=window.URL.createObjectURL(blob);
@@ -650,7 +749,7 @@ function importFiles(file){
 }
 
 // ============================
-// DRAG & DROP + TOUCH
+// DRAG & DROP
 // ============================
 var uploadArea=document.getElementById('uploadArea');
 if(uploadArea){
@@ -688,7 +787,7 @@ function showStatus(msg,type){
 }
 
 // ============================
-// SERVICE WORKER INLINE + MANIFEST INLINE
+// SERVICE WORKER + MANIFEST INLINE
 // ============================
 function registerInlineSW(){
   if(!('serviceWorker' in navigator))return;
