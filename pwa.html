@@ -73,7 +73,6 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 .file-item .actions button.delete{background:#f44336;color:white}
 .file-item .actions button.delete:hover{background:#d32f2f}
 .file-item .lock-icon{width:16px;height:16px;margin-right:6px;flex-shrink:0;color:#4caf50}
-.file-item .cloud-icon{width:16px;height:16px;margin-right:6px;flex-shrink:0;color:#2196f3}
 .security-banner{background:linear-gradient(135deg,#1a3a5c 0%,#0d1f33 100%);color:#c9a84c;border-radius:12px;padding:20px;text-align:center;margin-top:15px}
 .security-banner h3{font-size:1.1em;margin-bottom:8px}
 .security-banner p{color:#f5f0e6;opacity:0.9;font-size:0.9em}
@@ -86,10 +85,6 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 .hidden{display:none !important}
 .progress-bar{width:100%;height:4px;background:rgba(201,168,76,0.2);border-radius:2px;margin-top:8px;overflow:hidden}
 .progress-bar .fill{height:100%;background:#c9a84c;border-radius:2px;transition:width 0.3s ease;width:0%}
-.transfer-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
-.transfer-btn{background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border:none;padding:12px;border-radius:12px;font-size:0.9em;font-weight:bold;cursor:pointer;transition:all 0.3s ease;-webkit-appearance:none}
-.transfer-btn:hover{transform:translateY(-2px)}
-.transfer-btn.import{background:linear-gradient(135deg,#c9a84c 0%,#b8943a 100%);color:#1a3a5c}
 .password-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,58,92,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
 .password-box{background:linear-gradient(135deg,#f5f0e6 0%,#e8e0d0 100%);border-radius:20px;padding:40px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);border:2px solid #c9a84c}
 .password-box h2{color:#1a3a5c;font-size:1.5em;margin-bottom:10px}
@@ -99,9 +94,18 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 .password-box .pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border:none;border-radius:10px;font-size:1em;font-weight:bold;cursor:pointer;margin-top:10px;-webkit-appearance:none}
 .password-box .pw-btn:hover{opacity:0.9}
 .password-box .warning{color:#c62828;font-size:0.8em;margin-top:10px;font-weight:bold}
-.sync-info{background:rgba(33,150,243,0.08);border-radius:10px;padding:12px;margin-top:10px;border:1px solid rgba(33,150,243,0.2)}
+.sync-info{background:rgba(33,150,243,0.08);border-radius:10px;padding:12px;margin-top:10px;border:1px solid rgba(33,150,243,0.2);display:flex;align-items:center;justify-content:space-between}
 .sync-info p{color:#1565c0;font-size:0.85em;margin:0}
-@media(max-width:600px){.header h1{font-size:1.5em}.header .device-info{display:none}.install-btn{padding:12px 25px;font-size:1em}.platforms{grid-template-columns:repeat(2,1fr)}.features-grid{grid-template-columns:1fr}.file-item{flex-wrap:wrap}.file-item .actions{width:100%;justify-content:flex-end;margin-top:5px}.transfer-box{grid-template-columns:1fr}.password-box{padding:25px}}
+.sync-info button{background:#1a3a5c;color:#f5f0e6;border:none;padding:6px 14px;border-radius:15px;font-size:0.75em;font-weight:bold;cursor:pointer;-webkit-appearance:none}
+.editor-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:15px}
+.editor-box{background:#f5f0e6;border-radius:15px;padding:20px;max-width:800px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid #c9a84c}
+.editor-box h3{color:#1a3a5c;margin-bottom:10px;font-size:1.1em}
+.editor-box textarea{flex:1;min-height:300px;padding:12px;border-radius:8px;border:1px solid #c9a84c;font-family:'Courier New',monospace;font-size:0.9em;background:white;color:#1a3a5c;resize:vertical}
+.editor-box .editor-actions{display:flex;gap:10px;margin-top:12px;justify-content:flex-end}
+.editor-box .editor-actions button{padding:10px 20px;border-radius:8px;border:none;font-size:0.9em;font-weight:bold;cursor:pointer;-webkit-appearance:none}
+.editor-box .editor-actions .save-btn{background:#4caf50;color:white}
+.editor-box .editor-actions .cancel-btn{background:#888;color:white}
+@media(max-width:600px){.header h1{font-size:1.5em}.header .device-info{display:none}.install-btn{padding:12px 25px;font-size:1em}.platforms{grid-template-columns:repeat(2,1fr)}.features-grid{grid-template-columns:1fr}.file-item{flex-wrap:wrap}.file-item .actions{width:100%;justify-content:flex-end;margin-top:5px}.password-box{padding:25px}.editor-box{padding:15px}}
 @media(min-width:1024px){.container{max-width:1000px}.header{border-radius:0 0 30px 30px;padding:40px 20px}.header h1{font-size:2.5em}}
 </style>
 <base target="_blank">
@@ -116,6 +120,17 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
     <input type="password" id="pwConfirm" placeholder="Conferma password">
     <button class="pw-btn" onclick="setPassword()">Attiva Cifratura e Sync</button>
     <div id="pwError" class="warning hidden"></div>
+  </div>
+</div>
+
+<div id="editorOverlay" class="editor-overlay hidden">
+  <div class="editor-box">
+    <h3 id="editorTitle">Modifica File</h3>
+    <textarea id="editorText"></textarea>
+    <div class="editor-actions">
+      <button class="cancel-btn" onclick="closeEditor()">Annulla</button>
+      <button class="save-btn" onclick="saveEditor()">Salva Modifiche</button>
+    </div>
   </div>
 </div>
 
@@ -175,10 +190,10 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
   <div class="section">
     <h2><span class="icon">2</span> Caratteristiche</h2>
     <div class="features-grid">
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Sync Cloud Supabase</h3><p>I file cifrati si sincronizzano automaticamente su tutti i dispositivi.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Cifratura AES-256 GCM</h3><p>Ogni file cifrato individualmente. Nessuno puo accedere senza password.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Upload Universale</h3><p>Carica da PC, iPad, Android. Touch, drag&amp;drop, selezione file.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Esporta / Importa</h3><p>Backup locale cifrato per archivio o trasferimento offline.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Sync Automatico</h3><p>I file appaiono automaticamente su tutti i dispositivi con la stessa password.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Cifratura AES-256</h3><p>Ogni file cifrato individualmente. Nessuno puo accedere senza password.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Modifica Online</h3><p>File di testo modificabili direttamente nella pagina. Le modifiche si sincronizzano.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Upload Universale</h3><p>Carica da PC, iPad, Android. Ogni formato supportato.</p></div>
       <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Nessuno Store</h3><p>Installazione diretta come PWA. Zero commissioni.</p></div>
     </div>
   </div>
@@ -187,8 +202,9 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
     <h2><span class="icon">3</span> I Tuoi File</h2>
     <div class="sync-info" id="syncInfoBox">
       <p id="syncInfoText">Sync: in attesa di password...</p>
+      <button onclick="forceSync()">Sincronizza Ora</button>
     </div>
-    <p style="margin-bottom:12px;color:#666;font-size:0.9em">Spazio personale cifrato. Stessa password su tutti i dispositivi = stessi file ovunque.</p>
+    <p style="margin-bottom:12px;color:#666;font-size:0.9em">Stessa password su tutti i dispositivi = stessi file ovunque. Sync automatico ogni 10 secondi.</p>
 
     <div class="upload-area" id="uploadArea">
       <h3>Carica File</h3>
@@ -204,17 +220,6 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
       <div id="fileItems"></div>
     </div>
 
-    <div style="margin-top:20px;padding-top:15px;border-top:1px solid rgba(201,168,76,0.2)">
-      <h3 style="color:#1a3a5c;font-size:1em;margin-bottom:10px">Trasferisci tra Dispositivi</h3>
-      <p style="color:#666;font-size:0.85em;margin-bottom:10px">Esporta backup cifrato locale, oppure usa il sync automatico cloud con la stessa password.</p>
-      <div class="transfer-box">
-        <button class="transfer-btn" onclick="exportAllFiles()">Esporta Backup</button>
-        <button class="transfer-btn import" onclick="document.getElementById('importInput').click()">Importa Backup</button>
-        <input type="file" id="importInput" accept=".json" style="display:none" onchange="importFiles(this.files[0])">
-      </div>
-      <div id="transferStatus"></div>
-    </div>
-
     <div class="security-banner">
       <h3>Sicurezza End-to-End</h3>
       <p>Cifratura AES-256 GCM con PBKDF2. Sync su Supabase in forma cifrata. Nessuno puo leggere i tuoi file.</p>
@@ -222,8 +227,8 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
   </div>
 
   <div class="section" style="background:rgba(201,168,76,0.08)">
-    <h2><span class="icon">i</span> Versione Beta v3.0</h2>
-    <p style="color:#666;font-size:0.9em;line-height:1.7"><strong>Attuale:</strong> Storage locale + sync cloud Supabase con cifratura AES-256 GCM. Upload da qualsiasi dispositivo. Sync automatico.<br><strong>Gratuita</strong> per tutta la fase Beta.</p>
+    <h2><span class="icon">i</span> Versione Beta v3.1</h2>
+    <p style="color:#666;font-size:0.9em;line-height:1.7"><strong>Attuale:</strong> Storage locale + sync cloud Supabase con cifratura AES-256 GCM. Sync automatico ogni 10 secondi. Modifica file di testo inline.<br><strong>Gratuita</strong> per tutta la fase Beta.</p>
   </div>
 
 </div>
@@ -234,11 +239,20 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 
 <script>
 // ============================
-// CONFIGURAZIONE SUPABASE
+// CONFIGURAZIONE
 // ============================
 const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_p9WH85YPfwtaKp4tfcDwug_Q9duausk';
 var supabaseClient=null;
+var cryptoKey=null;
+var syncId=null;
+var userPassword=null;
+var DB_NAME='BrevettIAmoPWA';
+var DB_VERSION=1;
+var STORE_NAME='files';
+var db=null;
+var currentEditId=null;
+var syncInterval=null;
 
 // ============================
 // NETLIFY IDENTITY
@@ -262,14 +276,6 @@ function updateUserUI(user){
 // ============================
 // CIFRATURA + SYNC ID
 // ============================
-var cryptoKey=null;
-var syncId=null;
-var userPassword=null;
-var DB_NAME='BrevettIAmoPWA';
-var DB_VERSION=1;
-var STORE_NAME='files';
-var db=null;
-
 function deriveKey(password,salt){
   var enc=new TextEncoder();
   return crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveKey']).then(function(keyMaterial){
@@ -301,7 +307,7 @@ function decryptData(ciphertext,iv,key){
 }
 
 // ============================
-// PASSWORD OVERLAY
+// PASSWORD
 // ============================
 function setPassword(){
   var pw=document.getElementById('pwInput').value;
@@ -312,16 +318,16 @@ function setPassword(){
   userPassword=pw;
   var salt=crypto.getRandomValues(new Uint8Array(16));
   Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]).then(function(results){
-    cryptoKey=results[0];
-    syncId=results[1];
+    cryptoKey=results[0];syncId=results[1];
     localStorage.setItem('pwa_salt',JSON.stringify(Array.from(salt)));
     localStorage.setItem('pwa_has_pw','true');
     document.getElementById('passwordOverlay').classList.add('hidden');
     showStatus('Cifratura e sync attivati!','success');
-    updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8)+'...');
+    updateSyncInfo('Sync attivo');
     initSupabase();
     renderFileList();
     syncFromCloud();
+    startAutoSync();
   });
 }
 
@@ -339,27 +345,22 @@ function unlockWithPassword(){
   if(saltArr.length===0){errEl.textContent='Errore configurazione.';errEl.classList.remove('hidden');return}
   var salt=new Uint8Array(saltArr);
   Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]).then(function(results){
-    var testKey=results[0];
-    var testSyncId=results[1];
+    var testKey=results[0];var testSyncId=results[1];
     getAllFilesFromDB().then(function(files){
       if(files.length>0){
         decryptData(files[0].encrypted,files[0].iv,testKey).then(function(){
           cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
           document.getElementById('passwordOverlay').classList.add('hidden');
-          updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8)+'...');
-          initSupabase();
-          renderFileList();
-          syncFromCloud();
+          updateSyncInfo('Sync attivo');
+          initSupabase();renderFileList();syncFromCloud();startAutoSync();
         }).catch(function(){
           errEl.textContent='Password errata.';errEl.classList.remove('hidden');
         });
       }else{
         cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
         document.getElementById('passwordOverlay').classList.add('hidden');
-        updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8)+'...');
-        initSupabase();
-        renderFileList();
-        syncFromCloud();
+        updateSyncInfo('Sync attivo');
+        initSupabase();renderFileList();syncFromCloud();startAutoSync();
       }
     });
   });
@@ -377,24 +378,18 @@ function initSupabase(){
   if(typeof supabase!=='undefined'&&supabase.createClient){
     supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
     console.log('Supabase connesso');
-  }else{
-    console.log('Supabase non disponibile');
   }
 }
 
 function uploadToSupabase(fileRecord){
-  if(!supabaseClient||!syncId)return Promise.resolve();
-  return supabaseClient.from('pwa_files').insert({
-    sync_id:syncId,
-    name:fileRecord.name,
-    file_type:fileRecord.type,
-    iv:fileRecord.iv,
-    encrypted_data:fileRecord.encrypted,
-    size:fileRecord.size,
-    device:fileRecord.device
+  if(!supabaseClient||!syncId)return Promise.resolve(false);
+  return supabaseClient.from('pwa_files').delete().eq('sync_id',syncId).eq('name',fileRecord.name).then(function(){
+    return supabaseClient.from('pwa_files').insert({
+      sync_id:syncId,name:fileRecord.name,file_type:fileRecord.type,
+      iv:fileRecord.iv,encrypted_data:fileRecord.encrypted,size:fileRecord.size,device:fileRecord.device
+    });
   }).then(function(res){
     if(res.error){console.error('Supabase upload error:',res.error);return false}
-    console.log('File syncato su cloud');
     return true;
   });
 }
@@ -415,19 +410,30 @@ function syncFromCloud(){
       var imported=0;
       function importNext(idx){
         if(idx>=newFiles.length){
-          updateSyncInfo('Sync completato - '+imported+' nuovi file');
-          renderFileList();
-          return;
+          updateSyncInfo('Sync: '+imported+' nuovi file');
+          renderFileList();return;
         }
         var cf=newFiles[idx];
         saveFileToDB(cf.name,cf.file_type,{iv:cf.iv,data:cf.encrypted_data},cf.size||0).then(function(){
-          imported++;
-          importNext(idx+1);
+          imported++;importNext(idx+1);
         }).catch(function(){importNext(idx+1)});
       }
       importNext(0);
     });
   });
+}
+
+function forceSync(){
+  if(!syncId){showStatus('Inserisci prima la password.','warning');return}
+  syncFromCloud();
+  showStatus('Sincronizzazione forzata.','info');
+}
+
+function startAutoSync(){
+  if(syncInterval)clearInterval(syncInterval);
+  syncInterval=setInterval(function(){
+    if(syncId&&supabaseClient)syncFromCloud();
+  },10000);
 }
 
 // ============================
@@ -499,8 +505,7 @@ function getFileFromDB(id){
 // ============================
 function detectDevice(){
   var ua=navigator.userAgent;
-  var platform='unknown';
-  var name='Dispositivo';
+  var platform='unknown',name='Dispositivo';
   if(/iPad|iPhone|iPod/.test(ua)){platform='ios';name='iPad Pro M5'}
   else if(/Android/.test(ua)){platform='android';name='Realme GT7T'}
   else if(/Win32|Win64|Windows/.test(ua)){platform='windows';name='Carbon X1'}
@@ -532,8 +537,7 @@ window.addEventListener('offline',updateSyncStatus);
 // ============================
 var deferredPrompt=null;
 window.addEventListener('beforeinstallprompt',function(e){
-  e.preventDefault();
-  deferredPrompt=e;
+  e.preventDefault();deferredPrompt=e;
   var msg=document.getElementById('installMsg');
   if(msg)msg.textContent='App pronta per l\'installazione!';
 });
@@ -553,9 +557,7 @@ function installPWA(){
         showStatus('Installazione in corso...','info');
         var btn=document.getElementById('installBtn');
         if(btn)btn.textContent='Installazione...';
-      }else{
-        showStatus('Installazione annullata.','warning');
-      }
+      }else{showStatus('Installazione annullata.','warning')}
       deferredPrompt=null;
     });
   }else if(isStandalone()){
@@ -564,7 +566,7 @@ function installPWA(){
     if(btn){btn.textContent='App Attiva';btn.disabled=true}
   }else{
     var msg=document.getElementById('installMsg');
-    if(msg)msg.innerHTML='<strong>Chrome/Edge:</strong> Menu (3 punti) -> "Installa BrevettIAmo"<br><strong>Safari iOS:</strong> Tasto Share -> "Aggiungi a Home"<br><strong>Firefox:</strong> Menu -> "Installa"';
+    if(msg)msg.innerHTML='<strong>Chrome/Edge:</strong> Menu -> "Installa BrevettIAmo"<br><strong>Safari iOS:</strong> Share -> "Aggiungi a Home"';
   }
 }
 
@@ -577,12 +579,11 @@ function isStandalone(){
 // ============================
 function handleFiles(fileList){
   if(!fileList||fileList.length===0)return;
-  if(!cryptoKey){showStatus('Errore: chiave di cifratura non disponibile.','error');return}
+  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
   var progress=document.getElementById('uploadProgress');
   var fill=document.getElementById('progressFill');
   if(progress)progress.classList.remove('hidden');
-  var processed=0;
-  var total=fileList.length;
+  var processed=0,total=fileList.length;
   var filesArr=Array.from(fileList);
 
   function processNext(){
@@ -590,10 +591,7 @@ function handleFiles(fileList){
       renderFileList().then(function(){
         if(processed===total)showStatus(total+' file cifrati e salvati!','success');
         else if(processed>0)showStatus(processed+'/'+total+' file salvati.','warning');
-        setTimeout(function(){
-          if(progress)progress.classList.add('hidden');
-          if(fill)fill.style.width='0%';
-        },2000);
+        setTimeout(function(){if(progress)progress.classList.add('hidden');if(fill)fill.style.width='0%'},2000);
       });
       return;
     }
@@ -603,7 +601,7 @@ function handleFiles(fileList){
       var base64=e.target.result;
       encryptData(base64,cryptoKey).then(function(encrypted){
         var fileRecord={name:file.name,type:file.type||'application/octet-stream',iv:encrypted.iv,encrypted:encrypted.data,size:file.size,device:detectDevice().name};
-        return saveFileToDB(file.name,file.type,encrypted,file.size).then(function(dbId){
+        return saveFileToDB(file.name,file.type,encrypted,file.size).then(function(){
           return uploadToSupabase(fileRecord);
         });
       }).then(function(){
@@ -611,8 +609,8 @@ function handleFiles(fileList){
         if(fill)fill.style.width=(processed/total*100)+'%';
         processNext();
       }).catch(function(err){
-        console.error('Errore cifratura:',err);
-        showStatus('Errore cifratura: '+file.name,'error');
+        console.error('Errore:',err);
+        showStatus('Errore: '+file.name,'error');
         processed++;
         if(fill)fill.style.width=(processed/total*100)+'%';
         processNext();
@@ -644,15 +642,16 @@ function renderFileList(){
     items.innerHTML=files.map(function(f){
       var size=formatSize(f.size);
       var date=new Date(f.date).toLocaleString('it-IT');
-      return '<div class="file-item"><svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Cifrato AES-256"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div class="info"><div class="name">'+escapeHtml(f.name)+'</div><div class="meta">'+size+' | '+date+' | '+f.device+'</div></div><div class="actions"><button onclick="downloadFileById('+f.id+')">Scarica</button><button class="delete" onclick="deleteFileById('+f.id+')">Elimina</button></div></div>';
+      var isEditable=isTextFile(f.name);
+      var editBtn=isEditable?'<button onclick="editFileById('+f.id+')">Modifica</button>':'';
+      return '<div class="file-item"><svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Cifrato"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div class="info"><div class="name">'+escapeHtml(f.name)+'</div><div class="meta">'+size+' | '+date+' | '+f.device+'</div></div><div class="actions">'+editBtn+'<button onclick="downloadFileById('+f.id+')">Scarica</button><button class="delete" onclick="deleteFileById('+f.id+')">Elimina</button></div></div>';
     }).join('');
   });
 }
 
 function formatSize(bytes){
   if(!bytes||bytes===0)return'0 B';
-  var k=1024;
-  var sizes=['B','KB','MB','GB'];
+  var k=1024,sizes=['B','KB','MB','GB'];
   var i=Math.floor(Math.log(bytes)/Math.log(k));
   return parseFloat((bytes/Math.pow(k,i)).toFixed(2))+' '+sizes[i];
 }
@@ -661,6 +660,60 @@ function escapeHtml(text){
   var div=document.createElement('div');
   div.textContent=text;
   return div.innerHTML;
+}
+
+function isTextFile(filename){
+  var ext=filename.split('.').pop().toLowerCase();
+  return['txt','md','html','htm','css','js','json','xml','csv','log'].indexOf(ext)!==-1;
+}
+
+// ============================
+// EDITOR INLINE
+// ============================
+function editFileById(id){
+  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
+  getFileFromDB(id).then(function(f){
+    if(!f)return;
+    decryptData(f.encrypted,f.iv,cryptoKey).then(function(content){
+      var base64Prefix=content.indexOf(',');
+      var text=base64Prefix>-1?content.substring(base64Prefix+1):content;
+      try{text=atob(text)}catch(e){}
+      currentEditId=id;
+      document.getElementById('editorTitle').textContent='Modifica: '+f.name;
+      document.getElementById('editorText').value=text;
+      document.getElementById('editorOverlay').classList.remove('hidden');
+    }).catch(function(){
+      showStatus('Errore decifratura.','error');
+    });
+  });
+}
+
+function closeEditor(){
+  document.getElementById('editorOverlay').classList.add('hidden');
+  currentEditId=null;
+}
+
+function saveEditor(){
+  if(!currentEditId||!cryptoKey)return;
+  var text=document.getElementById('editorText').value;
+  getFileFromDB(currentEditId).then(function(f){
+    if(!f)return;
+    var base64='data:text/plain;base64,'+btoa(unescape(encodeURIComponent(text)));
+    encryptData(base64,cryptoKey).then(function(encrypted){
+      return deleteFileFromDB(currentEditId).then(function(){
+        return saveFileToDB(f.name,f.type,encrypted,new Blob([text]).size);
+      }).then(function(){
+        return uploadToSupabase({name:f.name,type:f.type,iv:encrypted.iv,encrypted:encrypted.data,size:new Blob([text]).size,device:detectDevice().name});
+      });
+    }).then(function(){
+      closeEditor();
+      renderFileList();
+      showStatus('File modificato e sincronizzato!','success');
+    }).catch(function(err){
+      console.error(err);
+      showStatus('Errore salvataggio.','error');
+    });
+  });
 }
 
 // ============================
@@ -679,73 +732,27 @@ function downloadFileById(id){
       document.body.removeChild(a);
       showStatus('Download avviato: '+f.name,'success');
     }).catch(function(){
-      showStatus('Errore decifratura: password errata o file corrotto.','error');
+      showStatus('Errore decifratura.','error');
     });
   });
 }
 
 function deleteFileById(id){
   if(!confirm('Eliminare questo file?'))return;
-  deleteFileFromDB(id).then(function(){
-    renderFileList();
-    showStatus('File eliminato.','success');
-  }).catch(function(){
-    showStatus('Errore eliminazione.','error');
-  });
-}
-
-// ============================
-// EXPORT / IMPORT
-// ============================
-function exportAllFiles(){
-  getAllFilesFromDB().then(function(files){
-    if(files.length===0){showStatus('Nessun file da esportare.','warning');return}
-    var saltArr=JSON.parse(localStorage.getItem('pwa_salt')||'[]');
-    var exportData={version:'3.0',exported:new Date().toISOString(),device:detectDevice().name,salt:saltArr,files:files};
-    var json=JSON.stringify(exportData);
-    var blob=new Blob([json],{type:'application/json'});
-    var url=window.URL.createObjectURL(blob);
-    var a=document.createElement('a');
-    a.href=url;
-    a.download='brevettiamo_backup_'+new Date().toISOString().slice(0,10)+'.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-    showStatus('Backup cifrato esportato: '+files.length+' file.','success');
-  });
-}
-
-function importFiles(file){
-  if(!file)return;
-  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
-  var reader=new FileReader();
-  reader.onload=function(e){
-    try{
-      var data=JSON.parse(e.target.result);
-      if(!data.files||!Array.isArray(data.files)){showStatus('File di backup non valido.','error');return}
-      var imported=0;
-      function importNext(idx){
-        if(idx>=data.files.length){
-          renderFileList().then(function(){
-            showStatus(imported+' file importati con successo!','success');
-          });
-          return;
-        }
-        var f=data.files[idx];
-        if(f.name&&f.encrypted&&f.iv){
-          saveFileToDB(f.name,f.type,{iv:f.iv,data:f.encrypted},f.size||0).then(function(){
-            imported++;
-            importNext(idx+1);
-          }).catch(function(){importNext(idx+1)});
-        }else{importNext(idx+1)}
-      }
-      importNext(0);
-    }catch(err){
-      showStatus('Errore importazione: '+err.message,'error');
+  getFileFromDB(id).then(function(f){
+    if(f&&supabaseClient&&syncId){
+      supabaseClient.from('pwa_files').delete().eq('sync_id',syncId).eq('name',f.name).then(function(){
+        return deleteFileFromDB(id);
+      }).then(function(){
+        renderFileList();
+        showStatus('File eliminato.','success');
+      }).catch(function(){
+        deleteFileFromDB(id).then(function(){renderFileList();});
+      });
+    }else{
+      deleteFileFromDB(id).then(function(){renderFileList();showStatus('File eliminato.','success');});
     }
-  };
-  reader.readAsText(file);
+  });
 }
 
 // ============================
