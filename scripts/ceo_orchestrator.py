@@ -1,604 +1,408 @@
+#!/usr/bin/env python3
+"""
+CEO Orchestrator v3.5 - BrevettIAmo Brain
+Compressione ZIP + DeepSeek V3 + Fallback Multi-Provider
+"""
+
 import os
-import json
-import subprocess
-import requests
 import sys
-import zipfile
-import io
-import re
+import json
 import base64
+import zipfile
 import time
+import requests
 from datetime import datetime
 
-def log(msg):
-    print(f"[CEO] {msg}", flush=True)
+# ============ CONFIGURAZIONE ============
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+KIMI_API_KEY = os.environ.get("KIMI_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY_2 = os.environ.get("GROQ_API_KEY_2", "")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 
-def run_command(command):
-    result = subprocess.run(command, shell=True, text=True, capture_output=True)
-    return result.stdout.strip(), result.returncode
+REPO_OWNER = "PatrizioPZ"
+REPO_NAME = "brevettiamo"
+TARGET_BRANCH = os.environ.get("TARGET_BRANCH", "main")
 
-def compress_text(text):
-    """Comprime testo in zip base64 per ridurre token"""
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr("data.txt", text)
-    compressed = base64.b64encode(zip_buffer.getvalue()).decode('ascii')
-    ratio = len(compressed) / len(text) if len(text) > 0 else 0
-    log(f"Compresso: {len(text)} -> {len(compressed)} caratteri (ratio: {ratio:.2f})")
-    return compressed
 
-def decompress_text(compressed_b64):
-    """Decomprime zip base64 in testo"""
+# ============ COMPRESSIONE ZIP ============
+def compress_string(text: str) -> str:
+    """Comprime una stringa con zlib+base64"""
+    if not text:
+        return ""
     try:
-        zip_bytes = base64.b64decode(compressed_b64)
-        with zipfile.ZipFile(io.BytesIO(zip_bytes), 'r') as zf:
-            return zf.read("data.txt").decode('utf-8')
+        compressed = zipfile.zlib.compress(text.encode('utf-8'), level=9)
+        return base64.b64encode(compressed).decode('utf-8')
     except Exception as e:
-        log(f"Errore decompressione: {e}")
-        return None
+        print(f"[CEO] Errore compressione: {e}")
+        return text
 
-def fetch_free_web_tokens_directory():
+
+def decompress_string(compressed: str) -> str:
+    """Decomprime da base64+zlib"""
+    if not compressed:
+        return ""
     try:
-        response = requests.get("https://openrouter.ai/api/v1/models", timeout=15)
-        if response.status_code == 200:
-            models = response.json().get("data", [])
-            free_models = [m["id"] for m in models if float(m.get("pricing", {}).get("prompt", 1)) == 0.0]
-            if free_models:
-                log(f"Modelli free trovati: {len(free_models)}")
-                return free_models
-    except Exception as e:
-        log(f"Errore fetch modelli OpenRouter: {e}")
-    return ["meta-llama/llama-3-8b-instruct:free", "microsoft/phi-3-medium-128k-instruct:free"]
+        decoded = base64.b64decode(compressed.encode('utf-8'))
+        return zipfile.zlib.decompress(decoded).decode('utf-8')
+    except Exception:
+        return compressed
 
-def extract_keywords_from_skill(content):
-    kw_match = re.search(r'^##\s*KEYWORDS:\s*(.+)$', content, re.MULTILINE | re.IGNORECASE)
-    if kw_match:
-        kw_text = kw_match.group(1).lower()
-        return set(k.strip() for k in re.split(r'[,;]', kw_text) if k.strip())
-    return set()
 
-def discover_skills():
-    skills = []
-    skills_dirs = ["skills"]
-    if os.path.isdir("skills/auto"):
-        skills_dirs.append("skills/auto")
-    
-    for base_dir in skills_dirs:
-        if not os.path.isdir(base_dir):
-            continue
-        for item in sorted(os.listdir(base_dir)):
-            item_path = os.path.join(base_dir, item)
-            if os.path.isdir(item_path):
-                skill_file = os.path.join(item_path, "SKILL.md")
-                if os.path.isfile(skill_file):
-                    with open(skill_file, "r", encoding="utf-8") as f:
-                        content = f.read()
-                    keywords = extract_keywords_from_skill(content)
-                    if not keywords:
-                        keywords = set(item.lower().replace('_', '-').split('-'))
-                    skills.append({
-                        "path": skill_file,
-                        "folder": item,
-                        "base_dir": base_dir,
-                        "keywords": keywords,
-                        "content": content
-                    })
-            elif item.endswith(".md") and base_dir == "skills/auto":
-                with open(item_path, "r", encoding="utf-8") as f:
-                    content = f.read()
-                keywords = extract_keywords_from_skill(content)
-                if not keywords:
-                    keywords = set(os.path.splitext(item)[0].lower().replace('_', '-').split('-'))
-                skills.append({
-                    "path": item_path,
-                    "folder": os.path.splitext(item)[0],
-                    "base_dir": base_dir,
-                    "keywords": keywords,
-                    "content": content
-                })
-    
-    log(f"Skill totali scoperte: {len(skills)}")
-    for s in skills:
-        log(f"  - [{s['base_dir']}] {s['folder']}: keywords={sorted(s['keywords'])}")
-    return skills
-
-def load_skills_for_task(task_desc, all_skills):
-    context = ""
-    task_lower = task_desc.lower()
-    loaded = []
-    
-    for skill in all_skills:
-        if any(kw in task_lower for kw in skill["keywords"]):
-            context += f"\n--- SKILL: {skill['folder']} ---\n{skill['content']}\n"
-            loaded.append(skill["folder"])
-    
-    log(f"Skill attivate per questo task: {loaded}")
-    return context
-
-def auto_learn(task_desc, target_file, output_code, success):
-    if not success:
-        log("Auto-learn: task fallito, nessun apprendimento")
-        return
-    
-    auto_dir = "skills/auto"
-    os.makedirs(auto_dir, exist_ok=True)
-    
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', target_file.replace('.', '_'))
-    learn_file = os.path.join(auto_dir, f"{timestamp}_{safe_name}.md")
-    
-    learned_rules = []
-    
-    if target_file.endswith(".html"):
-        if "<!DOCTYPE html>" in output_code:
-            learned_rules.append("- File HTML deve iniziare con <!DOCTYPE html>")
-        if '<html lang="it">' in output_code:
-            learned_rules.append('- HTML lang deve essere "it"')
-        if "localStorage" in output_code:
-            learned_rules.append("- Per storage locale usare localStorage con JSON.stringify/parse")
-        if "dragover" in output_code or "ondragover" in output_code:
-            learned_rules.append("- Drag-and-drop richiede gestione dragover, dragleave, drop")
-        if "beforeinstallprompt" in output_code:
-            learned_rules.append("- PWA install usa beforeinstallprompt e deferredPrompt")
-        if "#1a1a2e" in output_code:
-            learned_rules.append("- Tema BrevettIAmo: body background #1a1a2e")
-        if "#e0e0e0" in output_code:
-            learned_rules.append("- Tema BrevettIAmo: testo #e0e0e0")
-    
-    if target_file.endswith(".json"):
-        learned_rules.append("- JSON deve essere valido con json.dumps/json.loads")
-    
-    if target_file.endswith(".py"):
-        learned_rules.append("- Python: usare try/except per gestione errori API")
-    
-    if not learned_rules:
-        log("Auto-learn: nessuna regola nuova da apprendere")
-        return
-    
-    task_words = set(re.findall(r'[a-zA-Z]{3,}', task_desc.lower()))
-    common_words = {'the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use', 'che', 'per', 'una', 'con', 'del', 'nel', 'non', 'sono', 'della', 'alla', 'come', 'dopo', 'ogni', 'sotto', 'sopra', 'tra', 'fra', 'questo', 'questa', 'tutto', 'tutti', 'deve', 'essere', 'file', 'codice', 'crea', 'compito', 'task', 'correggi', 'migliora', 'target', 'obbligatorio', 'istruzioni', 'passo', 'prima', 'dentro', 'ogni', 'funzione', 'script', 'style', 'head', 'body', 'step', 'retry', 'tentativo', 'zip', 'compress', 'decompress'}
-    keywords = sorted(task_words - common_words)[:10]
-    
-    lines = []
-    lines.append("# SKILL AUTO-APPRESA: " + target_file)
-    lines.append("")
-    lines.append("## KEYWORDS: " + ", ".join(keywords))
-    lines.append("")
-    lines.append("## Data apprendimento: " + datetime.now().strftime("%Y-%m-%d %H:%M"))
-    lines.append("")
-    lines.append("## Task originale")
-    lines.append(task_desc[:300] + "...")
-    lines.append("")
-    lines.append("## Regole apprese")
-    for rule in learned_rules:
-        lines.append(rule)
-    lines.append("")
-    lines.append("## Esempio applicazione")
-    lines.append("File target: `" + target_file + "`")
-    lines.append("")
-    lines.append("```")
-    lines.append(output_code[:500] + "...")
-    lines.append("```")
-    lines.append("")
-    lines.append("## Note per IA future")
-    lines.append("- Questa regola e stata appresa automaticamente dal CEO Orchestrator")
-    lines.append("- Verificare sempre con sandbox prima di applicare")
-    lines.append("- Aggiornare se si scoprono eccezioni")
-    
-    skill_content = "\n".join(lines)
-    
-    with open(learn_file, "w", encoding="utf-8") as f:
-        f.write(skill_content)
-    
-    log(f"Auto-learn: skill appresa salvata in {learn_file}")
-    log(f"Auto-learn: regole apprese: {len(learned_rules)}")
-
-def clean_ai_output(text, target_file):
-    text = text.strip()
-    text = re.sub(r'```(?:json|html|css|js|javascript|python|xml)?\s*\n?', '', text, flags=re.IGNORECASE)
-    text = re.sub(r'\n?```', '', text)
-    
-    lines = text.split('\n')
-    code_lines = []
-    for line in lines:
-        stripped = line.strip().lower()
-        if stripped.startswith('ecco') or stripped.startswith('qui') or stripped.startswith('di seguito'):
-            continue
-        if stripped.startswith('il codice') or stripped.startswith('il file') or stripped.startswith('certo') or stripped.startswith('ho corretto'):
-            continue
-        if stripped.startswith('perfetto') or stripped.startswith('fatto') or stripped.startswith('completato'):
-            continue
-        code_lines.append(line)
-    
-    text = '\n'.join(code_lines).strip()
-    return text
-
-def run_the_guardian_sandbox(target_file, task_desc):
-    if not os.path.exists(target_file):
-        return False, f"File {target_file} non creato"
-    
-    if target_file.endswith(".py"):
+# ============ API PROVIDERS ============
+def call_deepseek(prompt, max_retries=2):
+    if not DEEPSEEK_API_KEY:
+        return None, "DeepSeek API key mancante"
+    url = "https://api.deepseek.com/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "deepseek-chat",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.2,
+        "max_tokens": 8000
+    }
+    for attempt in range(max_retries):
         try:
-            with open(target_file, "r", encoding="utf-8") as f:
-                code_content = f.read()
-            compile(code_content, target_file, 'exec')
-            log("Sandbox: compile Python OK")
+            resp = requests.post(url, headers=headers, json=payload, timeout=120)
+            if resp.status_code == 200:
+                data = resp.json()
+                return data["choices"][0]["message"]["content"], None
+            print(f"[CEO] DeepSeek HTTP {resp.status_code}: {resp.text[:200]}")
+            time.sleep(2 ** attempt)
         except Exception as e:
-            return False, f"Fallito controllo compile(): {str(e)}"
-    
-    if target_file.endswith(".json"):
-        try:
-            with open(target_file, "r", encoding="utf-8") as f:
-                json.load(f)
-            log("Sandbox: JSON valido OK")
-        except Exception as e:
-            return False, f"JSON non valido: {str(e)}"
-    
-    if target_file.endswith(".html"):
-        try:
-            with open(target_file, "r", encoding="utf-8") as f:
-                content = f.read()
-            checks = [
-                ("<!DOCTYPE html>" in content or "<!doctype html>" in content.lower(), "Manca DOCTYPE html"),
-                ("<html" in content, "Manca tag html"),
-                ("</html>" in content, "Manca chiusura html"),
-                ("<body>" in content or "<body " in content, "Manca tag body"),
-                ("</body>" in content, "Manca chiusura body"),
-            ]
-            for ok, msg in checks:
-                if not ok:
-                    return False, msg
-            log("Sandbox: HTML struttura OK")
-        except Exception as e:
-            return False, f"HTML errore: {str(e)}"
-    
-    return True, "Sistema integro. Sandbox verde."
+            print(f"[CEO] DeepSeek exc: {e}")
+            time.sleep(2 ** attempt)
+    return None, "DeepSeek fallito"
 
-def call_broker_api(prompt, system_instruction, priority, task_data, timeout=120):
-    api_keys = task_data.get("api_keys", {})
-    kimi_key = api_keys.get("KIMI_API_KEY") or os.getenv("KIMI_API_KEY")
-    gemini_key = api_keys.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
-    openrouter_key = os.getenv("OPENROUTER_API_KEY", "")
-    groq_key = os.getenv("GROQ_API_KEY", "")
-    groq_key2 = os.getenv("GROQ_API_KEY_2", "")
-    openai_key = os.getenv("OPENAI_API_KEY", "")
-    deepseek_key = os.getenv("DEEPSEEK_API_KEY", "")
 
-    log(f"API -- DeepSeek: {'SI' if deepseek_key else 'NO'}, Kimi: {'SI' if kimi_key else 'NO'}, Gemini: {'SI' if gemini_key else 'NO'}, OpenRouter: {'SI' if openrouter_key else 'NO'}, Groq: {'SI' if groq_key else 'NO'}, Groq2: {'SI' if groq_key2 else 'NO'}, OpenAI: {'SI' if openai_key else 'NO'}")
-
-    # 0. DeepSeek V3 (superperformante, quasi gratis)
-    if deepseek_key:
-        try:
-            log("Provo DeepSeek V3...")
-            res = requests.post(
-                "https://api.deepseek.com/v1/chat/completions",
-                headers={"Authorization": f"Bearer {deepseek_key}", "Content-Type": "application/json"},
-                json={"model": "deepseek-chat", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=timeout
-            )
-            if res.status_code == 200:
-                log("DeepSeek V3 OK")
-                return res.json()['choices'][0]['message']['content']
-            else:
-                log(f"DeepSeek errore HTTP {res.status_code}: {res.text[:300]}")
-        except Exception as e:
-            log(f"DeepSeek exception: {e}")
-
-    if groq_key:
-        try:
-            log("Provo Groq...")
-            res = requests.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"},
-                json={"model": "llama3-8b-8192", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=timeout
-            )
-            if res.status_code == 200:
-                log("Groq OK")
-                return res.json()['choices'][0]['message']['content']
-            else:
-                log(f"Groq errore HTTP {res.status_code}: {res.text[:300]}")
-        except Exception as e:
-            log(f"Groq exception: {e}")
-
-    if groq_key2:
-        try:
-            log("Provo Groq 2...")
-            res = requests.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={"Authorization": f"Bearer {groq_key2}", "Content-Type": "application/json"},
-                json={"model": "llama3-8b-8192", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=timeout
-            )
-            if res.status_code == 200:
-                log("Groq 2 OK")
-                return res.json()['choices'][0]['message']['content']
-            else:
-                log(f"Groq 2 errore HTTP {res.status_code}: {res.text[:300]}")
-        except Exception as e:
-            log(f"Groq 2 exception: {e}")
-
-    if kimi_key:
-        try:
-            log("Provo Kimi...")
-            res = requests.post(
-                "https://api.moonshot.cn/v1/chat/completions",
-                headers={"Authorization": f"Bearer {kimi_key}", "Content-Type": "application/json"},
-                json={"model": "moonshot-v1-8k", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=timeout
-            )
-            if res.status_code == 200:
-                log("Kimi OK")
-                return res.json()['choices'][0]['message']['content']
-            else:
-                log(f"Kimi errore HTTP {res.status_code}: {res.text[:300]}")
-        except Exception as e:
-            log(f"Kimi exception: {e}")
-
-    if gemini_key:
-        try:
-            log("Provo Gemini...")
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={gemini_key}"
-            res = requests.post(url, json={"contents": [{"parts": [{"text": f"{system_instruction}\n\nTask: {prompt}"}]}]}, timeout=timeout)
-            if res.status_code == 200:
-                log("Gemini OK")
-                return res.json()['candidates'][0]['content']['parts'][0]['text']
-            else:
-                log(f"Gemini errore HTTP {res.status_code}: {res.text[:300]}")
-        except Exception as e:
-            log(f"Gemini exception: {e}")
-
-    if openai_key:
-        try:
-            log("Provo OpenAI...")
-            res = requests.post(
-                "https://api.openai.com/v1/chat/completions",
-                headers={"Authorization": f"Bearer {openai_key}", "Content-Type": "application/json"},
-                json={"model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                timeout=timeout
-            )
-            if res.status_code == 200:
-                log("OpenAI OK")
-                return res.json()['choices'][0]['message']['content']
-            else:
-                log(f"OpenAI errore HTTP {res.status_code}: {res.text[:300]}")
-        except Exception as e:
-            log(f"OpenAI exception: {e}")
-
-    if openrouter_key:
-        free_models = fetch_free_web_tokens_directory()
-        for model in free_models:
+def call_openrouter(prompt, max_retries=2):
+    if not OPENROUTER_API_KEY:
+        return None, "OpenRouter API key mancante"
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://brevettiamo.com",
+        "X-Title": "BrevettIAmo-CEO"
+    }
+    models = [
+        "deepseek/deepseek-chat-v3-0324:free",
+        "meta-llama/llama-4-maverick:free",
+        "google/gemini-2.5-flash-preview:free",
+        "mistralai/mistral-7b-instruct:free"
+    ]
+    for model in models:
+        payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.2,
+            "max_tokens": 8000
+        }
+        for attempt in range(max_retries):
             try:
-                log(f"Provo OpenRouter: {model}...")
-                res = requests.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers={"Authorization": f"Bearer {openrouter_key}", "Content-Type": "application/json"},
-                    json={"model": model, "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": prompt}], "temperature": 0.1},
-                    timeout=timeout
-                )
-                if res.status_code == 200:
-                    log(f"OpenRouter OK con {model}")
-                    return res.json()['choices'][0]['message']['content']
-                else:
-                    log(f"OpenRouter {model} errore HTTP {res.status_code}: {res.text[:300]}")
+                resp = requests.post(url, headers=headers, json=payload, timeout=120)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    if "choices" in data and len(data["choices"]) > 0:
+                        return data["choices"][0]["message"]["content"], None
+                print(f"[CEO] OpenRouter {model} HTTP {resp.status_code}")
+                time.sleep(2 ** attempt)
             except Exception as e:
-                log(f"OpenRouter {model} exception: {e}")
+                print(f"[CEO] OpenRouter exc: {e}")
+                time.sleep(2 ** attempt)
+    return None, "OpenRouter fallito"
 
-    raise Exception("Nessun provider API disponibile o funzionante.")
 
-def fallback_create_file(target_file, task_desc):
-    log("ATTIVO FALLBACK")
-    
-    if target_file == "manifest.json":
-        content = json.dumps({
-            "name": "BrevettIAmo", "short_name": "BrevettIAmo",
-            "description": "Piattaforma brevetti intelligente",
-            "start_url": "/", "display": "standalone",
-            "background_color": "#1a1a2e", "theme_color": "#16213e",
-            "orientation": "portrait",
-            "icons": [
-                {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
-                {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}
-            ]
-        }, indent=2)
-        with open(target_file, "w", encoding="utf-8") as f:
-            f.write(content)
-        log(f"Fallback: creato {target_file}")
+def call_groq(prompt, api_key, max_retries=2):
+    if not api_key:
+        return None, "Groq API key mancante"
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "llama-3.3-70b-versatile",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.2,
+        "max_tokens": 8000
+    }
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(url, headers=headers, json=payload, timeout=90)
+            if resp.status_code == 200:
+                data = resp.json()
+                return data["choices"][0]["message"]["content"], None
+            print(f"[CEO] Groq HTTP {resp.status_code}: {resp.text[:200]}")
+            time.sleep(2 ** attempt)
+        except Exception as e:
+            print(f"[CEO] Groq exc: {e}")
+            time.sleep(2 ** attempt)
+    return None, "Groq fallito"
+
+
+def call_gemini(prompt, max_retries=2):
+    if not GEMINI_API_KEY:
+        return None, "Gemini API key mancante"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": 0.2, "maxOutputTokens": 8000}
+    }
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(url, headers=headers, json=payload, timeout=90)
+            if resp.status_code == 200:
+                data = resp.json()
+                if "candidates" in data and len(data["candidates"]) > 0:
+                    return data["candidates"][0]["content"]["parts"][0]["text"], None
+            print(f"[CEO] Gemini HTTP {resp.status_code}: {resp.text[:200]}")
+            time.sleep(2 ** attempt)
+        except Exception as e:
+            print(f"[CEO] Gemini exc: {e}")
+            time.sleep(2 ** attempt)
+    return None, "Gemini fallito"
+
+
+def call_kimi(prompt, max_retries=2):
+    if not KIMI_API_KEY:
+        return None, "Kimi API key mancante"
+    url = "https://api.moonshot.cn/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {KIMI_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "moonshot-v1-8k",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.2,
+        "max_tokens": 8000
+    }
+    for attempt in range(max_retries):
+        try:
+            resp = requests.post(url, headers=headers, json=payload, timeout=90)
+            if resp.status_code == 200:
+                data = resp.json()
+                return data["choices"][0]["message"]["content"], None
+            print(f"[CEO] Kimi HTTP {resp.status_code}: {resp.text[:200]}")
+            time.sleep(2 ** attempt)
+        except Exception as e:
+            print(f"[CEO] Kimi exc: {e}")
+            time.sleep(2 ** attempt)
+    return None, "Kimi fallito"
+
+
+# ============ FALLBACK CHAIN ============
+def call_ai_with_fallback(prompt):
+    providers = [
+        ("DeepSeek", lambda p: call_deepseek(p)),
+        ("OpenRouter", lambda p: call_openrouter(p)),
+        ("Groq-1", lambda p: call_groq(p, GROQ_API_KEY)),
+        ("Groq-2", lambda p: call_groq(p, GROQ_API_KEY_2)),
+        ("Gemini", lambda p: call_gemini(p)),
+        ("Kimi", lambda p: call_kimi(p)),
+    ]
+    for name, fn in providers:
+        print(f"[CEO] Provo {name}...")
+        result, err = fn(prompt)
+        if result:
+            print(f"[CEO] OK: {name}")
+            return result, name
+        print(f"[CEO] Fallito {name}: {err}")
+    return None, "Tutti i provider falliti"
+
+
+# ============ GITHUB OPERATIONS ============
+def get_file_sha(path, branch=None):
+    if branch is None:
+        branch = TARGET_BRANCH
+    url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{path}?ref={branch}"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    resp = requests.get(url, headers=headers)
+    if resp.status_code == 200:
+        return resp.json().get("sha")
+    return None
+
+
+def create_or_update_file(path, content, message, branch=None):
+    if branch is None:
+        branch = TARGET_BRANCH
+    url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/contents/{path}"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    payload = {
+        "message": message,
+        "content": base64.b64encode(content.encode('utf-8')).decode('utf-8'),
+        "branch": branch
+    }
+    sha = get_file_sha(path, branch)
+    if sha:
+        payload["sha"] = sha
+        print(f"[CEO] Aggiorno: {path}")
+    else:
+        print(f"[CEO] Creo: {path}")
+    resp = requests.put(url, headers=headers, json=payload)
+    if resp.status_code in [200, 201]:
+        print(f"[CEO] Commit OK: {path}")
         return True
-    
-    if target_file == "pwa.html":
-        content = '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>BrevettIAmo - Spazio File</title><style>body{font-family:sans-serif;background:#1a1a2e;color:#e0e0e0;max-width:900px;margin:0 auto;padding:20px}header{text-align:center;padding:20px 0;border-bottom:2px solid #0f3460;margin-bottom:20px}h1{margin:0}.subtitle{color:#a0a0c0;font-style:italic}.drop-zone{border:3px dashed #0f3460;border-radius:16px;padding:40px;text-align:center;margin:20px 0;cursor:pointer}.drop-zone:hover{border-color:#4a90d9}.file-list{display:grid;gap:10px}.file-card{background:#16213e;border:1px solid #0f3460;border-radius:8px;padding:12px;display:flex;gap:10px;align-items:center}.file-info{flex:1}.file-name{font-weight:bold}.file-meta{font-size:0.8rem;color:#a0a0c0}.btn{padding:8px 16px;border:none;border-radius:6px;cursor:pointer}.btn-danger{background:#8b0000;color:#fff}footer{text-align:center;padding:20px;color:#a0a0c0;font-size:0.8rem;border-top:1px solid #0f3460;margin-top:20px}</style></head><body><header><h1>BrevettIAmo</h1><p class="subtitle">Spazio File Personale</p></header><div style="display:flex;justify-content:space-between;margin-bottom:20px"><a href="servizi.html" style="color:#e0e0e0;text-decoration:none">&larr; Torna ai Servizi</a><button id="installBtn" style="display:none;padding:8px 16px;background:#1a5a3a;color:#fff;border:none;border-radius:6px;cursor:pointer">Installa App</button></div><div class="drop-zone" id="dropZone"><p><strong>Carica File</strong></p><p style="color:#a0a0c0;font-size:0.9rem">Trascina qui o clicca per selezionare</p><input type="file" id="fileInput" style="display:none" multiple></div><h2 style="border-bottom:1px solid #0f3460;padding-bottom:8px;margin-bottom:15px">I Tuoi File</h2><div class="file-list" id="fileList"><p style="text-align:center;color:#a0a0c0;padding:30px">Nessun file caricato</p></div><footer><p>BrevettIAmo - Spazio File Personale</p><p>Versione Beta v1.0</p></footer><script>(function(){var files=JSON.parse(localStorage.getItem("brevettiamo_files")||"[]");var dropZone=document.getElementById("dropZone");var fileInput=document.getElementById("fileInput");var fileList=document.getElementById("fileList");function render(){if(files.length===0){fileList.innerHTML=\'<p style="text-align:center;color:#a0a0c0;padding:30px">Nessun file caricato</p>\';return}fileList.innerHTML="";files.forEach(function(f,i){var div=document.createElement("div");div.className="file-card";div.innerHTML=\'<div class="file-info"><div class="file-name">\'+f.name+\'</div><div class="file-meta">\'+f.size+\' &bull; \'+(f.type||"file")+\' &bull; \'+(f.date||"")+\'</div></div><button class="btn btn-danger" onclick="del(\'+i+\')">Elimina</button>\';fileList.appendChild(div);});}window.del=function(i){if(!confirm("Eliminare?"))return;files.splice(i,1);localStorage.setItem("brevettiamo_files",JSON.stringify(files));render()};function handle(fl){Array.from(fl).forEach(function(file){var reader=new FileReader();reader.onload=function(e){files.push({name:file.name,size:file.size+" B",type:file.type||"file",date:new Date().toLocaleString("it-IT"),data:e.target.result});localStorage.setItem("brevettiamo_files",JSON.stringify(files));render();};reader.readAsDataURL(file);});}dropZone.onclick=function(){fileInput.click()};dropZone.ondragover=function(e){e.preventDefault();dropZone.style.borderColor="#4a90d9"};dropZone.ondragleave=function(){dropZone.style.borderColor="#0f3460"};dropZone.ondrop=function(e){e.preventDefault();dropZone.style.borderColor="#0f3460";handle(e.dataTransfer.files)};fileInput.onchange=function(e){handle(e.target.files)};var deferredPrompt;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;document.getElementById("installBtn").style.display="inline-block"});document.getElementById("installBtn").onclick=function(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt=null};render();})();</script></body></html>'
-        with open(target_file, "w", encoding="utf-8") as f:
-            f.write(content)
-        log(f"Fallback: creato {target_file}")
-        return True
-    
-    log(f"Fallback: nessun template per {target_file}")
+    print(f"[CEO] ERRORE GitHub {resp.status_code}: {resp.text[:500]}")
     return False
 
-def execute_task_with_retry(task_desc, target_file, priority, task_data, skill_context, existing_code, max_retries=3):
-    base_prompt = task_desc
-    
-    # COMPRESSIONE: se file esistente e grande, comprimi
-    existing_compressed = None
-    if existing_code and len(existing_code) > 1000:
-        existing_compressed = compress_text(existing_code)
-        log(f"File esistente compresso per invio all'IA")
-        existing_show = f"[FILE COMPRESSO IN ZIP BASE64 - {len(existing_compressed)} caratteri]\n{existing_compressed[:2000]}"
-        if len(existing_compressed) > 2000:
-            existing_show += "\n... [compressione troncata] ..."
-    elif existing_code:
-        max_len = 6000
-        existing_show = existing_code[:max_len]
-        if len(existing_code) > max_len:
-            existing_show += "\n... [file troncato, continua] ..."
-    else:
-        existing_show = ""
-    
-    if existing_show:
-        base_prompt = f"{task_desc}\n\n=== FILE ATTUALE ({target_file}) ===\n{existing_show}\n\n=== ISTRUZIONE ===\nCorreggi il file sopra. Mantieni tutte le funzionalita esistenti valide. Produci il file COMPLETO e corretto. Non omettere parti."
-    
-    system_instruction = f"""Agisci come compilatore di codice. NON interpretare. NON spiegare. ESEGUI SOLO.
+
+# ============ TASK PROCESSING ============
+def build_system_prompt(task, context=""):
+    prompt = f"""Sei il CEO Orchestrator di BrevettIAmo. Genera codice completo e funzionante.
+
+TASK: {task}
 
 REGOLE ASSOLUTE:
-1. Output SOLO codice sorgente puro. ZERO spiegazioni. ZERO markdown. ZERO commenti inutili.
-2. Se il target e un file .html, produci HTML5 completo con DOCTYPE, html, head, body, script inline.
-3. Se il target e un file .json, produci JSON valido.
-4. Se il target e un file .py, produci Python valido.
-5. NON includere testo prima o dopo il codice.
-6. Inizia direttamente con il codice.
-7. Se ti viene fornito un file esistente, correggilo mantenendo tutte le funzionalita valide.
+1. Genera SOLO codice funzionante, completo, pronto per produzione
+2. HTML: layout pergamena coerente BrevettIAmo, NO emoji, solo testo e icone SVG
+3. JS: verifica sintassi, MAI 'var object.property', usa 'window.x = ...'
+4. CSS: stili coerenti con design system esistente
+5. Commenti in italiano
+6. Codice autocontenuto e funzionante
+7. File COMPLETI, non troncati. Se lungo, continua senza abbreviare.
+8. Per tavole tecniche SVG: ogni figura (assieme/esplosa/sezione/dettaglio) deve avere layout visivamente distinti
 
-{skill_context}"""
+{context}
 
-    for attempt in range(1, max_retries + 1):
-        log(f"=== TENTATIVO {attempt}/{max_retries} ===")
-        
-        if attempt == 1:
-            prompt = base_prompt
-        elif attempt == 2:
-            prompt = base_prompt + "\n\n=== ATTENZIONE ===\nIl tentativo precedente non ha prodotto codice valido. Assicurati di produrre SOLO codice, senza spiegazioni. Inizia direttamente con <!DOCTYPE html> se il target e HTML."
-        else:
-            prompt = base_prompt + "\n\n=== ULTIMO TENTATIVO ===\nDevi assolutamente produrre codice valido. NON scrivere testo. NON spiegare. Inizia immediatamente con il codice del file. Se HTML, inizia con <!DOCTYPE html>."
-        
-        output_code = None
-        try:
-            output_code = call_broker_api(prompt, system_instruction, priority, task_data, timeout=120)
-            output_code = clean_ai_output(output_code, target_file)
-            log(f"IA ha generato {len(output_code)} caratteri")
-            
-            if not output_code or len(output_code.strip()) < 50:
-                log(f"Tentativo {attempt}: output troppo corto")
-                if attempt < max_retries:
-                    time.sleep(2)
-                    continue
-                else:
-                    raise Exception("Output IA troppo corto dopo tutti i retry")
-            
-            # Verifica se l'output e compresso (zip base64)
-            if output_code.startswith("UEsDB") or (len(output_code) > 100 and re.match(r'^[A-Za-z0-9+/=]+$', output_code[:100])):
-                log("Rilevato output compresso, decomprimo...")
-                decompressed = decompress_text(output_code)
-                if decompressed:
-                    output_code = decompressed
-                    log(f"Decompresso: {len(output_code)} caratteri")
-                else:
-                    log("Decompressione fallita, uso output raw")
-            
-            # Scrivi file temporaneo per sandbox
-            temp_file = target_file + ".tmp"
-            with open(temp_file, "w", encoding="utf-8") as f:
-                f.write(output_code)
-            
-            sandbox_ok, test_log = run_the_guardian_sandbox(temp_file, task_desc)
-            
-            if sandbox_ok:
-                os.replace(temp_file, target_file)
-                log(f"Tentativo {attempt}: SUCCESSO - Sandbox passata")
-                return output_code, True, None
-            else:
-                log(f"Tentativo {attempt}: Sandbox fallita - {test_log}")
-                if os.path.exists(temp_file):
-                    os.remove(temp_file)
-                if attempt < max_retries:
-                    time.sleep(2)
-                    continue
-                else:
-                    raise Exception(f"Sandbox fallita dopo {max_retries} tentativi: {test_log}")
-                    
-        except Exception as e:
-            log(f"Tentativo {attempt}: Errore - {e}")
-            if attempt < max_retries:
-                time.sleep(2)
-                continue
-            else:
-                return None, False, str(e)
-    
-    return None, False, "Tutti i tentativi falliti"
+Rispondi SOLO con il codice completo del file, senza spiegazioni prima o dopo. Non usare markdown ``` all'inizio e alla fine.
+"""
+    return prompt
 
+
+def clean_generated_code(code):
+    """Pulisce il codice generato dall'AI"""
+    code = code.strip()
+    if code.startswith("```"):
+        lines = code.split("\n")
+        start = 1
+        if lines[0].strip().startswith("```") and len(lines[0].strip()) > 3:
+            start = 1
+        code = "\n".join(lines[start:])
+    if code.endswith("```"):
+        lines = code.split("\n")
+        code = "\n".join(lines[:-1])
+    return code.strip()
+
+
+def process_task(task_data):
+    task = task_data.get("task", "")
+    file_path = task_data.get("file_path", "")
+    file_type = task_data.get("file_type", "html")
+
+    print(f"\n{'='*60}")
+    print(f"TASK: {task[:100]}")
+    print(f"FILE TARGET: {file_path or 'DA DETERMINARE'}")
+    print(f"{'='*60}")
+
+    prompt = build_system_prompt(task)
+    code, provider = call_ai_with_fallback(prompt)
+
+    if not code:
+        print("[CEO] ERRORE: Nessun provider disponibile")
+        return False
+
+    code = clean_generated_code(code)
+    print(f"[CEO] Codice generato: {len(code)} chars da {provider}")
+
+    if not file_path:
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_path = f"generated/ceo_{ts}.{file_type}"
+
+    msg = f"ceo: {task[:60]}... | {provider}"
+    return create_or_update_file(file_path, code, msg)
+
+
+# ============ SUPABASE LOGGING ============
+def log_to_supabase(level, message, details=None):
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        return
+    url = f"{SUPABASE_URL}/rest/v1/ceo_logs"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+    }
+    payload = {
+        "level": level,
+        "message": message,
+        "details": json.dumps(details, ensure_ascii=False) if details else None,
+        "created_at": datetime.now().isoformat()
+    }
+    try:
+        requests.post(url, headers=headers, json=payload, timeout=10)
+    except Exception as e:
+        print(f"[CEO] Log fallito: {e}")
+
+
+# ============ MAIN ============
 def main():
-    log("CEO Orchestrator v3.5 avviato")
-    
-    if not os.path.exists("task.json"):
-        log("task.json non trovato, creo file idle")
-        default_task = {
-            "status": "idle", "task_description": "nessun task",
-            "kill_switch": False, "target_file": "output.py", "priority": "SLOW"
+    print("="*60)
+    print("CEO ORCHESTRATOR v3.5")
+    print("DeepSeek + ZIP + Fallback Multi-Provider")
+    print("="*60)
+
+    if not GITHUB_TOKEN:
+        print("[CEO] ERRORE CRITICO: GITHUB_TOKEN mancante")
+        sys.exit(1)
+
+    avail = []
+    if DEEPSEEK_API_KEY: avail.append("DeepSeek")
+    if OPENROUTER_API_KEY: avail.append("OpenRouter")
+    if GROQ_API_KEY: avail.append("Groq-1")
+    if GROQ_API_KEY_2: avail.append("Groq-2")
+    if GEMINI_API_KEY: avail.append("Gemini")
+    if KIMI_API_KEY: avail.append("Kimi")
+    print(f"[CEO] Provider: {', '.join(avail) if avail else 'NESSUNO'}")
+
+    task_json = os.environ.get("CEO_TASK", "{}")
+    task_data = {}
+    try:
+        task_data = json.loads(task_json)
+    except:
+        pass
+
+    if not task_data and os.path.exists("task.json"):
+        with open("task.json", "r", encoding="utf-8") as f:
+            task_data = json.load(f)
+
+    if not task_data or not task_data.get("task"):
+        task_data = {
+            "task": "Verifica che il CEO Orchestrator v3.5 funzioni generando un file di test",
+            "file_path": "test/ceo_v35_test.html",
+            "file_type": "html"
         }
-        with open("task.json", "w", encoding="utf-8") as f:
-            json.dump(default_task, f, indent=4)
-        log("Nessun task da eseguire. Uscita.")
+
+    print(f"[CEO] Task: {json.dumps(task_data, ensure_ascii=False)[:300]}")
+
+    success = process_task(task_data)
+
+    if success:
+        print("\n[CEO] TASK COMPLETATO")
+        log_to_supabase("info", "Task completato", task_data)
         sys.exit(0)
+    else:
+        print("\n[CEO] TASK FALLITO")
+        log_to_supabase("error", "Task fallito", task_data)
+        sys.exit(1)
 
-    with open("task.json", "r", encoding="utf-8") as f:
-        task_data = json.load(f)
-
-    log(f"Task status: {task_data.get('status', 'unknown')}, kill_switch: {task_data.get('kill_switch', False)}")
-
-    if task_data.get("status") != "pending" or task_data.get("kill_switch") == True:
-        log("Nessun task pending o kill_switch attivo. Uscita.")
-        sys.exit(0)
-
-    task_desc = task_data["task_description"]
-    target_file = task_data.get("target_file", "output.py")
-    priority = task_data.get("priority", "SLOW")
-    max_retries = task_data.get("max_retries", 3)
-
-    log(f"Task: {task_desc[:100]}...")
-    log(f"Target file: {target_file}, Priority: {priority}, Max retries: {max_retries}")
-
-    # SCANSIONE DINAMICA SKILL
-    all_skills = discover_skills()
-    skill_context = load_skills_for_task(task_desc, all_skills)
-    
-    # LEGGI FILE ESISTENTE SE PRESENTE
-    existing_code = ""
-    if os.path.exists(target_file):
-        try:
-            with open(target_file, "r", encoding="utf-8") as f:
-                existing_code = f.read()
-            log(f"File esistente rilevato: {len(existing_code)} caratteri")
-        except Exception as e:
-            log(f"Errore lettura file esistente: {e}")
-
-    # ESECUZIONE CON RETRY E COMPRESSIONE
-    output_code, success, error_msg = execute_task_with_retry(
-        task_desc, target_file, priority, task_data, skill_context, existing_code, max_retries
-    )
-
-    if not success:
-        log(f"Tutti i tentativi falliti: {error_msg}")
-        
-        if fallback_create_file(target_file, task_desc):
-            log("Fallback riuscito")
-            with open(target_file, "r", encoding="utf-8") as f:
-                output_code = f.read()
-            success = True
-        else:
-            log("Fallback fallito")
-            task_data["status"] = "failed"
-            task_data["analisi_funzionamento"] = f"Errore dopo {max_retries} tentativi: {error_msg}"
-            task_data.pop("api_keys", None)
-            with open("task.json", "w", encoding="utf-8") as f:
-                json.dump(task_data, f, indent=4)
-            log("Task segnato come failed. Uscita con 0")
-            sys.exit(0)
-
-    task_data["status"] = "completed"
-    task_data["analisi_funzionamento"] = f"Codice integrato con successo dopo retry. Sandbox verde."
-    log("Task completato con successo")
-    exit_code = 0
-
-    if success and output_code:
-        auto_learn(task_desc, target_file, output_code, success)
-
-    task_data.pop("api_keys", None)
-    
-    with open("task.json", "w", encoding="utf-8") as f:
-        json.dump(task_data, f, indent=4)
-
-    log(f"CEO Orchestrator completato. Exit: {exit_code}")
-    sys.exit(exit_code)
 
 if __name__ == "__main__":
     main()
