@@ -93,6 +93,14 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
 .password-box input:focus{outline:none;border-color:#1a3a5c}
 .password-box .pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border:none;border-radius:10px;font-size:1em;font-weight:bold;cursor:pointer;margin-top:10px;-webkit-appearance:none}
 .password-box .pw-btn:hover{opacity:0.9}
+.debug-panel{background:#1a3a5c;color:#f5f0e6;border-radius:12px;padding:15px;margin-top:15px;font-family:'Courier New',monospace;font-size:0.8em}
+.debug-panel h4{color:#c9a84c;margin-bottom:8px;font-size:1em}
+.debug-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(201,168,76,0.2)}
+.debug-row:last-child{border-bottom:none}
+.debug-label{color:#c9a84c}
+.debug-value{color:#4caf50}
+.debug-value.error{color:#f44336}
+.debug-btn{background:#c9a84c;color:#1a3a5c;border:none;padding:8px 16px;border-radius:20px;font-size:0.8em;font-weight:bold;cursor:pointer;margin-top:10px;-webkit-appearance:none}
 .password-box .warning{color:#c62828;font-size:0.8em;margin-top:10px;font-weight:bold}
 .sync-info{background:rgba(33,150,243,0.08);border-radius:10px;padding:12px;margin-top:10px;border:1px solid rgba(33,150,243,0.2);display:flex;align-items:center;justify-content:space-between}
 .sync-info p{color:#1565c0;font-size:0.85em;margin:0}
@@ -204,6 +212,16 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
       <p id="syncInfoText">Sync: in attesa di password...</p>
       <button onclick="forceSync()">Sincronizza Ora</button>
     </div>
+    <div class="debug-panel" id="debugPanel" style="display:none">
+      <h4>Debug Sync</h4>
+      <div class="debug-row"><span class="debug-label">Sync ID:</span><span class="debug-value" id="dbgSyncId">-</span></div>
+      <div class="debug-row"><span class="debug-label">Supabase:</span><span class="debug-value" id="dbgSupabase">-</span></div>
+      <div class="debug-row"><span class="debug-label">File Cloud:</span><span class="debug-value" id="dbgCloud">-</span></div>
+      <div class="debug-row"><span class="debug-label">File Locali:</span><span class="debug-value" id="dbgLocal">-</span></div>
+      <div class="debug-row"><span class="debug-label">Ultimo Errore:</span><span class="debug-value error" id="dbgError">-</span></div>
+      <button class="debug-btn" onclick="updateDebugPanel()">Aggiorna Debug</button>
+    </div>
+    <button class="debug-btn" id="toggleDebugBtn" onclick="toggleDebug()" style="margin-top:8px;background:rgba(26,58,92,0.1);color:#1a3a5c;border:1px solid #1a3a5c">Mostra Debug</button>
     <p style="margin-bottom:12px;color:#666;font-size:0.9em">Stessa password su tutti i dispositivi = stessi file ovunque. Sync automatico ogni 10 secondi.</p>
 
     <div class="upload-area" id="uploadArea">
@@ -309,6 +327,13 @@ function decryptData(ciphertext,iv,key){
 // ============================
 // PASSWORD
 // ============================
+function getDeterministicSalt(password){
+  var enc=new TextEncoder();
+  return crypto.subtle.digest('SHA-256',enc.encode('BREVETTIAMO_SALT_v1_'+password)).then(function(hash){
+    return new Uint8Array(hash).slice(0,16);
+  });
+}
+
 function setPassword(){
   var pw=document.getElementById('pwInput').value;
   var confirm=document.getElementById('pwConfirm').value;
@@ -316,14 +341,17 @@ function setPassword(){
   if(pw.length<8){errEl.textContent='Password minimo 8 caratteri.';errEl.classList.remove('hidden');return}
   if(pw!==confirm){errEl.textContent='Le password non coincidono.';errEl.classList.remove('hidden');return}
   userPassword=pw;
-  var salt=crypto.getRandomValues(new Uint8Array(16));
-  Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]).then(function(results){
+  getDeterministicSalt(pw).then(function(salt){
+    console.log('SET salt determinato:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
+    return Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]);
+  }).then(function(results){
     cryptoKey=results[0];syncId=results[1];
-    localStorage.setItem('pwa_salt',JSON.stringify(Array.from(salt)));
+    localStorage.setItem('pwa_salt','deterministic');
     localStorage.setItem('pwa_has_pw','true');
+    console.log('SET syncId:',syncId.substring(0,16));
     document.getElementById('passwordOverlay').classList.add('hidden');
     showStatus('Cifratura e sync attivati!','success');
-    updateSyncInfo('Sync attivo');
+    updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
     initSupabase();
     renderFileList();
     syncFromCloud();
@@ -341,17 +369,18 @@ function checkPassword(){
 function unlockWithPassword(){
   var pw=document.getElementById('pwUnlock').value;
   var errEl=document.getElementById('pwError');
-  var saltArr=JSON.parse(localStorage.getItem('pwa_salt')||'[]');
-  if(saltArr.length===0){errEl.textContent='Errore configurazione.';errEl.classList.remove('hidden');return}
-  var salt=new Uint8Array(saltArr);
-  Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]).then(function(results){
+  getDeterministicSalt(pw).then(function(salt){
+    console.log('UNLOCK salt determinato:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
+    return Promise.all([deriveKey(pw,salt),deriveSyncId(pw,salt)]);
+  }).then(function(results){
     var testKey=results[0];var testSyncId=results[1];
+    console.log('UNLOCK syncId:',testSyncId.substring(0,16));
     getAllFilesFromDB().then(function(files){
       if(files.length>0){
         decryptData(files[0].encrypted,files[0].iv,testKey).then(function(){
           cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
           document.getElementById('passwordOverlay').classList.add('hidden');
-          updateSyncInfo('Sync attivo');
+          updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
           initSupabase();renderFileList();syncFromCloud();startAutoSync();
         }).catch(function(){
           errEl.textContent='Password errata.';errEl.classList.remove('hidden');
@@ -359,7 +388,7 @@ function unlockWithPassword(){
       }else{
         cryptoKey=testKey;syncId=testSyncId;userPassword=pw;
         document.getElementById('passwordOverlay').classList.add('hidden');
-        updateSyncInfo('Sync attivo');
+        updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
         initSupabase();renderFileList();syncFromCloud();startAutoSync();
       }
     });
@@ -375,9 +404,16 @@ function updateSyncInfo(text){
 // SUPABASE
 // ============================
 function initSupabase(){
+  console.log('INIT Supabase... URL presente:',!!SUPABASE_URL,'Key presente:',!!SUPABASE_ANON_KEY);
   if(typeof supabase!=='undefined'&&supabase.createClient){
-    supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-    console.log('Supabase connesso');
+    try{
+      supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+      console.log('Supabase connesso OK');
+    }catch(e){
+      console.error('Supabase init error:',e);
+    }
+  }else{
+    console.error('Supabase library NOT loaded');
   }
 }
 
@@ -409,31 +445,41 @@ function syncFromCloud(){
   if(!supabaseClient||!syncId){console.log('SKIP sync: no client or syncId');return}
   updateSyncInfo('Sync in corso...');
   document.getElementById('syncDot').className='sync-dot syncing';
+  console.log('SYNC starting for syncId:',syncId.substring(0,8));
   supabaseClient.from('pwa_files').select('*').eq('sync_id',syncId).order('created_at',{ascending:false}).then(function(res){
     document.getElementById('syncDot').className='sync-dot';
-    if(res.error){console.error('Sync error:',res.error);updateSyncInfo('Sync errore: '+res.error.message);return}
+    if(res.error){console.error('Sync error:',res.error);updateSyncInfo('Sync errore: '+res.error.message);updateDebugPanel();return}
     var cloudFiles=res.data||[];
-    console.log('SYNC fetched:',cloudFiles.length,'files from cloud');
-    if(cloudFiles.length===0){updateSyncInfo('Sync attivo - Nessun file in cloud');return}
+    console.log('SYNC fetched:',cloudFiles.length,'files from cloud for syncId',syncId.substring(0,8));
+    if(cloudFiles.length===0){updateSyncInfo('Sync attivo - Nessun file in cloud');updateDebugPanel();return}
     getAllFilesFromDB().then(function(localFiles){
       var localNames=localFiles.map(function(f){return f.name});
+      console.log('SYNC local files:',localNames);
       var newFiles=cloudFiles.filter(function(cf){return localNames.indexOf(cf.name)===-1});
-      console.log('SYNC new files to import:',newFiles.length);
-      if(newFiles.length===0){updateSyncInfo('Sync attivo - Tutto sincronizzato');return}
+      console.log('SYNC new files to import:',newFiles.length,'names:',newFiles.map(function(f){return f.name}));
+      if(newFiles.length===0){updateSyncInfo('Sync attivo - Tutto sincronizzato');updateDebugPanel();return}
       var imported=0;
       function importNext(idx){
         if(idx>=newFiles.length){
           updateSyncInfo('Sync: '+imported+' nuovi file');
+          updateDebugPanel();
           renderFileList();return;
         }
         var cf=newFiles[idx];
+        console.log('SYNC importing:',cf.name);
         try{
-          var ivArr=Array.from(atob(cf.iv)).map(function(c){return c.charCodeAt(0)});
-          var dataArr=Array.from(atob(cf.encrypted_data)).map(function(c){return c.charCodeAt(0)});
+          var ivStr=cf.iv;
+          var dataStr=cf.encrypted_data;
+          console.log('SYNC iv type:',typeof ivStr,'length:',ivStr.length);
+          console.log('SYNC data type:',typeof dataStr,'length:',dataStr.length);
+          var ivArr=Array.from(atob(ivStr)).map(function(c){return c.charCodeAt(0)});
+          var dataArr=Array.from(atob(dataStr)).map(function(c){return c.charCodeAt(0)});
+          console.log('SYNC decoded arrays - iv:',ivArr.length,'data:',dataArr.length);
           saveFileToDB(cf.name,cf.file_type,{iv:ivArr,data:dataArr},cf.size||0).then(function(){
+            console.log('SYNC imported OK:',cf.name);
             imported++;importNext(idx+1);
           }).catch(function(err){console.error('SYNC import error:',err);importNext(idx+1)});
-        }catch(e){console.error('SYNC decode error:',e);importNext(idx+1)}
+        }catch(e){console.error('SYNC decode error for',cf.name,':',e);importNext(idx+1)}
       }
       importNext(0);
     });
@@ -441,6 +487,7 @@ function syncFromCloud(){
     document.getElementById('syncDot').className='sync-dot offline';
     console.error('SYNC exception:',err);
     updateSyncInfo('Sync errore: '+err.message);
+    updateDebugPanel();
   });
 }
 
@@ -448,11 +495,54 @@ function forceSync(){
   if(!syncId){showStatus('Inserisci prima la password.','warning');return}
   syncFromCloud();
   showStatus('Sincronizzazione forzata.','info');
+  updateDebugPanel();
+}
+
+function toggleDebug(){
+  var panel=document.getElementById('debugPanel');
+  var btn=document.getElementById('toggleDebugBtn');
+  if(panel.style.display==='none'){
+    panel.style.display='block';
+    btn.textContent='Nascondi Debug';
+    updateDebugPanel();
+  }else{
+    panel.style.display='none';
+    btn.textContent='Mostra Debug';
+  }
+}
+
+function updateDebugPanel(){
+  var syncEl=document.getElementById('dbgSyncId');
+  var supEl=document.getElementById('dbgSupabase');
+  var cloudEl=document.getElementById('dbgCloud');
+  var localEl=document.getElementById('dbgLocal');
+  var errEl=document.getElementById('dbgError');
+  if(syncEl)syncEl.textContent=syncId?syncId.substring(0,16)+'...':'non impostato';
+  if(supEl)supEl.textContent=supabaseClient?'Connesso':'Non connesso';
+  if(cloudEl)cloudEl.textContent='...';
+  if(localEl)localEl.textContent='...';
+  if(errEl)errEl.textContent='Nessuno';
+  getAllFilesFromDB().then(function(localFiles){
+    if(localEl)localEl.textContent=localFiles.length;
+  });
+  if(supabaseClient&&syncId){
+    supabaseClient.from('pwa_files').select('*',{count:'exact',head:true}).eq('sync_id',syncId).then(function(res){
+      if(res.error&&cloudEl)cloudEl.textContent='Errore';
+      else if(cloudEl)cloudEl.textContent=(res.count!==undefined?res.count:(res.data?res.data.length:'?'));
+    }).catch(function(err){
+      if(cloudEl)cloudEl.textContent='Errore';
+      if(errEl)errEl.textContent=err.message||String(err);
+    });
+  }else{
+    if(cloudEl)cloudEl.textContent='N/A';
+  }
 }
 
 function startAutoSync(){
+  console.log('START auto sync every 10s');
   if(syncInterval)clearInterval(syncInterval);
   syncInterval=setInterval(function(){
+    console.log('AUTO SYNC tick - syncId:',!!syncId,'client:',!!supabaseClient);
     if(syncId&&supabaseClient)syncFromCloud();
   },10000);
 }
