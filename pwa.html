@@ -382,30 +382,43 @@ function initSupabase(){
 }
 
 function uploadToSupabase(fileRecord){
-  if(!supabaseClient||!syncId)return Promise.resolve(false);
-  return supabaseClient.from('pwa_files').delete().eq('sync_id',syncId).eq('name',fileRecord.name).then(function(){
+  if(!supabaseClient||!syncId){console.log('SKIP upload: no client or syncId');return Promise.resolve(false)}
+  console.log('UPLOAD START:',fileRecord.name,'size:',fileRecord.size);
+  var ivB64=btoa(String.fromCharCode.apply(null,fileRecord.iv));
+  var dataB64=btoa(String.fromCharCode.apply(null,fileRecord.encrypted));
+  console.log('UPLOAD b64 lengths - iv:',ivB64.length,'data:',dataB64.length);
+  return supabaseClient.from('pwa_files').delete().eq('sync_id',syncId).eq('name',fileRecord.name).then(function(delRes){
+    console.log('UPLOAD delete result:',delRes);
     return supabaseClient.from('pwa_files').insert({
       sync_id:syncId,name:fileRecord.name,file_type:fileRecord.type,
-      iv:fileRecord.iv,encrypted_data:fileRecord.encrypted,size:fileRecord.size,device:fileRecord.device
+      iv:ivB64,encrypted_data:dataB64,size:fileRecord.size,device:fileRecord.device
     });
   }).then(function(res){
-    if(res.error){console.error('Supabase upload error:',res.error);return false}
+    console.log('UPLOAD insert result:',res);
+    if(res.error){console.error('Supabase upload ERROR:',res.error);showStatus('Sync errore: '+res.error.message,'error');return false}
+    console.log('UPLOAD OK:',fileRecord.name);
     return true;
+  }).catch(function(err){
+    console.error('UPLOAD EXCEPTION:',err);
+    showStatus('Sync errore: '+err.message,'error');
+    return false;
   });
 }
 
 function syncFromCloud(){
-  if(!supabaseClient||!syncId)return;
+  if(!supabaseClient||!syncId){console.log('SKIP sync: no client or syncId');return}
   updateSyncInfo('Sync in corso...');
   document.getElementById('syncDot').className='sync-dot syncing';
   supabaseClient.from('pwa_files').select('*').eq('sync_id',syncId).order('created_at',{ascending:false}).then(function(res){
     document.getElementById('syncDot').className='sync-dot';
-    if(res.error){console.error('Sync error:',res.error);updateSyncInfo('Sync errore');return}
+    if(res.error){console.error('Sync error:',res.error);updateSyncInfo('Sync errore: '+res.error.message);return}
     var cloudFiles=res.data||[];
+    console.log('SYNC fetched:',cloudFiles.length,'files from cloud');
     if(cloudFiles.length===0){updateSyncInfo('Sync attivo - Nessun file in cloud');return}
     getAllFilesFromDB().then(function(localFiles){
       var localNames=localFiles.map(function(f){return f.name});
       var newFiles=cloudFiles.filter(function(cf){return localNames.indexOf(cf.name)===-1});
+      console.log('SYNC new files to import:',newFiles.length);
       if(newFiles.length===0){updateSyncInfo('Sync attivo - Tutto sincronizzato');return}
       var imported=0;
       function importNext(idx){
@@ -414,12 +427,20 @@ function syncFromCloud(){
           renderFileList();return;
         }
         var cf=newFiles[idx];
-        saveFileToDB(cf.name,cf.file_type,{iv:cf.iv,data:cf.encrypted_data},cf.size||0).then(function(){
-          imported++;importNext(idx+1);
-        }).catch(function(){importNext(idx+1)});
+        try{
+          var ivArr=Array.from(atob(cf.iv)).map(function(c){return c.charCodeAt(0)});
+          var dataArr=Array.from(atob(cf.encrypted_data)).map(function(c){return c.charCodeAt(0)});
+          saveFileToDB(cf.name,cf.file_type,{iv:ivArr,data:dataArr},cf.size||0).then(function(){
+            imported++;importNext(idx+1);
+          }).catch(function(err){console.error('SYNC import error:',err);importNext(idx+1)});
+        }catch(e){console.error('SYNC decode error:',e);importNext(idx+1)}
       }
       importNext(0);
     });
+  }).catch(function(err){
+    document.getElementById('syncDot').className='sync-dot offline';
+    console.error('SYNC exception:',err);
+    updateSyncInfo('Sync errore: '+err.message);
   });
 }
 
