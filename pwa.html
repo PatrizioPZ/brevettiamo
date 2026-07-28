@@ -3,517 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BrevettIAmo PWA - Storage cifrato multi-sistema. Windows, Android, iOS, macOS, Linux.">
+<meta name="description" content="BrevettIAmo PWA - Storage cifrato multi-sistema">
 <meta name="theme-color" content="#1a3a5c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BrevettIAmo PWA">
 <title>BrevettIAmo PWA - Storage Cifrato</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    background: linear-gradient(135deg, #f5f0e6 0%, #e8e0d0 50%, #d4c8b0 100%);
-    min-height: 100vh;
-    color: #2c1810;
-    -webkit-font-smoothing: antialiased;
-  }
-  .container { max-width: 900px; margin: 0 auto; padding: 15px; }
-
-  .header {
-    text-align: center;
-    padding: 30px 15px;
-    background: linear-gradient(135deg, #1a3a5c 0%, #2d5a87 100%);
-    color: #f5f0e6;
-    border-radius: 0 0 25px 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 30px rgba(26,58,92,0.3);
-    position: relative;
-  }
-  .header h1 {
-    font-size: 2em;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  }
-  .header .subtitle {
-    font-size: 0.95em;
-    opacity: 0.9;
-    font-style: italic;
-    margin-top: 5px;
-  }
-  .badge-beta {
-    display: inline-block;
-    background: #c9a84c;
-    color: #1a3a5c;
-    padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.75em;
-    font-weight: bold;
-    margin-top: 10px;
-    letter-spacing: 1px;
-  }
-  .device-info {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 0.7em;
-    opacity: 0.7;
-    background: rgba(0,0,0,0.2);
-    padding: 3px 8px;
-    border-radius: 10px;
-  }
-
-  .section {
-    background: rgba(255,255,255,0.9);
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.06);
-    border: 1px solid rgba(201,168,76,0.15);
-  }
-  .section h2 {
-    color: #1a3a5c;
-    font-size: 1.3em;
-    margin-bottom: 15px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #c9a84c;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section h2 .icon {
-    width: 30px;
-    height: 30px;
-    background: linear-gradient(135deg, #1a3a5c, #2d5a87);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #c9a84c;
-    font-size: 1em;
-    font-weight: bold;
-    flex-shrink: 0;
-  }
-
-  .install-box {
-    background: linear-gradient(135deg, #1a3a5c 0%, #2d5a87 100%);
-    color: #f5f0e6;
-    border-radius: 15px;
-    padding: 25px 20px;
-    text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 30px rgba(26,58,92,0.3);
-  }
-  .install-box h2 {
-    color: #c9a84c;
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    border: none;
-    justify-content: center;
-  }
-  .install-btn {
-    display: inline-block;
-    background: linear-gradient(135deg, #c9a84c 0%, #b8943a 100%);
-    color: #1a3a5c;
-    padding: 15px 40px;
-    border-radius: 40px;
-    font-size: 1.1em;
-    font-weight: bold;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    margin: 15px 0;
-    box-shadow: 0 6px 20px rgba(201,168,76,0.4);
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    -webkit-appearance: none;
-  }
-  .install-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(201,168,76,0.5); }
-  .install-btn:active { transform: translateY(0); }
-  .install-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-  .sync-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.15);
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.8em;
-    margin-top: 10px;
-  }
-  .sync-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #4caf50;
-    animation: pulse 2s infinite;
-  }
-  .sync-dot.offline { background: #f44336; animation: none; }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .platforms {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .platform-card {
-    background: rgba(255,255,255,0.95);
-    border-radius: 12px;
-    padding: 15px;
-    text-align: center;
-    border: 2px solid rgba(201,168,76,0.2);
-    transition: all 0.3s ease;
-  }
-  .platform-card:hover { border-color: #c9a84c; transform: translateY(-3px); }
-  .platform-card.active {
-    border-color: #4caf50;
-    background: rgba(76,175,80,0.05);
-  }
-  .platform-card.active::after {
-    content: "ATTIVO";
-    display: block;
-    font-size: 0.6em;
-    color: #4caf50;
-    font-weight: bold;
-    margin-top: 4px;
-  }
-  .platform-card .icon-svg {
-    width: 40px;
-    height: 40px;
-    margin: 0 auto 8px;
-  }
-  .platform-card h3 { color: #1a3a5c; font-size: 0.9em; margin-bottom: 3px; }
-  .platform-card p { color: #888; font-size: 0.75em; }
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-    margin-top: 15px;
-  }
-  .feature-card {
-    background: linear-gradient(135deg, rgba(26,58,92,0.04) 0%, rgba(201,168,76,0.04) 100%);
-    border-radius: 12px;
-    padding: 18px;
-    border-left: 3px solid #c9a84c;
-  }
-  .feature-card h3 {
-    color: #1a3a5c;
-    font-size: 0.95em;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .feature-card p { color: #666; font-size: 0.85em; line-height: 1.5; }
-
-  .upload-area {
-    background: linear-gradient(135deg, rgba(26,58,92,0.06) 0%, rgba(201,168,76,0.06) 100%);
-    border-radius: 12px;
-    padding: 25px;
-    text-align: center;
-    border: 2px dashed #c9a84c;
-    margin-top: 15px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  .upload-area.dragover {
-    border-color: #1a3a5c;
-    background: rgba(26,58,92,0.1);
-  }
-  .upload-area h3 { color: #1a3a5c; margin-bottom: 10px; font-size: 1.1em; }
-  .upload-area p { color: #888; font-size: 0.85em; margin-bottom: 12px; }
-  .upload-btn {
-    display: inline-block;
-    background: #1a3a5c;
-    color: #f5f0e6;
-    padding: 10px 25px;
-    border-radius: 25px;
-    font-size: 0.9em;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    margin: 3px;
-    transition: all 0.3s ease;
-    -webkit-appearance: none;
-  }
-  .upload-btn:hover { background: #2d5a87; transform: translateY(-1px); }
-  .upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .file-list { margin-top: 15px; }
-  .file-list h3 { color: #1a3a5c; margin-bottom: 10px; font-size: 1em; }
-  .file-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(255,255,255,0.95);
-    padding: 10px 12px;
-    border-radius: 8px;
-    margin-bottom: 6px;
-    border: 1px solid rgba(201,168,76,0.15);
-    transition: all 0.2s ease;
-  }
-  .file-item:hover { border-color: #c9a84c; }
-  .file-item .info { flex: 1; min-width: 0; }
-  .file-item .name {
-    font-weight: bold;
-    color: #1a3a5c;
-    font-size: 0.9em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .file-item .meta { color: #999; font-size: 0.75em; margin-top: 2px; }
-  .file-item .actions { display: flex; gap: 5px; flex-shrink: 0; }
-  .file-item .actions button {
-    background: #c9a84c;
-    color: #1a3a5c;
-    border: none;
-    padding: 4px 10px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 0.7em;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    -webkit-appearance: none;
-  }
-  .file-item .actions button:hover { background: #b8943a; }
-  .file-item .actions button.delete { background: #f44336; color: white; }
-  .file-item .actions button.delete:hover { background: #d32f2f; }
-  .file-item .lock-icon {
-    width: 16px;
-    height: 16px;
-    margin-right: 6px;
-    flex-shrink: 0;
-    color: #4caf50;
-  }
-
-  .security-banner {
-    background: linear-gradient(135deg, #1a3a5c 0%, #0d1f33 100%);
-    color: #c9a84c;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    margin-top: 15px;
-  }
-  .security-banner h3 { font-size: 1.1em; margin-bottom: 8px; }
-  .security-banner p { color: #f5f0e6; opacity: 0.9; font-size: 0.9em; }
-
-  .footer {
-    text-align: center;
-    padding: 20px;
-    color: #888;
-    font-size: 0.8em;
-  }
-
-  .status-msg {
-    padding: 10px;
-    border-radius: 8px;
-    margin: 10px 0;
-    text-align: center;
-    font-size: 0.85em;
-    font-weight: bold;
-  }
-  .status-success { background: rgba(76,175,80,0.15); color: #2e7d32; border: 1px solid #4caf50; }
-  .status-error { background: rgba(244,67,54,0.15); color: #c62828; border: 1px solid #f44336; }
-  .status-info { background: rgba(33,150,243,0.15); color: #1565c0; border: 1px solid #2196f3; }
-  .status-warning { background: rgba(255,152,0,0.15); color: #ef6c00; border: 1px solid #ff9800; }
-
-  .hidden { display: none !important; }
-
-  .progress-bar {
-    width: 100%;
-    height: 4px;
-    background: rgba(201,168,76,0.2);
-    border-radius: 2px;
-    margin-top: 8px;
-    overflow: hidden;
-  }
-  .progress-bar .fill {
-    height: 100%;
-    background: #c9a84c;
-    border-radius: 2px;
-    transition: width 0.3s ease;
-    width: 0%;
-  }
-
-  .transfer-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .transfer-btn {
-    background: linear-gradient(135deg, #1a3a5c 0%, #2d5a87 100%);
-    color: #f5f0e6;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-size: 0.9em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    -webkit-appearance: none;
-  }
-  .transfer-btn:hover { transform: translateY(-2px); }
-  .transfer-btn.import { background: linear-gradient(135deg, #c9a84c 0%, #b8943a 100%); color: #1a3a5c; }
-
-  .password-overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(26,58,92,0.95);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .password-box {
-    background: linear-gradient(135deg, #f5f0e6 0%, #e8e0d0 100%);
-    border-radius: 20px;
-    padding: 40px;
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    border: 2px solid #c9a84c;
-  }
-  .password-box h2 {
-    color: #1a3a5c;
-    font-size: 1.5em;
-    margin-bottom: 10px;
-  }
-  .password-box p {
-    color: #666;
-    font-size: 0.9em;
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
-  .password-box input {
-    width: 100%;
-    padding: 12px 15px;
-    border-radius: 10px;
-    border: 2px solid #c9a84c;
-    font-size: 1em;
-    font-family: inherit;
-    margin-bottom: 10px;
-    background: white;
-    color: #1a3a5c;
-  }
-  .password-box input:focus {
-    outline: none;
-    border-color: #1a3a5c;
-  }
-  .password-box .pw-btn {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #1a3a5c 0%, #2d5a87 100%);
-    color: #f5f0e6;
-    border: none;
-    border-radius: 10px;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-    -webkit-appearance: none;
-  }
-  .password-box .pw-btn:hover { opacity: 0.9; }
-  .password-box .warning {
-    color: #c62828;
-    font-size: 0.8em;
-    margin-top: 10px;
-    font-weight: bold;
-  }
-
-  
-  .login-section {
-    background: linear-gradient(135deg, #1a3a5c 0%, #2d5a87 100%);
-    color: #f5f0e6;
-    border-radius: 15px;
-    padding: 25px 20px;
-    text-align: center;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 30px rgba(26,58,92,0.3);
-  }
-  .login-section h2 {
-    color: #c9a84c;
-    font-size: 1.3em;
-    margin-bottom: 10px;
-  }
-  .login-section p {
-    font-size: 0.9em;
-    opacity: 0.9;
-    margin-bottom: 12px;
-  }
-  .login-btn {
-    display: inline-block;
-    background: #c9a84c;
-    color: #1a3a5c;
-    padding: 10px 25px;
-    border-radius: 25px;
-    font-size: 0.95em;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    margin: 3px;
-    transition: all 0.3s ease;
-    -webkit-appearance: none;
-  }
-  .login-btn:hover { background: #b8943a; transform: translateY(-2px); }
-  .user-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  .user-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #c9a84c;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #1a3a5c;
-    font-weight: bold;
-    font-size: 0.9em;
-  }
-
-  @media (max-width: 600px) {
-    .header h1 { font-size: 1.5em; }
-    .header .device-info { display: none; }
-    .install-btn { padding: 12px 25px; font-size: 1em; }
-    .platforms { grid-template-columns: repeat(2, 1fr); }
-    .features-grid { grid-template-columns: 1fr; }
-    .file-item { flex-wrap: wrap; }
-    .file-item .actions { width: 100%; justify-content: flex-end; margin-top: 5px; }
-    .transfer-box { grid-template-columns: 1fr; }
-    .password-box { padding: 25px; }
-  }
-
-  @media (min-width: 1024px) {
-    .container { max-width: 1000px; }
-    .header { border-radius: 0 0 30px 30px; padding: 40px 20px; }
-    .header h1 { font-size: 2.5em; }
-  }
-</style>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(135deg,#f5f0e6 0%,#e8e0d0 50%,#d4c8b0 100%);min-height:100vh;color:#2c1810;-webkit-font-smoothing:antialiased}
+.container{max-width:900px;margin:0 auto;padding:15px}
+.header{text-align:center;padding:30px 15px;background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border-radius:0 0 25px 25px;margin-bottom:20px;box-shadow:0 8px 30px rgba(26,58,92,0.3);position:relative}
+.header h1{font-size:2em;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
+.header .subtitle{font-size:0.95em;opacity:0.9;font-style:italic;margin-top:5px}
+.badge-beta{display:inline-block;background:#c9a84c;color:#1a3a5c;padding:4px 12px;border-radius:15px;font-size:0.75em;font-weight:bold;margin-top:10px;letter-spacing:1px}
+.device-info{position:absolute;top:10px;right:15px;font-size:0.7em;opacity:0.7;background:rgba(0,0,0,0.2);padding:3px 8px;border-radius:10px}
+.section{background:rgba(255,255,255,0.9);border-radius:15px;padding:20px;margin-bottom:15px;box-shadow:0 3px 15px rgba(0,0,0,0.06);border:1px solid rgba(201,168,76,0.15)}
+.section h2{color:#1a3a5c;font-size:1.3em;margin-bottom:15px;padding-bottom:8px;border-bottom:2px solid #c9a84c;display:flex;align-items:center;gap:10px}
+.section h2 .icon{width:30px;height:30px;background:linear-gradient(135deg,#1a3a5c,#2d5a87);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:1em;font-weight:bold;flex-shrink:0}
+.login-section{background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border-radius:15px;padding:25px 20px;text-align:center;margin-bottom:20px;box-shadow:0 8px 30px rgba(26,58,92,0.3)}
+.login-section h2{color:#c9a84c;font-size:1.3em;margin-bottom:10px}
+.login-section p{font-size:0.9em;opacity:0.9;margin-bottom:12px}
+.login-btn{display:inline-block;background:#c9a84c;color:#1a3a5c;padding:10px 25px;border-radius:25px;font-size:0.95em;font-weight:bold;border:none;cursor:pointer;margin:3px;transition:all 0.3s ease;-webkit-appearance:none}
+.login-btn:hover{background:#b8943a;transform:translateY(-2px)}
+.user-info{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:#c9a84c;display:flex;align-items:center;justify-content:center;color:#1a3a5c;font-weight:bold;font-size:0.9em}
+.install-box{background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border-radius:15px;padding:25px 20px;text-align:center;margin-bottom:20px;box-shadow:0 8px 30px rgba(26,58,92,0.3)}
+.install-box h2{color:#c9a84c;font-size:1.5em;margin-bottom:10px;border:none;justify-content:center}
+.install-btn{display:inline-block;background:linear-gradient(135deg,#c9a84c 0%,#b8943a 100%);color:#1a3a5c;padding:15px 40px;border-radius:40px;font-size:1.1em;font-weight:bold;text-decoration:none;border:none;cursor:pointer;margin:15px 0;box-shadow:0 6px 20px rgba(201,168,76,0.4);transition:all 0.3s ease;letter-spacing:1px;text-transform:uppercase;-webkit-appearance:none}
+.install-btn:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(201,168,76,0.5)}
+.install-btn:active{transform:translateY(0)}
+.install-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.sync-status{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);padding:5px 12px;border-radius:15px;font-size:0.8em;margin-top:10px}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite}
+.sync-dot.offline{background:#f44336;animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.platforms{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:15px}
+.platform-card{background:rgba(255,255,255,0.95);border-radius:12px;padding:15px;text-align:center;border:2px solid rgba(201,168,76,0.2);transition:all 0.3s ease}
+.platform-card:hover{border-color:#c9a84c;transform:translateY(-3px)}
+.platform-card.active{border-color:#4caf50;background:rgba(76,175,80,0.05)}
+.platform-card.active::after{content:"ATTIVO";display:block;font-size:0.6em;color:#4caf50;font-weight:bold;margin-top:4px}
+.platform-card .icon-svg{width:40px;height:40px;margin:0 auto 8px}
+.platform-card h3{color:#1a3a5c;font-size:0.9em;margin-bottom:3px}
+.platform-card p{color:#888;font-size:0.75em}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:15px}
+.feature-card{background:linear-gradient(135deg,rgba(26,58,92,0.04) 0%,rgba(201,168,76,0.04) 100%);border-radius:12px;padding:18px;border-left:3px solid #c9a84c}
+.feature-card h3{color:#1a3a5c;font-size:0.95em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.feature-card p{color:#666;font-size:0.85em;line-height:1.5}
+.upload-area{background:linear-gradient(135deg,rgba(26,58,92,0.06) 0%,rgba(201,168,76,0.06) 100%);border-radius:12px;padding:25px;text-align:center;border:2px dashed #c9a84c;margin-top:15px;transition:all 0.3s ease;cursor:pointer;-webkit-user-select:none;user-select:none}
+.upload-area.dragover{border-color:#1a3a5c;background:rgba(26,58,92,0.1)}
+.upload-area h3{color:#1a3a5c;margin-bottom:10px;font-size:1.1em}
+.upload-area p{color:#888;font-size:0.85em;margin-bottom:12px}
+.upload-btn{display:inline-block;background:#1a3a5c;color:#f5f0e6;padding:10px 25px;border-radius:25px;font-size:0.9em;font-weight:bold;border:none;cursor:pointer;margin:3px;transition:all 0.3s ease;-webkit-appearance:none}
+.upload-btn:hover{background:#2d5a87;transform:translateY(-1px)}
+.upload-btn:disabled{opacity:0.5;cursor:not-allowed}
+.file-list{margin-top:15px}
+.file-list h3{color:#1a3a5c;margin-bottom:10px;font-size:1em}
+.file-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.95);padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid rgba(201,168,76,0.15);transition:all 0.2s ease}
+.file-item:hover{border-color:#c9a84c}
+.file-item .info{flex:1;min-width:0}
+.file-item .name{font-weight:bold;color:#1a3a5c;font-size:0.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-item .meta{color:#999;font-size:0.75em;margin-top:2px}
+.file-item .actions{display:flex;gap:5px;flex-shrink:0}
+.file-item .actions button{background:#c9a84c;color:#1a3a5c;border:none;padding:4px 10px;border-radius:12px;cursor:pointer;font-size:0.7em;font-weight:bold;transition:all 0.2s ease;-webkit-appearance:none}
+.file-item .actions button:hover{background:#b8943a}
+.file-item .actions button.delete{background:#f44336;color:white}
+.file-item .actions button.delete:hover{background:#d32f2f}
+.file-item .lock-icon{width:16px;height:16px;margin-right:6px;flex-shrink:0;color:#4caf50}
+.security-banner{background:linear-gradient(135deg,#1a3a5c 0%,#0d1f33 100%);color:#c9a84c;border-radius:12px;padding:20px;text-align:center;margin-top:15px}
+.security-banner h3{font-size:1.1em;margin-bottom:8px}
+.security-banner p{color:#f5f0e6;opacity:0.9;font-size:0.9em}
+.footer{text-align:center;padding:20px;color:#888;font-size:0.8em}
+.status-msg{padding:10px;border-radius:8px;margin:10px 0;text-align:center;font-size:0.85em;font-weight:bold}
+.status-success{background:rgba(76,175,80,0.15);color:#2e7d32;border:1px solid #4caf50}
+.status-error{background:rgba(244,67,54,0.15);color:#c62828;border:1px solid #f44336}
+.status-info{background:rgba(33,150,243,0.15);color:#1565c0;border:1px solid #2196f3}
+.status-warning{background:rgba(255,152,0,0.15);color:#ef6c00;border:1px solid #ff9800}
+.hidden{display:none !important}
+.progress-bar{width:100%;height:4px;background:rgba(201,168,76,0.2);border-radius:2px;margin-top:8px;overflow:hidden}
+.progress-bar .fill{height:100%;background:#c9a84c;border-radius:2px;transition:width 0.3s ease;width:0%}
+.transfer-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.transfer-btn{background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border:none;padding:12px;border-radius:12px;font-size:0.9em;font-weight:bold;cursor:pointer;transition:all 0.3s ease;-webkit-appearance:none}
+.transfer-btn:hover{transform:translateY(-2px)}
+.transfer-btn.import{background:linear-gradient(135deg,#c9a84c 0%,#b8943a 100%);color:#1a3a5c}
+.password-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,58,92,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.password-box{background:linear-gradient(135deg,#f5f0e6 0%,#e8e0d0 100%);border-radius:20px;padding:40px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);border:2px solid #c9a84c}
+.password-box h2{color:#1a3a5c;font-size:1.5em;margin-bottom:10px}
+.password-box p{color:#666;font-size:0.9em;margin-bottom:20px;line-height:1.5}
+.password-box input{width:100%;padding:12px 15px;border-radius:10px;border:2px solid #c9a84c;font-size:1em;font-family:inherit;margin-bottom:10px;background:white;color:#1a3a5c}
+.password-box input:focus{outline:none;border-color:#1a3a5c}
+.password-box .pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border:none;border-radius:10px;font-size:1em;font-weight:bold;cursor:pointer;margin-top:10px;-webkit-appearance:none}
+.password-box .pw-btn:hover{opacity:0.9}
+.password-box .warning{color:#c62828;font-size:0.8em;margin-top:10px;font-weight:bold}
+@media(max-width:600px){.header h1{font-size:1.5em}.header .device-info{display:none}.install-btn{padding:12px 25px;font-size:1em}.platforms{grid-template-columns:repeat(2,1fr)}.features-grid{grid-template-columns:1fr}.file-item{flex-wrap:wrap}.file-item .actions{width:100%;justify-content:flex-end;margin-top:5px}.transfer-box{grid-template-columns:1fr}.password-box{padding:25px}}
+@media(min-width:1024px){.container{max-width:1000px}.header{border-radius:0 0 30px 30px;padding:40px 20px}.header h1{font-size:2.5em}}
+</style>
 <base target="_blank">
 </head>
 <body>
 
-<!-- PASSWORD OVERLAY -->
 <div id="passwordOverlay" class="password-overlay">
   <div class="password-box">
     <h2>Chiave di Accesso</h2>
@@ -538,8 +127,6 @@
 
 <div class="container">
 
-  
-  <!-- LOGIN GOOGLE / NETLIFY -->
   <div id="loginSection" class="login-section">
     <h2>Accedi con Google</h2>
     <p>Identificazione opzionale per sync cloud futuro</p>
@@ -547,95 +134,58 @@
     <div id="userInfo" class="user-info hidden"></div>
   </div>
 
-
-  <!-- INSTALLAZIONE -->
   <div class="install-box" id="installBox">
     <h2>Installa App</h2>
-    <p style="font-size:0.95em; margin-bottom:8px;">1-Click. Nessun store. Zero commissioni.</p>
+    <p style="font-size:0.95em;margin-bottom:8px">1-Click. Nessun store. Zero commissioni.</p>
     <button id="installBtn" class="install-btn" onclick="installPWA()">Installa Ora</button>
-    <p id="installMsg" style="margin-top:10px; font-size:0.85em; opacity:0.8;"></p>
+    <p id="installMsg" style="margin-top:10px;font-size:0.85em;opacity:0.8"></p>
   </div>
 
-  <!-- DISPOSITIVI -->
   <div class="section">
     <h2><span class="icon">1</span> I Tuoi Dispositivi</h2>
     <div class="platforms" id="platforms">
       <div class="platform-card" data-platform="windows">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-        </svg>
-        <h3>Windows</h3>
-        <p>Carbon X1</p>
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <h3>Windows</h3><p>Carbon X1</p>
       </div>
       <div class="platform-card" data-platform="android">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2">
-          <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/>
-        </svg>
-        <h3>Android</h3>
-        <p>Realme GT7T</p>
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        <h3>Android</h3><p>Realme GT7T</p>
       </div>
       <div class="platform-card" data-platform="ios">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2">
-          <rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="12" y1="6" x2="12" y2="6"/>
-        </svg>
-        <h3>iOS</h3>
-        <p>iPad Pro M5</p>
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="12" y1="6" x2="12" y2="6"/></svg>
+        <h3>iOS</h3><p>iPad Pro M5</p>
       </div>
       <div class="platform-card" data-platform="macos">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/>
-        </svg>
-        <h3>macOS</h3>
-        <p>Disponibile</p>
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/></svg>
+        <h3>macOS</h3><p>Disponibile</p>
       </div>
       <div class="platform-card" data-platform="linux">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2">
-          <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><line x1="12" y1="17" x2="12" y2="21"/>
-        </svg>
-        <h3>Linux</h3>
-        <p>Disponibile</p>
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <h3>Linux</h3><p>Disponibile</p>
       </div>
     </div>
   </div>
 
-  <!-- CARATTERISTICHE -->
   <div class="section">
     <h2><span class="icon">2</span> Caratteristiche</h2>
     <div class="features-grid">
-      <div class="feature-card">
-        <h3><span style="color:#c9a84c;">&bull;</span> Cifratura AES-256 GCM</h3>
-        <p>Ogni file cifrato individualmente con chiave derivata dalla tua password. Nessuno puo accedere.</p>
-      </div>
-      <div class="feature-card">
-        <h3><span style="color:#c9a84c;">&bull;</span> Storage Locale</h3>
-        <p>I file cifrati restano sul dispositivo in IndexedDB. Accesso offline garantito.</p>
-      </div>
-      <div class="feature-card">
-        <h3><span style="color:#c9a84c;">&bull;</span> Upload Universale</h3>
-        <p>Carica da PC, iPad, Android. Touch, drag&drop, selezione file. Ogni formato.</p>
-      </div>
-      <div class="feature-card">
-        <h3><span style="color:#c9a84c;">&bull;</span> Esporta / Importa</h3>
-        <p>Trasferisci file cifrati tra dispositivi. Stessa password per decifrare ovunque.</p>
-      </div>
-      <div class="feature-card">
-        <h3><span style="color:#c9a84c;">&bull;</span> Nessuno Store</h3>
-        <p>Installazione diretta come PWA. Zero commissioni. Zero dipendenze.</p>
-      </div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Cifratura AES-256 GCM</h3><p>Ogni file cifrato individualmente con chiave derivata dalla tua password.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Storage Locale</h3><p>I file cifrati restano sul dispositivo in IndexedDB. Accesso offline.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Upload Universale</h3><p>Carica da PC, iPad, Android. Touch, drag&amp;drop, selezione file.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Esporta / Importa</h3><p>Trasferisci file cifrati tra dispositivi. Stessa password per decifrare.</p></div>
+      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Nessuno Store</h3><p>Installazione diretta come PWA. Zero commissioni.</p></div>
     </div>
   </div>
 
-  <!-- UPLOAD FILES -->
   <div class="section" id="filesSection">
     <h2><span class="icon">3</span> I Tuoi File</h2>
-    <p style="margin-bottom:12px; color:#666; font-size:0.9em;">
-      Spazio personale cifrato su questo dispositivo. Per trasferire su altri dispositivi usa Esporta/Importa.
-    </p>
+    <p style="margin-bottom:12px;color:#666;font-size:0.9em">Spazio personale cifrato su questo dispositivo. Per trasferire usa Esporta/Importa.</p>
 
     <div class="upload-area" id="uploadArea">
       <h3>Carica File</h3>
       <p>Trascina qui, clicca, o tocca per selezionare dal dispositivo</p>
-      <input type="file" id="fileInput" multiple accept="*/*" style="display:none;" onchange="handleFiles(this.files)">
+      <input type="file" id="fileInput" multiple accept="*/*" style="display:none" onchange="handleFiles(this.files)">
       <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Seleziona File</button>
       <div class="progress-bar hidden" id="uploadProgress"><div class="fill" id="progressFill"></div></div>
       <div id="uploadStatus"></div>
@@ -646,33 +196,26 @@
       <div id="fileItems"></div>
     </div>
 
-    <!-- TRASFERIMENTO CROSS-DEVICE -->
-    <div style="margin-top:20px; padding-top:15px; border-top:1px solid rgba(201,168,76,0.2);">
-      <h3 style="color:#1a3a5c; font-size:1em; margin-bottom:10px;">Trasferisci tra Dispositivi</h3>
-      <p style="color:#666; font-size:0.85em; margin-bottom:10px;">
-        Esporta tutto in un file cifrato, trasferiscilo (email, cloud, USB), poi importa sull'altro dispositivo con la stessa password.
-      </p>
+    <div style="margin-top:20px;padding-top:15px;border-top:1px solid rgba(201,168,76,0.2)">
+      <h3 style="color:#1a3a5c;font-size:1em;margin-bottom:10px">Trasferisci tra Dispositivi</h3>
+      <p style="color:#666;font-size:0.85em;margin-bottom:10px">Esporta tutto in un file cifrato, trasferiscilo, poi importa sull'altro dispositivo con la stessa password.</p>
       <div class="transfer-box">
         <button class="transfer-btn" onclick="exportAllFiles()">Esporta Backup</button>
         <button class="transfer-btn import" onclick="document.getElementById('importInput').click()">Importa Backup</button>
-        <input type="file" id="importInput" accept=".json" style="display:none;" onchange="importFiles(this.files[0])">
+        <input type="file" id="importInput" accept=".json" style="display:none" onchange="importFiles(this.files[0])">
       </div>
       <div id="transferStatus"></div>
     </div>
 
     <div class="security-banner">
       <h3>Sicurezza End-to-End</h3>
-      <p>Cifratura AES-256 GCM con PBKDF2. La password non lascia mai il dispositivo. Nessun server vede i tuoi file in chiaro.</p>
+      <p>Cifratura AES-256 GCM con PBKDF2. La password non lascia mai il dispositivo.</p>
     </div>
   </div>
 
-  <!-- NOTE VERSIONE -->
-  <div class="section" style="background:rgba(201,168,76,0.08);">
+  <div class="section" style="background:rgba(201,168,76,0.08)">
     <h2><span class="icon">i</span> Versione Beta v2.2</h2>
-    <p style="color:#666; font-size:0.9em; line-height:1.7;">
-      <strong>Attuale:</strong> Storage file locale con cifratura AES-256 GCM. Upload da PC, iPad, Android. Esporta/Importa cifrato cross-device.<br>
-      <strong>Gratuita</strong> per tutta la fase Beta.
-    </p>
+    <p style="color:#666;font-size:0.9em;line-height:1.7"><strong>Attuale:</strong> Storage file locale con cifratura AES-256 GCM. Upload da PC, iPad, Android. Esporta/Importa cifrato cross-device.<br><strong>Gratuita</strong> per tutta la fase Beta.</p>
   </div>
 
 </div>
@@ -683,696 +226,505 @@
 
 <script>
 // ============================
-// CONFIGURAZIONE CIFRATURA
+// NETLIFY IDENTITY (Login Google)
 // ============================
-const DB_NAME = 'BrevettIAmoPWA';
-const DB_VERSION = 1;
-const STORE_NAME = 'files';
-let db = null;
-let cryptoKey = null;
-let userPassword = null;
-const SALT_SIZE = 16;
-const IV_SIZE = 12;
+netlifyIdentity.init({APIUrl:'https://brevettiamo-pwa.netlify.app/.netlify/identity'});
+netlifyIdentity.on('init',function(user){updateUserUI(user)});
+netlifyIdentity.on('login',function(user){updateUserUI(user);netlifyIdentity.close()});
+netlifyIdentity.on('logout',function(){updateUserUI(null)});
+
+function updateUserUI(user){
+  var section=document.getElementById('loginSection');
+  if(!section)return;
+  if(user){
+    var initial=(user.user_metadata.full_name||user.email||'U').charAt(0).toUpperCase();
+    section.innerHTML='<h2>Benvenuto</h2><div class="user-info"><div class="user-avatar">'+initial+'</div><div><div style="font-weight:bold">'+(user.user_metadata.full_name||user.email)+'</div><div style="font-size:0.8em;opacity:0.8">'+user.email+'</div></div></div><button class="login-btn" onclick="netlifyIdentity.logout()" style="margin-top:12px">Esci</button>';
+  }else{
+    section.innerHTML='<h2>Accedi con Google</h2><p>Identificazione opzionale per sync cloud futuro</p><button class="login-btn" onclick="netlifyIdentity.open()">Accedi / Registrati</button><div id="userInfo" class="user-info hidden"></div>';
+  }
+}
+
+function getAuthToken(){
+  var user=netlifyIdentity.currentUser();
+  if(!user)return Promise.resolve(null);
+  return user.jwt();
+}
 
 // ============================
 // CIFRATURA WEB CRYPTO API
 // ============================
-async function deriveKey(password, salt) {
-  const enc = new TextEncoder();
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw', enc.encode(password), { name: 'PBKDF2' }, false, ['deriveKey']
-  );
-  return crypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
-    keyMaterial,
-    { name: 'AES-GCM', length: 256 },
-    false,
-    ['encrypt', 'decrypt']
-  );
+var cryptoKey=null;
+var userPassword=null;
+var DB_NAME='BrevettIAmoPWA';
+var DB_VERSION=1;
+var STORE_NAME='files';
+var db=null;
+
+function deriveKey(password,salt){
+  var enc=new TextEncoder();
+  return crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveKey']).then(function(keyMaterial){
+    return crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},keyMaterial,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+  });
 }
 
-async function encryptData(plaintext, key) {
-  const iv = crypto.getRandomValues(new Uint8Array(IV_SIZE));
-  const enc = new TextEncoder();
-  const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv: iv },
-    key,
-    enc.encode(plaintext)
-  );
-  return {
-    iv: Array.from(iv),
-    data: Array.from(new Uint8Array(encrypted))
-  };
+function encryptData(plaintext,key){
+  var iv=crypto.getRandomValues(new Uint8Array(12));
+  var enc=new TextEncoder();
+  return crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,enc.encode(plaintext)).then(function(encrypted){
+    return{iv:Array.from(iv),data:Array.from(new Uint8Array(encrypted))};
+  });
 }
 
-async function decryptData(ciphertext, iv, key) {
-  const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: new Uint8Array(iv) },
-    key,
-    new Uint8Array(ciphertext)
-  );
-  return new TextDecoder().decode(decrypted);
+function decryptData(ciphertext,iv,key){
+  return crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(iv)},key,new Uint8Array(ciphertext)).then(function(decrypted){
+    return new TextDecoder().decode(decrypted);
+  });
 }
 
 // ============================
-// PASSWORD
+// PASSWORD OVERLAY
 // ============================
-async function setPassword() {
-  const pw = document.getElementById('pwInput').value;
-  const confirm = document.getElementById('pwConfirm').value;
-  const errEl = document.getElementById('pwError');
-
-  if (pw.length < 8) {
-    errEl.textContent = 'Password minimo 8 caratteri.';
-    errEl.classList.remove('hidden');
-    return;
-  }
-  if (pw !== confirm) {
-    errEl.textContent = 'Le password non coincidono.';
-    errEl.classList.remove('hidden');
-    return;
-  }
-
-  userPassword = pw;
-  const salt = crypto.getRandomValues(new Uint8Array(SALT_SIZE));
-  cryptoKey = await deriveKey(pw, salt);
-
-  // Salva salt in localStorage (non la password!)
-  localStorage.setItem('pwa_salt', JSON.stringify(Array.from(salt)));
-  localStorage.setItem('pwa_has_pw', 'true');
-
-  document.getElementById('passwordOverlay').classList.add('hidden');
-  showStatus('Cifratura attivata. I file saranno protetti.', 'success');
-  await renderFileList();
-}
-
-async function checkPassword() {
-  if (localStorage.getItem('pwa_has_pw') === 'true') {
-    // Richiedi password esistente
-    const box = document.querySelector('.password-box');
-    box.innerHTML = `
-      <h2>Accesso</h2>
-      <p>Inserisci la tua password per decifrare i file.</p>
-      <input type="password" id="pwUnlock" placeholder="Password">
-      <button class="pw-btn" onclick="unlockWithPassword()">Sblocca</button>
-      <div id="pwError" class="warning hidden"></div>
-    `;
-  }
-}
-
-async function unlockWithPassword() {
-  const pw = document.getElementById('pwUnlock').value;
-  const errEl = document.getElementById('pwError');
-  const saltArr = JSON.parse(localStorage.getItem('pwa_salt') || '[]');
-  if (saltArr.length === 0) {
-    errEl.textContent = 'Errore configurazione.';
-    errEl.classList.remove('hidden');
-    return;
-  }
-  const salt = new Uint8Array(saltArr);
-  try {
-    const testKey = await deriveKey(pw, salt);
-    // Verifica decifrando un file di test se esiste
-    const files = await getAllFilesFromDB();
-    if (files.length > 0) {
-      try {
-        await decryptData(files[0].encrypted, files[0].iv, testKey);
-      } catch (e) {
-        errEl.textContent = 'Password errata.';
-        errEl.classList.remove('hidden');
-        return;
-      }
-    }
-    cryptoKey = testKey;
-    userPassword = pw;
+function setPassword(){
+  var pw=document.getElementById('pwInput').value;
+  var confirm=document.getElementById('pwConfirm').value;
+  var errEl=document.getElementById('pwError');
+  if(pw.length<8){errEl.textContent='Password minimo 8 caratteri.';errEl.classList.remove('hidden');return}
+  if(pw!==confirm){errEl.textContent='Le password non coincidono.';errEl.classList.remove('hidden');return}
+  userPassword=pw;
+  var salt=crypto.getRandomValues(new Uint8Array(16));
+  deriveKey(pw,salt).then(function(key){
+    cryptoKey=key;
+    localStorage.setItem('pwa_salt',JSON.stringify(Array.from(salt)));
+    localStorage.setItem('pwa_has_pw','true');
     document.getElementById('passwordOverlay').classList.add('hidden');
-    await renderFileList();
-  } catch (e) {
-    errEl.textContent = 'Password errata.';
-    errEl.classList.remove('hidden');
+    showStatus('Cifratura attivata. I file saranno protetti.','success');
+    renderFileList();
+  });
+}
+
+function checkPassword(){
+  if(localStorage.getItem('pwa_has_pw')==='true'){
+    var box=document.querySelector('.password-box');
+    box.innerHTML='<h2>Accesso</h2><p>Inserisci la tua password per decifrare i file.</p><input type="password" id="pwUnlock" placeholder="Password"><button class="pw-btn" onclick="unlockWithPassword()">Sblocca</button><div id="pwError" class="warning hidden"></div>';
   }
+}
+
+function unlockWithPassword(){
+  var pw=document.getElementById('pwUnlock').value;
+  var errEl=document.getElementById('pwError');
+  var saltArr=JSON.parse(localStorage.getItem('pwa_salt')||'[]');
+  if(saltArr.length===0){errEl.textContent='Errore configurazione.';errEl.classList.remove('hidden');return}
+  var salt=new Uint8Array(saltArr);
+  deriveKey(pw,salt).then(function(testKey){
+    getAllFilesFromDB().then(function(files){
+      if(files.length>0){
+        decryptData(files[0].encrypted,files[0].iv,testKey).then(function(){
+          cryptoKey=testKey;userPassword=pw;
+          document.getElementById('passwordOverlay').classList.add('hidden');
+          renderFileList();
+        }).catch(function(){
+          errEl.textContent='Password errata.';errEl.classList.remove('hidden');
+        });
+      }else{
+        cryptoKey=testKey;userPassword=pw;
+        document.getElementById('passwordOverlay').classList.add('hidden');
+        renderFileList();
+      }
+    });
+  });
 }
 
 // ============================
 // INDEXEDDB
 // ============================
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => { db = request.result; resolve(db); };
-    request.onupgradeneeded = (e) => {
-      const database = e.target.result;
-      if (!database.objectStoreNames.contains(STORE_NAME)) {
-        const store = database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-        store.createIndex('name', 'name', { unique: false });
-        store.createIndex('date', 'date', { unique: false });
+function openDB(){
+  return new Promise(function(resolve,reject){
+    var request=indexedDB.open(DB_NAME,DB_VERSION);
+    request.onerror=function(){reject(request.error)};
+    request.onsuccess=function(){db=request.result;resolve(db)};
+    request.onupgradeneeded=function(e){
+      var database=e.target.result;
+      if(!database.objectStoreNames.contains(STORE_NAME)){
+        var store=database.createObjectStore(STORE_NAME,{keyPath:'id',autoIncrement:true});
+        store.createIndex('name','name',{unique:false});
+        store.createIndex('date','date',{unique:false});
       }
     };
   });
 }
 
-async function saveFileToDB(name, type, encryptedObj, size) {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    const file = {
-      name: name,
-      type: type || 'application/octet-stream',
-      iv: encryptedObj.iv,
-      encrypted: encryptedObj.data,
-      size: size,
-      date: new Date().toISOString(),
-      device: detectDevice().name
-    };
-    const req = store.add(file);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+function saveFileToDB(name,type,encryptedObj,size){
+  if(!db)return openDB().then(function(){return saveFileToDB(name,type,encryptedObj,size)});
+  return new Promise(function(resolve,reject){
+    var tx=db.transaction(STORE_NAME,'readwrite');
+    var store=tx.objectStore(STORE_NAME);
+    var file={name:name,type:type||'application/octet-stream',iv:encryptedObj.iv,encrypted:encryptedObj.data,size:size,date:new Date().toISOString(),device:detectDevice().name};
+    var req=store.add(file);
+    req.onsuccess=function(){resolve(req.result)};
+    req.onerror=function(){reject(req.error)};
   });
 }
 
-async function getAllFilesFromDB() {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    const req = store.getAll();
-    req.onsuccess = () => resolve(req.result || []);
-    req.onerror = () => reject(req.error);
+function getAllFilesFromDB(){
+  if(!db)return openDB().then(function(){return getAllFilesFromDB()});
+  return new Promise(function(resolve,reject){
+    var tx=db.transaction(STORE_NAME,'readonly');
+    var store=tx.objectStore(STORE_NAME);
+    var req=store.getAll();
+    req.onsuccess=function(){resolve(req.result||[])};
+    req.onerror=function(){reject(req.error)};
   });
 }
 
-async function deleteFileFromDB(id) {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    const req = store.delete(id);
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
+function deleteFileFromDB(id){
+  if(!db)return openDB().then(function(){return deleteFileFromDB(id)});
+  return new Promise(function(resolve,reject){
+    var tx=db.transaction(STORE_NAME,'readwrite');
+    var store=tx.objectStore(STORE_NAME);
+    var req=store.delete(id);
+    req.onsuccess=function(){resolve()};
+    req.onerror=function(){reject(req.error)};
   });
 }
 
-async function getFileFromDB(id) {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const store = tx.objectStore(STORE_NAME);
-    const req = store.get(id);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+function getFileFromDB(id){
+  if(!db)return openDB().then(function(){return getFileFromDB(id)});
+  return new Promise(function(resolve,reject){
+    var tx=db.transaction(STORE_NAME,'readonly');
+    var store=tx.objectStore(STORE_NAME);
+    var req=store.get(id);
+    req.onsuccess=function(){resolve(req.result)};
+    req.onerror=function(){reject(req.error)};
   });
-}
-
-async function clearAllFilesFromDB() {
-  if (!db) await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    const req = store.clear();
-    req.onsuccess = () => resolve();
-    req.onerror = () => reject(req.error);
-  });
-}
-
-
-// ============================
-// NETLIFY IDENTITY (Login Google)
-// ============================
-netlifyIdentity.init({
-  APIUrl: 'https://brevettiamo-pwa.netlify.app/.netlify/identity'
-});
-
-netlifyIdentity.on('init', user => {
-  updateUserUI(user);
-});
-
-netlifyIdentity.on('login', user => {
-  updateUserUI(user);
-  netlifyIdentity.close();
-});
-
-netlifyIdentity.on('logout', () => {
-  updateUserUI(null);
-});
-
-function updateUserUI(user) {
-  const section = document.getElementById('loginSection');
-  if (!section) return;
-  if (user) {
-    section.innerHTML = `
-      <h2>Benvenuto</h2>
-      <div class="user-info">
-        <div class="user-avatar">${(user.user_metadata.full_name || user.email || 'U').charAt(0).toUpperCase()}</div>
-        <div>
-          <div style="font-weight:bold;">${user.user_metadata.full_name || user.email}</div>
-          <div style="font-size:0.8em; opacity:0.8;">${user.email}</div>
-        </div>
-      </div>
-      <button class="login-btn" onclick="netlifyIdentity.logout()" style="margin-top:12px;">Esci</button>
-    `;
-  } else {
-    section.innerHTML = `
-      <h2>Accedi con Google</h2>
-      <p>Identificazione opzionale per sync cloud futuro</p>
-      <button class="login-btn" onclick="netlifyIdentity.open()">Accedi / Registrati</button>
-      <div id="userInfo" class="user-info hidden"></div>
-    `;
-  }
-}
-
-async function getAuthToken() {
-  const user = netlifyIdentity.currentUser();
-  if (!user) return null;
-  return await user.jwt();
 }
 
 // ============================
 // RILEVAMENTO DISPOSITIVO
 // ============================
-function detectDevice() {
-  const ua = navigator.userAgent;
-  let platform = 'unknown';
-  let name = 'Dispositivo';
-
-  if (/iPad|iPhone|iPod/.test(ua)) {
-    platform = 'ios';
-    name = 'iPad Pro M5';
-  } else if (/Android/.test(ua)) {
-    platform = 'android';
-    name = 'Realme GT7T';
-  } else if (/Win32|Win64|Windows/.test(ua)) {
-    platform = 'windows';
-    name = 'Carbon X1';
-  } else if (/MacIntel/.test(ua) && !/iPad/.test(ua)) {
-    platform = 'macos';
-    name = 'Mac';
-  } else if (/Linux/.test(ua)) {
-    platform = 'linux';
-    name = 'Linux';
-  }
-
-  document.getElementById('deviceInfo').textContent = name;
-  document.querySelectorAll('.platform-card').forEach(card => {
-    if (card.dataset.platform === platform) card.classList.add('active');
+function detectDevice(){
+  var ua=navigator.userAgent;
+  var platform='unknown';
+  var name='Dispositivo';
+  if(/iPad|iPhone|iPod/.test(ua)){platform='ios';name='iPad Pro M5'}
+  else if(/Android/.test(ua)){platform='android';name='Realme GT7T'}
+  else if(/Win32|Win64|Windows/.test(ua)){platform='windows';name='Carbon X1'}
+  else if(/MacIntel/.test(ua)&&!/iPad/.test(ua)){platform='macos';name='Mac'}
+  else if(/Linux/.test(ua)){platform='linux';name='Linux'}
+  var el=document.getElementById('deviceInfo');
+  if(el)el.textContent=name;
+  document.querySelectorAll('.platform-card').forEach(function(card){
+    if(card.dataset.platform===platform)card.classList.add('active');
   });
-  return { platform, name };
+  return{platform:platform,name:name};
 }
 
 // ============================
 // STATO CONNESSIONE
 // ============================
-function updateSyncStatus() {
-  const dot = document.getElementById('syncDot');
-  const text = document.getElementById('syncText');
-  if (navigator.onLine) {
-    dot.className = 'sync-dot';
-    text.textContent = 'Online - IndexedDB attivo';
-  } else {
-    dot.className = 'sync-dot offline';
-    text.textContent = 'Offline - file in locale';
-  }
+function updateSyncStatus(){
+  var dot=document.getElementById('syncDot');
+  var text=document.getElementById('syncText');
+  if(!dot||!text)return;
+  if(navigator.onLine){dot.className='sync-dot';text.textContent='Online - IndexedDB attivo'}
+  else{dot.className='sync-dot offline';text.textContent='Offline - file in locale'}
 }
-window.addEventListener('online', updateSyncStatus);
-window.addEventListener('offline', updateSyncStatus);
+window.addEventListener('online',updateSyncStatus);
+window.addEventListener('offline',updateSyncStatus);
 
 // ============================
 // PWA INSTALLATION
 // ============================
-let deferredPrompt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
+var deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
   e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installMsg').textContent = 'App pronta per l\'installazione!';
+  deferredPrompt=e;
+  var msg=document.getElementById('installMsg');
+  if(msg)msg.textContent='App pronta per l\'installazione!';
 });
-window.addEventListener('appinstalled', () => {
-  document.getElementById('installMsg').textContent = 'App installata!';
-  document.getElementById('installBtn').textContent = 'App Attiva';
-  document.getElementById('installBtn').disabled = true;
-  deferredPrompt = null;
+window.addEventListener('appinstalled',function(){
+  var msg=document.getElementById('installMsg');
+  var btn=document.getElementById('installBtn');
+  if(msg)msg.textContent='App installata!';
+  if(btn){btn.textContent='App Attiva';btn.disabled=true}
+  deferredPrompt=null;
 });
 
-function installPWA() {
-  if (deferredPrompt) {
+function installPWA(){
+  if(deferredPrompt){
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choice) => {
-      if (choice.outcome === 'accepted') {
-        showStatus('Installazione in corso...', 'info');
-        document.getElementById('installBtn').textContent = 'Installazione...';
-      } else {
-        showStatus('Installazione annullata.', 'warning');
+    deferredPrompt.userChoice.then(function(choice){
+      if(choice.outcome==='accepted'){
+        showStatus('Installazione in corso...','info');
+        var btn=document.getElementById('installBtn');
+        if(btn)btn.textContent='Installazione...';
+      }else{
+        showStatus('Installazione annullata.','warning');
       }
-      deferredPrompt = null;
+      deferredPrompt=null;
     });
-  } else if (isStandalone()) {
-    showStatus('App gia installata!', 'success');
-    document.getElementById('installBtn').textContent = 'App Attiva';
-    document.getElementById('installBtn').disabled = true;
-  } else {
-    document.getElementById('installMsg').innerHTML =
-      '<strong>Chrome/Edge:</strong> Menu (3 punti) -> "Installa BrevettIAmo"<br>' +
-      '<strong>Safari iOS:</strong> Tasto Share -> "Aggiungi a Home"<br>' +
-      '<strong>Firefox:</strong> Menu -> "Installa"';
+  }else if(isStandalone()){
+    showStatus('App gia installata!','success');
+    var btn=document.getElementById('installBtn');
+    if(btn){btn.textContent='App Attiva';btn.disabled=true}
+  }else{
+    var msg=document.getElementById('installMsg');
+    if(msg)msg.innerHTML='<strong>Chrome/Edge:</strong> Menu (3 punti) -> "Installa BrevettIAmo"<br><strong>Safari iOS:</strong> Tasto Share -> "Aggiungi a Home"<br><strong>Firefox:</strong> Menu -> "Installa"';
   }
 }
 
-function isStandalone() {
-  return window.matchMedia('(display-mode: standalone)').matches ||
-         window.navigator.standalone === true;
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
 }
 
 // ============================
 // FILE UPLOAD - CIFRATO
 // ============================
-async function handleFiles(fileList) {
-  if (!fileList || fileList.length === 0) return;
-  if (!cryptoKey) {
-    showStatus('Errore: chiave di cifratura non disponibile.', 'error');
-    return;
-  }
+function handleFiles(fileList){
+  if(!fileList||fileList.length===0)return;
+  if(!cryptoKey){showStatus('Errore: chiave di cifratura non disponibile.','error');return}
+  var progress=document.getElementById('uploadProgress');
+  var fill=document.getElementById('progressFill');
+  if(progress)progress.classList.remove('hidden');
+  var processed=0;
+  var total=fileList.length;
+  var filesArr=Array.from(fileList);
 
-  const progress = document.getElementById('uploadProgress');
-  const fill = document.getElementById('progressFill');
-  progress.classList.remove('hidden');
-
-  let processed = 0;
-  const total = fileList.length;
-
-  for (const file of Array.from(fileList)) {
-    try {
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
+  function processNext(){
+    if(processed>=total){
+      renderFileList().then(function(){
+        if(processed===total)showStatus(total+' file cifrati e salvati!','success');
+        else if(processed>0)showStatus(processed+'/'+total+' file salvati.','warning');
+        setTimeout(function(){
+          if(progress)progress.classList.add('hidden');
+          if(fill)fill.style.width='0%';
+        },2000);
       });
-
-      const encrypted = await encryptData(base64, cryptoKey);
-      await saveFileToDB(file.name, file.type, encrypted, file.size);
-      processed++;
-    } catch (err) {
-      console.error('Errore cifratura file:', err);
-      showStatus('Errore cifratura: ' + file.name, 'error');
+      return;
     }
-    fill.style.width = (processed / total * 100) + '%';
+    var file=filesArr[processed];
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var base64=e.target.result;
+      encryptData(base64,cryptoKey).then(function(encrypted){
+        return saveFileToDB(file.name,file.type,encrypted,file.size);
+      }).then(function(){
+        processed++;
+        if(fill)fill.style.width=(processed/total*100)+'%';
+        processNext();
+      }).catch(function(err){
+        console.error('Errore cifratura:',err);
+        showStatus('Errore cifratura: '+file.name,'error');
+        processed++;
+        if(fill)fill.style.width=(processed/total*100)+'%';
+        processNext();
+      });
+    };
+    reader.onerror=function(){
+      showStatus('Errore lettura: '+file.name,'error');
+      processed++;
+      if(fill)fill.style.width=(processed/total*100)+'%';
+      processNext();
+    };
+    reader.readAsDataURL(file);
   }
-
-  await renderFileList();
-
-  if (processed === total) {
-    showStatus(total + ' file cifrati e salvati!', 'success');
-  } else if (processed > 0) {
-    showStatus(processed + '/' + total + ' file salvati.', 'warning');
-  }
-
-  setTimeout(() => {
-    progress.classList.add('hidden');
-    fill.style.width = '0%';
-  }, 2000);
+  processNext();
 }
 
 // ============================
 // RENDER FILE LIST
 // ============================
-async function renderFileList() {
-  const files = await getAllFilesFromDB();
-  const list = document.getElementById('fileList');
-  const items = document.getElementById('fileItems');
-  const count = document.getElementById('fileCount');
-
-  if (files.length === 0) {
-    list.classList.add('hidden');
-    return;
-  }
-
-  list.classList.remove('hidden');
-  count.textContent = files.length;
-
-  items.innerHTML = files.map((f) => {
-    const size = formatSize(f.size);
-    const date = new Date(f.date).toLocaleString('it-IT');
-    return `
-      <div class="file-item">
-        <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Cifrato AES-256">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0110 0v4"/>
-        </svg>
-        <div class="info">
-          <div class="name">${escapeHtml(f.name)}</div>
-          <div class="meta">${size} | ${date} | ${f.device}</div>
-        </div>
-        <div class="actions">
-          <button onclick="downloadFileById(${f.id})">Scarica</button>
-          <button class="delete" onclick="deleteFileById(${f.id})">Elimina</button>
-        </div>
-      </div>
-    `;
-  }).join('');
+function renderFileList(){
+  return getAllFilesFromDB().then(function(files){
+    var list=document.getElementById('fileList');
+    var items=document.getElementById('fileItems');
+    var count=document.getElementById('fileCount');
+    if(!list||!items||!count)return;
+    if(files.length===0){list.classList.add('hidden');return}
+    list.classList.remove('hidden');
+    count.textContent=files.length;
+    items.innerHTML=files.map(function(f){
+      var size=formatSize(f.size);
+      var date=new Date(f.date).toLocaleString('it-IT');
+      return '<div class="file-item"><svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Cifrato AES-256"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div class="info"><div class="name">'+escapeHtml(f.name)+'</div><div class="meta">'+size+' | '+date+' | '+f.device+'</div></div><div class="actions"><button onclick="downloadFileById('+f.id+')">Scarica</button><button class="delete" onclick="deleteFileById('+f.id+')">Elimina</button></div></div>';
+    }).join('');
+  });
 }
 
-function formatSize(bytes) {
-  if (!bytes || bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+function formatSize(bytes){
+  if(!bytes||bytes===0)return'0 B';
+  var k=1024;
+  var sizes=['B','KB','MB','GB'];
+  var i=Math.floor(Math.log(bytes)/Math.log(k));
+  return parseFloat((bytes/Math.pow(k,i)).toFixed(2))+' '+sizes[i];
 }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
+function escapeHtml(text){
+  var div=document.createElement('div');
+  div.textContent=text;
   return div.innerHTML;
 }
 
 // ============================
 // DOWNLOAD / DELETE
 // ============================
-async function downloadFileById(id) {
-  if (!cryptoKey) {
-    showStatus('Errore: chiave non disponibile.', 'error');
-    return;
-  }
-  try {
-    const f = await getFileFromDB(id);
-    if (!f) return;
-
-    const decrypted = await decryptData(f.encrypted, f.iv, cryptoKey);
-    const base64Data = decrypted;
-
-    const a = document.createElement('a');
-    a.href = base64Data;
-    a.download = f.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    showStatus('Download avviato: ' + f.name, 'success');
-  } catch (err) {
-    showStatus('Errore decifratura: password errata o file corrotto.', 'error');
-  }
+function downloadFileById(id){
+  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
+  getFileFromDB(id).then(function(f){
+    if(!f)return;
+    decryptData(f.encrypted,f.iv,cryptoKey).then(function(base64Data){
+      var a=document.createElement('a');
+      a.href=base64Data;
+      a.download=f.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showStatus('Download avviato: '+f.name,'success');
+    }).catch(function(){
+      showStatus('Errore decifratura: password errata o file corrotto.','error');
+    });
+  });
 }
 
-async function deleteFileById(id) {
-  if (!confirm('Eliminare questo file?')) return;
-  try {
-    await deleteFileFromDB(id);
-    await renderFileList();
-    showStatus('File eliminato.', 'success');
-  } catch (err) {
-    showStatus('Errore eliminazione.', 'error');
-  }
+function deleteFileById(id){
+  if(!confirm('Eliminare questo file?'))return;
+  deleteFileFromDB(id).then(function(){
+    renderFileList();
+    showStatus('File eliminato.','success');
+  }).catch(function(){
+    showStatus('Errore eliminazione.','error');
+  });
 }
 
 // ============================
 // EXPORT / IMPORT CROSS-DEVICE
 // ============================
-async function exportAllFiles() {
-  try {
-    const files = await getAllFilesFromDB();
-    if (files.length === 0) {
-      showStatus('Nessun file da esportare.', 'warning');
-      return;
-    }
-    const saltArr = JSON.parse(localStorage.getItem('pwa_salt') || '[]');
-    const exportData = {
-      version: '2.2',
-      exported: new Date().toISOString(),
-      device: detectDevice().name,
-      salt: saltArr,
-      files: files
-    };
-    const json = JSON.stringify(exportData);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'brevettiamo_backup_' + new Date().toISOString().slice(0,10) + '.json';
+function exportAllFiles(){
+  getAllFilesFromDB().then(function(files){
+    if(files.length===0){showStatus('Nessun file da esportare.','warning');return}
+    var saltArr=JSON.parse(localStorage.getItem('pwa_salt')||'[]');
+    var exportData={version:'2.2',exported:new Date().toISOString(),device:detectDevice().name,salt:saltArr,files:files};
+    var json=JSON.stringify(exportData);
+    var blob=new Blob([json],{type:'application/json'});
+    var url=window.URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download='brevettiamo_backup_'+new Date().toISOString().slice(0,10)+'.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-    showStatus('Backup cifrato esportato: ' + files.length + ' file.', 'success');
-  } catch (err) {
-    showStatus('Errore esportazione.', 'error');
-  }
+    showStatus('Backup cifrato esportato: '+files.length+' file.','success');
+  });
 }
 
-async function importFiles(file) {
-  if (!file) return;
-  if (!cryptoKey) {
-    showStatus('Errore: chiave non disponibile.', 'error');
-    return;
-  }
-  try {
-    const text = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(reader.error);
-      reader.readAsText(file);
-    });
-    const data = JSON.parse(text);
-    if (!data.files || !Array.isArray(data.files)) {
-      showStatus('File di backup non valido.', 'error');
-      return;
-    }
-
-    // Verifica che il salt corrisponda (stessa password)
-    const currentSalt = JSON.parse(localStorage.getItem('pwa_salt') || '[]');
-    const backupSalt = data.salt || [];
-    const saltMatch = currentSalt.length === backupSalt.length &&
-                      currentSalt.every((v, i) => v === backupSalt[i]);
-
-    if (!saltMatch) {
-      showStatus('Attenzione: il backup potrebbe usare una password diversa.', 'warning');
-    }
-
-    let imported = 0;
-    for (const f of data.files) {
-      if (f.name && f.encrypted && f.iv) {
-        await saveFileToDB(f.name, f.type, { iv: f.iv, data: f.encrypted }, f.size || 0);
-        imported++;
+function importFiles(file){
+  if(!file)return;
+  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!data.files||!Array.isArray(data.files)){showStatus('File di backup non valido.','error');return}
+      var imported=0;
+      function importNext(idx){
+        if(idx>=data.files.length){
+          renderFileList().then(function(){
+            showStatus(imported+' file importati con successo!','success');
+          });
+          return;
+        }
+        var f=data.files[idx];
+        if(f.name&&f.encrypted&&f.iv){
+          saveFileToDB(f.name,f.type,{iv:f.iv,data:f.encrypted},f.size||0).then(function(){
+            imported++;
+            importNext(idx+1);
+          }).catch(function(){importNext(idx+1)});
+        }else{importNext(idx+1)}
       }
+      importNext(0);
+    }catch(err){
+      showStatus('Errore importazione: '+err.message,'error');
     }
-    await renderFileList();
-    showStatus(imported + ' file importati con successo!', 'success');
-  } catch (err) {
-    showStatus('Errore importazione: ' + err.message, 'error');
-  }
+  };
+  reader.readAsText(file);
 }
 
 // ============================
 // DRAG & DROP + TOUCH
 // ============================
-const uploadArea = document.getElementById('uploadArea');
-
-uploadArea.addEventListener('click', (e) => {
-  if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
-    document.getElementById('fileInput').click();
-  }
-});
-
-uploadArea.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  uploadArea.classList.add('dragover');
-});
-uploadArea.addEventListener('dragleave', (e) => {
-  e.preventDefault();
-  uploadArea.classList.remove('dragover');
-});
-uploadArea.addEventListener('drop', (e) => {
-  e.preventDefault();
-  uploadArea.classList.remove('dragover');
-  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-    handleFiles(e.dataTransfer.files);
-  }
-});
-
-uploadArea.addEventListener('touchstart', () => {
-  uploadArea.classList.add('dragover');
-}, {passive: true});
-uploadArea.addEventListener('touchend', () => {
-  uploadArea.classList.remove('dragover');
-}, {passive: true});
+var uploadArea=document.getElementById('uploadArea');
+if(uploadArea){
+  uploadArea.addEventListener('click',function(e){
+    if(e.target.tagName!=='BUTTON'&&e.target.tagName!=='INPUT'){
+      document.getElementById('fileInput').click();
+    }
+  });
+  uploadArea.addEventListener('dragover',function(e){
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+  uploadArea.addEventListener('dragleave',function(e){
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+  });
+  uploadArea.addEventListener('drop',function(e){
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    if(e.dataTransfer.files&&e.dataTransfer.files.length>0){
+      handleFiles(e.dataTransfer.files);
+    }
+  });
+}
 
 // ============================
 // UTILITIES
 // ============================
-function showStatus(msg, type) {
-  const el = document.getElementById('uploadStatus');
-  el.className = 'status-msg status-' + type;
-  el.textContent = msg;
-  setTimeout(() => { el.className = ''; el.textContent = ''; }, 4000);
+function showStatus(msg,type){
+  var el=document.getElementById('uploadStatus');
+  if(!el)return;
+  el.className='status-msg status-'+type;
+  el.textContent=msg;
+  setTimeout(function(){el.className='';el.textContent=''},4000);
 }
 
 // ============================
 // SERVICE WORKER INLINE + MANIFEST INLINE
 // ============================
-function registerInlineSW() {
-  if (!('serviceWorker' in navigator)) return;
-  const swCode = `
-    const CACHE_NAME = 'brevettiamo-pwa-v1';
-    const urlsToCache = ['/'];
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
-      self.skipWaiting();
-    });
-    self.addEventListener('activate', e => {
-      e.waitUntil(self.clients.claim());
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(caches.match(e.request).then(response => {
-        return response || fetch(e.request);
-      }));
-    });
-  `;
-  try {
-    const blob = new Blob([swCode], { type: 'application/javascript' });
-    const swUrl = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(swUrl)
-      .then(() => console.log('SW registrato'))
-      .catch(err => console.log('SW fallito:', err));
-  } catch (err) {
-    console.log('SW error:', err);
-  }
+function registerInlineSW(){
+  if(!('serviceWorker' in navigator))return;
+  var swCode="self.addEventListener('install',function(e){self.skipWaiting()});self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim())});self.addEventListener('fetch',function(e){e.respondWith(fetch(e.request).catch(function(){return new Response('<h1>Offline</h1><p>Sei offline. I file locali sono disponibili.</p>',{headers:{'Content-Type':'text/html'}})}))});";
+  try{
+    var blob=new Blob([swCode],{type:'application/javascript'});
+    var swUrl=URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).then(function(){console.log('SW registrato')}).catch(function(err){console.log('SW fallito:',err)});
+  }catch(err){console.log('SW error:',err)}
 }
 
-function injectManifest() {
-  const manifest = {
-    name: 'BrevettIAmo PWA',
-    short_name: 'BrevettIAmo',
-    start_url: '.',
-    display: 'standalone',
-    background_color: '#f5f0e6',
-    theme_color: '#1a3a5c',
-    icons: [{
-      src: 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%231a3a5c' rx='24'/%3E%3Ccircle cx='96' cy='96' r='70' fill='none' stroke='%23c9a84c' stroke-width='4'/%3E%3Ccircle cx='96' cy='96' r='55' fill='none' stroke='%23c9a84c' stroke-width='2' stroke-dasharray='8 8'/%3E%3Ccircle cx='96' cy='96' r='40' fill='none' stroke='%23c9a84c' stroke-width='1'/%3E%3Cellipse cx='96' cy='96' rx='35' ry='20' fill='none' stroke='%23c9a84c' stroke-width='2'/%3E%3Ccircle cx='96' cy='96' r='12' fill='%23c9a84c' opacity='0.3'/%3E%3Ccircle cx='96' cy='96' r='6' fill='%23c9a84c'/%3E%3Cline x1='96' y1='26' x2='96' y2='46' stroke='%23c9a84c' stroke-width='2'/%3E%3Cline x1='96' y1='146' x2='96' y2='166' stroke='%23c9a84c' stroke-width='2'/%3E%3Cline x1='26' y1='96' x2='46' y2='96' stroke='%23c9a84c' stroke-width='2'/%3E%3Cline x1='146' y1='96' x2='166' y2='96' stroke='%23c9a84c' stroke-width='2'/%3E%3C/svg%3E',
-      sizes: '192x192',
-      type: 'image/svg+xml'
-    }]
-  };
-  const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = 'data:application/json;base64,' + btoa(JSON.stringify(manifest));
+function injectManifest(){
+  var manifest={name:'BrevettIAmo PWA',short_name:'BrevettIAmo',start_url:'.',display:'standalone',background_color:'#f5f0e6',theme_color:'#1a3a5c',icons:[{src:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20192%20192%27%3E%3Crect%20width%3D%27192%27%20height%3D%27192%27%20fill%3D%27%231a3a5c%27%20rx%3D%2724%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2770%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%274%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2755%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%20stroke-dasharray%3D%278%208%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2740%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%271%27%2F%3E%3Cellipse%20cx%3D%2796%27%20cy%3D%2796%27%20rx%3D%2735%27%20ry%3D%2720%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2712%27%20fill%3D%27%23c9a84c%27%20opacity%3D%270.3%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%276%27%20fill%3D%27%23c9a84c%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%2726%27%20x2%3D%2796%27%20y2%3D%2746%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%27146%27%20x2%3D%2796%27%20y2%3D%27166%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2726%27%20y1%3D%2796%27%20x2%3D%2746%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%27146%27%20y1%3D%2796%27%20x2%3D%27166%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3C%2Fsvg%3E',sizes:'192x192',type:'image/svg+xml'}]};
+  var link=document.createElement('link');
+  link.rel='manifest';
+  link.href='data:application/json;base64,'+btoa(JSON.stringify(manifest));
   document.head.appendChild(link);
 }
 
 // ============================
 // INIT
 // ============================
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded',function(){
   detectDevice();
   updateSyncStatus();
-  await openDB();
-  injectManifest();
-  registerInlineSW();
-  await checkPassword();
-  await renderFileList();
-
-  if (isStandalone()) {
-    document.getElementById('installBtn').textContent = 'App Attiva';
-    document.getElementById('installBtn').disabled = true;
-    document.getElementById('installMsg').textContent = 'Stai usando la PWA installata.';
+  openDB().then(function(){
+    injectManifest();
+    registerInlineSW();
+    checkPassword();
+    renderFileList();
+  });
+  if(isStandalone()){
+    var btn=document.getElementById('installBtn');
+    var msg=document.getElementById('installMsg');
+    if(btn){btn.textContent='App Attiva';btn.disabled=true}
+    if(msg)msg.textContent='Stai usando la PWA installata.';
   }
 });
 </script>
