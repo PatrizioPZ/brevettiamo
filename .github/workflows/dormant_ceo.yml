@@ -1,30 +1,30 @@
-name: Sleeper Agent Autonomous Pipeline v2.1
+name: BrevettIAmo Brain - Autonomous v3.5
 
 on:
+  push:
+    branches: [main, development]
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
     inputs:
       task:
-        description: 'Task specifico'
+        description: 'Task per il CEO Orchestrator'
+        required: true
+        default: 'Verifica sistema'
+      file_path:
+        description: 'Percorso file da generare'
         required: false
-        default: 'auto'
-  push:
-    branches:
-      - main
-      - development
-    paths:
-      - 'task.json'
-      - 'scripts/secret_manager.py'
-      - 'scripts/ceo_orchestrator.py'
+        default: ''
+      file_type:
+        description: 'Tipo file (html, js, css, py)'
+        required: false
+        default: 'html'
 
 jobs:
-  autonomous-execution:
+  brain:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -35,9 +35,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Installazione Dipendenze
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install requests PyYAML
 
       - name: Secret Manager
@@ -49,11 +48,11 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GROQ_API_KEY_2: ${{ secrets.GROQ_API_KEY_2 }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
         run: python scripts/secret_manager.py
 
       - name: CEO Orchestrator
         env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -61,34 +60,8 @@ jobs:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GROQ_API_KEY_2: ${{ secrets.GROQ_API_KEY_2 }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          CEO_TASK: ${{ toJson(github.event.inputs) }}
+          TARGET_BRANCH: ${{ github.ref_name }}
         run: python scripts/ceo_orchestrator.py
-
-      - name: Commit e Push
-        if: success()
-        run: |
-          git config --global user.name 'BrevettIAmo-CEO'
-          git config --global user.email 'ceo@brevettiamo.local'
-          git add -A
-          if git diff --staged --quiet; then
-            echo "Nessuna modifica."
-            exit 0
-          fi
-          git commit -m "brain: aggiornamento $(date +'%Y-%m-%d %H:%M')"
-          git push
-
-      - name: Promozione Staging
-        if: success() && github.ref == 'refs/heads/development'
-        run: |
-          git checkout staging || git checkout -b staging
-          git merge development --no-ff -m "Promozione Staging [skip ci]"
-          git push origin staging
-
-      - name: Promozione Production
-        if: success() && github.ref == 'refs/heads/staging'
-        run: |
-          git checkout production || git checkout -b production
-          git merge staging --no-ff -m "Rilascio Produzione [skip ci]"
-          git push origin production
