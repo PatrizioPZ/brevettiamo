@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrevettIAmo · CEO Orchestrator v3.5 · test</title>
+    <title>BrevettIAmo · CEO Orchestrator v3.5 · Test</title>
+    <!-- Design System BrevettIAmo: pergamena, sobrio, senza emoji -->
     <style>
-        /* === DESIGN SYSTEM BREVETTIAMO – PERGAMENA === */
         * {
             margin: 0;
             padding: 0;
@@ -13,401 +13,394 @@
         }
 
         body {
-            background: #f5efe6;
-            background-image: radial-gradient(circle at 10% 20%, rgba(200, 180, 150, 0.15) 0%, transparent 50%);
-            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            background: #f5efe6;  /* fondo pergamena chiaro */
+            font-family: 'Palatino', 'Georgia', 'Times New Roman', serif;
+            color: #2e241f;
+            padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            padding: 2rem 1rem;
-            color: #2c2416;
         }
 
         /* contenitore pergamena */
         .pergamena {
-            max-width: 1200px;
+            max-width: 1300px;
             width: 100%;
             background: #fcf8f0;
-            background: linear-gradient(145deg, #faf3e8 0%, #fdf9f2 100%);
+            background-image: 
+                linear-gradient(90deg, rgba(200, 180, 150, 0.08) 1px, transparent 1px),
+                linear-gradient(rgba(200, 180, 150, 0.06) 1px, transparent 1px);
+            background-size: 40px 40px;
             border: 1px solid #dacbb8;
-            border-radius: 32px 12px 32px 12px;
-            box-shadow: 0 20px 40px -12px rgba(60, 40, 20, 0.3), inset 0 1px 4px rgba(255, 245, 230, 0.8);
-            padding: 2.5rem 2rem;
+            border-radius: 28px 8px 28px 8px;
+            box-shadow: 0 12px 30px rgba(60, 40, 20, 0.12);
+            padding: 2rem 2.5rem;
             position: relative;
-            transition: box-shadow 0.2s ease;
+            transition: box-shadow 0.2s;
         }
 
         .pergamena::before {
             content: '';
             position: absolute;
             top: 12px; left: 12px; right: 12px; bottom: 12px;
-            border: 1px solid #e6d7c4;
-            border-radius: 24px 6px 24px 6px;
+            border: 1px solid #e7dccc;
+            border-radius: 20px 4px 20px 4px;
             pointer-events: none;
-            opacity: 0.4;
         }
 
         /* header con sigillo */
-        .testata {
+        .header-brand {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             border-bottom: 2px solid #dacbb8;
             padding-bottom: 1.2rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
 
-        .sigillo {
+        .logo-area {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.8rem;
         }
 
-        .sigillo svg {
+        .logo-svg {
             width: 48px;
             height: 48px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
-        .sigillo h1 {
-            font-size: 1.9rem;
-            font-weight: 400;
+        .brand-text {
+            font-size: 1.8rem;
+            font-weight: 500;
             letter-spacing: 1px;
-            color: #3f2e1c;
-            text-shadow: 1px 1px 0 rgba(255, 235, 200, 0.6);
+            color: #3f2e22;
+            text-transform: uppercase;
+            border-left: 2px solid #c6b29b;
+            padding-left: 1rem;
         }
 
-        .sigillo h1 small {
+        .brand-text small {
             font-size: 0.9rem;
             font-weight: 300;
             display: block;
-            color: #7a6246;
+            text-transform: none;
+            letter-spacing: 0.3px;
+            color: #6f5843;
+        }
+
+        .orchestrator-badge {
+            background: #e3d6c6;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #2e1f16;
+            border: 1px solid #c6b29b;
+            box-shadow: inset 0 1px 3px rgba(255, 245, 235, 0.6);
             letter-spacing: 0.5px;
         }
 
-        .badge-versione {
-            background: #dacbb8;
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            color: #2c2416;
-            border: 1px solid #b8a48c;
-            box-shadow: inset 0 1px 3px rgba(255, 245, 225, 0.7);
-            font-weight: 400;
-        }
-
-        /* griglia test */
-        .griglia-test {
+        /* griglia dashboard */
+        .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem 1.8rem;
-            margin: 2rem 0 1.5rem;
+            margin: 2rem 0 1.5rem 0;
         }
 
-        @media (max-width: 800px) {
-            .griglia-test {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-        }
-
-        .scheda-test {
-            background: rgba(250, 242, 232, 0.6);
-            border: 1px solid #e0d0bc;
-            border-radius: 20px 6px 20px 6px;
+        .card-pergamena {
+            background: #faf6ef;
+            border: 1px solid #ddd0be;
+            border-radius: 18px 4px 18px 4px;
             padding: 1.5rem 1.5rem 1.8rem;
-            box-shadow: 0 6px 14px rgba(80, 60, 40, 0.06);
-            transition: all 0.15s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: 0.15s ease;
         }
 
-        .scheda-test:hover {
-            border-color: #c6b29c;
-            background: #faf3e9;
+        .card-pergamena:hover {
+            border-color: #b8a48c;
+            box-shadow: 0 6px 14px rgba(60, 40, 20, 0.08);
         }
 
-        .scheda-test h3 {
-            font-size: 1.3rem;
-            font-weight: 400;
-            border-left: 4px solid #b8a48c;
-            padding-left: 0.8rem;
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #3f2e22;
+            border-bottom: 1px dashed #d2c0ac;
+            padding-bottom: 0.5rem;
             margin-bottom: 1.2rem;
-            color: #3f2e1c;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .scheda-test h3 svg {
-            width: 26px;
-            height: 26px;
-            opacity: 0.7;
+        .card-title svg {
+            width: 24px;
+            height: 24px;
+            stroke: #5f4735;
+            stroke-width: 1.5;
+            fill: none;
         }
 
-        .output-console {
-            background: #f3ede5;
-            border: 1px solid #d6c6b2;
-            border-radius: 12px 4px 12px 4px;
+        .test-output {
+            background: #f2ebe1;
+            border-radius: 12px 2px 12px 2px;
             padding: 1rem 1.2rem;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', monospace;
             font-size: 0.9rem;
-            color: #2c2416;
+            color: #2b1f17;
+            border-left: 4px solid #b8a48c;
             min-height: 70px;
             white-space: pre-wrap;
             word-break: break-word;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
-            margin-top: 0.5rem;
+            line-height: 1.5;
         }
 
-        .stato-ok {
-            color: #2b6b3c;
-            font-weight: 500;
+        .test-output.success {
+            border-left-color: #4a7a5c;
+            background: #edf3ea;
         }
 
-        .stato-ko {
-            color: #a13e2b;
+        .test-output.fail {
+            border-left-color: #a55343;
+            background: #f5ecea;
         }
 
         .flex-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 0.8rem;
         }
 
-        .pulsante-test {
+        .btn-test {
             background: #dacbb8;
             border: none;
             border-radius: 40px;
-            padding: 0.5rem 1.5rem;
-            font-family: 'Georgia', serif;
-            font-size: 0.9rem;
-            color: #2c2416;
+            padding: 0.6rem 1.8rem;
+            font-family: 'Palatino', serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #2e1f16;
             cursor: pointer;
             transition: 0.15s;
-            border: 1px solid #c2ae96;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid #c6b29b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             letter-spacing: 0.3px;
         }
 
-        .pulsante-test:hover {
-            background: #cdbca6;
-            border-color: #a58d74;
+        .btn-test:hover {
+            background: #cdbcab;
+            border-color: #a58d77;
             box-shadow: 0 4px 8px rgba(60, 40, 20, 0.08);
         }
 
-        .pulsante-test:active {
+        .btn-test:active {
             transform: scale(0.97);
         }
 
-        .tavole-tecniche {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.2rem;
-            margin: 2.5rem 0 1rem;
-            border-top: 1px dashed #dacbb8;
-            padding-top: 2rem;
+        .badge-stato {
+            display: inline-block;
+            background: #e3d6c6;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #2e1f16;
+            border: 1px solid #c6b29b;
         }
 
-        @media (max-width: 700px) {
-            .tavole-tecniche {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .badge-stato.verde {
+            background: #d4e3d4;
+            border-color: #7f9f7f;
+            color: #1f3f2a;
+        }
+
+        /* tavole tecniche SVG */
+        .tavole-wrapper {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0 0.5rem;
         }
 
         .tavola {
-            background: #f7f0e7;
-            border: 1px solid #d6c6b2;
-            border-radius: 16px 4px 16px 4px;
-            padding: 0.8rem 0.5rem 0.5rem;
-            text-align: center;
+            background: #faf6ef;
+            border: 1px solid #ddd0be;
+            border-radius: 16px 2px 16px 2px;
+            padding: 1rem 0.8rem 0.8rem;
             transition: 0.1s;
         }
 
         .tavola svg {
+            display: block;
             width: 100%;
             height: auto;
-            max-height: 90px;
-            display: block;
-            margin: 0 auto;
+            background: #fcf9f4;
+            border-radius: 8px;
+            border: 1px solid #e2d4c2;
         }
 
-        .tavola .didascalia {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #6f5a42;
-            margin-top: 6px;
-            border-top: 1px solid #e0d0bc;
-            padding-top: 6px;
+        .tavola-caption {
+            text-align: center;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            color: #5f4735;
+            font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
         .footer-test {
-            margin-top: 2rem;
-            text-align: right;
-            font-size: 0.8rem;
-            color: #8f7a62;
-            border-top: 1px solid #e6d7c4;
+            margin-top: 2.5rem;
+            border-top: 1px solid #dacbb8;
             padding-top: 1.2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 0.85rem;
+            color: #5f4735;
         }
 
-        .footer-test .marchio {
-            font-style: italic;
-        }
-
-        .separatore-sottile {
-            height: 1px;
-            background: linear-gradient(to right, transparent, #dacbb8, transparent);
-            margin: 0.5rem 0;
+        @media (max-width: 800px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .tavole-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .pergamena {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-<div class="pergamena" id="pergamenaCEO">
-
-    <!-- testata -->
-    <div class="testata">
-        <div class="sigillo">
-            <!-- SVG sigillo: bilancia + ingranaggio -->
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="#7a6246" stroke-width="2.5" />
-                <path d="M30 55 L50 30 L70 55" stroke="#7a6246" stroke-width="2" fill="none" stroke-linejoin="round" />
-                <circle cx="50" cy="30" r="5" fill="#7a6246" />
-                <rect x="46" y="55" width="8" height="18" rx="2" fill="#b8a48c" />
-                <path d="M30 73 L70 73" stroke="#7a6246" stroke-width="2" stroke-linecap="round" />
-                <circle cx="30" cy="73" r="4" fill="#b8a48c" />
-                <circle cx="70" cy="73" r="4" fill="#b8a48c" />
+<div class="pergamena" id="appContainer">
+    <!-- header -->
+    <div class="header-brand">
+        <div class="logo-area">
+            <!-- SVG logo BrevettIAmo: libro aperto e ingranaggio, senza emoji -->
+            <svg class="logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 8 L12 36 L24 30 L36 36 L36 8 L24 14 Z" stroke="#3f2e22" stroke-width="1.8" fill="#f0e4d4" stroke-linejoin="round"/>
+                <circle cx="24" cy="22" r="6" stroke="#3f2e22" stroke-width="1.6" fill="none"/>
+                <path d="M24 16 L24 28 M18 22 L30 22" stroke="#3f2e22" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M8 40 L40 40" stroke="#3f2e22" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <h1>BrevettIAmo <small>CEO Orchestrator v3.5</small></h1>
+            <div class="brand-text">
+                BrevettIAmo
+                <small>Ufficio brevetti · ingegno artificiale</small>
+            </div>
         </div>
-        <div class="badge-versione">test di verifica</div>
+        <div class="orchestrator-badge">CEO Orchestrator v3.5</div>
     </div>
 
-    <!-- griglia test funzionali -->
-    <div class="griglia-test">
-        <!-- 1. verifica CEO Orchestrator -->
-        <div class="scheda-test" id="test-ceo">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#3f2e1c" stroke-width="1.8">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" stroke-linejoin="round" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
+    <!-- dashboard test -->
+    <div class="dashboard-grid">
+        <!-- Card 1: verifica CEO Orchestrator -->
+        <div class="card-pergamena">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none">
+                    <path d="M4 4 L20 4 L20 20 L4 20 Z" stroke-width="1.6"/>
+                    <path d="M8 8 L16 8 M8 12 L16 12 M8 16 L12 16" stroke-width="1.6" stroke-linecap="round"/>
                 </svg>
-                CEO Orchestrator
-            </h3>
-            <div class="flex-row">
-                <span style="font-size:0.9rem;">stato core</span>
-                <button class="pulsante-test" id="btnTestCeo">Esegui verifica</button>
+                Test Orchestrator v3.5
             </div>
-            <div class="output-console" id="outputCeo">[in attesa]</div>
-        </div>
-
-        <!-- 2. verifica sintassi JS / window -->
-        <div class="scheda-test" id="test-sintassi">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#3f2e1c" stroke-width="1.8">
-                    <rect x="4" y="4" width="16" height="16" rx="2" />
-                    <path d="M9 9l3 3-3 3" />
-                    <path d="M15 9l-3 3 3 3" />
-                </svg>
-                Sintassi & window
-            </h3>
+            <div class="test-output" id="outputOrchestrator">⏳ Inizializzazione CEO Orchestrator...</div>
             <div class="flex-row">
-                <span style="font-size:0.9rem;">namespace globale</span>
-                <button class="pulsante-test" id="btnTestSintassi">Verifica</button>
-            </div>
-            <div class="output-console" id="outputSintassi">[non eseguito]</div>
-        </div>
-
-        <!-- 3. tavole tecniche SVG (layout distinti) -->
-        <div class="scheda-test" style="grid-column: span 1;">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#3f2e1c" stroke-width="1.8">
-                    <path d="M4 20h16" />
-                    <path d="M6 20V8l6-4 6 4v12" />
-                    <path d="M10 20v-6h4v6" />
-                </svg>
-                Tavole tecniche
-            </h3>
-            <div style="font-size:0.9rem; margin-bottom:0.5rem;">assieme · esplosa · sezione · dettaglio</div>
-            <div class="tavole-tecniche" style="margin-top:0; padding-top:0; border-top: none;">
-                <!-- assieme -->
-                <div class="tavola">
-                    <svg viewBox="0 0 80 60">
-                        <rect x="10" y="10" width="60" height="40" rx="4" fill="#e8dccc" stroke="#7a6246" stroke-width="1.5" />
-                        <circle cx="40" cy="30" r="12" fill="none" stroke="#5a4a34" stroke-width="1.5" />
-                        <circle cx="40" cy="30" r="4" fill="#7a6246" />
-                        <line x1="20" y1="20" x2="60" y2="40" stroke="#5a4a34" stroke-width="1" stroke-dasharray="2 2" />
-                        <line x1="60" y1="20" x2="20" y2="40" stroke="#5a4a34" stroke-width="1" stroke-dasharray="2 2" />
-                    </svg>
-                    <div class="didascalia">assieme</div>
-                </div>
-                <!-- esplosa -->
-                <div class="tavola">
-                    <svg viewBox="0 0 80 60">
-                        <rect x="5" y="5" width="20" height="15" rx="2" fill="#dccfc0" stroke="#7a6246" stroke-width="1.2" />
-                        <rect x="30" y="18" width="20" height="15" rx="2" fill="#dccfc0" stroke="#7a6246" stroke-width="1.2" />
-                        <rect x="55" y="32" width="20" height="15" rx="2" fill="#dccfc0" stroke="#7a6246" stroke-width="1.2" />
-                        <line x1="25" y1="12" x2="30" y2="25" stroke="#a58d74" stroke-width="1" stroke-dasharray="2 2" />
-                        <line x1="50" y1="25" x2="55" y2="39" stroke="#a58d74" stroke-width="1" stroke-dasharray="2 2" />
-                    </svg>
-                    <div class="didascalia">esplosa</div>
-                </div>
-                <!-- sezione -->
-                <div class="tavola">
-                    <svg viewBox="0 0 80 60">
-                        <path d="M10 10 L70 10 L70 50 L10 50 Z" fill="#ede4d8" stroke="#7a6246" stroke-width="1.5" />
-                        <path d="M20 10 L20 50" stroke="#5a4a34" stroke-width="1.5" stroke-dasharray="4 2" />
-                        <path d="M40 10 L40 50" stroke="#5a4a34" stroke-width="1.5" stroke-dasharray="4 2" />
-                        <path d="M60 10 L60 50" stroke="#5a4a34" stroke-width="1.5" stroke-dasharray="4 2" />
-                        <line x1="10" y1="30" x2="70" y2="30" stroke="#a58d74" stroke-width="1" />
-                        <text x="15" y="45" font-size="6" fill="#3f2e1c">sez. A-A</text>
-                    </svg>
-                    <div class="didascalia">sezione</div>
-                </div>
-                <!-- dettaglio -->
-                <div class="tavola">
-                    <svg viewBox="0 0 80 60">
-                        <circle cx="40" cy="30" r="22" fill="#f0e7db" stroke="#7a6246" stroke-width="1.5" />
-                        <circle cx="40" cy="30" r="10" fill="none" stroke="#5a4a34" stroke-width="1.5" />
-                        <circle cx="40" cy="30" r="3" fill="#7a6246" />
-                        <path d="M25 15 L30 20" stroke="#a58d74" stroke-width="1.2" />
-                        <path d="M55 15 L50 20" stroke="#a58d74" stroke-width="1.2" />
-                        <path d="M25 45 L30 40" stroke="#a58d74" stroke-width="1.2" />
-                        <path d="M55 45 L50 40" stroke="#a58d74" stroke-width="1.2" />
-                        <text x="32" y="58" font-size="5" fill="#3f2e1c">dettaglio B</text>
-                    </svg>
-                    <div class="didascalia">dettaglio</div>
-                </div>
+                <button class="btn-test" id="btnTestOrchestrator">▶ Esegui verifica</button>
+                <span class="badge-stato" id="statoOrchestrator">idle</span>
             </div>
         </div>
 
-        <!-- 4. verifica CSS coerente / design system -->
-        <div class="scheda-test" id="test-css">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="none" stroke="#3f2e1c" stroke-width="1.8">
-                    <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />
+        <!-- Card 2: diagnostica moduli -->
+        <div class="card-pergamena">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none">
+                    <circle cx="12" cy="12" r="8" stroke-width="1.6"/>
+                    <path d="M12 8 L12 12 L15 15" stroke-width="1.6" stroke-linecap="round"/>
                 </svg>
-                Design system
-            </h3>
-            <div class="flex-row">
-                <span style="font-size:0.9rem;">coerenza stili</span>
-                <button class="pulsante-test" id="btnTestCss">Controlla</button>
+                Diagnostica moduli
             </div>
-            <div class="output-console" id="outputCss">[verifica non richiesta]</div>
+            <div class="test-output" id="outputDiagnostica">🔍 In attesa di test...</div>
+            <div class="flex-row">
+                <button class="btn-test" id="btnTestDiagnostica">🔬 Analizza</button>
+                <span class="badge-stato" id="statoDiagnostica">pronto</span>
+            </div>
         </div>
     </div>
 
-    <!-- footer -->
+    <!-- Tavole tecniche SVG: assieme, esplosa, sezione, dettaglio (4 layout distinti) -->
+    <div style="margin-top: 0.8rem;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 0.8rem;">
+            <span style="font-weight: 600; color: #3f2e22; letter-spacing: 0.5px;">Tavole tecniche</span>
+            <span style="flex:1; height: 1px; background: #dacbb8;"></span>
+            <span class="badge-stato verde">4 figure · layout distinti</span>
+        </div>
+        <div class="tavole-wrapper">
+            <!-- Tavola 1: Assieme (vista complessiva) -->
+            <div class="tavola">
+                <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="20" width="140" height="60" rx="6" fill="#f2ebe1" stroke="#7f6a56" stroke-width="1.5"/>
+                    <rect x="30" y="30" width="40" height="30" rx="3" fill="#e3d6c6" stroke="#5f4735" stroke-width="1.2"/>
+                    <rect x="90" y="30" width="40" height="30" rx="3" fill="#dccfc0" stroke="#5f4735" stroke-width="1.2"/>
+                    <line x1="70" y1="45" x2="90" y2="45" stroke="#5f4735" stroke-width="1.5" stroke-dasharray="3 2"/>
+                    <circle cx="80" cy="45" r="4" fill="#b8a48c" stroke="#3f2e22" stroke-width="1"/>
+                    <text x="80" y="90" text-anchor="middle" font-size="7" fill="#3f2e22" font-family="Palatino">FIG.1 · ASSIEME</text>
+                </svg>
+                <div class="tavola-caption">Vista assieme · gruppo meccanico</div>
+            </div>
+            <!-- Tavola 2: Esplosa (vista esplosa con distanziamento) -->
+            <div class="tavola">
+                <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="15" y="40" width="30" height="20" rx="2" fill="#e8dccc" stroke="#5f4735" stroke-width="1.2"/>
+                    <rect x="55" y="25" width="30" height="20" rx="2" fill="#dccfc0" stroke="#5f4735" stroke-width="1.2"/>
+                    <rect x="95" y="10" width="30" height="20" rx="2" fill="#cdbcab" stroke="#5f4735" stroke-width="1.2"/>
+                    <line x1="30" y1="50" x2="55" y2="35" stroke="#7f6a56" stroke-width="1" stroke-dasharray="2 2"/>
+                    <line x1="70" y1="35" x2="95" y2="20" stroke="#7f6a56" stroke-width="1" stroke-dasharray="2 2"/>
+                    <circle cx="45" cy="70" r="3" fill="none" stroke="#5f4735" stroke-width="1"/>
+                    <circle cx="75" cy="70" r="3" fill="none" stroke="#5f4735" stroke-width="1"/>
+                    <text x="80" y="90" text-anchor="middle" font-size="7" fill="#3f2e22" font-family="Palatino">FIG.2 · ESPLOSA</text>
+                </svg>
+                <div class="tavola-caption">Vista esplosa · componenti separati</div>
+            </div>
+            <!-- Tavola 3: Sezione (taglio A-A) -->
+            <div class="tavola">
+                <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 20 L140 20 L140 80 L20 80 Z" fill="#f2ebe1" stroke="#7f6a56" stroke-width="1.5"/>
+                    <path d="M40 20 L40 80" stroke="#5f4735" stroke-width="1.2" stroke-dasharray="4 2"/>
+                    <path d="M80 20 L80 80" stroke="#5f4735" stroke-width="1.2" stroke-dasharray="4 2"/>
+                    <path d="M120 20 L120 80" stroke="#5f4735" stroke-width="1.2" stroke-dasharray="4 2"/>
+                    <rect x="25" y="35" width="10" height="30" fill="#dccfc0" stroke="#3f2e22" stroke-width="1"/>
+                    <rect x="65" y="35" width="10" height="30" fill="#cdbcab" stroke="#3f2e22" stroke-width="1"/>
+                    <rect x="105" y="35" width="10" height="30" fill="#e3d6c6" stroke="#3f2e22" stroke-width="1"/>
+                    <text x="80" y="90" text-anchor="middle" font-size="7" fill="#3f2e22" font-family="Palatino">FIG.3 · SEZIONE A-A</text>
+                </svg>
+                <div class="tavola-caption">Sezione trasversale · dettaglio interno</div>
+            </div>
+            <!-- Tavola 4: Dettaglio (particolare costruttivo) -->
+            <div class="tavola">
+                <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="80" cy="45" r="30" fill="#f2ebe1" stroke="#7f6a56" stroke-width="1.5"/>
+                    <circle cx="80" cy="45" r="18" fill="none" stroke="#5f4735" stroke-width="1.2" stroke-dasharray="3 2"/>
+                    <circle cx="80" cy="45" r="8" fill="#dccfc0" stroke="#3f2e22" stroke-width="1.2"/>
+                    <line x1="50" y1="45" x2="62" y2="45" stroke="#5f4735" stroke-width="1.5"/>
+                    <line x1="98" y1="45" x2="110" y2="45" stroke="#5f4735" stroke-width="1.5"/>
+                    <line x1="80" y1="15" x2="80" y2="27" stroke="#5f4735" stroke-width="1.5"/>
+                    <line x1="80" y1="63" x2="80" y2="75" stroke="#5f4735" stroke-width="1.5"/>
+                    <text x="80" y="90" text-anchor="middle" font-size="7" fill="#3f2e22" font-family="Palatino">FIG.4 · DETTAGLIO</text>
+                </svg>
+                <div class="tavola-caption">Particolare costruttivo · ingrandimento</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- footer test -->
     <div class="footer-test">
-        <span class="marchio">BrevettIAmo · simulazione test v3.5</span>
-        <span>CEO Orchestrator <span id="statoFinale">⏳</span></span>
+        <span>🧾 BrevettIAmo · CEO Orchestrator v3.5 · test di conformità</span>
+        <span id="timestampFooter">caricato</span>
     </div>
 </div>
 
@@ -415,224 +408,143 @@
     (function() {
         'use strict';
 
-        // === CEO Orchestrator v3.5 (nucleo) ===
-        window.CEOOrchestrator = window.CEOOrchestrator || {};
+        // CEO Orchestrator v3.5 – simulazione verifica
+        window.ceoOrchestrator = window.ceoOrchestrator || {};
 
-        // proprietà del sistema (nessun 'var object.property')
-        window.CEOOrchestrator.version = '3.5';
-        window.CEOOrchestrator.stato = 'inizializzato';
-        window.CEOOrchestrator.moduli = {
-            sintassi: false,
-            css: false,
-            tavole: true
+        // stato interno
+        window.ceoOrchestrator.version = '3.5';
+        window.ceoOrchestrator.modules = {
+            analisiPreliminare: { stato: 'inizializzato', test: false },
+            estrazionePriorita: { stato: 'pronto', test: false },
+            generazioneRivendicazioni: { stato: 'attivo', test: false },
+            validazioneFormale: { stato: 'standby', test: false }
         };
 
-        // metodo di verifica core
-        window.CEOOrchestrator.verificaCore = function() {
+        // metodo di test principale
+        window.ceoOrchestrator.testCompleto = function() {
             let report = [];
-            let ok = true;
+            let success = true;
 
-            // 1. esistenza
-            if (typeof window.CEOOrchestrator !== 'undefined' && window.CEOOrchestrator.version === '3.5') {
-                report.push('CEO Orchestrator v3.5 presente');
+            // test 1: presenza moduli
+            const moduli = Object.keys(window.ceoOrchestrator.modules);
+            if (moduli.length === 4) {
+                report.push('✅ 4 moduli registrati: ' + moduli.join(', '));
             } else {
-                report.push('ERRORE: CEO non trovato');
-                ok = false;
+                report.push('❌ numero moduli errato');
+                success = false;
             }
 
-            // 2. moduli
-            if (window.CEOOrchestrator.moduli && window.CEOOrchestrator.moduli.tavole === true) {
-                report.push('modulo tavole tecniche: attivo');
-            } else {
-                report.push('ERRORE: modulo tavole mancante');
-                ok = false;
+            // test 2: ogni modulo ha stato e flag test
+            for (let m of moduli) {
+                const mod = window.ceoOrchestrator.modules[m];
+                if (mod.stato && typeof mod.test === 'boolean') {
+                    report.push(`  · ${m}: stato="${mod.stato}", test=${mod.test}`);
+                } else {
+                    report.push(`  · ${m}: struttura incompleta`);
+                    success = false;
+                }
             }
 
-            // 3. test window (nessun var object.property)
-            if (window.CEOOrchestrator.hasOwnProperty('stato')) {
-                window.CEOOrchestrator.stato = 'operativo';
-                report.push('stato aggiornato a "operativo"');
+            // test 3: versione
+            if (window.ceoOrchestrator.version === '3.5') {
+                report.push('✅ Versione orchestrator: 3.5');
             } else {
-                report.push('ERRORE: stato non accessibile');
-                ok = false;
+                report.push('❌ Versione non corrispondente');
+                success = false;
             }
 
-            // 4. test aggiuntivo: funzione annidata
-            window.CEOOrchestrator.testSintassi = function() {
-                return 'sintassi valida (window)';
-            };
-
-            let testSintassi = window.CEOOrchestrator.testSintassi();
-            if (testSintassi === 'sintassi valida (window)') {
-                report.push('testSintassi() => ' + testSintassi);
-            } else {
-                report.push('ERRORE: testSintassi non funziona');
-                ok = false;
+            // test 4: flag di test globale
+            window.ceoOrchestrator.testEseguito = true;
+            if (window.ceoOrchestrator.testEseguito === true) {
+                report.push('✅ Flag testEseguito = true');
             }
 
-            return { ok: ok, report: report };
+            return { success, report: report.join('\n') };
         };
 
-        // === riferimenti DOM ===
-        const outputCeo = document.getElementById('outputCeo');
-        const outputSintassi = document.getElementById('outputSintassi');
-        const outputCss = document.getElementById('outputCss');
-        const statoFinale = document.getElementById('statoFinale');
-
-        // === test CEO ===
-        document.getElementById('btnTestCeo').addEventListener('click', function() {
-            const risultato = window.CEOOrchestrator.verificaCore();
-            let testo = '';
-            if (risultato.ok) {
-                testo = '✅  OK  ' + risultato.report.join(' · ');
-                outputCeo.className = 'output-console stato-ok';
-                statoFinale.textContent = '✅';
-            } else {
-                testo = '❌  FAIL  ' + risultato.report.join(' · ');
-                outputCeo.className = 'output-console stato-ko';
-                statoFinale.textContent = '❌';
+        // diagnostica moduli (simulata)
+        window.ceoOrchestrator.diagnosticaModuli = function() {
+            const risultati = [];
+            const moduli = window.ceoOrchestrator.modules;
+            let tuttiOk = true;
+            for (let [nome, mod] of Object.entries(moduli)) {
+                const ok = mod.stato !== 'errore' && mod.stato !== 'offline';
+                if (!ok) tuttiOk = false;
+                risultati.push(`${nome}: ${mod.stato} ${ok ? '✓' : '⚠'}`);
             }
-            outputCeo.textContent = testo;
+            return { tuttiOk, dettaglio: risultati.join('\n') };
+        };
+
+        // riferimenti DOM
+        const outputOrch = document.getElementById('outputOrchestrator');
+        const outputDiag = document.getElementById('outputDiagnostica');
+        const statoOrch = document.getElementById('statoOrchestrator');
+        const statoDiag = document.getElementById('statoDiagnostica');
+        const btnOrch = document.getElementById('btnTestOrchestrator');
+        const btnDiag = document.getElementById('btnTestDiagnostica');
+        const footerTime = document.getElementById('timestampFooter');
+
+        // aggiorna timestamp
+        const now = new Date();
+        footerTime.textContent = 'test ' + now.toLocaleDateString('it-IT') + ' ' + now.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'});
+
+        // funzione per eseguire test orchestrator
+        function eseguiTestOrchestrator() {
+            outputOrch.textContent = '⏳ Esecuzione test Orchestrator v3.5...';
+            statoOrch.textContent = 'esecuzione';
+            statoOrch.className = 'badge-stato';
+
+            // breve ritardo simulato
+            setTimeout(() => {
+                const risultato = window.ceoOrchestrator.testCompleto();
+                if (risultato.success) {
+                    outputOrch.textContent = '✅ TEST SUPERATO\n' + risultato.report;
+                    outputOrch.className = 'test-output success';
+                    statoOrch.textContent = 'superato';
+                    statoOrch.className = 'badge-stato verde';
+                } else {
+                    outputOrch.textContent = '❌ TEST FALLITO\n' + risultato.report;
+                    outputOrch.className = 'test-output fail';
+                    statoOrch.textContent = 'fallito';
+                    statoOrch.className = 'badge-stato';
+                }
+            }, 300);
+        }
+
+        // funzione diagnostica
+        function eseguiDiagnostica() {
+            outputDiag.textContent = '🔍 Analisi moduli in corso...';
+            statoDiag.textContent = 'analisi';
+            statoDiag.className = 'badge-stato';
+
+            setTimeout(() => {
+                const diag = window.ceoOrchestrator.diagnosticaModuli();
+                let msg = diag.tuttiOk ? '✅ Diagnostica: tutti i moduli operativi' : '⚠️ Diagnostica: anomalie rilevate';
+                msg += '\n' + diag.dettaglio;
+                outputDiag.textContent = msg;
+                outputDiag.className = 'test-output ' + (diag.tuttiOk ? 'success' : 'fail');
+                statoDiag.textContent = diag.tuttiOk ? 'operativo' : 'anomalo';
+                statoDiag.className = 'badge-stato ' + (diag.tuttiOk ? 'verde' : '');
+            }, 250);
+        }
+
+        // event listener
+        btnOrch.addEventListener('click', eseguiTestOrchestrator);
+        btnDiag.addEventListener('click', eseguiDiagnostica);
+
+        // esecuzione automatica all'avvio per dimostrare funzionamento
+        window.addEventListener('load', function() {
+            // test iniziale orchestrator
+            eseguiTestOrchestrator();
+            // dopo 1.2s esegue diagnostica
+            setTimeout(eseguiDiagnostica, 600);
         });
 
-        // === test sintassi / window (nessun var object.property) ===
-        document.getElementById('btnTestSintassi').addEventListener('click', function() {
-            let messaggi = [];
-            let ok = true;
-
-            // verifica che non ci siano errori di sintassi (uso di window)
-            try {
-                // test: window.x = ... (mai var object.property)
-                window.testBrevettIAmo = { orchestrazione: 'attiva' };
-                if (window.testBrevettIAmo.orchestrazione === 'attiva') {
-                    messaggi.push('window.testBrevettIAmo accessibile');
-                } else {
-                    messaggi.push('ERRORE: proprietà non scritta');
-                    ok = false;
-                }
-
-                // verifica che CEOOrchestrator sia su window
-                if (window.CEOOrchestrator && window.CEOOrchestrator.version) {
-                    messaggi.push('CEOOrchestrator su window: ' + window.CEOOrchestrator.version);
-                } else {
-                    messaggi.push('ERRORE: CEOOrchestrator non su window');
-                    ok = false;
-                }
-
-                // test funzione interna
-                let risultatoFunzione = window.CEOOrchestrator.testSintassi();
-                if (risultatoFunzione && risultatoFunzione.includes('sintassi')) {
-                    messaggi.push('testSintassi() ok');
-                } else {
-                    messaggi.push('ERRORE: testSintassi()');
-                    ok = false;
-                }
-
-                // pulizia
-                delete window.testBrevettIAmo;
-            } catch (e) {
-                messaggi.push('ERRORE di sintassi: ' + e.message);
-                ok = false;
-            }
-
-            if (ok) {
-                outputSintassi.className = 'output-console stato-ok';
-                outputSintassi.textContent = '✅ ' + messaggi.join(' · ');
-            } else {
-                outputSintassi.className = 'output-console stato-ko';
-                outputSintassi.textContent = '❌ ' + messaggi.join(' · ');
-            }
-        });
-
-        // === test CSS / design system ===
-        document.getElementById('btnTestCss').addEventListener('click', function() {
-            let risultati = [];
-            let ok = true;
-
-            // verifica stili calcolati della pergamena
-            const pergamena = document.getElementById('pergamenaCEO');
-            const stili = window.getComputedStyle(pergamena);
-            const bg = stili.backgroundColor;
-            const bordo = stili.border;
-
-            if (bg && bg.includes('rgb') && bg !== 'rgba(0, 0, 0, 0)') {
-                risultati.push('sfondo pergamena: ' + bg);
-            } else {
-                risultati.push('ERRORE: sfondo non applicato');
-                ok = false;
-            }
-
-            // verifica che il bordo sia presente
-            if (bordo && bordo.includes('solid')) {
-                risultati.push('bordo pergamena presente');
-            } else {
-                risultati.push('ERRORE: bordo mancante');
-                ok = false;
-            }
-
-            // verifica classe .sigillo h1
-            const sigilloH1 = document.querySelector('.sigillo h1');
-            if (sigilloH1) {
-                const stileH1 = window.getComputedStyle(sigilloH1);
-                if (stileH1.fontFamily && stileH1.fontFamily.includes('Georgia')) {
-                    risultati.push('font Georgia (design system)');
-                } else {
-                    risultati.push('font diverso (non critico)');
-                }
-            }
-
-            // verifica bottoni
-            const btn = document.querySelector('.pulsante-test');
-            if (btn) {
-                const stileBtn = window.getComputedStyle(btn);
-                if (stileBtn.borderRadius && parseInt(stileBtn.borderRadius) > 20) {
-                    risultati.push('pulsanti arrotondati');
-                }
-            }
-
-            if (ok) {
-                outputCss.className = 'output-console stato-ok';
-                outputCss.textContent = '✅ ' + risultati.join(' · ');
-            } else {
-                outputCss.className = 'output-console stato-ko';
-                outputCss.textContent = '❌ ' + risultati.join(' · ');
-            }
-        });
-
-        // === inizializzazione: esegui test CEO all'avvio (dimostrazione) ===
-        (function autoTest() {
-            const risultato = window.CEOOrchestrator.verificaCore();
-            if (risultato.ok) {
-                outputCeo.textContent = '✅  ' + risultato.report.join(' · ');
-                outputCeo.className = 'output-console stato-ok';
-                statoFinale.textContent = '✅';
-            } else {
-                outputCeo.textContent = '❌  ' + risultato.report.join(' · ');
-                outputCeo.className = 'output-console stato-ko';
-                statoFinale.textContent = '❌';
-            }
-            // test sintassi automatico leggero
-            try {
-                window._auto = 'ok';
-                if (window._auto === 'ok') {
-                    outputSintassi.textContent = '✅ window accessibile, sintassi pulita';
-                    outputSintassi.className = 'output-console stato-ok';
-                }
-                delete window._auto;
-            } catch (e) {
-                outputSintassi.textContent = '❌ errore sintassi';
-                outputSintassi.className = 'output-console stato-ko';
-            }
-            // test css automatico
-            const stili = window.getComputedStyle(document.getElementById('pergamenaCEO'));
-            if (stili.borderRadius) {
-                outputCss.textContent = '✅ design system: pergamena, bordi, font';
-                outputCss.className = 'output-console stato-ok';
-            } else {
-                outputCss.textContent = '⚠️  verifica css base';
-                outputCss.className = 'output-console';
-            }
-        })();
+        // esporre funzioni per debug (opzionale)
+        window.__brevettiamoTest = {
+            eseguiTestOrchestrator,
+            eseguiDiagnostica
+        };
 
     })();
 </script>
