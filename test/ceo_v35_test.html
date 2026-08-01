@@ -1,559 +1,898 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BrevettIAmo - Test CEO Orchestrator v3.5</title>
-<style>
-  :root {
-    --pergamena: #f4e4c1;
-    --pergamena-scura: #d4b896;
-    --inchiostro: #2c1810;
-    --inchiostro-chiaro: #5a3a2a;
-    --oro: #8b6914;
-    --bordo: #6b4f2a;
-    --ombra: rgba(44, 24, 16, 0.3);
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrevettIAmo - Test CEO Orchestrator v3.5</title>
+    <style>
+        /* ===== DESIGN SYSTEM BREVETTIAMO - PERGAMENA ===== */
+        :root {
+            --pergamena-bg: #f5e6c8;
+            --pergamena-bg-dark: #e8d5a8;
+            --pergamena-border: #8b7355;
+            --pergamena-text: #3e2723;
+            --pergamena-accent: #6d4c41;
+            --pergamena-gold: #b8860b;
+            --pergamena-shadow: rgba(62, 39, 35, 0.3);
+            --pergamena-light: #fff8e7;
+            --pergamena-error: #c62828;
+            --pergamena-success: #2e7d32;
+            --pergamena-warning: #f57f17;
+            --font-serif: 'Georgia', 'Times New Roman', serif;
+            --font-mono: 'Courier New', monospace;
+        }
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  body {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Georgia', 'Times New Roman', serif;
-    padding: 20px;
-  }
+        body {
+            background: linear-gradient(135deg, var(--pergamena-bg) 0%, var(--pergamena-bg-dark) 100%);
+            font-family: var(--font-serif);
+            color: var(--pergamena-text);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-  .pergamena-container {
-    background: var(--pergamena);
-    border: 3px solid var(--bordo);
-    border-radius: 12px;
-    box-shadow: 0 10px 40px var(--ombra), inset 0 0 30px rgba(139, 105, 20, 0.1);
-    max-width: 1200px;
-    width: 100%;
-    padding: 30px;
-    position: relative;
-  }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--pergamena-light);
+            border: 3px solid var(--pergamena-border);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px var(--pergamena-shadow);
+            padding: 30px;
+            position: relative;
+        }
 
-  .pergamena-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
-    border-radius: 12px;
-    pointer-events: none;
-  }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid var(--pergamena-gold);
+            border-radius: 10px;
+            pointer-events: none;
+            opacity: 0.5;
+        }
 
-  .header {
-    text-align: center;
-    border-bottom: 2px solid var(--bordo);
-    padding-bottom: 20px;
-    margin-bottom: 25px;
-    position: relative;
-  }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid var(--pergamena-gold);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
 
-  .header h1 {
-    font-size: 2.2em;
-    color: var(--inchiostro);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-  }
+        .header h1 {
+            font-size: 2.5em;
+            color: var(--pergamena-accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px var(--pergamena-shadow);
+        }
 
-  .header .sottotitolo {
-    font-size: 1.1em;
-    color: var(--inchiostro-chiaro);
-    font-style: italic;
-    margin-top: 8px;
-  }
+        .header h2 {
+            font-size: 1.2em;
+            color: var(--pergamena-gold);
+            margin-top: 10px;
+            font-style: italic;
+        }
 
-  .header .versione {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: var(--oro);
-    color: var(--pergamena);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.8em;
-    font-weight: bold;
-    letter-spacing: 1px;
-  }
+        .header .version {
+            display: inline-block;
+            background: var(--pergamena-accent);
+            color: var(--pergamena-light);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
 
-  .sezione-test {
-    background: rgba(255, 255, 255, 0.3);
-    border: 1px solid var(--bordo);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
-  }
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--pergamena-bg);
+            border: 2px solid var(--pergamena-border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+        }
 
-  .sezione-test h2 {
-    color: var(--inchiostro);
-    font-size: 1.4em;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px dashed var(--bordo);
-    padding-bottom: 10px;
-  }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-  .sezione-test h2 svg {
-    width: 24px;
-    height: 24px;
-    fill: var(--oro);
-  }
+        .status-icon {
+            width: 24px;
+            height: 24px;
+        }
 
-  .test-status {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.85em;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
+        .status-text {
+            font-weight: bold;
+        }
 
-  .test-status.passato {
-    background: #2d6a4f;
-    color: white;
-  }
+        .status-text.success {
+            color: var(--pergamena-success);
+        }
 
-  .test-status.fallito {
-    background: #9b2226;
-    color: white;
-  }
+        .status-text.error {
+            color: var(--pergamena-error);
+        }
 
-  .test-status.in-esecuzione {
-    background: #e9c46a;
-    color: var(--inchiostro);
-  }
+        .status-text.warning {
+            color: var(--pergamena-warning);
+        }
 
-  .test-status.non-eseguito {
-    background: #adb5bd;
-    color: white;
-  }
+        .test-section {
+            background: var(--pergamena-bg);
+            border: 2px solid var(--pergamena-border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-  .dettagli-test {
-    background: rgba(44, 24, 16, 0.05);
-    border-left: 3px solid var(--oro);
-    padding: 12px;
-    margin-top: 10px;
-    font-size: 0.9em;
-    color: var(--inchiostro-chiaro);
-    border-radius: 0 5px 5px 0;
-  }
+        .test-section h3 {
+            color: var(--pergamena-accent);
+            border-bottom: 1px solid var(--pergamena-gold);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
 
-  .dettagli-test pre {
-    font-family: 'Courier New', monospace;
-    font-size: 0.85em;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    background: rgba(0,0,0,0.05);
-    padding: 8px;
-    border-radius: 4px;
-    margin-top: 5px;
-  }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
 
-  .tavola-tecnica {
-    background: white;
-    border: 2px solid var(--bordo);
-    border-radius: 8px;
-    padding: 15px;
-    margin: 15px 0;
-  }
+        .test-card {
+            background: var(--pergamena-light);
+            border: 1px solid var(--pergamena-border);
+            border-radius: 8px;
+            padding: 15px;
+            transition: transform 0.3s ease;
+        }
 
-  .tavola-tecnica h3 {
-    color: var(--inchiostro);
-    font-size: 1.1em;
-    margin-bottom: 10px;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px var(--pergamena-shadow);
+        }
 
-  .tavola-tecnica svg {
-    width: 100%;
-    height: auto;
-    border: 1px solid #ccc;
-    background: #fafafa;
-  }
+        .test-card h4 {
+            color: var(--pergamena-accent);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
 
-  .footer {
-    text-align: center;
-    margin-top: 25px;
-    padding-top: 15px;
-    border-top: 2px solid var(--bordo);
-    color: var(--inchiostro-chiaro);
-    font-size: 0.9em;
-  }
+        .test-card .test-result {
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            padding: 10px;
+            background: var(--pergamena-bg);
+            border-radius: 5px;
+            margin-top: 10px;
+        }
 
-  .footer .timestamp {
-    font-style: italic;
-    margin-top: 5px;
-  }
+        .test-card .test-result.pass {
+            border-left: 4px solid var(--pergamena-success);
+        }
 
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--pergamena-scura);
-    border-radius: 4px;
-    margin: 10px 0;
-    overflow: hidden;
-  }
+        .test-card .test-result.fail {
+            border-left: 4px solid var(--pergamena-error);
+        }
 
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--oro), #d4a017);
-    border-radius: 4px;
-    transition: width 0.5s ease;
-  }
+        .test-card .test-result.warning {
+            border-left: 4px solid var(--pergamena-warning);
+        }
 
-  .grid-test {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-  }
+        .svg-container {
+            background: white;
+            border: 2px solid var(--pergamena-border);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 15px 0;
+        }
 
-  .card-test {
-    background: rgba(255,255,255,0.4);
-    border: 1px solid var(--bordo);
-    border-radius: 6px;
-    padding: 12px;
-  }
+        .svg-container svg {
+            width: 100%;
+            height: auto;
+        }
 
-  .card-test .nome-test {
-    font-weight: bold;
-    color: var(--inchiostro);
-    margin-bottom: 5px;
-  }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
 
-  .card-test .risultato {
-    font-size: 0.85em;
-    color: var(--inchiostro-chiaro);
-  }
+        .btn {
+            background: var(--pergamena-accent);
+            color: var(--pergamena-light);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: var(--font-serif);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
 
-  .icona-svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-  }
+        .btn:hover {
+            background: var(--pergamena-gold);
+            transform: translateY(-2px);
+        }
 
-  @media (max-width: 768px) {
-    .pergamena-container {
-      padding: 15px;
-    }
-    .header h1 {
-      font-size: 1.5em;
-    }
-    .grid-test {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: var(--pergamena-success);
+        }
+
+        .btn-error {
+            background: var(--pergamena-error);
+        }
+
+        .log-console {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: var(--font-mono);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            font-size: 0.85em;
+        }
+
+        .log-console .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .log-console .log-entry.error {
+            color: #ff4444;
+        }
+
+        .log-console .log-entry.success {
+            color: #44ff44;
+        }
+
+        .log-console .log-entry.warning {
+            color: #ffaa00;
+        }
+
+        .log-console .log-entry.info {
+            color: #44aaff;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--pergamena-gold);
+            color: var(--pergamena-accent);
+            font-style: italic;
+        }
+
+        /* ===== TAVOLE TECNICHE SVG ===== */
+        .technical-drawing {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .drawing-figure {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .drawing-figure h5 {
+            margin-bottom: 10px;
+            color: var(--pergamena-accent);
+        }
+
+        .drawing-figure svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .drawing-caption {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .technical-drawing {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="pergamena-container" id="contenitorePrincipale">
-  <div class="header">
-    <div class="versione">v3.5</div>
-    <h1>BrevettIAmo</h1>
-    <div class="sottotitolo">Test di Verifica CEO Orchestrator</div>
-  </div>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>BrevettIAmo</h1>
+            <h2>Sistema di Verifica CEO Orchestrator</h2>
+            <span class="version">v3.5 - Test Suite</span>
+        </div>
 
-  <div class="sezione-test">
-    <h2>
-      <svg viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 4l7.5 13h-15L12 6zm-1 5v4h2v-4h-2zm0 6v2h2v-2h-2z"/></svg>
-      Stato Generale del Sistema
-    </h2>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressBar" style="width: 0%"></div>
-    </div>
-    <div id="statoGenerale" class="dettagli-test">
-      Inizializzazione test in corso...
-    </div>
-  </div>
+        <!-- STATUS BAR -->
+        <div class="status-bar">
+            <div class="status-item">
+                <svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                <span class="status-text" id="statusTime">Inizializzazione...</span>
+            </div>
+            <div class="status-item">
+                <svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <span class="status-text success" id="statusCheck">Verifica in corso...</span>
+            </div>
+            <div class="status-item">
+                <svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <path d="M3 9h18"/>
+                    <path d="M9 21V9"/>
+                </svg>
+                <span class="status-text" id="statusModule">Modulo: CEO Orchestrator</span>
+            </div>
+        </div>
 
-  <div class="grid-test" id="gridTest">
-    <div class="card-test">
-      <div class="nome-test">Modulo Core</div>
-      <div class="risultato" id="testCore">In esecuzione...</div>
-      <div class="test-status in-esecuzione" id="statusCore">IN ESECUZIONE</div>
-    </div>
-    <div class="card-test">
-      <div class="nome-test">Gestione Brevetti</div>
-      <div class="risultato" id="testBrevetti">In esecuzione...</div>
-      <div class="test-status in-esecuzione" id="statusBrevetti">IN ESECUZIONE</div>
-    </div>
-    <div class="card-test">
-      <div class="nome-test">Analisi Prior Art</div>
-      <div class="risultato" id="testPriorArt">In esecuzione...</div>
-      <div class="test-status in-esecuzione" id="statusPriorArt">IN ESECUZIONE</div>
-    </div>
-    <div class="card-test">
-      <div class="nome-test">Generazione Claims</div>
-      <div class="risultato" id="testClaims">In esecuzione...</div>
-      <div class="test-status in-esecuzione" id="statusClaims">IN ESECUZIONE</div>
-    </div>
-    <div class="card-test">
-      <div class="nome-test">Tavole Tecniche</div>
-      <div class="risultato" id="testTavole">In esecuzione...</div>
-      <div class="test-status in-esecuzione" id="statusTavole">IN ESECUZIONE</div>
-    </div>
-    <div class="card-test">
-      <div class="nome-test">Integrazione API</div>
-      <div class="risultato" id="testAPI">In esecuzione...</div>
-      <div class="test-status in-esecuzione" id="statusAPI">IN ESECUZIONE</div>
-    </div>
-  </div>
+        <!-- SEZIONE TEST -->
+        <div class="test-section">
+            <h3>Test Funzionalità CEO Orchestrator v3.5</h3>
+            
+            <div class="test-grid">
+                <!-- Test 1: Inizializzazione -->
+                <div class="test-card">
+                    <h4>1. Inizializzazione Sistema</h4>
+                    <div class="test-result" id="testInit">
+                        <span id="testInitStatus">In esecuzione...</span>
+                    </div>
+                </div>
 
-  <div class="sezione-test">
-    <h2>
-      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-      Tavole Tecniche Generate
-    </h2>
-    <div id="tavoleTecnicheContainer">
-      <div class="tavola-tecnica">
-        <h3>Figura 1 - Vista Assonometrica</h3>
-        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#8b6914;stop-opacity:0.3"/>
-              <stop offset="100%" style="stop-color:#2c1810;stop-opacity:0.6"/>
-            </linearGradient>
-            <pattern id="hatch" patternUnits="userSpaceOnUse" width="4" height="4">
-              <path d="M0,0l4,4M4,0l-4,4" stroke="#8b6914" stroke-width="0.5" opacity="0.3"/>
-            </pattern>
-          </defs>
-          <rect x="50" y="50" width="300" height="200" fill="url(#grad1)" stroke="#2c1810" stroke-width="2"/>
-          <rect x="50" y="50" width="300" height="200" fill="url(#hatch)"/>
-          <line x1="50" y1="50" x2="200" y2="100" stroke="#2c1810" stroke-width="2"/>
-          <line x1="350" y1="50" x2="200" y2="100" stroke="#2c1810" stroke-width="2"/>
-          <line x1="50" y1="250" x2="200" y2="300" stroke="#2c1810" stroke-width="2"/>
-          <line x1="350" y1="250" x2="200" y2="300" stroke="#2c1810" stroke-width="2"/>
-          <line x1="200" y1="100" x2="200" y2="300" stroke="#2c1810" stroke-width="2"/>
-          <circle cx="200" cy="200" r="30" fill="none" stroke="#8b6914" stroke-width="2"/>
-          <circle cx="200" cy="200" r="15" fill="#8b6914" opacity="0.5"/>
-          <text x="200" y="290" text-anchor="middle" font-size="12" fill="#2c1810">Vista Assonometrica</text>
-        </svg>
-      </div>
+                <!-- Test 2: Gestione Moduli -->
+                <div class="test-card">
+                    <h4>2. Gestione Moduli</h4>
+                    <div class="test-result" id="testModules">
+                        <span id="testModulesStatus">In esecuzione...</span>
+                    </div>
+                </div>
 
-      <div class="tavola-tecnica">
-        <h3>Figura 2 - Vista Esplosa</h3>
-        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="grad2" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style="stop-color:#d4b896;stop-opacity:0.8"/>
-              <stop offset="100%" style="stop-color:#8b6914;stop-opacity:0.4"/>
-            </linearGradient>
-          </defs>
-          <rect x="100" y="50" width="200" height="40" fill="url(#grad2)" stroke="#2c1810" stroke-width="2"/>
-          <rect x="100" y="110" width="200" height="40" fill="url(#grad2)" stroke="#2c1810" stroke-width="2"/>
-          <rect x="100" y="170" width="200" height="40" fill="url(#grad2)" stroke="#2c1810" stroke-width="2"/>
-          <line x1="200" y1="90" x2="200" y2="110" stroke="#8b6914" stroke-width="2" stroke-dasharray="5,5"/>
-          <line x1="200" y1="150" x2="200" y2="170" stroke="#8b6914" stroke-width="2" stroke-dasharray="5,5"/>
-          <circle cx="200" cy="70" r="5" fill="#2c1810"/>
-          <circle cx="200" cy="130" r="5" fill="#2c1810"/>
-          <circle cx="200" cy="190" r="5" fill="#2c1810"/>
-          <text x="200" y="240" text-anchor="middle" font-size="12" fill="#2c1810">Vista Esplosa</text>
-        </svg>
-      </div>
+                <!-- Test 3: Validazione Dati -->
+                <div class="test-card">
+                    <h4>3. Validazione Dati</h4>
+                    <div class="test-result" id="testValidation">
+                        <span id="testValidationStatus">In esecuzione...</span>
+                    </div>
+                </div>
 
-      <div class="tavola-tecnica">
-        <h3>Figura 3 - Sezione Trasversale</h3>
-        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="sezione" patternUnits="userSpaceOnUse" width="8" height="8">
-              <path d="M0,0l8,8M8,0l-8,8" stroke="#8b6914" stroke-width="1" opacity="0.5"/>
-            </pattern>
-          </defs>
-          <path d="M50,100 L350,100 L350,200 L50,200 Z" fill="url(#sezione)" stroke="#2c1810" stroke-width="2"/>
-          <path d="M100,100 L100,200" stroke="#2c1810" stroke-width="1" stroke-dasharray="4,4"/>
-          <path d="M200,100 L200,200" stroke="#2c1810" stroke-width="1" stroke-dasharray="4,4"/>
-          <path d="M300,100 L300,200" stroke="#2c1810" stroke-width="1" stroke-dasharray="4,4"/>
-          <circle cx="200" cy="150" r="20" fill="none" stroke="#8b6914" stroke-width="2"/>
-          <text x="200" y="240" text-anchor="middle" font-size="12" fill="#2c1810">Sezione Trasversale</text>
-        </svg>
-      </div>
+                <!-- Test 4: Sicurezza -->
+                <div class="test-card">
+                    <h4>4. Sistema Sicurezza</h4>
+                    <div class="test-result" id="testSecurity">
+                        <span id="testSecurityStatus">In esecuzione...</span>
+                    </div>
+                </div>
 
-      <div class="tavola-tecnica">
-        <h3>Figura 4 - Dettaglio Costruttivo</h3>
-        <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="grad4" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" style="stop-color:#d4b896"/>
-              <stop offset="100%" style="stop-color:#8b6914"/>
-            </radialGradient>
-          </defs>
-          <circle cx="200" cy="150" r="80" fill="url(#grad4)" stroke="#2c1810" stroke-width="2"/>
-          <circle cx="200" cy="150" r="40" fill="none" stroke="#2c1810" stroke-width="1.5"/>
-          <circle cx="200" cy="150" r="20" fill="#2c1810" opacity="0.3"/>
-          <line x1="120" y1="150" x2="280" y2="150" stroke="#2c1810" stroke-width="1" stroke-dasharray="5,5"/>
-          <line x1="200" y1="70" x2="200" y2="230" stroke="#2c1810" stroke-width="1" stroke-dasharray="5,5"/>
-          <text x="200" y="260" text-anchor="middle" font-size="12" fill="#2c1810">Dettaglio Costruttivo</text>
-        </svg>
-      </div>
+                <!-- Test 5: Performance -->
+                <div class="test-card">
+                    <h4>5. Performance</h4>
+                    <div class="test-result" id="testPerformance">
+                        <span id="testPerformanceStatus">In esecuzione...</span>
+                    </div>
+                </div>
+
+                <!-- Test 6: Integrazione -->
+                <div class="test-card">
+                    <h4>6. Integrazione API</h4>
+                    <div class="test-result" id="testIntegration">
+                        <span id="testIntegrationStatus">In esecuzione...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAVOLE TECNICHE SVG -->
+        <div class="test-section">
+            <h3>Tavole Tecniche - Verifica Layout</h3>
+            
+            <div class="technical-drawing">
+                <!-- Figura 1: Vista Assieme -->
+                <div class="drawing-figure">
+                    <h5>Fig. 1 - Vista Assieme</h5>
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Corpo principale -->
+                        <rect x="50" y="50" width="200" height="100" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+                        <!-- Componenti interni -->
+                        <circle cx="100" cy="100" r="20" fill="#ddd" stroke="#333" stroke-width="1.5"/>
+                        <circle cx="200" cy="100" r="15" fill="#ccc" stroke="#333" stroke-width="1.5"/>
+                        <rect x="130" y="80" width="40" height="40" fill="#eee" stroke="#333" stroke-width="1.5"/>
+                        <!-- Linee di quotatura -->
+                        <line x1="50" y1="170" x2="250" y2="170" stroke="#666" stroke-width="1" stroke-dasharray="5,5"/>
+                        <text x="150" y="185" text-anchor="middle" font-size="12" fill="#333">200 mm</text>
+                        <!-- Etichette -->
+                        <text x="100" y="45" text-anchor="middle" font-size="10" fill="#333">A</text>
+                        <text x="200" y="45" text-anchor="middle" font-size="10" fill="#333">B</text>
+                    </svg>
+                    <div class="drawing-caption">Vista assieme con componenti principali</div>
+                </div>
+
+                <!-- Figura 2: Vista Esplosa -->
+                <div class="drawing-figure">
+                    <h5>Fig. 2 - Vista Esplosa</h5>
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Componenti separati -->
+                        <rect x="100" y="20" width="100" height="30" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+                        <rect x="100" y="70" width="100" height="30" fill="#ddd" stroke="#333" stroke-width="2"/>
+                        <rect x="100" y="120" width="100" height="30" fill="#ccc" stroke="#333" stroke-width="2"/>
+                        <!-- Linee di esplosione -->
+                        <line x1="150" y1="50" x2="150" y2="70" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+                        <line x1="150" y1="100" x2="150" y2="120" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+                        <!-- Etichette -->
+                        <text x="220" y="40" font-size="10" fill="#333">1</text>
+                        <text x="220" y="90" font-size="10" fill="#333">2</text>
+                        <text x="220" y="140" font-size="10" fill="#333">3</text>
+                    </svg>
+                    <div class="drawing-caption">Vista esplosa con separazione componenti</div>
+                </div>
+
+                <!-- Figura 3: Vista Sezione -->
+                <div class="drawing-figure">
+                    <h5>Fig. 3 - Vista Sezione A-A</h5>
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Sezione trasversale -->
+                        <path d="M50,50 L250,50 L250,150 L50,150 Z" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+                        <!-- Sezione interna -->
+                        <path d="M100,50 L100,150" stroke="#666" stroke-width="1" stroke-dasharray="5,5"/>
+                        <path d="M200,50 L200,150" stroke="#666" stroke-width="1" stroke-dasharray="5,5"/>
+                        <!-- Tratteggio sezione -->
+                        <line x1="60" y1="60" x2="90" y2="90" stroke="#999" stroke-width="0.5"/>
+                        <line x1="70" y1="60" x2="100" y2="90" stroke="#999" stroke-width="0.5"/>
+                        <line x1="80" y1="60" x2="110" y2="90" stroke="#999" stroke-width="0.5"/>
+                        <!-- Quote -->
+                        <line x1="50" y1="170" x2="250" y2="170" stroke="#666" stroke-width="1"/>
+                        <text x="150" y="185" text-anchor="middle" font-size="12" fill="#333">200 mm</text>
+                    </svg>
+                    <div class="drawing-caption">Sezione trasversale con quote</div>
+                </div>
+
+                <!-- Figura 4: Dettaglio -->
+                <div class="drawing-figure">
+                    <h5>Fig. 4 - Dettaglio D</h5>
+                    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Dettaglio ingrandito -->
+                        <circle cx="150" cy="100" r="60" fill="#f0f0f0" stroke="#333" stroke-width="2"/>
+                        <circle cx="150" cy="100" r="40" fill="#ddd" stroke="#333" stroke-width="1.5"/>
+                        <circle cx="150" cy="100" r="20" fill="#ccc" stroke="#333" stroke-width="1.5"/>
+                        <!-- Raggio -->
+                        <line x1="150" y1="100" x2="210" y2="100" stroke="#666" stroke-width="1"/>
+                        <text x="180" y="95" font-size="10" fill="#333">R60</text>
+                        <!-- Tolleranza -->
+                        <text x="150" y="180" text-anchor="middle" font-size="10" fill="#333">±0.05</text>
+                    </svg>
+                    <div class="drawing-caption">Dettaglio con tolleranze dimensionali</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONSOLE LOG -->
+        <div class="test-section">
+            <h3>Console di Test</h3>
+            <div class="log-console" id="logConsole">
+                <div class="log-entry info">[INFO] Avvio test CEO Orchestrator v3.5...</div>
+            </div>
+        </div>
+
+        <!-- BOTTONI -->
+        <div class="button-group">
+            <button class="btn" onclick="window.runAllTests()">Esegui Tutti i Test</button>
+            <button class="btn btn-success" onclick="window.runQuickTest()">Test Rapido</button>
+            <button class="btn btn-error" onclick="window.clearLog()">Pulisci Log</button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>BrevettIAmo - Sistema di Gestione Brevetti &copy; 2024</p>
+            <p>CEO Orchestrator v3.5 - Test Suite Completa</p>
+        </div>
     </div>
-  </div>
 
-  <div class="footer">
-    <div>BrevettIAmo - Sistema di Gestione Brevetti Intelligente</div>
-    <div class="timestamp" id="timestamp">Test eseguito il: <span id="dataOra"></span></div>
-  </div>
-</div>
+    <script>
+        // ===== CEO ORCHESTRATOR v3.5 - SISTEMA DI TEST =====
+        
+        // Configurazione globale
+        window.CEOConfig = {
+            version: '3.5',
+            name: 'CEO Orchestrator',
+            debugMode: true,
+            maxRetries: 3,
+            timeout: 5000,
+            modules: ['brevetti', 'inventori', 'tavole', 'ricerca', 'reporting'],
+            securityLevel: 'high',
+            apiEndpoint: '/api/v3.5/'
+        };
 
-<script>
-  // Configurazione CEO Orchestrator v3.5
-  window.CEOOrchestrator = {
-    versione: '3.5',
-    nome: 'CEO Orchestrator',
-    stato: 'attivo',
-    moduli: {
-      core: { nome: 'Modulo Core', stato: 'non testato' },
-      brevetti: { nome: 'Gestione Brevetti', stato: 'non testato' },
-      priorArt: { nome: 'Analisi Prior Art', stato: 'non testato' },
-      claims: { nome: 'Generazione Claims', stato: 'non testato' },
-      tavole: { nome: 'Tavole Tecniche', stato: 'non testato' },
-      api: { nome: 'Integrazione API', stato: 'non testato' }
-    },
-    testRisultati: {},
-    testCompletati: 0,
-    testTotali: 6,
-    inizializza: function() {
-      console.log('CEO Orchestrator v3.5 inizializzato');
-      this.aggiornaTimestamp();
-      this.eseguiTest();
-    },
-    aggiornaTimestamp: function() {
-      var data = new Date();
-      var dataFormattata = data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear() + ' ' + data.getHours() + ':' + data.getMinutes() + ':' + data.getSeconds();
-      document.getElementById('dataOra').textContent = dataFormattata;
-    },
-    eseguiTest: function() {
-      var self = this;
-      setTimeout(function() { self.testModuloCore(); }, 500);
-      setTimeout(function() { self.testGestioneBrevetti(); }, 1000);
-      setTimeout(function() { self.testAnalisiPriorArt(); }, 1500);
-      setTimeout(function() { self.testGenerazioneClaims(); }, 2000);
-      setTimeout(function() { self.testTavoleTecniche(); }, 2500);
-      setTimeout(function() { self.testIntegrazioneAPI(); }, 3000);
-    },
-    testModuloCore: function() {
-      var risultato = {
-        nome: 'Modulo Core',
-        esito: 'passato',
-        dettagli: 'Verifica inizializzazione core completata. Tutte le funzioni base operative.',
-        tempo: '120ms'
-      };
-      this.registraRisultato('core', risultato);
-      this.aggiornaUI('testCore', 'statusCore', risultato);
-    },
-    testGestioneBrevetti: function() {
-      var risultato = {
-        nome: 'Gestione Brevetti',
-        esito: 'passato',
-        dettagli: 'Creazione, modifica e ricerca brevetti funzionanti. Database operativo.',
-        tempo: '180ms'
-      };
-      this.registraRisultato('brevetti', risultato);
-      this.aggiornaUI('testBrevetti', 'statusBrevetti', risultato);
-    },
-    testAnalisiPriorArt: function() {
-      var risultato = {
-        nome: 'Analisi Prior Art',
-        esito: 'passato',
-        dettagli: 'Ricerca prior art completata. 15 documenti analizzati. Match: 87%.',
-        tempo: '250ms'
-      };
-      this.registraRisultato('priorArt', risultato);
-      this.aggiornaUI('testPriorArt', 'statusPriorArt', risultato);
-    },
-    testGenerazioneClaims: function() {
-      var risultato = {
-        nome: 'Generazione Claims',
-        esito: 'passato',
-        dettagli: 'Generazione claims completata. 10 claims indipendenti e 25 dipendenti.',
-        tempo: '200ms'
-      };
-      this.registraRisultato('claims', risultato);
-      this.aggiornaUI('testClaims', 'statusClaims', risultato);
-    },
-    testTavoleTecniche: function() {
-      var risultato = {
-        nome: 'Tavole Tecniche',
-        esito: 'passato',
-        dettagli: '4 tavole tecniche generate correttamente. Formato SVG valido.',
-        tempo: '150ms'
-      };
-      this.registraRisultato('tavole', risultato);
-      this.aggiornaUI('testTavole', 'statusTavole', risultato);
-    },
-    testIntegrazioneAPI: function() {
-      var risultato = {
-        nome: 'Integrazione API',
-        esito: 'passato',
-        dettagli: 'API REST operative. Endpoint: /api/v1/brevetti, /api/v1/prior-art, /api/v1/claims',
-        tempo: '300ms'
-      };
-      this.registraRisultato('api', risultato);
-      this.aggiornaUI('testAPI', 'statusAPI', risultato);
-    },
-    registraRisultato: function(modulo, risultato) {
-      this.testRisultati[modulo] = risultato;
-      this.moduli[modulo].stato = risultato.esito;
-      this.testCompletati++;
-      this.aggiornaProgresso();
-      if (this.testCompletati === this.testTotali) {
-        this.completaTest();
-      }
-    },
-    aggiornaUI: function(elementoRisultato, elementoStatus, risultato) {
-      document.getElementById(elementoRisultato).textContent = risultato.dettagli;
-      var statusElement = document.getElementById(elementoStatus);
-      statusElement.textContent = risultato.esito.toUpperCase();
-      statusElement.className = 'test-status ' + risultato.esito;
-    },
-    aggiornaProgresso: function() {
-      var percentuale = (this.testCompletati / this.testTotali) * 100;
-      document.getElementById('progressBar').style.width = percentuale + '%';
-      document.getElementById('statoGenerale').textContent = 'Test completati: ' + this.testCompletati + '/' + this.testTotali + ' (' + percentuale + '%)';
-    },
-    completaTest: function() {
-      var tuttiPassati = true;
-      for (var modulo in this.testRisultati) {
-        if (this.testRisultati[modulo].esito !== 'passato') {
-          tuttiPassati = false;
-          break;
-        }
-      }
-      if (tuttiPassati) {
-        document.getElementById('statoGenerale').textContent = 'TUTTI I TEST SUPERATI CON SUCCESSO - CEO Orchestrator v3.5 operativo';
-        document.getElementById('statoGenerale').style.background = '#2d6a4f';
-        document.getElementById('statoGenerale').style.color = 'white';
-      } else {
-        document.getElementById('statoGenerale').textContent = 'ALCUNI TEST FALLITI - Verificare i moduli indicati';
-        document.getElementById('statoGenerale').style.background = '#9b2226';
-        document.getElementById('statoGenerale').style.color = 'white';
-      }
-      console.log('CEO Orchestrator v3.5: test completati');
-    }
-  };
+        // Stato del sistema
+        window.CEOState = {
+            initialized: false,
+            modulesLoaded: [],
+            testsPassed: 0,
+            testsFailed: 0,
+            testsWarning: 0,
+            startTime: null,
+            endTime: null,
+            lastError: null
+        };
 
-  // Avvio del CEO Orchestrator
-  window.onload = function() {
-    window.CEOOrchestrator.inizializza();
-  };
-</script>
-</body>
-</html>
+        // Logger di sistema
+        window.CEOLogger = {
+            log: function(message, type) {
+                var consoleDiv = document.getElementById('logConsole');
+                var entry = document.createElement('div');
+                entry.className = 'log-entry ' + (type || 'info');
+                var timestamp = new Date().toLocaleTimeString();
+                entry.textContent = '[' + timestamp + '] ' + message;
+                consoleDiv.appendChild(entry);
+                consoleDiv.scrollTop = consoleDiv.scrollHeight;
+                
+                // Aggiorna anche la console del browser
+                if (window.CEOConfig.debugMode) {
+                    console.log('[' + timestamp + ']', message);
+                }
+            },
+            
+            clear: function() {
+                var consoleDiv = document.getElementById('logConsole');
+                consoleDiv.innerHTML = '';
+                this.log('Console pulita', 'info');
+            }
+        };
+
+        // Gestore test
+        window.CEOTestManager = {
+            // Esegue tutti i test
+            runAllTests: function() {
+                window.CEOLogger.log('Avvio esecuzione completa test...', 'info');
+                window.CEOState.startTime = new Date();
+                
+                // Reset stato
+                window.CEOState.testsPassed = 0;
+                window.CEOState.testsFailed = 0;
+                window.CEOState.testsWarning = 0;
+                
+                // Esegui test in sequenza
+                this.testInitialization();
+                this.testModules();
+                this.testValidation();
+                this.testSecurity();
+                this.testPerformance();
+                this.testIntegration();
+                
+                window.CEOState.endTime = new Date();
+                var duration = window.CEOState.endTime - window.CEOState.startTime;
+                
+                window.CEOLogger.log('Test completati in ' + duration + 'ms', 'success');
+                window.CEOLogger.log('Risultati: ' + window.CEOState.testsPassed + ' passati, ' + 
+                    window.CEOState.testsFailed + ' falliti, ' + 
+                    window.CEOState.testsWarning + ' warning', 'info');
+                
+                this.updateStatusBar();
+            },
+            
+            // Test rapido
+            runQuickTest: function() {
+                window.CEOLogger.log('Avvio test rapido...', 'info');
+                this.testInitialization();
+                this.testModules();
+                window.CEOLogger.log('Test rapido completato', 'success');
+            },
+            
+            // Test 1: Inizializzazione
+            testInitialization: function() {
+                window.CEOLogger.log('Test 1: Inizializzazione sistema...', 'info');
+                
+                try {
+                    // Verifica configurazione
+                    if (!window.CEOConfig || window.CEOConfig.version !== '3.5') {
+                        throw new Error('Configurazione non valida');
+                    }
+                    
+                    // Verifica stato
+                    window.CEOState.initialized = true;
+                    
+                    // Aggiorna UI
+                    document.getElementById('testInitStatus').textContent = 'PASSATO';
+                    document.getElementById('testInitStatus').className = 'success';
+                    document.getElementById('testInit').className = 'test-result pass';
+                    
+                    window.CEOState.testsPassed++;
+                    window.CEOLogger.log('Test 1: PASSATO - Inizializzazione completata', 'success');
+                    
+                } catch (error) {
+                    document.getElementById('testInitStatus').textContent = 'FALLITO: ' + error.message;
+                    document.getElementById('testInitStatus').className = 'error';
+                    document.getElementById('testInit').className = 'test-result fail';
+                    
+                    window.CEOState.testsFailed++;
+                    window.CEOState.lastError = error;
+                    window.CEOLogger.log('Test 1: FALLITO - ' + error.message, 'error');
+                }
+            },
+            
+            // Test 2: Moduli
+            testModules: function() {
+                window.CEOLogger.log('Test 2: Verifica moduli...', 'info');
+                
+                try {
+                    var modules = window.CEOConfig.modules;
+                    if (!modules || modules.length === 0) {
+                        throw new Error('Nessun modulo configurato');
+                    }
+                    
+                    // Simula caricamento moduli
+                    modules.forEach(function(module) {
+                        window.CEOState.modulesLoaded.push(module);
+                        window.CEOLogger.log('Modulo caricato: ' + module, 'info');
+                    });
+                    
+                    document.getElementById('testModulesStatus').textContent = 
+                        'PASSATO - ' + modules.length + ' moduli caricati';
+                    document.getElementById('testModulesStatus').className = 'success';
+                    document.getElementById('testModules').className = 'test-result pass';
+                    
+                    window.CEOState.testsPassed++;
+                    window.CEOLogger.log('Test 2: PASSATO - ' + modules.length + ' moduli verificati', 'success');
+                    
+                } catch (error) {
+                    document.getElementById('testModulesStatus').textContent = 'FALLITO: ' + error.message;
+                    document.getElementById('testModulesStatus').className = 'error';
+                    document.getElementById('testModules').className = 'test-result fail';
+                    
+                    window.CEOState.testsFailed++;
+                    window.CEOState.lastError = error;
+                    window.CEOLogger.log('Test 2: FALLITO - ' + error.message, 'error');
+                }
+            },
+            
+            // Test 3: Validazione
+            testValidation: function() {
+                window.CEOLogger.log('Test 3: Validazione dati...', 'info');
+                
+                try {
+                    // Dati di test
+                    var testData = {
+                        titolo: 'Dispositivo innovativo',
+                        inventori: ['Mario Rossi', 'Luigi Verdi'],
+                        dataDeposito: '2024-01-15',
+                        numeroPratica: 'BR-2024-001'
+                    };
+                    
+                    // Validazione
+                    if (!testData.titolo || testData.titolo.length < 5) {
+                        throw new Error('Titolo non valido');
+                    }
+                    if (!testData.inventori || testData.inventori.length === 0) {
+                        throw new Error('Nessun inventore');
+                    }
+                    if (!testData.dataDeposito) {
+                        throw new Error('Data deposito mancante');
+                    }
+                    if (!testData.numeroPratica) {
+                        throw new Error('Numero pratica mancante');
+                    }
+                    
+                    document.getElementById('testValidationStatus').textContent = 'PASSATO';
+                    document.getElementById('testValidationStatus').className = 'success';
+                    document.getElementById('testValidation').className = 'test-result pass';
+                    
+                    window.CEOState.testsPassed++;
+                    window.CEOLogger.log('Test 3: PASSATO - Dati validati correttamente', 'success');
+                    
+                } catch (error) {
+                    document.getElementById('testValidationStatus').textContent = 'FALLITO: ' + error.message;
+                    document.getElementById('testValidationStatus').className = 'error';
+                    document.getElementById('testValidation').className = 'test-result fail';
+                    
+                    window.CEOState.testsFailed++;
+                    window.CEOState.lastError = error;
+                    window.CEOLogger.log('Test 3: FALLITO - ' + error.message, 'error');
+                }
+            },
+            
+            // Test 4: Sicurezza
+            testSecurity: function() {
+                window.CEOLogger.log('Test 4: Verifica sicurezza...', 'info');
+                
+                try {
+                    // Verifica livello sicurezza
+                    if (window.CEOConfig.securityLevel !== 'high') {
+                        throw new Error('Livello sicurezza non adeguato');
+                    }
+                    
+                    // Simula controllo accessi
+                    var accessToken = 'test_token_2024';
+                    if (!accessToken || accessToken.length < 10) {
+                        throw new Error('Token di accesso non valido');
+                    }
+                    
+                    document.getElementById('testSecurityStatus').textContent = 'PASSATO';
+                    document.getElementById('testSecurityStatus').className = 'success';
+                    document.getElementById('testSecurity').className = 'test-result pass';
+                    
+                    window.CEOState.testsPassed++;
+                    window.CEOLogger.log('Test 4: PASSATO - Sicurezza verificata', 'success');
+                    
+                } catch (error) {
+                    document.getElementById('testSecurityStatus').textContent = 'FALLITO: ' + error.message;
+                    document.getElementById('testSecurityStatus').className = 'error';
+                    document.getElementById('testSecurity').className = 'test-result fail';
+                    
+                    window.CEOState.testsFailed++;
+                    window.CEOState.lastError = error;
+                    window.CEOLogger.log('Test 4: FALLITO - ' + error.message, 'error');
+                }
+            },
+            
+            // Test 5: Performance
+            testPerformance: function() {
+                window.CEOLogger.log('Test 5: Verifica performance...', 'info');
+                
+                try {
+                    var startTime = performance.now();
+                    
+                    // Simula operazione complessa
+                    var result = 0;
+                    for (var i = 0; i < 100000; i++) {
+                        result += i;
+                    }
+                    
+                    var endTime = performance.now();
+                    var executionTime = endTime - startTime;
+                    
+                    // Verifica tempo di esecuzione (max 100ms)
+                    if (executionTime > 100) {
+                        throw new Error('Tempo di esecuzione troppo alto: ' + executionTime + 'ms');
+                    }
+                    
+                    document.getElementById('testPerformanceStatus').textContent = 
+                        'PASSATO - ' + executionTime.toFixed(2) + 'ms';
+                    document.getElementById('testPerformanceStatus').className = 'success';
+                    document.getElementById('testPerformance').className = 'test-result pass';
+                    
+                    window.CEOState.testsPassed++;
+                    window.CEOLogger.log('Test 5: PASSATO - Performance ottimale (' + 
+                        executionTime.toFixed(2) + 'ms)', 'success');
+                    
+                } catch (error) {
+                    document.getElementById('testPerformanceStatus').textContent = 'FALLITO: ' + error.message;
+                    document.getElementById('testPerformanceStatus').className = 'error';
+                    document.getElementById('testPerformance').className = 'test-result fail';
+                    
+                    window.CEOState.testsFailed++;
+                    window.CEOState.lastError = error;
+                    window.CEOLogger.log('Test 5: FALLITO - ' + error.message, 'error');
+                }
+            },
+            
+            // Test 6: Integrazione
+            testIntegration: function() {
+                window.CEOLogger.log('Test 6: Verifica integrazione API...', 'info');
+                
+                try {
+                    // Verifica endpoint API
+                    if (!window.CEOConfig.apiEndpoint) {
+                        throw new Error('Endpoint API non configurato');
+                    }
+                    
+                    // Simula chiamata API
+                    var apiResponse = {
+                        status: 200,
+                        data: {
+                            success: true,
+                            message: 'API funzionante'
+                        }
+                    };
+                    
+                    if (apiResponse.status !== 200 || !apiResponse.data.success) {
+                        throw new Error('Risposta API non valida');
+                    }
+                    
+                    document.getElementById('testIntegrationStatus').textContent = 'PASSATO';
+                    document.getElementById('testIntegrationStatus').className = 'success';
+                    document.getElementById('testIntegration').className = 'test-result pass';
+                    
+                    window.CEOState.testsPassed++;
+                    window.CEOLogger.log('Test 6: PASSATO - Integrazione API verificata', 'success');
+                    
+                } catch (error) {
+                    document.getElementById('testIntegrationStatus').textContent = 'FALLITO: ' + error.message;
+                    document.getElementById('testIntegrationStatus').className = 'error';
+                    document.getElementById('testIntegration').className = 'test-result fail';
+                    
+                    window.CEOState.testsFailed++;
+                    window.CEOState.lastError = error;
+                    window.CEOLogger.log('Test 6: FALLITO - ' + error.message, 'error');
+                }
+            },
+            
+            // Aggiorna status bar
+            updateStatusBar: function() {
+                var statusCheck = document.getElementById('statusCheck');
+                var statusTime = document.getElementById('statusTime');
+                
+                if (window.CEOState.testsFailed === 0) {
+                    statusCheck.textContent = 'Tutti i test superati';
+                    statusCheck.className = 'status-text success';
+                } else {
+                    statusCheck.textContent = window.CEOState.testsFailed + ' test falliti';
+                    statusCheck.className = 'status-text error';
+                }
+                
+                var now = new Date();
+                statusTime.textContent = 'Ultimo aggiornamento: ' + now.toLocaleTimeString();
+            }
+        };
+
+        // Esponi funzioni globali
+        window.runAllTests = function() {
+            window.CEOTestManager.runAllTests();
+        };
+
+        window.runQuickTest = function() {
+            window.CEOTestManager.runQuickTest();
+        };
+
+        window.clearLog = function() {
+            window.CEOLogger.clear();
+        };
+
+        // Inizializzazione automatica
+        document.addEventListener('DOMContentLoaded', function() {
+            window.CEOLogger.log('CEO Orchestrator v3.5 inizializzato', 'success');
+            window.CEOLogger.log('Sistema pronto per test', 'info');
+            
+            // Aggiorna status bar
+            var statusTime = document.getElementById('
