@@ -53,4 +53,4 @@ jobs:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           CEO_TASK: ${{ toJson(github.event.inputs) }}
           TARGET_BRANCH: ${{ github.ref_name }}
-        run: python scripts/ceo_orchestrator_v4.py
+      run: python scripts/ceo_orchestrator.py
