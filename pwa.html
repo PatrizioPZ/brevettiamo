@@ -419,11 +419,28 @@ function initSupabase(){
   }
 }
 
+function arrayToBase64(arr){
+  var chunks=[];
+  var chunkSize=0x8000;
+  for(var i=0;i<arr.length;i+=chunkSize){
+    chunks.push(String.fromCharCode.apply(null,arr.slice(i,i+chunkSize)));
+  }
+  return btoa(chunks.join(''));
+}
+
+function base64ToArray(b64){
+  var binary=atob(b64);
+  var len=binary.length;
+  var arr=new Uint8Array(len);
+  for(var i=0;i<len;i++){arr[i]=binary.charCodeAt(i)}
+  return Array.from(arr);
+}
+
 function uploadToSupabase(fileRecord){
   if(!supabaseClient||!syncId){console.log('SKIP upload: no client or syncId');return Promise.resolve(false)}
   console.log('UPLOAD START:',fileRecord.name,'size:',fileRecord.size);
-  var ivB64=btoa(String.fromCharCode.apply(null,fileRecord.iv));
-  var dataB64=btoa(String.fromCharCode.apply(null,fileRecord.encrypted));
+  var ivB64=arrayToBase64(fileRecord.iv);
+  var dataB64=arrayToBase64(fileRecord.encrypted);
   console.log('UPLOAD b64 lengths - iv:',ivB64.length,'data:',dataB64.length);
   return supabaseClient.from('pwa_files').delete().eq('sync_id',syncId).eq('name',fileRecord.name).then(function(delRes){
     console.log('UPLOAD delete result:',delRes);
@@ -474,8 +491,8 @@ function syncFromCloud(){
           var dataStr=cf.encrypted_data;
           console.log('SYNC iv type:',typeof ivStr,'length:',ivStr.length);
           console.log('SYNC data type:',typeof dataStr,'length:',dataStr.length);
-          var ivArr=Array.from(atob(ivStr)).map(function(c){return c.charCodeAt(0)});
-          var dataArr=Array.from(atob(dataStr)).map(function(c){return c.charCodeAt(0)});
+          var ivArr=base64ToArray(ivStr);
+          var dataArr=base64ToArray(dataStr);
           console.log('SYNC decoded arrays - iv:',ivArr.length,'data:',dataArr.length);
           saveFileToDB(cf.name,cf.file_type,{iv:ivArr,data:dataArr},cf.size||0).then(function(){
             console.log('SYNC imported OK:',cf.name);
