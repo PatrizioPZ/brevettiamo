@@ -1,4 +1,4 @@
-name: BrevettIAmo Brain - Autonomous v3.5
+name: BrevettIAmo Brain - Autonomous v4.0 Multi-Agente
 
 on:
   push:
@@ -39,18 +39,7 @@ jobs:
         run: |
           pip install requests PyYAML
 
-      - name: Secret Manager
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          GROQ_API_KEY_2: ${{ secrets.GROQ_API_KEY_2 }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python scripts/secret_manager.py
-
-      - name: CEO Orchestrator
+      - name: CEO Orchestrator v4.0 Multi-Agente
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -64,4 +53,4 @@ jobs:
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           CEO_TASK: ${{ toJson(github.event.inputs) }}
           TARGET_BRANCH: ${{ github.ref_name }}
-        run: python scripts/ceo_orchestrator.py
+        run: python scripts/ceo_orchestrator_v4.py
