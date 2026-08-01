@@ -1,45 +1,20 @@
-name: BrevettIAmo Brain - Autonomous v4.0 Multi-Agente
+name: CEO Brain v4
 
 on:
   push:
-    branches: [main, development]
-  schedule:
-    - cron: '0 */6 * * *'
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      task:
-        description: 'Task per il CEO Orchestrator'
-        required: true
-        default: 'Verifica sistema'
-      file_path:
-        description: 'Percorso file da generare'
-        required: false
-        default: ''
-      file_type:
-        description: 'Tipo file (html, js, css, py)'
-        required: false
-        default: 'html'
 
 jobs:
-  brain:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          pip install requests PyYAML
-
-      - name: CEO Orchestrator v4.0 Multi-Agente
+          python-version: "3.11"
+      - run: pip install requests
+      - name: Run CEO
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -51,6 +26,4 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-          CEO_TASK: ${{ toJson(github.event.inputs) }}
-          TARGET_BRANCH: ${{ github.ref_name }}
-      run: python scripts/ceo_orchestrator.py
+        run: python scripts/ceo_orchestrator.py
