@@ -1,1005 +1,850 @@
+Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
+
+```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="description" content="BrevettIAmo PWA - Storage cifrato multi-sistema con sync cloud">
-<meta name="theme-color" content="#1a3a5c">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="BrevettIAmo PWA">
-<title>BrevettIAmo PWA - Storage Cifrato Sync</title>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(135deg,#f5f0e6 0%,#e8e0d0 50%,#d4c8b0 100%);min-height:100vh;color:#2c1810;-webkit-font-smoothing:antialiased}
-.container{max-width:900px;margin:0 auto;padding:15px}
-.header{text-align:center;padding:30px 15px;background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border-radius:0 0 25px 25px;margin-bottom:20px;box-shadow:0 8px 30px rgba(26,58,92,0.3);position:relative}
-.header h1{font-size:2em;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-shadow:2px 2px 4px rgba(0,0,0,0.3)}
-.header .subtitle{font-size:0.95em;opacity:0.9;font-style:italic;margin-top:5px}
-.badge-beta{display:inline-block;background:#c9a84c;color:#1a3a5c;padding:4px 12px;border-radius:15px;font-size:0.75em;font-weight:bold;margin-top:10px;letter-spacing:1px}
-.device-info{position:absolute;top:10px;right:15px;font-size:0.7em;opacity:0.7;background:rgba(0,0,0,0.2);padding:3px 8px;border-radius:10px}
-.section{background:rgba(255,255,255,0.9);border-radius:15px;padding:20px;margin-bottom:15px;box-shadow:0 3px 15px rgba(0,0,0,0.06);border:1px solid rgba(201,168,76,0.15)}
-.section h2{color:#1a3a5c;font-size:1.3em;margin-bottom:15px;padding-bottom:8px;border-bottom:2px solid #c9a84c;display:flex;align-items:center;gap:10px}
-.section h2 .icon{width:30px;height:30px;background:linear-gradient(135deg,#1a3a5c,#2d5a87);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#c9a84c;font-size:1em;font-weight:bold;flex-shrink:0}
-.login-section{background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border-radius:15px;padding:25px 20px;text-align:center;margin-bottom:20px;box-shadow:0 8px 30px rgba(26,58,92,0.3)}
-.login-section h2{color:#c9a84c;font-size:1.3em;margin-bottom:10px}
-.login-section p{font-size:0.9em;opacity:0.9;margin-bottom:12px}
-.login-btn{display:inline-block;background:#c9a84c;color:#1a3a5c;padding:10px 25px;border-radius:25px;font-size:0.95em;font-weight:bold;border:none;cursor:pointer;margin:3px;transition:all 0.3s ease;-webkit-appearance:none}
-.login-btn:hover{background:#b8943a;transform:translateY(-2px)}
-.user-info{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
-.user-avatar{width:36px;height:36px;border-radius:50%;background:#c9a84c;display:flex;align-items:center;justify-content:center;color:#1a3a5c;font-weight:bold;font-size:0.9em}
-.install-box{background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border-radius:15px;padding:25px 20px;text-align:center;margin-bottom:20px;box-shadow:0 8px 30px rgba(26,58,92,0.3)}
-.install-box h2{color:#c9a84c;font-size:1.5em;margin-bottom:10px;border:none;justify-content:center}
-.install-btn{display:inline-block;background:linear-gradient(135deg,#c9a84c 0%,#b8943a 100%);color:#1a3a5c;padding:15px 40px;border-radius:40px;font-size:1.1em;font-weight:bold;text-decoration:none;border:none;cursor:pointer;margin:15px 0;box-shadow:0 6px 20px rgba(201,168,76,0.4);transition:all 0.3s ease;letter-spacing:1px;text-transform:uppercase;-webkit-appearance:none}
-.install-btn:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(201,168,76,0.5)}
-.install-btn:active{transform:translateY(0)}
-.install-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
-.sync-status{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);padding:5px 12px;border-radius:15px;font-size:0.8em;margin-top:10px}
-.sync-dot{width:8px;height:8px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite}
-.sync-dot.offline{background:#f44336;animation:none}
-.sync-dot.syncing{background:#ff9800;animation:pulse 0.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-.platforms{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:15px}
-.platform-card{background:rgba(255,255,255,0.95);border-radius:12px;padding:15px;text-align:center;border:2px solid rgba(201,168,76,0.2);transition:all 0.3s ease}
-.platform-card:hover{border-color:#c9a84c;transform:translateY(-3px)}
-.platform-card.active{border-color:#4caf50;background:rgba(76,175,80,0.05)}
-.platform-card.active::after{content:"ATTIVO";display:block;font-size:0.6em;color:#4caf50;font-weight:bold;margin-top:4px}
-.platform-card .icon-svg{width:40px;height:40px;margin:0 auto 8px}
-.platform-card h3{color:#1a3a5c;font-size:0.9em;margin-bottom:3px}
-.platform-card p{color:#888;font-size:0.75em}
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:15px}
-.feature-card{background:linear-gradient(135deg,rgba(26,58,92,0.04) 0%,rgba(201,168,76,0.04) 100%);border-radius:12px;padding:18px;border-left:3px solid #c9a84c}
-.feature-card h3{color:#1a3a5c;font-size:0.95em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.feature-card p{color:#666;font-size:0.85em;line-height:1.5}
-.upload-area{background:linear-gradient(135deg,rgba(26,58,92,0.06) 0%,rgba(201,168,76,0.06) 100%);border-radius:12px;padding:25px;text-align:center;border:2px dashed #c9a84c;margin-top:15px;transition:all 0.3s ease;cursor:pointer;-webkit-user-select:none;user-select:none}
-.upload-area.dragover{border-color:#1a3a5c;background:rgba(26,58,92,0.1)}
-.upload-area h3{color:#1a3a5c;margin-bottom:10px;font-size:1.1em}
-.upload-area p{color:#888;font-size:0.85em;margin-bottom:12px}
-.upload-btn{display:inline-block;background:#1a3a5c;color:#f5f0e6;padding:10px 25px;border-radius:25px;font-size:0.9em;font-weight:bold;border:none;cursor:pointer;margin:3px;transition:all 0.3s ease;-webkit-appearance:none}
-.upload-btn:hover{background:#2d5a87;transform:translateY(-1px)}
-.upload-btn:disabled{opacity:0.5;cursor:not-allowed}
-.file-list{margin-top:15px}
-.file-list h3{color:#1a3a5c;margin-bottom:10px;font-size:1em}
-.file-item{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.95);padding:10px 12px;border-radius:8px;margin-bottom:6px;border:1px solid rgba(201,168,76,0.15);transition:all 0.2s ease}
-.file-item:hover{border-color:#c9a84c}
-.file-item .info{flex:1;min-width:0}
-.file-item .name{font-weight:bold;color:#1a3a5c;font-size:0.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.file-item .meta{color:#999;font-size:0.75em;margin-top:2px}
-.file-item .actions{display:flex;gap:5px;flex-shrink:0}
-.file-item .actions button{background:#c9a84c;color:#1a3a5c;border:none;padding:4px 10px;border-radius:12px;cursor:pointer;font-size:0.7em;font-weight:bold;transition:all 0.2s ease;-webkit-appearance:none}
-.file-item .actions button:hover{background:#b8943a}
-.file-item .actions button.delete{background:#f44336;color:white}
-.file-item .actions button.delete:hover{background:#d32f2f}
-.file-item .lock-icon{width:16px;height:16px;margin-right:6px;flex-shrink:0;color:#4caf50}
-.security-banner{background:linear-gradient(135deg,#1a3a5c 0%,#0d1f33 100%);color:#c9a84c;border-radius:12px;padding:20px;text-align:center;margin-top:15px}
-.security-banner h3{font-size:1.1em;margin-bottom:8px}
-.security-banner p{color:#f5f0e6;opacity:0.9;font-size:0.9em}
-.footer{text-align:center;padding:20px;color:#888;font-size:0.8em}
-.status-msg{padding:10px;border-radius:8px;margin:10px 0;text-align:center;font-size:0.85em;font-weight:bold}
-.status-success{background:rgba(76,175,80,0.15);color:#2e7d32;border:1px solid #4caf50}
-.status-error{background:rgba(244,67,54,0.15);color:#c62828;border:1px solid #f44336}
-.status-info{background:rgba(33,150,243,0.15);color:#1565c0;border:1px solid #2196f3}
-.status-warning{background:rgba(255,152,0,0.15);color:#ef6c00;border:1px solid #ff9800}
-.hidden{display:none !important}
-.progress-bar{width:100%;height:4px;background:rgba(201,168,76,0.2);border-radius:2px;margin-top:8px;overflow:hidden}
-.progress-bar .fill{height:100%;background:#c9a84c;border-radius:2px;transition:width 0.3s ease;width:0%}
-.password-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(26,58,92,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
-.password-box{background:linear-gradient(135deg,#f5f0e6 0%,#e8e0d0 100%);border-radius:20px;padding:40px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);border:2px solid #c9a84c}
-.password-box h2{color:#1a3a5c;font-size:1.5em;margin-bottom:10px}
-.password-box p{color:#666;font-size:0.9em;margin-bottom:20px;line-height:1.5}
-.password-box input{width:100%;padding:12px 15px;border-radius:10px;border:2px solid #c9a84c;font-size:1em;font-family:inherit;margin-bottom:10px;background:white;color:#1a3a5c}
-.password-box input:focus{outline:none;border-color:#1a3a5c}
-.password-box .pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,#1a3a5c 0%,#2d5a87 100%);color:#f5f0e6;border:none;border-radius:10px;font-size:1em;font-weight:bold;cursor:pointer;margin-top:10px;-webkit-appearance:none}
-.password-box .pw-btn:hover{opacity:0.9}
-.debug-panel{background:#1a3a5c;color:#f5f0e6;border-radius:12px;padding:15px;margin-top:15px;font-family:'Courier New',monospace;font-size:0.8em}
-.debug-panel h4{color:#c9a84c;margin-bottom:8px;font-size:1em}
-.debug-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(201,168,76,0.2)}
-.debug-row:last-child{border-bottom:none}
-.debug-label{color:#c9a84c}
-.debug-value{color:#4caf50}
-.debug-value.error{color:#f44336}
-.debug-btn{background:#c9a84c;color:#1a3a5c;border:none;padding:8px 16px;border-radius:20px;font-size:0.8em;font-weight:bold;cursor:pointer;margin-top:10px;-webkit-appearance:none}
-.password-box .warning{color:#c62828;font-size:0.8em;margin-top:10px;font-weight:bold}
-.sync-info{background:rgba(33,150,243,0.08);border-radius:10px;padding:12px;margin-top:10px;border:1px solid rgba(33,150,243,0.2);display:flex;align-items:center;justify-content:space-between}
-.sync-info p{color:#1565c0;font-size:0.85em;margin:0}
-.sync-info button{background:#1a3a5c;color:#f5f0e6;border:none;padding:6px 14px;border-radius:15px;font-size:0.75em;font-weight:bold;cursor:pointer;-webkit-appearance:none}
-.editor-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:15px}
-.editor-box{background:#f5f0e6;border-radius:15px;padding:20px;max-width:800px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:2px solid #c9a84c}
-.editor-box h3{color:#1a3a5c;margin-bottom:10px;font-size:1.1em}
-.editor-box textarea{flex:1;min-height:300px;padding:12px;border-radius:8px;border:1px solid #c9a84c;font-family:'Courier New',monospace;font-size:0.9em;background:white;color:#1a3a5c;resize:vertical}
-.editor-box .editor-actions{display:flex;gap:10px;margin-top:12px;justify-content:flex-end}
-.editor-box .editor-actions button{padding:10px 20px;border-radius:8px;border:none;font-size:0.9em;font-weight:bold;cursor:pointer;-webkit-appearance:none}
-.editor-box .editor-actions .save-btn{background:#4caf50;color:white}
-.editor-box .editor-actions .cancel-btn{background:#888;color:white}
-@media(max-width:600px){.header h1{font-size:1.5em}.header .device-info{display:none}.install-btn{padding:12px 25px;font-size:1em}.platforms{grid-template-columns:repeat(2,1fr)}.features-grid{grid-template-columns:1fr}.file-item{flex-wrap:wrap}.file-item .actions{width:100%;justify-content:flex-end;margin-top:5px}.password-box{padding:25px}.editor-box{padding:15px}}
-@media(min-width:1024px){.container{max-width:1000px}.header{border-radius:0 0 30px 30px;padding:40px 20px}.header h1{font-size:2.5em}}
-</style>
-<base target="_blank">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>BrevettIAmo PWA - Storage Sicuro</title>
+    <meta name="theme-color" content="#1a3a5c">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BrevettIAmo">
+    <meta name="description" content="BrevettIAmo - Vault cifrato per documenti professionali">
+    
+    <!-- Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <!-- Supabase (UMD) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
+    <style>
+        /* ===== DESIGN SYSTEM PERGAMENA ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c8b0 100%);
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+            color: #2c1810;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0 1rem;
+        }
+
+        /* contenitore principale */
+        .app-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            padding: 2rem 0 1rem;
+            border-bottom: 2px solid #c9a84c;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #1a3a5c;
+            text-shadow: 1px 1px 0 rgba(201, 168, 76, 0.3);
+        }
+
+        .header .sottotitolo {
+            font-style: italic;
+            color: #2c1810;
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin-top: 0.2rem;
+        }
+
+        .badge-beta {
+            background: #1a3a5c;
+            color: #f5f0e6;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 1px solid #c9a84c;
+            box-shadow: 0 2px 8px rgba(26, 58, 92, 0.3);
+            text-transform: uppercase;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== SEZIONI ===== */
+        .section {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(2px);
+            border-radius: 20px;
+            padding: 1.8rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(201, 168, 76, 0.4);
+            box-shadow: 0 8px 20px rgba(44, 24, 16, 0.08);
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: #1a3a5c;
+            border-left: 5px solid #c9a84c;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* ===== LOGIN ===== */
+        .login-area {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .login-btn {
+            background: #1a3a5c;
+            color: #f5f0e6;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.2s ease;
+            border: 1px solid #c9a84c;
+            box-shadow: 0 4px 10px rgba(26, 58, 92, 0.3);
+        }
+
+        .login-btn:hover {
+            background: #2c4a6e;
+            transform: scale(1.02);
+        }
+
+        .login-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #f5f0e6;
+            stroke-width: 2;
+        }
+
+        .user-info {
+            font-size: 1.2rem;
+            color: #1a3a5c;
+            font-weight: bold;
+            background: rgba(201, 168, 76, 0.2);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            border: 1px solid #c9a84c;
+        }
+
+        /* ===== INSTALLA ===== */
+        .install-flex {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .install-btn {
+            background: #c9a84c;
+            color: #1a3a5c;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: 2px solid #1a3a5c;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(201, 168, 76, 0.5);
+        }
+
+        .install-btn svg {
+            width: 26px;
+            height: 26px;
+            stroke: #1a3a5c;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .install-btn:hover {
+            background: #b8953a;
+            transform: translateY(-2px);
+        }
+
+        /* ===== DISPOSITIVI ===== */
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .device-card {
+            background: rgba(245, 240, 230, 0.7);
+            border-radius: 16px;
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            border: 1px solid #c9a84c;
+            transition: 0.2s;
+        }
+
+        .device-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(44, 24, 16, 0.1);
+        }
+
+        .device-card svg {
+            width: 48px;
+            height: 48px;
+            stroke: #1a3a5c;
+            fill: none;
+            stroke-width: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .device-card span {
+            display: block;
+            font-weight: 600;
+            color: #2c1810;
+        }
+
+        /* ===== CARATTERISTICHE ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(245, 240, 230, 0.5);
+            padding: 0.8rem 1rem;
+            border-radius: 40px;
+            border: 1px solid rgba(201, 168, 76, 0.5);
+        }
+
+        .feature-item svg {
+            width: 28px;
+            height: 28px;
+            stroke: #1a3a5c;
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+
+        .feature-item span {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        /* ===== FILE UPLOAD ===== */
+        .upload-area {
+            border: 2px dashed #1a3a5c;
+            border-radius: 20px;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            background: rgba(245, 240, 230, 0.4);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area:hover {
+            background: rgba(201, 168, 76, 0.1);
+            border-color: #c9a84c;
+        }
+
+        .upload-area svg {
+            width: 60px;
+            height: 60px;
+            stroke: #1a3a5c;
+            fill: none;
+            stroke-width: 1.5;
+            margin-bottom: 0.8rem;
+        }
+
+        .upload-area p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a3a5c;
+        }
+
+        .upload-area .sub-text {
+            font-size: 0.9rem;
+            color: #6b5a4e;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== LISTA FILE ===== */
+        .file-list {
+            margin-top: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: rgba(245, 240, 230, 0.6);
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            transition: 0.2s;
+        }
+
+        .file-item:hover {
+            background: rgba(245, 240, 230, 0.9);
+            border-color: #c9a84c;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            stroke: #1a3a5c;
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #2c1810;
+        }
+
+        .file-meta {
+            font-size: 0.8rem;
+            color: #6b5a4e;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .file-btn {
+            background: #1a3a5c;
+            color: #f5f0e6;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .file-btn:hover {
+            background: #2c4a6e;
+        }
+
+        .file-btn.download {
+            background: #c9a84c;
+            color: #1a3a5c;
+        }
+
+        .file-btn.download:hover {
+            background: #b8953a;
+        }
+
+        /* ===== SINCRONIZZAZIONE ===== */
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(201, 168, 76, 0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            border: 1px solid #c9a84c;
+        }
+
+        .sync-icon {
+            width: 20px;
+            height: 20px;
+            fill: #1a3a5c;
+            transition: transform 0.3s ease;
+        }
+
+        .sync-icon.pulsing {
+            animation: pulse-sync 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-sync {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.7; }
+        }
+
+        .sync-text {
+            font-size: 0.9rem;
+            color: #1a3a5c;
+            font-weight: 600;
+        }
+
+        /* ===== TOAST NOTIFICHE ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .toast {
+            background: #1a3a5c;
+            color: #f5f0e6;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #c9a84c;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+        }
+
+        .toast.success {
+            border-left-color: #4caf50;
+        }
+
+        .toast.error {
+            border-left-color: #f44336;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== MODALE PASSWORD ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #f5f0e6;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            border: 2px solid #c9a84c;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal h3 {
+            color: #1a3a5c;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #c9a84c;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            background: white;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 20px;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-btn.primary {
+            background: #1a3a5c;
+            color: #f5f0e6;
+        }
+
+        .modal-btn.secondary {
+            background: transparent;
+            border: 1px solid #1a3a5c;
+            color: #1a3a5c;
+        }
+
+        .modal-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: #6b5a4e;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(201, 168, 76, 0.3);
+            margin-top: 2rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .header-left {
+                align-items: center;
+            }
+            
+            .section {
+                padding: 1.2rem;
+            }
+            
+            .login-area {
+                justify-content: center;
+            }
+            
+            .install-flex {
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .device-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .file-item {
+                flex-direction: column;
+                gap: 0.8rem;
+                text-align: center;
+            }
+            
+            .file-info {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+            
+            .toast-container {
+                left: 1rem;
+                right: 1rem;
+                bottom: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="app-wrapper">
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="header-left">
+                <h1>⚖️ BrevettIAmo</h1>
+                <div class="sottotitolo">Vault Cifrato Professionale</div>
+                <span class="badge-beta">Beta</span>
+            </div>
+            <div class="sync-status" id="syncStatus">
+                <svg class="sync-icon" viewBox="0 0 24 24">
+                    <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 0 0-7.07 4.02L2 5v7h7L6.34 9.34A6 6 0 0 1 12 6a5.91 5.91 0 0 1 4.22 1.78L17.65 6.35zM22 12h-7l2.66 2.66A6 6 0 0 1 12 18a5.91 5.91 0 0 1-4.22-1.78L6.35 17.65A7.95 7.95 0 0 0 12 20a8 8 0 0 0 7.07-4.02L22 18v-6z"/>
+                </svg>
+                <span class="sync-text" id="syncText">In attesa...</span>
+            </div>
+        </header>
 
-<div id="passwordOverlay" class="password-overlay">
-  <div class="password-box">
-    <h2>Chiave di Accesso</h2>
-    <p>Imposta una password per cifrare i tuoi file. Stessa password su tutti i dispositivi per sincronizzare.</p>
-    <input type="password" id="pwInput" placeholder="Password (minimo 8 caratteri)">
-    <input type="password" id="pwConfirm" placeholder="Conferma password">
-    <button class="pw-btn" onclick="setPassword()">Attiva Cifratura e Sync</button>
-    <div id="pwError" class="warning hidden"></div>
-  </div>
-</div>
+        <!-- ===== SEZIONE LOGIN ===== -->
+        <section class="section" id="loginSection">
+            <h2 class="section-title">🔐 Accesso Sicuro</h2>
+            <div class="login-area">
+                <button class="login-btn" id="loginBtn" onclick="window.handleLogin()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    <span id="loginBtnText">Accedi</span>
+                </button>
+                <div id="userInfo" class="user-info" style="display: none;"></div>
+            </div>
+        </section>
 
-<div id="editorOverlay" class="editor-overlay hidden">
-  <div class="editor-box">
-    <h3 id="editorTitle">Modifica File</h3>
-    <textarea id="editorText"></textarea>
-    <div class="editor-actions">
-      <button class="cancel-btn" onclick="closeEditor()">Annulla</button>
-      <button class="save-btn" onclick="saveEditor()">Salva Modifiche</button>
+        <!-- ===== SEZIONE INSTALLAZIONE ===== -->
+        <section class="section" id="installSection">
+            <h2 class="section-title">📱 Installa BrevettIAmo</h2>
+            <div class="install-flex">
+                <button class="install-btn" id="installBtn" onclick="window.installPWA()" style="display: none;">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    Installa App
+                </button>
+                <p style="color: #6b5a4e; font-style: italic;">Aggiungi BrevettIAmo al tuo dispositivo per un accesso rapido e sicuro</p>
+            </div>
+        </section>
+
+        <!-- ===== SEZIONE DISPOSITIVI ===== -->
+        <section class="section">
+            <h2 class="section-title">💻 Multi-Dispositivo</h2>
+            <div class="device-grid">
+                <div class="device-card">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>
+                    </svg>
+                    <span>Desktop</span>
+                </div>
+                <div class="device-card">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+                    </svg>
+                    <span>Mobile</span>
+                </div>
+                <div class="device-card">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15h14v3H5z"/>
+                    </svg>
+                    <span>Tablet</span>
+                </div>
+                <div class="device-card">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h8v2H6z"/>
+                    </svg>
+                    <span>Web</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SEZIONE CARATTERISTICHE ===== -->
+        <section class="section">
+            <h2 class="section-title">✨ Caratteristiche</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                    </svg>
+                    <span>Cifratura AES-256-GCM</span>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Sync Automatico</span>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                    </svg>
+                    <span>Zero-Knowledge</span>
+                </div>
+                <div class="feature-item">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                    </svg>
+                    <span>Backup Cloud</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SEZIONE FILE ===== -->
+        <section class="section" id="filesSection">
+            <h2 class="section-title">📁 I Tuoi File</h2>
+            
+            <!-- Area Upload -->
+            <div class="upload-area" id="uploadArea" onclick="window.triggerFileUpload()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                </svg>
+                <p>Trascina qui i tuoi file o clicca per selezionarli</p>
+                <div class="sub-text">I file verranno cifrati prima dell'upload</div>
+                <input type="file" id="fileInput" style="display: none;" multiple onchange="window.handleFileSelect(event)">
+            </div>
+            
+            <!-- Lista File -->
+            <div class="file-list" id="fileList">
+                <p style="color: #6b5a4e; text-align: center; padding: 1rem;">Nessun file caricato</p>
+            </div>
+        </section>
+
+        <!-- ===== FOOTER ===== -->
+        <footer class="footer">
+            <p>© 2024 BrevettIAmo - Storage Sicuro per Professionisti</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">Cifratura end-to-end · Sync automatico · Zero-Knowledge</p>
+        </footer>
     </div>
-  </div>
-</div>
 
-<div class="header">
-  <div class="device-info" id="deviceInfo">Rilevamento...</div>
-  <h1>BrevettIAmo PWA</h1>
-  <p class="subtitle">Storage Cifrato Multi-Sistema con Sync Cloud</p>
-  <div class="badge-beta">BETA GRATUITA</div>
-  <div class="sync-status" id="syncStatus">
-    <span class="sync-dot" id="syncDot"></span>
-    <span id="syncText">In attesa...</span>
-  </div>
-</div>
-
-<div class="container">
-
-  <div id="loginSection" class="login-section">
-    <h2>Accedi con Google</h2>
-    <p>Identificazione opzionale</p>
-    <button class="login-btn" onclick="netlifyIdentity.open()">Accedi / Registrati</button>
-    <div id="userInfo" class="user-info hidden"></div>
-  </div>
-
-  <div class="install-box" id="installBox">
-    <h2>Installa App</h2>
-    <p style="font-size:0.95em;margin-bottom:8px">1-Click. Nessun store. Zero commissioni.</p>
-    <button id="installBtn" class="install-btn" onclick="installPWA()">Installa Ora</button>
-    <p id="installMsg" style="margin-top:10px;font-size:0.85em;opacity:0.8"></p>
-  </div>
-
-  <div class="section">
-    <h2><span class="icon">1</span> I Tuoi Dispositivi</h2>
-    <div class="platforms" id="platforms">
-      <div class="platform-card" data-platform="windows">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <h3>Windows</h3><p>Carbon X1</p>
-      </div>
-      <div class="platform-card" data-platform="android">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-        <h3>Android</h3><p>Realme GT7T</p>
-      </div>
-      <div class="platform-card" data-platform="ios">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="14" r="4"/><line x1="12" y1="6" x2="12" y2="6"/></svg>
-        <h3>iOS</h3><p>iPad Pro M5</p>
-      </div>
-      <div class="platform-card" data-platform="macos">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/></svg>
-        <h3>macOS</h3><p>Disponibile</p>
-      </div>
-      <div class="platform-card" data-platform="linux">
-        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        <h3>Linux</h3><p>Disponibile</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2><span class="icon">2</span> Caratteristiche</h2>
-    <div class="features-grid">
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Sync Automatico</h3><p>I file appaiono automaticamente su tutti i dispositivi con la stessa password.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Cifratura AES-256</h3><p>Ogni file cifrato individualmente. Nessuno puo accedere senza password.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Modifica Online</h3><p>File di testo modificabili direttamente nella pagina. Le modifiche si sincronizzano.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Upload Universale</h3><p>Carica da PC, iPad, Android. Ogni formato supportato.</p></div>
-      <div class="feature-card"><h3><span style="color:#c9a84c">&bull;</span> Nessuno Store</h3><p>Installazione diretta come PWA. Zero commissioni.</p></div>
-    </div>
-  </div>
-
-  <div class="section" id="filesSection">
-    <h2><span class="icon">3</span> I Tuoi File</h2>
-    <div class="sync-info" id="syncInfoBox">
-      <p id="syncInfoText">Sync: in attesa di password...</p>
-      <button onclick="forceSync()">Sincronizza Ora</button>
-    </div>
-    <div class="debug-panel" id="debugPanel" style="display:none">
-      <h4>Debug Sync</h4>
-      <div class="debug-row"><span class="debug-label">Sync ID:</span><span class="debug-value" id="dbgSyncId">-</span></div>
-      <div class="debug-row"><span class="debug-label">Supabase Lib:</span><span class="debug-value" id="dbgSupaLib">-</span></div>
-      <div class="debug-row"><span class="debug-label">Supabase Client:</span><span class="debug-value" id="dbgSupabase">-</span></div>
-      <div class="debug-row"><span class="debug-label">File Cloud:</span><span class="debug-value" id="dbgCloud">-</span></div>
-      <div class="debug-row"><span class="debug-label">File Locali:</span><span class="debug-value" id="dbgLocal">-</span></div>
-      <div class="debug-row"><span class="debug-label">Query Result:</span><span class="debug-value" id="dbgQuery">-</span></div>
-      <div class="debug-row"><span class="debug-label">Ultimo Errore:</span><span class="debug-value error" id="dbgError">-</span></div>
-      <button class="debug-btn" onclick="updateDebugPanel()">Aggiorna Debug</button>
-    </div>
-    <button class="debug-btn" id="toggleDebugBtn" onclick="toggleDebug()" style="margin-top:8px;background:rgba(26,58,92,0.1);color:#1a3a5c;border:1px solid #1a3a5c">Mostra Debug</button>
-    <p style="margin-bottom:12px;color:#666;font-size:0.9em">Stessa password su tutti i dispositivi = stessi file ovunque. Sync automatico ogni 10 secondi.</p>
-
-    <div class="upload-area" id="uploadArea">
-      <h3>Carica File</h3>
-      <p>Trascina qui, clicca, o tocca per selezionare dal dispositivo</p>
-      <input type="file" id="fileInput" multiple accept="*/*" style="display:none" onchange="handleFiles(this.files)">
-      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Seleziona File</button>
-      <div class="progress-bar hidden" id="uploadProgress"><div class="fill" id="progressFill"></div></div>
-      <div id="uploadStatus"></div>
+    <!-- ===== MODALE PASSWORD ===== -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal">
+            <h3>🔑 Inserisci Password</h3>
+            <p style="margin-bottom: 1rem; color: #6b5a4e;">La password viene usata per derivare la chiave di cifratura</p>
+            <input type="password" id="passwordInput" placeholder="Password di cifratura" onkeydown="if(event.key === 'Enter') window.confirmPassword()">
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="window.closePasswordModal()">Annulla</button>
+                <button class="modal-btn primary" onclick="window.confirmPassword()">Conferma</button>
+            </div>
+        </div>
     </div>
 
-    <div id="fileList" class="file-list hidden">
-      <h3>File Cifrati (<span id="fileCount">0</span>)</h3>
-      <div id="fileItems"></div>
-    </div>
+    <!-- ===== TOAST NOTIFICHE ===== -->
+    <div class="toast-container" id="toastContainer"></div>
 
-    <div class="security-banner">
-      <h3>Sicurezza End-to-End</h3>
-      <p>Cifratura AES-256 GCM con PBKDF2. Sync su Supabase in forma cifrata. Nessuno puo leggere i tuoi file.</p>
-    </div>
-  </div>
+    <script>
+        // ============================================
+        // BrevettIAmo - PWA Completa
+        // ============================================
 
-  <div class="section" style="background:rgba(201,168,76,0.08)">
-    <h2><span class="icon">i</span> Versione Beta v3.1</h2>
-    <p style="color:#666;font-size:0.9em;line-height:1.7"><strong>Attuale:</strong> Storage locale + sync cloud Supabase con cifratura AES-256 GCM. Sync automatico ogni 10 secondi. Modifica file di testo inline.<br><strong>Gratuita</strong> per tutta la fase Beta.</p>
-  </div>
+        // Configurazione Supabase
+        window.SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
+        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMzkzOTMsImV4cCI6MjA5NTcxNTM5M30.q5KOpwaZkZEqJt8fDT8XQnsRWswacvhlPzXZ4pysWvQ';
 
-</div>
+        // Configurazione IndexedDB
+        window.DB_NAME = 'brevettiamo_vault';
+        window.DB_VERSION = 1;
+        window.STORE_NAME = 'files_cache';
 
-<div class="footer">
-  <p>BrevettIAmo PWA | Storage Cifrato Sync | 2026</p>
-</div>
+        // Stato globale
+        window.currentUser = null;
+        window.currentKey = null;
+        window.currentSalt = null;
+        window.syncTimer = null;
+        window.isSyncing = false;
+        window.pendingFiles = [];
+        window.deferredPrompt = null;
 
-<script>
-// ============================
-// CONFIGURAZIONE
-// ============================
-const SUPABASE_URL='https://jtekrvlmqnluvaiapmwb.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMzkzOTMsImV4cCI6MjA5NTcxNTM5M30.q5KOpwaZkZEqJt8fDT8XQnsRWswacvhlPzXZ4pysWvQ';
-var supabaseClient=null;
-var cryptoKey=null;
-var syncId=null;
-var userPassword=null;
-var DB_NAME='BrevettIAmoPWA';
-var DB_VERSION=1;
-var STORE_NAME='files';
-var db=null;
-var currentEditId=null;
-var syncInterval=null;
+        // ============================================
+        // 1. INIZIALIZZAZIONE
+        // ============================================
+        window.initApp = function() {
+            // Inizializza Supabase
+            window.initSupabase();
+            
+            // Inizializza Netlify Identity
+            window.initNetlifyIdentity();
+            
+            // Registra Service Worker
+            window.registerServiceWorker();
+            
+            // Inizializza IndexedDB
+            window.initIndexedDB();
+            
+            // Gestisci installazione PWA
+            window.setupInstallPrompt();
+            
+            // Carica file locali
+            window.loadLocalFiles();
+        };
 
-// ============================
-// NETLIFY IDENTITY
-// ============================
-netlifyIdentity.init({APIUrl:'https://brevettiamo-pwa.netlify.app/.netlify/identity'});
-netlifyIdentity.on('init',function(user){updateUserUI(user)});
-netlifyIdentity.on('login',function(user){updateUserUI(user);netlifyIdentity.close()});
-netlifyIdentity.on('logout',function(){updateUserUI(null)});
+        // ============================================
+        // 2. NETLIFY IDENTITY
+        // ============================================
+        window.initNetlifyIdentity = function() {
+            if (window.netlifyIdentity) {
+                window.netlifyIdentity.on('init', function(user) {
+                    if (user) {
+                        window.currentUser = user;
+                        window.handleUserLogin(user);
+                    }
+                });
+                
+                window.netlifyIdentity.on('login', function(user) {
+                    window.currentUser = user;
+                    window.handleUserLogin(user);
+                });
+                
+                window.netlifyIdentity.on('logout', function() {
+                    window.currentUser = null;
+                    window.currentKey = null;
+                    window.currentSalt = null;
+                    window.clearSyncTimer();
+                    window.clearLocalCache();
+                    window.updateLoginUI();
+                });
+            }
+        };
 
-function updateUserUI(user){
-  var section=document.getElementById('loginSection');
-  if(!section)return;
-  if(user){
-    var initial=(user.user_metadata.full_name||user.email||'U').charAt(0).toUpperCase();
-    section.innerHTML='<h2>Benvenuto</h2><div class="user-info"><div class="user-avatar">'+initial+'</div><div><div style="font-weight:bold">'+(user.user_metadata.full_name||user.email)+'</div><div style="font-size:0.8em;opacity:0.8">'+user.email+'</div></div></div><button class="login-btn" onclick="netlifyIdentity.logout()" style="margin-top:12px">Esci</button>';
-  }else{
-    section.innerHTML='<h2>Accedi con Google</h2><p>Identificazione opzionale</p><button class="login-btn" onclick="netlifyIdentity.open()">Accedi / Registrati</button><div id="userInfo" class="user-info hidden"></div>';
-  }
-}
+        // ============================================
+        // 3. GESTIONE LOGIN
+        // ============================================
+        window.handleLogin = function() {
+            if (window.currentUser) {
+                // Logout
+                window.netlifyIdentity.logout();
+            } else {
+                // Login
+                window.netlifyIdentity.open();
+            }
+        };
 
-// ============================
-// CIFRATURA + SYNC ID
-// ============================
-function deriveKey(password,salt){
-  var enc=new TextEncoder();
-  return crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveKey']).then(function(keyMaterial){
-    return crypto.subtle.deriveKey({name:'PBKDF2',salt:salt,iterations:100000,hash:'SHA-256'},keyMaterial,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
-  });
-}
+        window.handleUserLogin = function(user) {
+            window.currentUser = user;
+            window.updateLoginUI();
+            
+            // Mostra modale password
+            window.showPasswordModal();
+        };
 
-function deriveSyncId(password){
-  var enc=new TextEncoder();
-  return crypto.subtle.digest('SHA-256',enc.encode('BREVETTIAMO_SYNC_'+password)).then(function(hash){
-    return Array.from(new Uint8Array(hash)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
-  });
-}
-
-function encryptData(plaintext,key){
-  var iv=crypto.getRandomValues(new Uint8Array(12));
-  var enc=new TextEncoder();
-  return crypto.subtle.encrypt({name:'AES-GCM',iv:iv},key,enc.encode(plaintext)).then(function(encrypted){
-    return{iv:Array.from(iv),data:Array.from(new Uint8Array(encrypted))};
-  });
-}
-
-function decryptData(ciphertext,iv,key){
-  return crypto.subtle.decrypt({name:'AES-GCM',iv:new Uint8Array(iv)},key,new Uint8Array(ciphertext)).then(function(decrypted){
-    return new TextDecoder().decode(decrypted);
-  });
-}
-
-// ============================
-// PASSWORD
-// ============================
-function getDeterministicSalt(password){
-  var enc=new TextEncoder();
-  return crypto.subtle.digest('SHA-256',enc.encode('BREVETTIAMO_SALT_v1_'+password)).then(function(hash){
-    return new Uint8Array(hash).slice(0,16);
-  });
-}
-
-function setPassword(){
-  var pw=document.getElementById('pwInput').value;
-  var confirm=document.getElementById('pwConfirm').value;
-  var errEl=document.getElementById('pwError');
-  if(pw.length<8){errEl.textContent='Password minimo 8 caratteri.';errEl.classList.remove('hidden');return}
-  if(pw!==confirm){errEl.textContent='Le password non coincidono.';errEl.classList.remove('hidden');return}
-  userPassword=pw;
-  var salt;
-  getDeterministicSalt(pw).then(function(s){
-    salt=s;
-    console.log('SET salt:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
-    return deriveKey(pw,salt);
-  }).then(function(key){
-    cryptoKey=key;
-    console.log('SET key derivata OK');
-    return deriveSyncId(pw);
-  }).then(function(sid){
-    syncId=sid;
-    localStorage.setItem('pwa_salt','deterministic');
-    localStorage.setItem('pwa_has_pw','true');
-    console.log('SET syncId:',syncId.substring(0,16));
-    document.getElementById('passwordOverlay').classList.add('hidden');
-    showStatus('Cifratura e sync attivati!','success');
-    updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
-    initSupabase();
-    renderFileList();
-    syncFromCloud();
-    startAutoSync();
-  }).catch(function(e){
-    console.error('SET error:',e);
-    errEl.textContent='Errore: '+e.message;errEl.classList.remove('hidden');
-  });
-}
-
-function checkPassword(){
-  if(localStorage.getItem('pwa_has_pw')==='true'){
-    var box=document.querySelector('.password-box');
-    box.innerHTML='<h2>Accesso</h2><p>Inserisci la tua password per decifrare e sincronizzare i file.</p><input type="password" id="pwUnlock" placeholder="Password"><button class="pw-btn" onclick="unlockWithPassword()">Sblocca</button><div id="pwError" class="warning hidden"></div>';
-  }
-}
-
-function unlockWithPassword(){
-  var pw=document.getElementById('pwUnlock').value;
-  var errEl=document.getElementById('pwError');
-  var salt;
-  getDeterministicSalt(pw).then(function(s){
-    salt=s;
-    console.log('UNLOCK salt:',Array.from(salt).map(function(b){return b.toString(16).padStart(2,'0')}).join(''));
-    return deriveKey(pw,salt);
-  }).then(function(key){
-    cryptoKey=key;
-    console.log('UNLOCK key OK');
-    return deriveSyncId(pw);
-  }).then(function(sid){
-    syncId=sid;
-    console.log('UNLOCK syncId:',syncId.substring(0,16));
-    document.getElementById('passwordOverlay').classList.add('hidden');
-    updateSyncInfo('Sync attivo - ID: '+syncId.substring(0,8));
-    initSupabase();renderFileList();syncFromCloud();startAutoSync();
-  }).catch(function(e){
-    console.error('UNLOCK error:',e);
-    errEl.textContent='Password errata o errore: '+e.message;errEl.classList.remove('hidden');
-  });
-}
-
-function updateSyncInfo(text){
-  var el=document.getElementById('syncInfoText');
-  if(el)el.textContent=text;
-}
-
-// ============================
-// SUPABASE
-// ============================
-function initSupabase(){
-  console.log('INIT Supabase... URL presente:',!!SUPABASE_URL,'Key presente:',!!SUPABASE_ANON_KEY);
-  if(typeof supabase!=='undefined'&&supabase.createClient){
-    console.log('Supabase library OK');
-  }else{
-    console.error('Supabase library NOT loaded');
-  }
-}
-
-function arrayToBase64(arr){
-  var chunks=[];
-  var chunkSize=0x8000;
-  for(var i=0;i<arr.length;i+=chunkSize){
-    chunks.push(String.fromCharCode.apply(null,arr.slice(i,i+chunkSize)));
-  }
-  return btoa(chunks.join(''));
-}
-
-function base64ToArray(b64){
-  var binary=atob(b64);
-  var len=binary.length;
-  var arr=new Uint8Array(len);
-  for(var i=0;i<len;i++){arr[i]=binary.charCodeAt(i)}
-  return Array.from(arr);
-}
-
-function uploadToSupabase(fileRecord){
-  if(!supabaseClient||!syncId){console.log('SKIP upload: no client or syncId');return Promise.resolve(false)}
-  console.log('UPLOAD START:',fileRecord.name,'size:',fileRecord.size);
-  var ivB64=arrayToBase64(fileRecord.iv);
-  var dataB64=arrayToBase64(fileRecord.encrypted);
-  console.log('UPLOAD b64 lengths - iv:',ivB64.length,'data:',dataB64.length);
-  return supabaseClient.from('pwa_files').delete().eq('sync_id',syncId).eq('name',fileRecord.name).then(function(delRes){
-    console.log('UPLOAD delete result:',delRes);
-    return supabaseClient.from('pwa_files').insert({
-      sync_id:syncId,name:fileRecord.name,file_type:fileRecord.type,
-      iv:ivB64,encrypted_data:dataB64,size:fileRecord.size,device:fileRecord.device
-    });
-  }).then(function(res){
-    console.log('UPLOAD insert result:',res);
-    if(res.error){console.error('Supabase upload ERROR:',res.error);showStatus('Sync errore: '+res.error.message,'error');return false}
-    console.log('UPLOAD OK:',fileRecord.name);
-    return true;
-  }).catch(function(err){
-    console.error('UPLOAD EXCEPTION:',err);
-    showStatus('Sync errore: '+err.message,'error');
-    return false;
-  });
-}
-
-function syncFromCloud(){
-  if(!supabaseClient||!syncId){console.log('SKIP sync: no client or syncId');return}
-  updateSyncInfo('Sync in corso...');
-  document.getElementById('syncDot').className='sync-dot syncing';
-  console.log('SYNC starting for syncId:',syncId.substring(0,8));
-  supabaseClient.from('pwa_files').select('*').eq('sync_id',syncId).order('created_at',{ascending:false}).then(function(res){
-    document.getElementById('syncDot').className='sync-dot';
-    if(res.error){console.error('Sync error:',res.error);updateSyncInfo('Sync errore: '+res.error.message);updateDebugPanel();return}
-    var cloudFiles=res.data||[];
-    console.log('SYNC fetched:',cloudFiles.length,'files from cloud for syncId',syncId.substring(0,8));
-    if(cloudFiles.length===0){updateSyncInfo('Sync attivo - Nessun file in cloud');updateDebugPanel();return}
-    getAllFilesFromDB().then(function(localFiles){
-      var localNames=localFiles.map(function(f){return f.name});
-      console.log('SYNC local files:',localNames);
-      var newFiles=cloudFiles.filter(function(cf){return localNames.indexOf(cf.name)===-1});
-      console.log('SYNC new files to import:',newFiles.length,'names:',newFiles.map(function(f){return f.name}));
-      if(newFiles.length===0){updateSyncInfo('Sync attivo - Tutto sincronizzato');updateDebugPanel();return}
-      var imported=0;
-      function importNext(idx){
-        if(idx>=newFiles.length){
-          updateSyncInfo('Sync: '+imported+' nuovi file');
-          updateDebugPanel();
-          renderFileList();return;
-        }
-        var cf=newFiles[idx];
-        console.log('SYNC importing:',cf.name);
-        try{
-          var ivStr=cf.iv;
-          var dataStr=cf.encrypted_data;
-          console.log('SYNC iv type:',typeof ivStr,'length:',ivStr.length);
-          console.log('SYNC data type:',typeof dataStr,'length:',dataStr.length);
-          var ivArr=base64ToArray(ivStr);
-          var dataArr=base64ToArray(dataStr);
-          console.log('SYNC decoded arrays - iv:',ivArr.length,'data:',dataArr.length);
-          saveFileToDB(cf.name,cf.file_type,{iv:ivArr,data:dataArr},cf.size||0).then(function(){
-            console.log('SYNC imported OK:',cf.name);
-            imported++;importNext(idx+1);
-          }).catch(function(err){console.error('SYNC import error:',err);importNext(idx+1)});
-        }catch(e){console.error('SYNC decode error for',cf.name,':',e);importNext(idx+1)}
-      }
-      importNext(0);
-    });
-  }).catch(function(err){
-    document.getElementById('syncDot').className='sync-dot offline';
-    console.error('SYNC exception:',err);
-    updateSyncInfo('Sync errore: '+err.message);
-    updateDebugPanel();
-  });
-}
-
-function forceSync(){
-  if(!syncId){showStatus('Inserisci prima la password.','warning');return}
-  syncFromCloud();
-  showStatus('Sincronizzazione forzata.','info');
-  updateDebugPanel();
-}
-
-function toggleDebug(){
-  var panel=document.getElementById('debugPanel');
-  var btn=document.getElementById('toggleDebugBtn');
-  if(panel.style.display==='none'){
-    panel.style.display='block';
-    btn.textContent='Nascondi Debug';
-    updateDebugPanel();
-  }else{
-    panel.style.display='none';
-    btn.textContent='Mostra Debug';
-  }
-}
-
-function updateDebugPanel(){
-  var syncEl=document.getElementById('dbgSyncId');
-  var supaLibEl=document.getElementById('dbgSupaLib');
-  var supEl=document.getElementById('dbgSupabase');
-  var cloudEl=document.getElementById('dbgCloud');
-  var localEl=document.getElementById('dbgLocal');
-  var queryEl=document.getElementById('dbgQuery');
-  var errEl=document.getElementById('dbgError');
-
-  if(syncEl)syncEl.textContent=syncId?syncId.substring(0,20)+'...':'non impostato';
-  if(supaLibEl)supaLibEl.textContent=(typeof supabase!=='undefined'&&supabase.createClient)?'Caricata':'NON caricata';
-  if(supEl)supEl.textContent=supabaseClient?'Creato':'Non creato';
-  if(cloudEl)cloudEl.textContent='...';
-  if(localEl)localEl.textContent='...';
-  if(queryEl)queryEl.textContent='...';
-  if(errEl)errEl.textContent='Nessuno';
-
-  getAllFilesFromDB().then(function(localFiles){
-    if(localEl)localEl.textContent=localFiles.length;
-  });
-
-  if(typeof supabase==='undefined'||!supabase.createClient){
-    if(supaLibEl)supaLibEl.textContent='NON caricata - ricarica pagina';
-    if(cloudEl)cloudEl.textContent='N/A';
-    if(queryEl)queryEl.textContent='Libreria mancante';
-    return;
-  }
-
-  if(!supabaseClient){
-    try{
-      supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-      if(supEl)supEl.textContent='Creato ora';
-    }catch(e){
-      if(supEl)supEl.textContent='Errore: '+e.message;
-      if(errEl)errEl.textContent=e.message;
-      return;
-    }
-  }
-
-  if(!syncId){
-    if(cloudEl)cloudEl.textContent='N/A - no syncId';
-    if(queryEl)queryEl.textContent='Inserisci password';
-    return;
-  }
-
-  supabaseClient.from('pwa_files').select('*').eq('sync_id',syncId).then(function(res){
-    if(res.error){
-      if(cloudEl)cloudEl.textContent='Errore query';
-      if(queryEl)queryEl.textContent='ERRORE: '+res.error.message;
-      if(errEl)errEl.textContent=res.error.message;
-    }else{
-      var files=res.data||[];
-      if(cloudEl)cloudEl.textContent=files.length;
-      if(queryEl)queryEl.textContent='OK - '+files.length+' righe';
-      if(files.length>0){
-        var names=files.map(function(f){return f.name}).join(', ');
-        if(queryEl)queryEl.textContent='OK: '+names.substring(0,60)+(names.length>60?'...':'');
-      }
-    }
-  }).catch(function(err){
-    if(cloudEl)cloudEl.textContent='Exception';
-    if(queryEl)queryEl.textContent='EXCEPTION: '+(err.message||String(err));
-    if(errEl)errEl.textContent=err.message||String(err);
-  });
-}
-
-function startAutoSync(){
-  console.log('START auto sync every 10s');
-  if(syncInterval)clearInterval(syncInterval);
-  syncInterval=setInterval(function(){
-    console.log('AUTO SYNC tick - syncId:',!!syncId,'client:',!!supabaseClient);
-    if(syncId&&supabaseClient)syncFromCloud();
-  },10000);
-}
-
-// ============================
-// INDEXEDDB
-// ============================
-function openDB(){
-  return new Promise(function(resolve,reject){
-    var request=indexedDB.open(DB_NAME,DB_VERSION);
-    request.onerror=function(){reject(request.error)};
-    request.onsuccess=function(){db=request.result;resolve(db)};
-    request.onupgradeneeded=function(e){
-      var database=e.target.result;
-      if(!database.objectStoreNames.contains(STORE_NAME)){
-        var store=database.createObjectStore(STORE_NAME,{keyPath:'id',autoIncrement:true});
-        store.createIndex('name','name',{unique:false});
-        store.createIndex('date','date',{unique:false});
-      }
-    };
-  });
-}
-
-function saveFileToDB(name,type,encryptedObj,size){
-  if(!db)return openDB().then(function(){return saveFileToDB(name,type,encryptedObj,size)});
-  return new Promise(function(resolve,reject){
-    var tx=db.transaction(STORE_NAME,'readwrite');
-    var store=tx.objectStore(STORE_NAME);
-    var file={name:name,type:type||'application/octet-stream',iv:encryptedObj.iv,encrypted:encryptedObj.data,size:size,date:new Date().toISOString(),device:detectDevice().name};
-    var req=store.add(file);
-    req.onsuccess=function(){resolve(req.result)};
-    req.onerror=function(){reject(req.error)};
-  });
-}
-
-function getAllFilesFromDB(){
-  if(!db)return openDB().then(function(){return getAllFilesFromDB()});
-  return new Promise(function(resolve,reject){
-    var tx=db.transaction(STORE_NAME,'readonly');
-    var store=tx.objectStore(STORE_NAME);
-    var req=store.getAll();
-    req.onsuccess=function(){resolve(req.result||[])};
-    req.onerror=function(){reject(req.error)};
-  });
-}
-
-function deleteFileFromDB(id){
-  if(!db)return openDB().then(function(){return deleteFileFromDB(id)});
-  return new Promise(function(resolve,reject){
-    var tx=db.transaction(STORE_NAME,'readwrite');
-    var store=tx.objectStore(STORE_NAME);
-    var req=store.delete(id);
-    req.onsuccess=function(){resolve()};
-    req.onerror=function(){reject(req.error)};
-  });
-}
-
-function getFileFromDB(id){
-  if(!db)return openDB().then(function(){return getFileFromDB(id)});
-  return new Promise(function(resolve,reject){
-    var tx=db.transaction(STORE_NAME,'readonly');
-    var store=tx.objectStore(STORE_NAME);
-    var req=store.get(id);
-    req.onsuccess=function(){resolve(req.result)};
-    req.onerror=function(){reject(req.error)};
-  });
-}
-
-// ============================
-// RILEVAMENTO DISPOSITIVO
-// ============================
-function detectDevice(){
-  var ua=navigator.userAgent;
-  var platform='unknown',name='Dispositivo';
-  if(/iPad|iPhone|iPod/.test(ua)){platform='ios';name='iPad Pro M5'}
-  else if(/Android/.test(ua)){platform='android';name='Realme GT7T'}
-  else if(/Win32|Win64|Windows/.test(ua)){platform='windows';name='Carbon X1'}
-  else if(/MacIntel/.test(ua)&&!/iPad/.test(ua)){platform='macos';name='Mac'}
-  else if(/Linux/.test(ua)){platform='linux';name='Linux'}
-  var el=document.getElementById('deviceInfo');
-  if(el)el.textContent=name;
-  document.querySelectorAll('.platform-card').forEach(function(card){
-    if(card.dataset.platform===platform)card.classList.add('active');
-  });
-  return{platform:platform,name:name};
-}
-
-// ============================
-// STATO CONNESSIONE
-// ============================
-function updateSyncStatus(){
-  var dot=document.getElementById('syncDot');
-  var text=document.getElementById('syncText');
-  if(!dot||!text)return;
-  if(navigator.onLine){dot.className='sync-dot';text.textContent='Online - Sync attivo'}
-  else{dot.className='sync-dot offline';text.textContent='Offline - solo locale'}
-}
-window.addEventListener('online',updateSyncStatus);
-window.addEventListener('offline',updateSyncStatus);
-
-// ============================
-// PWA INSTALLATION
-// ============================
-var deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',function(e){
-  e.preventDefault();deferredPrompt=e;
-  var msg=document.getElementById('installMsg');
-  if(msg)msg.textContent='App pronta per l\'installazione!';
-});
-window.addEventListener('appinstalled',function(){
-  var msg=document.getElementById('installMsg');
-  var btn=document.getElementById('installBtn');
-  if(msg)msg.textContent='App installata!';
-  if(btn){btn.textContent='App Attiva';btn.disabled=true}
-  deferredPrompt=null;
-});
-
-function installPWA(){
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(function(choice){
-      if(choice.outcome==='accepted'){
-        showStatus('Installazione in corso...','info');
-        var btn=document.getElementById('installBtn');
-        if(btn)btn.textContent='Installazione...';
-      }else{showStatus('Installazione annullata.','warning')}
-      deferredPrompt=null;
-    });
-  }else if(isStandalone()){
-    showStatus('App gia installata!','success');
-    var btn=document.getElementById('installBtn');
-    if(btn){btn.textContent='App Attiva';btn.disabled=true}
-  }else{
-    var msg=document.getElementById('installMsg');
-    if(msg)msg.innerHTML='<strong>Chrome/Edge:</strong> Menu -> "Installa BrevettIAmo"<br><strong>Safari iOS:</strong> Share -> "Aggiungi a Home"';
-  }
-}
-
-function isStandalone(){
-  return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
-}
-
-// ============================
-// FILE UPLOAD - CIFRATO + SYNC
-// ============================
-function handleFiles(fileList){
-  if(!fileList||fileList.length===0)return;
-  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
-  var progress=document.getElementById('uploadProgress');
-  var fill=document.getElementById('progressFill');
-  if(progress)progress.classList.remove('hidden');
-  var processed=0,total=fileList.length;
-  var filesArr=Array.from(fileList);
-
-  function processNext(){
-    if(processed>=total){
-      renderFileList().then(function(){
-        if(processed===total)showStatus(total+' file cifrati e salvati!','success');
-        else if(processed>0)showStatus(processed+'/'+total+' file salvati.','warning');
-        setTimeout(function(){if(progress)progress.classList.add('hidden');if(fill)fill.style.width='0%'},2000);
-      });
-      return;
-    }
-    var file=filesArr[processed];
-    var reader=new FileReader();
-    reader.onload=function(e){
-      var base64=e.target.result;
-      encryptData(base64,cryptoKey).then(function(encrypted){
-        var fileRecord={name:file.name,type:file.type||'application/octet-stream',iv:encrypted.iv,encrypted:encrypted.data,size:file.size,device:detectDevice().name};
-        return saveFileToDB(file.name,file.type,encrypted,file.size).then(function(){
-          return uploadToSupabase(fileRecord);
-        });
-      }).then(function(){
-        processed++;
-        if(fill)fill.style.width=(processed/total*100)+'%';
-        processNext();
-      }).catch(function(err){
-        console.error('Errore:',err);
-        showStatus('Errore: '+file.name,'error');
-        processed++;
-        if(fill)fill.style.width=(processed/total*100)+'%';
-        processNext();
-      });
-    };
-    reader.onerror=function(){
-      showStatus('Errore lettura: '+file.name,'error');
-      processed++;
-      if(fill)fill.style.width=(processed/total*100)+'%';
-      processNext();
-    };
-    reader.readAsDataURL(file);
-  }
-  processNext();
-}
-
-// ============================
-// RENDER FILE LIST
-// ============================
-function renderFileList(){
-  return getAllFilesFromDB().then(function(files){
-    var list=document.getElementById('fileList');
-    var items=document.getElementById('fileItems');
-    var count=document.getElementById('fileCount');
-    if(!list||!items||!count)return;
-    if(files.length===0){list.classList.add('hidden');return}
-    list.classList.remove('hidden');
-    count.textContent=files.length;
-    items.innerHTML=files.map(function(f){
-      var size=formatSize(f.size);
-      var date=new Date(f.date).toLocaleString('it-IT');
-      var isEditable=isTextFile(f.name);
-      var editBtn=isEditable?'<button onclick="editFileById('+f.id+')">Modifica</button>':'';
-      return '<div class="file-item"><svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" title="Cifrato"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div class="info"><div class="name">'+escapeHtml(f.name)+'</div><div class="meta">'+size+' | '+date+' | '+f.device+'</div></div><div class="actions">'+editBtn+'<button onclick="downloadFileById('+f.id+')">Scarica</button><button class="delete" onclick="deleteFileById('+f.id+')">Elimina</button></div></div>';
-    }).join('');
-  });
-}
-
-function formatSize(bytes){
-  if(!bytes||bytes===0)return'0 B';
-  var k=1024,sizes=['B','KB','MB','GB'];
-  var i=Math.floor(Math.log(bytes)/Math.log(k));
-  return parseFloat((bytes/Math.pow(k,i)).toFixed(2))+' '+sizes[i];
-}
-
-function escapeHtml(text){
-  var div=document.createElement('div');
-  div.textContent=text;
-  return div.innerHTML;
-}
-
-function isTextFile(filename){
-  var ext=filename.split('.').pop().toLowerCase();
-  return['txt','md','html','htm','css','js','json','xml','csv','log'].indexOf(ext)!==-1;
-}
-
-// ============================
-// EDITOR INLINE
-// ============================
-function editFileById(id){
-  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
-  getFileFromDB(id).then(function(f){
-    if(!f)return;
-    decryptData(f.encrypted,f.iv,cryptoKey).then(function(content){
-      var base64Prefix=content.indexOf(',');
-      var text=base64Prefix>-1?content.substring(base64Prefix+1):content;
-      try{text=atob(text)}catch(e){}
-      currentEditId=id;
-      document.getElementById('editorTitle').textContent='Modifica: '+f.name;
-      document.getElementById('editorText').value=text;
-      document.getElementById('editorOverlay').classList.remove('hidden');
-    }).catch(function(){
-      showStatus('Errore decifratura.','error');
-    });
-  });
-}
-
-function closeEditor(){
-  document.getElementById('editorOverlay').classList.add('hidden');
-  currentEditId=null;
-}
-
-function saveEditor(){
-  if(!currentEditId||!cryptoKey)return;
-  var text=document.getElementById('editorText').value;
-  getFileFromDB(currentEditId).then(function(f){
-    if(!f)return;
-    var base64='data:text/plain;base64,'+btoa(unescape(encodeURIComponent(text)));
-    encryptData(base64,cryptoKey).then(function(encrypted){
-      return deleteFileFromDB(currentEditId).then(function(){
-        return saveFileToDB(f.name,f.type,encrypted,new Blob([text]).size);
-      }).then(function(){
-        return uploadToSupabase({name:f.name,type:f.type,iv:encrypted.iv,encrypted:encrypted.data,size:new Blob([text]).size,device:detectDevice().name});
-      });
-    }).then(function(){
-      closeEditor();
-      renderFileList();
-      showStatus('File modificato e sincronizzato!','success');
-    }).catch(function(err){
-      console.error(err);
-      showStatus('Errore salvataggio.','error');
-    });
-  });
-}
-
-// ============================
-// DOWNLOAD / DELETE
-// ============================
-function downloadFileById(id){
-  if(!cryptoKey){showStatus('Errore: chiave non disponibile.','error');return}
-  getFileFromDB(id).then(function(f){
-    if(!f)return;
-    decryptData(f.encrypted,f.iv,cryptoKey).then(function(base64Data){
-      var a=document.createElement('a');
-      a.href=base64Data;
-      a.download=f.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      showStatus('Download avviato: '+f.name,'success');
-    }).catch(function(){
-      showStatus('Errore decifratura.','error');
-    });
-  });
-}
-
-function deleteFileById(id){
-  if(!confirm('Eliminare questo file?'))return;
-  getFileFromDB(id).then(function(f){
-    if(f&&supabaseClient&&syncId){
-      supabaseClient.from('pwa_files').delete().eq('sync_id',syncId).eq('name',f.name).then(function(){
-        return deleteFileFromDB(id);
-      }).then(function(){
-        renderFileList();
-        showStatus('File eliminato.','success');
-      }).catch(function(){
-        deleteFileFromDB(id).then(function(){renderFileList();});
-      });
-    }else{
-      deleteFileFromDB(id).then(function(){renderFileList();showStatus('File eliminato.','success');});
-    }
-  });
-}
-
-// ============================
-// DRAG & DROP
-// ============================
-var uploadArea=document.getElementById('uploadArea');
-if(uploadArea){
-  uploadArea.addEventListener('click',function(e){
-    if(e.target.tagName!=='BUTTON'&&e.target.tagName!=='INPUT'){
-      document.getElementById('fileInput').click();
-    }
-  });
-  uploadArea.addEventListener('dragover',function(e){
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
-  });
-  uploadArea.addEventListener('dragleave',function(e){
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-  });
-  uploadArea.addEventListener('drop',function(e){
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    if(e.dataTransfer.files&&e.dataTransfer.files.length>0){
-      handleFiles(e.dataTransfer.files);
-    }
-  });
-}
-
-// ============================
-// UTILITIES
-// ============================
-function showStatus(msg,type){
-  var el=document.getElementById('uploadStatus');
-  if(!el)return;
-  el.className='status-msg status-'+type;
-  el.textContent=msg;
-  setTimeout(function(){el.className='';el.textContent=''},4000);
-}
-
-// ============================
-// SERVICE WORKER + MANIFEST INLINE
-// ============================
-function registerInlineSW(){
-  if(!('serviceWorker' in navigator))return;
-  var swCode="self.addEventListener('install',function(e){self.skipWaiting()});self.addEventListener('activate',function(e){e.waitUntil(self.clients.claim())});self.addEventListener('fetch',function(e){e.respondWith(fetch(e.request).catch(function(){return new Response('<h1>Offline</h1><p>Sei offline. I file locali sono disponibili.</p>',{headers:{'Content-Type':'text/html'}})}))});";
-  try{
-    var blob=new Blob([swCode],{type:'application/javascript'});
-    var swUrl=URL.createObjectURL(blob);
-    navigator.serviceWorker.register(swUrl).then(function(){console.log('SW registrato')}).catch(function(err){console.log('SW fallito:',err)});
-  }catch(err){console.log('SW error:',err)}
-}
-
-function injectManifest(){
-  var manifest={name:'BrevettIAmo PWA',short_name:'BrevettIAmo',start_url:'pwa.html',display:'standalone',background_color:'#f5f0e6',theme_color:'#1a3a5c',icons:[{src:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20192%20192%27%3E%3Crect%20width%3D%27192%27%20height%3D%27192%27%20fill%3D%27%231a3a5c%27%20rx%3D%2724%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2770%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%274%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2755%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%20stroke-dasharray%3D%278%208%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2740%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%271%27%2F%3E%3Cellipse%20cx%3D%2796%27%20cy%3D%2796%27%20rx%3D%2735%27%20ry%3D%2720%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2712%27%20fill%3D%27%23c9a84c%27%20opacity%3D%270.3%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%276%27%20fill%3D%27%23c9a84c%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%2726%27%20x2%3D%2796%27%20y2%3D%2746%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%27146%27%20x2%3D%2796%27%20y2%3D%27166%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2726%27%20y1%3D%2796%27%20x2%3D%2746%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%27146%27%20y1%3D%2796%27%20x2%3D%27166%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3C%2Fsvg%3E',sizes:'192x192',type:'image/svg+xml'}]};
-  var link=document.createElement('link');
-  link.rel='manifest';
-  link.href='data:application/json;base64,'+btoa(JSON.stringify(manifest));
-  document.head.appendChild(link);
-}
-
-// ============================
-// INIT
-// ============================
-document.addEventListener('DOMContentLoaded',function(){
-  detectDevice();
-  updateSyncStatus();
-  openDB().then(function(){
-    injectManifest();
-    registerInlineSW();
-    checkPassword();
-    renderFileList();
-  });
-  if(isStandalone()){
-    var btn=document.getElementById('installBtn');
-    var msg=document.getElementById('installMsg');
-    if(btn){btn.textContent='App Attiva';btn.disabled=true}
-    if(msg)msg.textContent='Stai usando la PWA installata.';
-  }
-});
-</script>
-
-</body>
-</html>
+        window.updateLoginUI = function() {
+            var loginBtn = document.getElementById('loginBtn');
+            var loginBtnText = document.getElementById('loginBtnText');
+            var userInfo = document.getElementById('userInfo');
+            
+            if (
