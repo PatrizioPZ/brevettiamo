@@ -215,9 +215,11 @@ body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(13
     <div class="debug-panel" id="debugPanel" style="display:none">
       <h4>Debug Sync</h4>
       <div class="debug-row"><span class="debug-label">Sync ID:</span><span class="debug-value" id="dbgSyncId">-</span></div>
-      <div class="debug-row"><span class="debug-label">Supabase:</span><span class="debug-value" id="dbgSupabase">-</span></div>
+      <div class="debug-row"><span class="debug-label">Supabase Lib:</span><span class="debug-value" id="dbgSupaLib">-</span></div>
+      <div class="debug-row"><span class="debug-label">Supabase Client:</span><span class="debug-value" id="dbgSupabase">-</span></div>
       <div class="debug-row"><span class="debug-label">File Cloud:</span><span class="debug-value" id="dbgCloud">-</span></div>
       <div class="debug-row"><span class="debug-label">File Locali:</span><span class="debug-value" id="dbgLocal">-</span></div>
+      <div class="debug-row"><span class="debug-label">Query Result:</span><span class="debug-value" id="dbgQuery">-</span></div>
       <div class="debug-row"><span class="debug-label">Ultimo Errore:</span><span class="debug-value error" id="dbgError">-</span></div>
       <button class="debug-btn" onclick="updateDebugPanel()">Aggiorna Debug</button>
     </div>
@@ -408,12 +410,7 @@ function updateSyncInfo(text){
 function initSupabase(){
   console.log('INIT Supabase... URL presente:',!!SUPABASE_URL,'Key presente:',!!SUPABASE_ANON_KEY);
   if(typeof supabase!=='undefined'&&supabase.createClient){
-    try{
-      supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-      console.log('Supabase connesso OK');
-    }catch(e){
-      console.error('Supabase init error:',e);
-    }
+    console.log('Supabase library OK');
   }else{
     console.error('Supabase library NOT loaded');
   }
@@ -532,29 +529,68 @@ function toggleDebug(){
 
 function updateDebugPanel(){
   var syncEl=document.getElementById('dbgSyncId');
+  var supaLibEl=document.getElementById('dbgSupaLib');
   var supEl=document.getElementById('dbgSupabase');
   var cloudEl=document.getElementById('dbgCloud');
   var localEl=document.getElementById('dbgLocal');
+  var queryEl=document.getElementById('dbgQuery');
   var errEl=document.getElementById('dbgError');
-  if(syncEl)syncEl.textContent=syncId?syncId.substring(0,16)+'...':'non impostato';
-  if(supEl)supEl.textContent=supabaseClient?'Connesso':'Non connesso';
+
+  if(syncEl)syncEl.textContent=syncId?syncId.substring(0,20)+'...':'non impostato';
+  if(supaLibEl)supaLibEl.textContent=(typeof supabase!=='undefined'&&supabase.createClient)?'Caricata':'NON caricata';
+  if(supEl)supEl.textContent=supabaseClient?'Creato':'Non creato';
   if(cloudEl)cloudEl.textContent='...';
   if(localEl)localEl.textContent='...';
+  if(queryEl)queryEl.textContent='...';
   if(errEl)errEl.textContent='Nessuno';
+
   getAllFilesFromDB().then(function(localFiles){
     if(localEl)localEl.textContent=localFiles.length;
   });
-  if(supabaseClient&&syncId){
-    supabaseClient.from('pwa_files').select('*',{count:'exact',head:true}).eq('sync_id',syncId).then(function(res){
-      if(res.error&&cloudEl)cloudEl.textContent='Errore';
-      else if(cloudEl)cloudEl.textContent=(res.count!==undefined?res.count:(res.data?res.data.length:'?'));
-    }).catch(function(err){
-      if(cloudEl)cloudEl.textContent='Errore';
-      if(errEl)errEl.textContent=err.message||String(err);
-    });
-  }else{
+
+  if(typeof supabase==='undefined'||!supabase.createClient){
+    if(supaLibEl)supaLibEl.textContent='NON caricata - ricarica pagina';
     if(cloudEl)cloudEl.textContent='N/A';
+    if(queryEl)queryEl.textContent='Libreria mancante';
+    return;
   }
+
+  if(!supabaseClient){
+    try{
+      supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+      if(supEl)supEl.textContent='Creato ora';
+    }catch(e){
+      if(supEl)supEl.textContent='Errore: '+e.message;
+      if(errEl)errEl.textContent=e.message;
+      return;
+    }
+  }
+
+  if(!syncId){
+    if(cloudEl)cloudEl.textContent='N/A - no syncId';
+    if(queryEl)queryEl.textContent='Inserisci password';
+    return;
+  }
+
+  supabaseClient.from('pwa_files').select('*').eq('sync_id',syncId).then(function(res){
+    if(res.error){
+      if(cloudEl)cloudEl.textContent='Errore query';
+      if(queryEl)queryEl.textContent='ERRORE: '+res.error.message;
+      if(errEl)errEl.textContent=res.error.message;
+    }else{
+      var files=res.data||[];
+      if(cloudEl)cloudEl.textContent=files.length;
+      if(queryEl)queryEl.textContent='OK - '+files.length+' righe';
+      if(files.length>0){
+        var names=files.map(function(f){return f.name}).join(', ');
+        if(queryEl)queryEl.textContent='OK: '+names.substring(0,60)+(names.length>60?'...':'');
+      }
+    }
+  }).catch(function(err){
+    if(cloudEl)cloudEl.textContent='Exception';
+    if(queryEl)queryEl.textContent='EXCEPTION: '+(err.message||String(err));
+    if(errEl)errEl.textContent=err.message||String(err);
+  });
 }
 
 function startAutoSync(){
@@ -937,7 +973,7 @@ function registerInlineSW(){
 }
 
 function injectManifest(){
-  var manifest={name:'BrevettIAmo PWA',short_name:'BrevettIAmo',start_url:'.',display:'standalone',background_color:'#f5f0e6',theme_color:'#1a3a5c',icons:[{src:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20192%20192%27%3E%3Crect%20width%3D%27192%27%20height%3D%27192%27%20fill%3D%27%231a3a5c%27%20rx%3D%2724%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2770%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%274%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2755%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%20stroke-dasharray%3D%278%208%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2740%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%271%27%2F%3E%3Cellipse%20cx%3D%2796%27%20cy%3D%2796%27%20rx%3D%2735%27%20ry%3D%2720%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2712%27%20fill%3D%27%23c9a84c%27%20opacity%3D%270.3%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%276%27%20fill%3D%27%23c9a84c%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%2726%27%20x2%3D%2796%27%20y2%3D%2746%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%27146%27%20x2%3D%2796%27%20y2%3D%27166%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2726%27%20y1%3D%2796%27%20x2%3D%2746%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%27146%27%20y1%3D%2796%27%20x2%3D%27166%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3C%2Fsvg%3E',sizes:'192x192',type:'image/svg+xml'}]};
+  var manifest={name:'BrevettIAmo PWA',short_name:'BrevettIAmo',start_url:'pwa.html',display:'standalone',background_color:'#f5f0e6',theme_color:'#1a3a5c',icons:[{src:'data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20192%20192%27%3E%3Crect%20width%3D%27192%27%20height%3D%27192%27%20fill%3D%27%231a3a5c%27%20rx%3D%2724%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2770%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%274%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2755%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%20stroke-dasharray%3D%278%208%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2740%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%271%27%2F%3E%3Cellipse%20cx%3D%2796%27%20cy%3D%2796%27%20rx%3D%2735%27%20ry%3D%2720%27%20fill%3D%27none%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%2712%27%20fill%3D%27%23c9a84c%27%20opacity%3D%270.3%27%2F%3E%3Ccircle%20cx%3D%2796%27%20cy%3D%2796%27%20r%3D%276%27%20fill%3D%27%23c9a84c%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%2726%27%20x2%3D%2796%27%20y2%3D%2746%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2796%27%20y1%3D%27146%27%20x2%3D%2796%27%20y2%3D%27166%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%2726%27%20y1%3D%2796%27%20x2%3D%2746%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%27146%27%20y1%3D%2796%27%20x2%3D%27166%27%20y2%3D%2796%27%20stroke%3D%27%23c9a84c%27%20stroke-width%3D%272%27%2F%3E%3C%2Fsvg%3E',sizes:'192x192',type:'image/svg+xml'}]};
   var link=document.createElement('link');
   link.rel='manifest';
   link.href='data:application/json;base64,'+btoa(JSON.stringify(manifest));
