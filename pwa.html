@@ -11,7 +11,10 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="BrevettIAmo">
-    <meta name="description" content="BrevettIAmo - Vault cifrato per documenti professionali">
+    <meta name="description" content="BrevettIAmo - Storage sicuro e crittografato per i tuoi brevetti">
+    <meta name="keywords" content="brevetti, storage, sicurezza, crittografia, PWA">
+    <meta name="author" content="BrevettIAmo">
+    <meta name="robots" content="index, follow">
     
     <!-- Netlify Identity Widget -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -27,116 +30,135 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
         }
 
         body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
             background: linear-gradient(145deg, #f5f0e6 0%, #e8e0d0 50%, #d4c8b0 100%);
-            font-family: 'Georgia', 'Times New Roman', Times, serif;
             color: #2c1810;
-            line-height: 1.5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 0 1rem;
+            align-items: center;
+            padding: 1rem;
+            line-height: 1.5;
         }
 
-        /* contenitore principale */
-        .app-wrapper {
+        .app-container {
             max-width: 1200px;
-            margin: 0 auto;
             width: 100%;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+            background: rgba(245, 240, 230, 0.7);
+            backdrop-filter: blur(2px);
+            border-radius: 32px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 20px 40px rgba(44, 24, 16, 0.15), inset 0 1px 4px rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(201, 168, 76, 0.3);
         }
 
         /* ===== HEADER ===== */
         .header {
-            padding: 2rem 0 1rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
             border-bottom: 2px solid #c9a84c;
-            margin-bottom: 2rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-left {
-            display: flex;
-            flex-direction: column;
+            padding-bottom: 1.5rem;
         }
 
         .header h1 {
-            font-size: 2.2rem;
+            font-size: 2.8rem;
             font-weight: 700;
             letter-spacing: 1px;
             color: #1a3a5c;
-            text-shadow: 1px 1px 0 rgba(201, 168, 76, 0.3);
+            text-shadow: 2px 2px 0 rgba(201, 168, 76, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
 
-        .header .sottotitolo {
+        .header h1 svg {
+            width: 48px;
+            height: 48px;
+            stroke: #c9a84c;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
             font-style: italic;
             color: #2c1810;
             opacity: 0.8;
-            font-size: 1.1rem;
-            margin-top: 0.2rem;
+            margin-top: 0.5rem;
         }
 
-        .badge-beta {
+        .beta-badge {
+            display: inline-block;
             background: #1a3a5c;
             color: #f5f0e6;
-            padding: 0.4rem 1.2rem;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
             font-weight: bold;
             letter-spacing: 1px;
+            text-transform: uppercase;
             border: 1px solid #c9a84c;
             box-shadow: 0 2px 8px rgba(26, 58, 92, 0.3);
-            text-transform: uppercase;
-            display: inline-block;
-            margin-top: 0.5rem;
+            margin-top: 0.8rem;
         }
 
         /* ===== SEZIONI ===== */
         .section {
             background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(2px);
-            border-radius: 20px;
-            padding: 1.8rem 2rem;
+            backdrop-filter: blur(4px);
+            border-radius: 24px;
+            padding: 1.8rem 1.5rem;
             margin-bottom: 2rem;
             border: 1px solid rgba(201, 168, 76, 0.4);
-            box-shadow: 0 8px 20px rgba(44, 24, 16, 0.08);
+            box-shadow: 0 8px 16px rgba(44, 24, 16, 0.05);
         }
 
         .section-title {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: #1a3a5c;
-            border-left: 5px solid #c9a84c;
+            border-left: 6px solid #c9a84c;
             padding-left: 1rem;
             margin-bottom: 1.5rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title svg {
+            width: 28px;
+            height: 28px;
+            stroke: #c9a84c;
+            fill: none;
+            stroke-width: 2;
         }
 
         /* ===== LOGIN ===== */
         .login-area {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1.5rem;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.2rem;
         }
 
         .login-btn {
             background: #1a3a5c;
             color: #f5f0e6;
             border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 40px;
-            font-size: 1.1rem;
-            font-family: inherit;
+            padding: 0.9rem 2.2rem;
+            border-radius: 60px;
+            font-family: Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: bold;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.8rem;
+            box-shadow: 0 4px 12px rgba(26, 58, 92, 0.4);
             transition: all 0.2s ease;
             border: 1px solid #c9a84c;
-            box-shadow: 0 4px 10px rgba(26, 58, 92, 0.3);
         }
 
         .login-btn:hover {
@@ -148,26 +170,25 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
             width: 24px;
             height: 24px;
             fill: none;
-            stroke: #f5f0e6;
+            stroke: #c9a84c;
             stroke-width: 2;
         }
 
         .user-info {
             font-size: 1.2rem;
-            color: #1a3a5c;
-            font-weight: bold;
-            background: rgba(201, 168, 76, 0.2);
-            padding: 0.5rem 1.2rem;
-            border-radius: 30px;
-            border: 1px solid #c9a84c;
+            background: rgba(201, 168, 76, 0.15);
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            border: 1px dashed #c9a84c;
+            display: inline-block;
         }
 
         /* ===== INSTALLA ===== */
-        .install-flex {
+        .install-row {
             display: flex;
-            align-items: center;
-            gap: 2rem;
             flex-wrap: wrap;
+            align-items: center;
+            gap: 1.5rem;
         }
 
         .install-btn {
@@ -175,17 +196,22 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
             color: #1a3a5c;
             border: none;
             padding: 0.9rem 2.5rem;
-            border-radius: 40px;
-            font-size: 1.2rem;
+            border-radius: 60px;
+            font-family: Georgia, serif;
+            font-size: 1.3rem;
             font-weight: bold;
-            font-family: inherit;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.8rem;
-            border: 2px solid #1a3a5c;
-            transition: all 0.2s;
             box-shadow: 0 4px 12px rgba(201, 168, 76, 0.5);
+            transition: 0.2s;
+            border: 1px solid #1a3a5c;
+        }
+
+        .install-btn:hover {
+            background: #d4b95e;
+            transform: translateY(-2px);
         }
 
         .install-btn svg {
@@ -196,39 +222,34 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
             stroke-width: 2;
         }
 
-        .install-btn:hover {
-            background: #b8953a;
-            transform: translateY(-2px);
-        }
-
         /* ===== DISPOSITIVI ===== */
         .device-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1.5rem;
+            gap: 1.2rem;
             margin-top: 1rem;
         }
 
         .device-card {
-            background: rgba(245, 240, 230, 0.7);
+            background: rgba(245, 240, 230, 0.8);
             border-radius: 16px;
-            padding: 1.2rem 0.8rem;
+            padding: 1rem 0.5rem;
             text-align: center;
-            border: 1px solid #c9a84c;
+            border: 1px solid rgba(26, 58, 92, 0.2);
             transition: 0.2s;
         }
 
         .device-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(44, 24, 16, 0.1);
+            border-color: #c9a84c;
+            box-shadow: 0 4px 12px rgba(201, 168, 76, 0.3);
         }
 
         .device-card svg {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             stroke: #1a3a5c;
             fill: none;
-            stroke-width: 1.8;
+            stroke-width: 1.5;
             margin-bottom: 0.5rem;
         }
 
@@ -246,87 +267,87 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
         }
 
         .feature-item {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 1rem;
+            border-radius: 16px;
+            border-left: 4px solid #c9a84c;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            background: rgba(245, 240, 230, 0.5);
-            padding: 0.8rem 1rem;
-            border-radius: 40px;
-            border: 1px solid rgba(201, 168, 76, 0.5);
         }
 
         .feature-item svg {
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             stroke: #1a3a5c;
             fill: none;
             stroke-width: 2;
             flex-shrink: 0;
         }
 
-        .feature-item span {
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
         /* ===== FILE UPLOAD ===== */
         .upload-area {
-            border: 2px dashed #1a3a5c;
-            border-radius: 20px;
-            padding: 2.5rem 1rem;
+            border: 2px dashed #c9a84c;
+            border-radius: 24px;
+            padding: 2rem;
             text-align: center;
-            background: rgba(245, 240, 230, 0.4);
             cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 2rem;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .upload-area:hover {
             background: rgba(201, 168, 76, 0.1);
-            border-color: #c9a84c;
+            border-color: #1a3a5c;
+        }
+
+        .upload-area.dragover {
+            background: rgba(26, 58, 92, 0.1);
+            border-color: #1a3a5c;
         }
 
         .upload-area svg {
-            width: 60px;
-            height: 60px;
-            stroke: #1a3a5c;
+            width: 64px;
+            height: 64px;
+            stroke: #c9a84c;
             fill: none;
             stroke-width: 1.5;
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
         }
 
         .upload-area p {
             font-size: 1.2rem;
-            font-weight: 600;
-            color: #1a3a5c;
+            color: #2c1810;
+            margin-bottom: 0.5rem;
         }
 
-        .upload-area .sub-text {
-            font-size: 0.9rem;
-            color: #6b5a4e;
-            margin-top: 0.3rem;
+        .upload-area small {
+            color: #5a4a3a;
+            font-style: italic;
         }
 
-        /* ===== LISTA FILE ===== */
+        /* ===== FILE LIST ===== */
         .file-list {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .file-item {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem;
-            background: rgba(245, 240, 230, 0.6);
-            border-radius: 12px;
-            margin-bottom: 0.8rem;
+            gap: 1rem;
             border: 1px solid rgba(201, 168, 76, 0.3);
             transition: 0.2s;
         }
 
         .file-item:hover {
-            background: rgba(245, 240, 230, 0.9);
             border-color: #c9a84c;
+            box-shadow: 0 4px 12px rgba(201, 168, 76, 0.2);
         }
 
         .file-info {
@@ -336,9 +357,9 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
             flex: 1;
         }
 
-        .file-icon {
-            width: 40px;
-            height: 40px;
+        .file-info svg {
+            width: 32px;
+            height: 32px;
             stroke: #1a3a5c;
             fill: none;
             stroke-width: 1.5;
@@ -347,11 +368,13 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
         .file-name {
             font-weight: 600;
             color: #2c1810;
+            word-break: break-all;
         }
 
         .file-meta {
-            font-size: 0.8rem;
-            color: #6b5a4e;
+            font-size: 0.9rem;
+            color: #5a4a3a;
+            margin-top: 0.2rem;
         }
 
         .file-actions {
@@ -363,89 +386,99 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
             background: #1a3a5c;
             color: #f5f0e6;
             border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-family: Georgia, serif;
+            font-size: 0.9rem;
             cursor: pointer;
-            font-family: inherit;
-            font-size: 0.85rem;
             transition: 0.2s;
+            border: 1px solid #c9a84c;
         }
 
         .file-btn:hover {
             background: #2c4a6e;
+            transform: scale(1.05);
         }
 
-        .file-btn.download {
-            background: #c9a84c;
-            color: #1a3a5c;
+        .file-btn.delete {
+            background: #8b0000;
+            border-color: #8b0000;
         }
 
-        .file-btn.download:hover {
-            background: #b8953a;
+        .file-btn.delete:hover {
+            background: #a00000;
         }
 
-        /* ===== SINCRONIZZAZIONE ===== */
+        /* ===== SYNC STATUS ===== */
         .sync-status {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
+            padding: 0.8rem 1.2rem;
             background: rgba(201, 168, 76, 0.15);
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            border: 1px solid #c9a84c;
+            border-radius: 40px;
+            border: 1px solid rgba(201, 168, 76, 0.4);
+            margin-top: 1rem;
         }
 
-        .sync-icon {
-            width: 20px;
-            height: 20px;
-            fill: #1a3a5c;
-            transition: transform 0.3s ease;
+        .sync-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            animation: pulse 2s infinite;
         }
 
-        .sync-icon.pulsing {
-            animation: pulse-sync 1.2s ease-in-out infinite;
+        .sync-dot.syncing {
+            background: #ff9800;
+            animation: pulse 1s infinite;
         }
 
-        @keyframes pulse-sync {
-            0% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.3); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.7; }
+        .sync-dot.error {
+            background: #f44336;
+            animation: none;
         }
 
-        .sync-text {
-            font-size: 0.9rem;
-            color: #1a3a5c;
-            font-weight: 600;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        /* ===== TOAST NOTIFICHE ===== */
+        /* ===== TOAST NOTIFICATIONS ===== */
         .toast-container {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            top: 20px;
+            right: 20px;
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 10px;
         }
 
         .toast {
             background: #1a3a5c;
             color: #f5f0e6;
             padding: 1rem 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid #c9a84c;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            animation: slideIn 0.3s ease;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid #c9a84c;
+            animation: slideIn 0.3s ease-out;
             max-width: 350px;
         }
 
         .toast.success {
-            border-left-color: #4caf50;
+            background: #2e7d32;
+            border-color: #4caf50;
         }
 
         .toast.error {
-            border-left-color: #f44336;
+            background: #c62828;
+            border-color: #f44336;
+        }
+
+        .toast.warning {
+            background: #e65100;
+            border-color: #ff9800;
         }
 
         @keyframes slideIn {
@@ -459,18 +492,182 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
             }
         }
 
-        /* ===== MODALE PASSWORD ===== */
+        /* ===== ONBOARDING ===== */
+        .onboarding-banner {
+            background: #1a3a5c;
+            color: #f5f0e6;
+            padding: 1rem 1.5rem;
+            border-radius: 48px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: 0 8px 16px rgba(26, 58, 92, 0.3);
+            border: 1px solid #c9a84c;
+            animation: fadeSlideDown 0.6s ease-out;
+        }
+
+        .onboarding-banner span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .onboarding-banner button {
+            background: #c9a84c;
+            color: #1a3a5c;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            font-family: Georgia, serif;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #f5f0e6;
+        }
+
+        .onboarding-banner button:hover {
+            background: #d4b95e;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1.5rem 1rem;
+                border-radius: 24px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .device-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .file-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .onboarding-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .app-container {
+                padding: 1rem 0.8rem;
+                border-radius: 16px;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .login-btn, .install-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .upload-area {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        /* ===== ACCESSIBILITÀ ===== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f5f0e6;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c9a84c;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1a3a5c;
+        }
+
+        /* ===== FOCUS STATES ===== */
+        button:focus, input:focus, textarea:focus {
+            outline: 3px solid #c9a84c;
+            outline-offset: 2px;
+        }
+
+        /* ===== LOADING SPINNER ===== */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(201, 168, 76, 0.3);
+            border-radius: 50%;
+            border-top-color: #c9a84c;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== MODAL ===== */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
             z-index: 999;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(4px);
         }
 
         .modal-overlay.active {
@@ -479,45 +676,51 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
 
         .modal {
             background: #f5f0e6;
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 2rem;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
-            border: 2px solid #c9a84c;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid #c9a84c;
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .modal h3 {
             color: #1a3a5c;
             margin-bottom: 1rem;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
         }
 
-        .modal input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #c9a84c;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            background: white;
+        .modal p {
+            margin-bottom: 1.5rem;
+            color: #2c1810;
         }
 
-        .modal-buttons {
+        .modal-actions {
             display: flex;
             gap: 1rem;
             justify-content: flex-end;
         }
 
         .modal-btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 20px;
-            border: none;
-            font-family: inherit;
+            padding: 0.8rem 1.5rem;
+            border-radius: 40px;
+            font-family: Georgia, serif;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
+            border: 1px solid #1a3a5c;
         }
 
         .modal-btn.primary {
@@ -525,138 +728,171 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
             color: #f5f0e6;
         }
 
+        .modal-btn.primary:hover {
+            background: #2c4a6e;
+        }
+
         .modal-btn.secondary {
             background: transparent;
-            border: 1px solid #1a3a5c;
             color: #1a3a5c;
         }
 
-        .modal-btn:hover {
-            transform: scale(1.02);
+        .modal-btn.secondary:hover {
+            background: rgba(26, 58, 92, 0.1);
         }
 
-        /* ===== FOOTER ===== */
-        .footer {
+        /* ===== PROGRESS BAR ===== */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(201, 168, 76, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c9a84c, #1a3a5c);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
             text-align: center;
-            padding: 2rem 0;
-            color: #6b5a4e;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(201, 168, 76, 0.3);
-            margin-top: 2rem;
+            padding: 3rem 1rem;
+            color: #5a4a3a;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .header-left {
-                align-items: center;
-            }
-            
-            .section {
-                padding: 1.2rem;
-            }
-            
-            .login-area {
-                justify-content: center;
-            }
-            
-            .install-flex {
-                justify-content: center;
-                text-align: center;
-            }
-            
-            .device-grid {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .file-item {
-                flex-direction: column;
-                gap: 0.8rem;
-                text-align: center;
-            }
-            
-            .file-info {
-                flex-direction: column;
-                gap: 0.3rem;
-            }
-            
-            .toast-container {
-                left: 1rem;
-                right: 1rem;
-                bottom: 1rem;
-            }
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            stroke: #c9a84c;
+            fill: none;
+            stroke-width: 1;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #1a3a5c;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="app-wrapper">
-        <!-- ===== HEADER ===== -->
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal">
+            <h3 id="modal-title">Conferma</h3>
+            <p id="modal-message">Sei sicuro di voler procedere?</p>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="window.closeModal()">Annulla</button>
+                <button class="modal-btn primary" id="modal-confirm-btn">Conferma</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- HEADER -->
         <header class="header">
-            <div class="header-left">
-                <h1>⚖️ BrevettIAmo</h1>
-                <div class="sottotitolo">Vault Cifrato Professionale</div>
-                <span class="badge-beta">Beta</span>
-            </div>
-            <div class="sync-status" id="syncStatus">
-                <svg class="sync-icon" viewBox="0 0 24 24">
-                    <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 0 0-7.07 4.02L2 5v7h7L6.34 9.34A6 6 0 0 1 12 6a5.91 5.91 0 0 1 4.22 1.78L17.65 6.35zM22 12h-7l2.66 2.66A6 6 0 0 1 12 18a5.91 5.91 0 0 1-4.22-1.78L6.35 17.65A7.95 7.95 0 0 0 12 20a8 8 0 0 0 7.07-4.02L22 18v-6z"/>
+            <h1>
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
                 </svg>
-                <span class="sync-text" id="syncText">In attesa...</span>
-            </div>
+                BrevettIAmo
+            </h1>
+            <p class="subtitle">Storage Sicuro e Crittografato per i Tuoi Brevetti</p>
+            <div class="beta-badge">Beta</div>
         </header>
 
-        <!-- ===== SEZIONE LOGIN ===== -->
-        <section class="section" id="loginSection">
-            <h2 class="section-title">🔐 Accesso Sicuro</h2>
+        <!-- ONBOARDING -->
+        <div id="onboarding-banner" class="onboarding-banner" style="display: none;">
+            <span>🎉 Benvenuto in BrevettIAmo! Scopri come proteggere i tuoi brevetti.</span>
+            <button onclick="window.showOnboarding()">Scopri di più</button>
+        </div>
+
+        <!-- LOGIN SECTION -->
+        <section class="section">
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9v2c-1.66 0-3 1.34-3 3v6c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-6c0-1.66-1.34-3-3-3V9c0-3.87-3.13-7-7-7zm-2 16H8v-4h2v4zm6 0h-2v-4h2v4zm-4-6h-2V9c0-1.1.9-2 2-2s2 .9 2 2v3h-2z"/>
+                </svg>
+                Accesso Sicuro
+            </h2>
             <div class="login-area">
-                <button class="login-btn" id="loginBtn" onclick="window.handleLogin()">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                    <span id="loginBtnText">Accedi</span>
-                </button>
-                <div id="userInfo" class="user-info" style="display: none;"></div>
+                <div id="login-section">
+                    <button class="login-btn" onclick="window.netlifyIdentity.open()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                        Accedi con Netlify
+                    </button>
+                </div>
+                <div id="user-section" style="display: none;">
+                    <div class="user-info" id="user-info"></div>
+                    <button class="login-btn" onclick="window.netlifyIdentity.logout()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                        </svg>
+                        Esci
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- ===== SEZIONE INSTALLAZIONE ===== -->
-        <section class="section" id="installSection">
-            <h2 class="section-title">📱 Installa BrevettIAmo</h2>
-            <div class="install-flex">
-                <button class="install-btn" id="installBtn" onclick="window.installPWA()" style="display: none;">
+        <!-- INSTALLAZIONE -->
+        <section class="section">
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                </svg>
+                Installa l'App
+            </h2>
+            <div class="install-row">
+                <button class="install-btn" id="install-btn" style="display: none;">
                     <svg viewBox="0 0 24 24">
                         <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
                     </svg>
-                    Installa App
+                    Installa BrevettIAmo
                 </button>
-                <p style="color: #6b5a4e; font-style: italic;">Aggiungi BrevettIAmo al tuo dispositivo per un accesso rapido e sicuro</p>
+                <div class="sync-status">
+                    <div class="sync-dot" id="sync-dot"></div>
+                    <span id="sync-text">In attesa di connessione...</span>
+                </div>
             </div>
         </section>
 
-        <!-- ===== SEZIONE DISPOSITIVI ===== -->
+        <!-- DISPOSITIVI -->
         <section class="section">
-            <h2 class="section-title">💻 Multi-Dispositivo</h2>
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/>
+                </svg>
+                Dispositivi Supportati
+            </h2>
             <div class="device-grid">
-                <div class="device-card">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>
-                    </svg>
-                    <span>Desktop</span>
-                </div>
                 <div class="device-card">
                     <svg viewBox="0 0 24 24">
                         <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
                     </svg>
                     <span>Mobile</span>
+                </div>
+                <div class="device-card">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/>
+                    </svg>
+                    <span>Desktop</span>
                 </div>
                 <div class="device-card">
                     <svg viewBox="0 0 24 24">
@@ -666,185 +902,28 @@ Ecco il file HTML completo e funzionante per la PWA BrevettIAmo professionale:
                 </div>
                 <div class="device-card">
                     <svg viewBox="0 0 24 24">
-                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h12v2H6zm0 4h8v2H6z"/>
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/>
                     </svg>
                     <span>Web</span>
                 </div>
             </div>
         </section>
 
-        <!-- ===== SEZIONE CARATTERISTICHE ===== -->
+        <!-- CARATTERISTICHE -->
         <section class="section">
-            <h2 class="section-title">✨ Caratteristiche</h2>
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z"/>
+                </svg>
+                Caratteristiche di Sicurezza
+            </h2>
             <div class="features-grid">
-                <div class="feature-item">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-                    </svg>
-                    <span>Cifratura AES-256-GCM</span>
-                </div>
-                <div class="feature-item">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <span>Sync Automatico</span>
-                </div>
                 <div class="feature-item">
                     <svg viewBox="0 0 24 24">
                         <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
                     </svg>
-                    <span>Zero-Knowledge</span>
+                    Crittografia AES-256
                 </div>
                 <div class="feature-item">
                     <svg viewBox="0 0 24 24">
-                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-                    </svg>
-                    <span>Backup Cloud</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== SEZIONE FILE ===== -->
-        <section class="section" id="filesSection">
-            <h2 class="section-title">📁 I Tuoi File</h2>
-            
-            <!-- Area Upload -->
-            <div class="upload-area" id="uploadArea" onclick="window.triggerFileUpload()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-                </svg>
-                <p>Trascina qui i tuoi file o clicca per selezionarli</p>
-                <div class="sub-text">I file verranno cifrati prima dell'upload</div>
-                <input type="file" id="fileInput" style="display: none;" multiple onchange="window.handleFileSelect(event)">
-            </div>
-            
-            <!-- Lista File -->
-            <div class="file-list" id="fileList">
-                <p style="color: #6b5a4e; text-align: center; padding: 1rem;">Nessun file caricato</p>
-            </div>
-        </section>
-
-        <!-- ===== FOOTER ===== -->
-        <footer class="footer">
-            <p>© 2024 BrevettIAmo - Storage Sicuro per Professionisti</p>
-            <p style="margin-top: 0.5rem; font-size: 0.8rem;">Cifratura end-to-end · Sync automatico · Zero-Knowledge</p>
-        </footer>
-    </div>
-
-    <!-- ===== MODALE PASSWORD ===== -->
-    <div class="modal-overlay" id="passwordModal">
-        <div class="modal">
-            <h3>🔑 Inserisci Password</h3>
-            <p style="margin-bottom: 1rem; color: #6b5a4e;">La password viene usata per derivare la chiave di cifratura</p>
-            <input type="password" id="passwordInput" placeholder="Password di cifratura" onkeydown="if(event.key === 'Enter') window.confirmPassword()">
-            <div class="modal-buttons">
-                <button class="modal-btn secondary" onclick="window.closePasswordModal()">Annulla</button>
-                <button class="modal-btn primary" onclick="window.confirmPassword()">Conferma</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== TOAST NOTIFICHE ===== -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <script>
-        // ============================================
-        // BrevettIAmo - PWA Completa
-        // ============================================
-
-        // Configurazione Supabase
-        window.SUPABASE_URL = 'https://jtekrvlmqnluvaiapmwb.supabase.co';
-        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0ZWtydmxtcW5sdXZhaWFwbXdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMzkzOTMsImV4cCI6MjA5NTcxNTM5M30.q5KOpwaZkZEqJt8fDT8XQnsRWswacvhlPzXZ4pysWvQ';
-
-        // Configurazione IndexedDB
-        window.DB_NAME = 'brevettiamo_vault';
-        window.DB_VERSION = 1;
-        window.STORE_NAME = 'files_cache';
-
-        // Stato globale
-        window.currentUser = null;
-        window.currentKey = null;
-        window.currentSalt = null;
-        window.syncTimer = null;
-        window.isSyncing = false;
-        window.pendingFiles = [];
-        window.deferredPrompt = null;
-
-        // ============================================
-        // 1. INIZIALIZZAZIONE
-        // ============================================
-        window.initApp = function() {
-            // Inizializza Supabase
-            window.initSupabase();
-            
-            // Inizializza Netlify Identity
-            window.initNetlifyIdentity();
-            
-            // Registra Service Worker
-            window.registerServiceWorker();
-            
-            // Inizializza IndexedDB
-            window.initIndexedDB();
-            
-            // Gestisci installazione PWA
-            window.setupInstallPrompt();
-            
-            // Carica file locali
-            window.loadLocalFiles();
-        };
-
-        // ============================================
-        // 2. NETLIFY IDENTITY
-        // ============================================
-        window.initNetlifyIdentity = function() {
-            if (window.netlifyIdentity) {
-                window.netlifyIdentity.on('init', function(user) {
-                    if (user) {
-                        window.currentUser = user;
-                        window.handleUserLogin(user);
-                    }
-                });
-                
-                window.netlifyIdentity.on('login', function(user) {
-                    window.currentUser = user;
-                    window.handleUserLogin(user);
-                });
-                
-                window.netlifyIdentity.on('logout', function() {
-                    window.currentUser = null;
-                    window.currentKey = null;
-                    window.currentSalt = null;
-                    window.clearSyncTimer();
-                    window.clearLocalCache();
-                    window.updateLoginUI();
-                });
-            }
-        };
-
-        // ============================================
-        // 3. GESTIONE LOGIN
-        // ============================================
-        window.handleLogin = function() {
-            if (window.currentUser) {
-                // Logout
-                window.netlifyIdentity.logout();
-            } else {
-                // Login
-                window.netlifyIdentity.open();
-            }
-        };
-
-        window.handleUserLogin = function(user) {
-            window.currentUser = user;
-            window.updateLoginUI();
-            
-            // Mostra modale password
-            window.showPasswordModal();
-        };
-
-        window.updateLoginUI = function() {
-            var loginBtn = document.getElementById('loginBtn');
-            var loginBtnText = document.getElementById('loginBtnText');
-            var userInfo = document.getElementById('userInfo');
-            
-            if (
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3
